@@ -9,6 +9,8 @@ To follow this, we'll make a very simple program. It counts the frequency of let
 
 Let's assume you've done the convenient thing. Your code is in a workspace. Everything it needs to run is defined in the workspace. Maybe you set a latent expression, so the program starts when you load the workspace. 
 
+In this chapter, we shall convert a DWS (saved workspace) to some DYALOG scripts and a DYAPP script to assemble an active workspace from them. 
+
 
 How can you distribute your program?
 --------------------------------
@@ -43,7 +45,17 @@ For this there are many _source-control management_ (SCM) systems and repositori
 
 Whichever SCM you use (we used GitHub for writing this book and the code in it) your source code will comprise class and namespace scripts (DYALOGs) and a _build script_ (DYAPP) to assemble them.
 
-You'll keep your local working copy (or _branch_ in Git terms) in whatever folder you please. We'll refer to this folder as `E:\dev\MyApp\` but it will of course be wherever suits you.      
+You'll keep your local working copy (or _branch_ in Git terms) in whatever folder you please. We'll refer to this _working folder_ as `Z:\` but it will of course be wherever suits you. 
+
+## Versions
+
+In real life you will produce successive _versions_ of your program, each better than the last. In an ideal world, all your users will have and use the latest version. In that ideal world, you have only one version to maintain: the latest. In the real world, your users will have and use multiple versions. If you charge for upgrading to a newer version, this will surely happen. And even in your ideal world, you have to maintain at least two versions: the latest and the next. 
+
+What does it mean to maintain a version? At the very minimum, you keep the source code for it, so you could recreate its EXE from scratch, exactly as it was distributed. There will be things you want to improve, and perhaps bugs you must fix. Those will all go into the next version, of course. But some you may need to put into the released version and re-issue it to current users as a patch. 
+
+So in _The Dyalog Cookbook_ we shall develop in successive versions. Our 'versions' are not ready to ship, so are probably better considered as milestones on the way to version 1.0. You could think of them as versions 0.1, 0.2 and so on. But we'll just refer to them as Versions 1, 2, and so on. 
+
+Our first version won't even be ready to export as an EXE. It will just recreate MyApp.DWS from scripts: a DYAPP and some DYALOGs. We'll call it Version 0. 
 
 
 ## The MyApp workspace
@@ -64,7 +76,7 @@ A>
 A> We recommend _The Code Book: The secret history of codes & code-breaking_ by Simon Singh and _In Code_ by Sarah Flannery as introductions if you find this subject interesting.
 
 
-From the Chapter01 folder on the book website load `LetterCount.dws`. Again, this is just the stand-in for your own code. Here's a quick tour.
+From the `code\v01` folder on the book website load `LetterCount.dws`. Again, this is just the stand-in for your own code. Here's a quick tour.
 
 
 ### Discussion
@@ -161,19 +173,19 @@ Trying to resolve the names `means` and `else`, the interpreter would consult `�
 
 We'll raid [Project Gutenberg](https://www.gutenberg.org/) for some texts to read. 
 
-We're tempted by the complete works of William Shakespeare but we don't know that letter distribution stayed constant over four centuries. Interesting to find out, though, so we'll save a copy as `e:\dev\texts\en\shakespeare.dat`. And we'll download some 20th-century books as TXTs into the same folder. Here are some texts we can use. 
+We're tempted by the complete works of William Shakespeare but we don't know that letter distribution stayed constant over four centuries. Interesting to find out, though, so we'll save a copy as `Z:\texts\en\shakespeare.dat`. And we'll download some 20th-century books as TXTs into the same folder. Here are some texts we can use. 
 
 ~~~
-      ↑⊃(⎕NINFO⍠1) 'e:\dev\texts\en\*.txt'
-e:/dev/texts/en/ageofinnocence.txt 
-e:/dev/texts/en/dubliners.txt      
-e:/dev/texts/en/heartofdarkness.txt
-e:/dev/texts/en/metamorphosis.txt  
-e:/dev/texts/en/pygmalion.txt      
-e:/dev/texts/en/timemachine.txt    
-e:/dev/texts/en/ulysses.txt        
-e:/dev/texts/en/withthesehands.txt 
-e:/dev/texts/en/wizardoz.txt       
+      ↑⊃(⎕NINFO⍠1) 'z:\texts\en\*.txt'
+z:/texts/en/ageofinnocence.txt 
+z:/texts/en/dubliners.txt      
+z:/texts/en/heartofdarkness.txt
+z:/texts/en/metamorphosis.txt  
+z:/texts/en/pygmalion.txt      
+z:/texts/en/timemachine.txt    
+z:/texts/en/ulysses.txt        
+z:/texts/en/withthesehands.txt 
+z:/texts/en/wizardoz.txt       
 ~~~   
 
 
@@ -201,7 +213,15 @@ Here's how the object tree will look:
 
 I> See the _SALT User Guide_ for more about DYAPPs. 
 
-So `e:\dev\MyApp\MyApp.dyapp` looks like this:
+The file tree will look like this:
+
+~~~
+z:\code\v01\Constants.dyalog
+z:\code\v01\Utilities.dyalog
+z:\code\v01\MyApp.dyapp
+~~~
+
+So `z:\code\v00\MyApp.dyapp` looks like this:
 
 ~~~
 Target #
@@ -321,6 +341,6 @@ Launch the DYAPP by double-clicking on its icon in Windows Explorer. Examine the
 
 W> If you also see containers `SALT_Data` ignore them. They are part of how the Dyalog editor updates script files.
 
-We can use MyApp.dyapp anytime to recreate the app as a workspace. But we have not saved a workspace. 
+We have converted the saved workspace to a DYAPP that assembles the workspace from DYALOGs. We can use `MyApp.dyapp` anytime to recreate the app as a workspace. But we have not saved a workspace. We will always assemble a workspace from scripts. 
 
 

@@ -1,9 +1,14 @@
 :Namespace MyApp
-⍝ Dyalog Cookbook, Chapter 1
-⍝ Vern: sjt28mar16
+⍝ Dyalog Cookbook, Version 00
+⍝ Converted from DWS
+⍝ Vern: sjt06apr16
+
+
+
 
 ⍝ Aliases
-    (C U)←#.(Constants Utilities) ⍝ must be already defined
+
+    (C U)←#.(Constants Utilities) ⍝ must be defined previously
 
 ⍝ === VARIABLES ===
 

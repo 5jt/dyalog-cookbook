@@ -1,12 +1,13 @@
 :Namespace MyApp
-⍝ Dyalog Cookbook, Chapter 02
-⍝ Vern: sjt29mar16
-
+⍝ Dyalog Cookbook, Version 01
+⍝ With Latent Expression, ready for export to EXE
+⍝ Vern: sjt06apr16
 
 ⍝ Environment
     (⎕IO ⎕ML ⎕WX)←1 1 3
 
 ⍝ Aliases
+
     (C U)←#.(Constants Utilities) ⍝ must be defined previously
 
 ⍝ === VARIABLES ===
@@ -29,6 +30,7 @@
       {}TxtToCsv 2⊃2↑⌷2 ⎕NQ'.' 'getcommandlineargs'
     ∇
 
+	
     ∇ {ok}←TxtToCsv fullfilepath;xxx;csv;stem;path;files;txt;type;lines;nl;enc;tgt;src;tbl
    ⍝ Write a sibling CSV of the TXT located at fullfilepath,
    ⍝ containing a frequency count of the letters in the file text

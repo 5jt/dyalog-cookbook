@@ -3,65 +3,65 @@
 Logging what happens 
 ====================
 
-Our MyApp EXE is now working, but handles errors poorly. From the command line try:
+MyApp 1.0 is now working, but handles errors poorly. See what happens when we try to work on a non-existent folder. In the command shell
 
-    C:\>dev\myapp.exe temp\sauce temp\test.txt
+~~~
+Z:\>MyApp.exe texts\de
+~~~
 
 We see an alert message: _This Dyalog APL runtime application has attempted to use the APL session and will therefore be closed._ 
 
-MyApp failed, because there is no folder `C:\temp\sauce`. That triggered an error in the APL code. The interpreter tried to signal the error to the session. But a runtime task has no session, so at that point it popped the alert message and died.   
+MyApp failed, because there is no folder `Z:\texts\de`. That triggered an error in the APL code. The interpreter tried to signal the error to the session. But a runtime task has no session, so at that point the interpreter popped the alert message and MyApp died.   
 
-Could do better. In several ways.
+MyApp 2.0 could do better. In several ways.
 
-* Have the app write a log file recording what it's done.
+* Have the program write a log file recording what it's done.
 * Set traps to catch and log foreseeable problems.
 * Set a top-level trap to catch and report unforeseen errors and save a crash workspace for analysis.
 
-Start with the log file. We'll use the APLTree `Logger` class, which we'll now define in the workspace root. From the command line:
+Save a copy of `Z:\code\v01` as `Z:\code\v02`.
 
-    C:>dev\MyApp\MyApp.dyapp
+Start with the log file. We'll use the APLTree `Logger` class, which we'll now install in the workspace root. If you've not already done so, copy the APLTree library folder into `Z:\code`. Now edit `Z:\code\v02\MyApp.dyapp` to include some library code:
 
-Whee. We just launched Dyalog and rebuilt the MyApp workspace. Now in the Dyalog session:
+~~~
+Target #
+Load ..\AplTree\APLTreeUtils
+Load ..\AplTree\Logger
+Load ..\AplTree\WinFile
+Load Constants
+Load Utilities
+Load MyApp
+Run MyApp.SetLX
+~~~ 
 
-          ⎕SE.SALT.Load 'C:\temp\apltree\Logger'
-          ⎕SE.SALT.Save #.Logger 'C:\dev\myapp\src\Logger'
-    C:\dev\myapp\src\Logger.dyalog
+and use the DYAPP to recreate the MyApp workspace. 
 
-And add a line to `C:\dev\MyApp\MyApp.dyapp`:
+The `Logger` class is now part of MyApp. Let's get the program to log what it's doing. 
 
-    Load C:\dev\MyApp\src\Logger
+Within `MyApp`, some changes. Some aliases for the new code.
 
-The `Logger` class is now part of MyApp. Lets get the app to log what it's doing. But first a short diversion. We'll add a small handy method to `WinFile`.
+~~~
+⍝ Aliases (referents must be defined previously)
+    (A L W)←#.(APLTreeUtils Logger WinFile) ⍝ from APLTree
+    (C U)←#.(Constants Utilities) 
+~~~
 
-      )ED #.WinFile
-    ∇ r←Parent path
-    ⍝ Container of object eg
-    ⍝ '\path\to\' ←→ Parent '\path\to\object'
-    ⍝ Revn: sjt09aug15
-      :Access Public Shared
-      r←path↓⍨1-'\'⍳⍨⌽path
-    ∇
+We'll write logfiles into a subfolder of (wherever) the EXE lives. So we need `TxtToCsv` to ensure this subfolder exists. To do that, we'll first set the Current Directory to the EXE's container.
 
-When you leave the editor, SALT prompts you to confirm you want the change saved to the script file. (Click Yes.)
-
-We now have a custom version of the `WinFile` class. (This introduces a maintenance issue we'll come back to and tackle later.) 
-
-Let's add logging. Edit `MyApp`, as follows. (And have the new version saved to file when you leave the editor.) 
-
-~~~~~~~~
-:Namespace MyApp
-    (⎕IO ⎕ML ⎕WX)←1 1 3
-    (A L W)←#.(APLTreeUtils Logger WinFile) ⍝ aliases
-
-    ∇ StartFromCmdLine
-    ⍝ Initialise environment, read command parameters, and run the application
+~~~
+    ∇ SetLX
+   ⍝ Set Latent Expression in root ready to export workspace as EXE
       W.PolishCurrentDir ⍝ set current dir to that of EXE
-      Compile 1↓3↑(⌷2 ⎕NQ'.' 'getcommandlineargs'),'' ''
+      #.⎕LX←'MyApp.StartFromCmdLine'
     ∇
+~~~
 
-    ∇ Compile(srcfolder tgtfile);files;_srcfolder;srcfile;∆;Log
-     ⍝ Dyalog Cookbook compiler
-     ⍝ Compile files from srcfolder to tgtfile
+Now that `TxtToCsv` can log what it's doing, it makes sense to check its argument. We wrap the earlier version of the function in an if/else:
+
+~~~
+    ∇ {ok}←TxtToCsv fullfilepath;∆;xxx;csv;stem;path;files;txt;type;lines;nl;enc;tgt;src;tbl
+   ⍝ Write a sibling CSV of the TXT located at fullfilepath,
+   ⍝ containing a frequency count of the letters in the file text
       'CREATE!'W.CheckPath'Logs' ⍝ ensure subfolder of current dir
       ∆←L.CreatePropertySpace
       ∆.path←'Logs\' ⍝ subfolder of current directory
@@ -69,107 +69,95 @@ Let's add logging. Edit `MyApp`, as follows. (And have the new version saved to 
       ∆.filenamePrefix←'MyApp'
       ∆.refToUtils←#
       Log←⎕NEW L(,⊂∆)
-      Log.Log'Started MyApp in ',∆.path
-      Log.Log'Source: ' 'Target: ',¨srcfolder tgtfile
-     
-      _srcfolder←srcfolder,(~'\/'∊⍨⊃⌽srcfolder)/'\'
-     
-      :If ~W.DoesExistDir _srcfolder
-          Log.Log'Invalid source folder'
-      :ElseIf ~W.DoesExistDir W.Parent tgtfile
-          Log.Log'Invalid target folder'
+      Log.Log'Started MyApp in ',W.PWD
+      Log.Log'Source: ',fullfilepath
+
+      :If ~⎕NEXISTS fullfilepath
+          Log.Log'Invalid source'
+		  ok←0
       :Else
-          :If W.DoesExistFile ∆←_srcfolder,'MANIFEST.DAT'
-              files←A.ReadUtf8File ∆
-              Log.Log(⍕≢files),' files specified in manifest'
-          :Else
-              files←W.Dir _srcfolder,'*.TXT'
-              Log.Log(⍕≢files),' files found in folder'
-          :EndIf
-          files,⍨¨←⊂_srcfolder
-          files/⍨←W.DoesExistFile files
-     
-          :If 0=≢files
-              Log.Log'No files found to read'
-          :Else
-              W.Delete tgtfile
-              :For srcfile :In files
-                  ∆←'flat'A.ReadUtf8File srcfile
-                  Log.Log'Read ',(⍕≢∆),' bytes from ',srcfile
-                  'append'A.WriteUtf8File tgtfile ∆
-              :EndFor
-          :EndIf
-     
-      :EndIf
-     
-      Log.Log'All done'
+	  
+		  ⍝ as before...
+      
+	  :EndIf
     ∇
+~~~
 
-:EndNamespace
-~~~~~~~~
+Notice how defining the aliases `A`, `L`, and `W` in the namespace script -- the environment of `StartFromCmdLine` and `TxtToCsv` -- makes the function code more legible. 
 
-A bit over the top for so simple an app, but definitely worth it for yours. 
-
-Notice how defining the aliases `A`, `L`, and `W` in the namespace script -- the environment of `StartFromCmdLine` and `Compile` -- makes the function code more legible. 
-
-The `⎕SIGNAL` that aborted the runtime task has now been replaced by log messages to say no files were found.
+The foreseeable error that aborted the runtime task -- on an invalid filepath -- has now been replaced by log messages to say no files were found.
 
 
 Where to keep the logfiles? 
----------------------------
+------------------------
 
-Where is MyApp to write the logfile? We need a filepath we know exists. That rules out `srcfolder` or `tgtfile`. We need a logfile even if they aren't valid paths. But we do know the EXE exists, or MyApp would not be running. 
+Where is MyApp to write the logfile? We need a filepath we know exists. That rules out `fullfilepath`. (We need a logfile even if that isn't a valid path.) But we do know the EXE exists, or MyApp would not be running. (_Executo ergo sum._) 
 
-`StartFromCmdLine` uses `W.PolishCurrentDir` to set the current directory to that of the EXE. `Compile` uses `W.CheckPath` to ensure the current directory contains a folder `Logs`. That can then be safely specified as the `path` property for the Logger instance.   
+`StartFromCmdLine` uses `W.PolishCurrentDir` to set the current directory to that of the EXE. `TxtToCsv` then uses `W.CheckPath` to ensure the current directory contains a folder `Logs`. That can then be safely specified as the `path` property for the Logger instance.   
 
-Because the logging starts and ends in `Compile`, we can run this in the workspace now to test it.
+Why not do both in `TxtToCsv`? Because we might, while developing in the session, want our Current Directory elsewhere. In this case, when we run the DYAPP, the `Logs` folder will be a sibling of the DYAPP, handily producing a `Logs` folder for each version of the project.
+
+As the logging starts and ends in `TxtToCsv`, we can run this in the workspace now to test it.
 
 ~~~~~~~~
       )CS
 #
-      #.WinFile.Cd 'C:\dev\MyApp'
+      #.WinFile.Cd 'Z:\' ⍝ working directory
 C:\Windows\system32
       #.WinFile.PWD ⍝ really?
-C:\dev\MyApp
+Z:\
       ⍝ yes
-      #.MyApp.Compile 'C:\temp\source' 'C:\temp\test.txt'
+      #.MyApp.TxtToCsv 'Z:\texts\en'
 ~~~~~~~~
 
 Let's see what we got.
 
 ~~~~~~~~
       #.WinFile.PWD ⍝ still here?
-C:\dev\MyApp
-      WinFile.Dir 'Logs\*.LOG'
- MyApp_20150829.log 
-      ↑APLTreeUtils.ReadUtf8File 'Logs\MyApp_20150829.log'
-2015-08-29 12:43:15 *** Log File opened                          
-2015-08-29 12:43:15 (0) Started MyApp in Logs\                   
-2015-08-29 12:43:15 (0) Source: C:\temp\source                   
-2015-08-29 12:43:15 (0) Target: C:\temp\test.txt                 
-2015-08-29 12:43:15 (0) 2 files specified in manifest            
-2015-08-29 12:43:15 (0) Read 45 bytes from C:\temp\source\foo.txt
-2015-08-29 12:43:15 (0) Read 66 bytes from C:\temp\source\bar.txt
-2015-08-29 12:43:15 (0) All done                                 
+Z:\
+      ⊃(⎕NINFO⍠1) 'Logs\*.LOG'
+ MyApp_20160406.log 
+      ↑⎕NGET 'Logs\MyApp_20160406.log'
+2016-04-06 13:42:43 *** Log File opened
+2016-04-06 13:42:43 (0) Started MyApp in Z:\code\v02
+2016-04-06 13:42:43 (0) Source: Z:\texts\en
+2016-04-06 13:42:43 (0) Target: Z:\texts\en.csv
+2016-04-06 13:42:43 (0) 244 bytes written to Z:\texts\en.csv
+2016-04-06 13:42:43 (0) All done
 ~~~~~~~~
 
-Let's see if this works also for the exported EXE. Rebuild the workspace. 
+Let's see if this works also for the exported EXE. Run the DYAPP to rebuild the workspace. Export as before, and in the Windows command line run the new `MyApp.exe`.
 
-          ⎕SE.SALT.Boot 'C:\dev\MyApp\MyApp'
-    Loaded: #.APLTreeUtils
-    Loaded: #.WinFile
-    Loaded: #.Logger
-    Loaded: #.MyApp
-          ⎕LX←'#.MyApp.StartFromCmdLine'
+~~~
+    Z:\>MyApp.exe texts\en
+~~~
 
-Export as before, and in the Windows command line run the new `MyApp.exe`.
+Yes! The output TXT gets produced as before, and the work gets logged in `Z:\Logs`. 
 
-    C:\>dev\MyApp\MyApp.exe C:\temp\source C:\temp\test.txt
+Let's see what happens now when the filepath is invalid. 
 
-Yes! The output TXT gets produced as before, and the work gets logged in `C:\dev\MyApp\Logs`. 
+~~~
+    Z:\>MyApp.exe texts\de
+~~~
 
-We now have MyApp logging its work in a subfolder of the application folder and reporting problems which it has anticipated. Next we need to consider how to handle and report errors we have not anticipated. 
+No warning message -- the program made an orderly finish. And the log?
 
-## Offcuts
+~~~
+      ↑⎕NGET 'Logs\MyApp_20160406.log'
+2016-04-06 13:42:43 *** Log File opened
+2016-04-06 13:42:43 (0) Started MyApp in Z:\code\v02
+2016-04-06 13:42:43 (0) Source: Z:\texts\en
+2016-04-06 13:42:43 (0) Target: Z:\texts\en.csv
+2016-04-06 13:42:43 (0) 244 bytes written to Z:\texts\en.csv
+2016-04-06 13:42:43 (0) All done
+2016-04-06 13:42:50 *** Log File opened
+2016-04-06 13:42:50 (0) Started MyApp in Z:\code\v02
+2016-04-06 13:42:50 (0) Source: Z:\texts\de
+2016-04-06 13:42:50 (0) Invalid source
+~~~
 
-But the only indication is that the task's Exit Code is 4 instead of 0, and the target file hasn't changed. 
+Yes! 
+
+We now have MyApp logging its work in a subfolder of the application folder and reporting problems which it has anticipated.
+
+Next we need to consider how to handle and report errors we have _not_ anticipated. We should also return some kind of error code to Windows. If MyApp encounters an error, any process calling it needs to know. 
