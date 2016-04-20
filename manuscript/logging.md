@@ -15,7 +15,7 @@ MyApp failed, because there is no folder `Z:\texts\de`. That triggered an error 
 
 MyApp 2.0 could do better. In several ways.
 
-* Have the program write a log file recording what it's done.
+* Have the program write a log file recording what happens.
 * Set traps to catch and log foreseeable problems.
 * Set a top-level trap to catch and report unforeseen errors and save a crash workspace for analysis.
 
@@ -34,7 +34,7 @@ Load MyApp
 Run MyApp.SetLX
 ~~~ 
 
-and use the DYAPP to recreate the MyApp workspace. 
+and run the DYAPP to recreate the MyApp workspace. 
 
 The `Logger` class is now part of MyApp. Let's get the program to log what it's doing. 
 
@@ -46,20 +46,34 @@ Within `MyApp`, some changes. Some aliases for the new code.
     (C U)←#.(Constants Utilities) 
 ~~~
 
-We'll write logfiles into a subfolder of (wherever) the EXE lives. So we need `TxtToCsv` to ensure this subfolder exists. To do that, we'll first set the Current Directory to the EXE's container.
+
+Where to keep the logfiles? 
+------------------------
+
+Where is MyApp to write the logfile? We need a filepath we know exists. That rules out `fullfilepath`. We need a logfile even if that isn't a valid path.  
+
+We'll write logfiles into a subfolder of the Current Directory. Where will that be?
+
+When the EXE launches, the Current Directory is the EXE's containing folder. We know that exists: _executo ergo sum._
+
+In developing and testing MyApp, we create the active workspace by running `MyApp.dyapp`. That sets the Current Directory as the DYAPP's container. That too must exist. 
 
 ~~~
-    ∇ SetLX
-   ⍝ Set Latent Expression in root ready to export workspace as EXE
-      W.PolishCurrentDir ⍝ set current dir to that of EXE
-      #.⎕LX←'MyApp.StartFromCmdLine'
-    ∇
+      #.WinFile.Cd ''
+Z:\code\v02
 ~~~
 
-Now that `TxtToCsv` can log what it's doing, it makes sense to check its argument. We wrap the earlier version of the function in an if/else:
+We need `TxtToCsv` to ensure the Current Directory contains a `Logs` folder. 
 
 ~~~
-    ∇ {ok}←TxtToCsv fullfilepath;∆;xxx;csv;stem;path;files;txt;type;lines;nl;enc;tgt;src;tbl
+      'CREATE!' W.CheckPath 'Logs' ⍝ ensure subfolder of current dir
+~~~
+
+If `TxtToCsv` can log what it's doing, it makes sense to check its argument. We wrap the earlier version of the function in an if/else:
+
+~~~
+    ∇ {ok}←TxtToCsv fullfilepath;∆;xxx;csv;stem;path;files;txt;type;lines;nl
+        ;enc;tgt;src;tbl
    ⍝ Write a sibling CSV of the TXT located at fullfilepath,
    ⍝ containing a frequency count of the letters in the file text
       'CREATE!'W.CheckPath'Logs' ⍝ ensure subfolder of current dir
@@ -74,12 +88,12 @@ Now that `TxtToCsv` can log what it's doing, it makes sense to check its argumen
 
       :If ~⎕NEXISTS fullfilepath
           Log.Log'Invalid source'
-		  ok←0
+          ok←0
       :Else
-	  
-		  ⍝ as before...
+
+          ⍝ as before...
       
-	  :EndIf
+      :EndIf
     ∇
 ~~~
 
@@ -87,34 +101,10 @@ Notice how defining the aliases `A`, `L`, and `W` in the namespace script -- the
 
 The foreseeable error that aborted the runtime task -- on an invalid filepath -- has now been replaced by log messages to say no files were found.
 
-
-Where to keep the logfiles? 
-------------------------
-
-Where is MyApp to write the logfile? We need a filepath we know exists. That rules out `fullfilepath`. (We need a logfile even if that isn't a valid path.) But we do know the EXE exists, or MyApp would not be running. (_Executo ergo sum._) 
-
-`StartFromCmdLine` uses `W.PolishCurrentDir` to set the current directory to that of the EXE. `TxtToCsv` then uses `W.CheckPath` to ensure the current directory contains a folder `Logs`. That can then be safely specified as the `path` property for the Logger instance.   
-
-Why not do both in `TxtToCsv`? Because we might, while developing in the session, want our Current Directory elsewhere. In this case, when we run the DYAPP, the `Logs` folder will be a sibling of the DYAPP, handily producing a `Logs` folder for each version of the project.
-
 As the logging starts and ends in `TxtToCsv`, we can run this in the workspace now to test it.
 
 ~~~~~~~~
-      )CS
-#
-      #.WinFile.Cd 'Z:\' ⍝ working directory
-C:\Windows\system32
-      #.WinFile.PWD ⍝ really?
-Z:\
-      ⍝ yes
       #.MyApp.TxtToCsv 'Z:\texts\en'
-~~~~~~~~
-
-Let's see what we got.
-
-~~~~~~~~
-      #.WinFile.PWD ⍝ still here?
-Z:\
       ⊃(⎕NINFO⍠1) 'Logs\*.LOG'
  MyApp_20160406.log 
       ↑⎕NGET 'Logs\MyApp_20160406.log'

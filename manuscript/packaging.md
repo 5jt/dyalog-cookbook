@@ -3,10 +3,11 @@
 Package MyApp as an executable
 ==========================
 
+For Version 1.0 we'll package `MyApp` as an EXE. Version 1.0 will run from the command line and it will run 'headless' -- without a user interface (UI). It won't have a session either. 
 
 ## Output to the session log
 
-For Version 1.0 we'll package `MyApp` as an EXE. It's going to run 'headless' -- without a user interface (UI). It won't have a session. What happens to values that would otherwise be written in the session log? They disappear. That’s not actually a problem, but it is tidy to catch anything that would otherwise be written to the UI, including empty arrays. 
+What happens to values that would otherwise be written in the session log? They disappear. That’s not actually a problem, but it is tidy to catch anything that would otherwise be written to the UI, including empty arrays. 
 
 `TxtToCsv` has a shy result, so it won't write its result to the session. That’s fine. 
 
@@ -39,7 +40,7 @@ and in `MyApp.dyalog`:
 
     ∇ StartFromCmdLine;args
    ⍝ Read command parameters, run the application
-      {}TxtToCsv 2⊃2↑⌷2 ⎕NQ'.' 'getcommandlineargs'
+      {}TxtToCsv 2⊃2↑⌷2 ⎕NQ'.' 'GetCommandLineArgs'
     ∇
 ~~~
 
@@ -54,7 +55,7 @@ We're now nearly ready to export the first version of our EXE.
 5. Check the *Runtime application* and *Console application* boxes.
 6. Click *Save*. 
 
-You should see an alert message: _File Z:\MyApp.exe successfully created._
+You should see an alert message: _File Z:\\MyApp.exe successfully created._
 
 T> Use the *Version* button to bind to the EXE information about the application, author, version, copyright and so on. Specify an icon file to replace the Dyalog icon with one of your own. 
 

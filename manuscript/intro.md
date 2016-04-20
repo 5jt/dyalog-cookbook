@@ -6,9 +6,9 @@ You want to write an application in Dyalog APL. You have already learned enough 
 
 This is where you need professional programming skills. How to install your code into an unknown computer. Have it catch, handle and log errors. Manage the different versions of your software as it evolves. Provide online help. 
 
-You are not a professional programmer. You don't have those skills. Perhaps you need a professional programmer to turn your code into an application. But you've come a long way already. Perhaps you can get there by yourself - with the Dyalog Cookbook. 
+You are not necessarily a professional programmer. Perhaps you don't have those skills. Perhaps you need a professional programmer to turn your code into an application. But you've come a long way already. Perhaps you can get there by yourself - with _The Dyalog Cookbook_. Alternatively, you might be a professional programmer wondering how to solve these familiar problems in Dyalog APL. 
 
-The Dyalog Cookbook is about how to turn your Dyalog code into an application. We'll cover packaging your code into a robust environment. And we'll introduce some software development tools you've managed without so far, which will make your life easier.
+_The Dyalog Cookbook_ is about how to turn your Dyalog code into an application. We'll cover packaging your code into a robust environment. And we'll introduce some software development tools you've managed without so far, which will make your life easier.
 
 You might continue as the sole developer of your application for a long time yet. But if it becomes a successful product you will eventually want other programmers collaborating on it. So we'll set up your code in a source-control system that will accommodate that. Even while you remain a sole developer, a source-control system will also allow you to roll back and recover from your own mistakes. 
 
@@ -21,9 +21,15 @@ Finally in Part 2 we'll introduce some professional writing techniques that migh
 
 ## What you need to use the Dyalog Cookbook
 
-* The Dyalog Version 14 Unicode interpreter or later.
-* To know how to use namespaces, classes and instances. Much of the utility code in the Cookbook is packaged into classes. This is the form in which it is easiest for you to slide the code into your app without name conflicts. We recommend you use classes to organise your own code! But even if you don't, you need to know at least how to use classes. This is a deep subject, but all you need to know is the basics: creating an instance of a class and using its methods and properties, or just using the methods of a static class. See <cite>Dyalog Programmer's Reference Guide</cite> for an introduction. 
-* To know how to use SALT, the Simple APL Library Toolkit. Just the basics, including editing namespace and class scripts. See <cite>Dyalog SALT Reference Guide</cite>.
+* The Dyalog Version 15.0 Unicode interpreter or later.
+* To know how to use namespaces, classes and instances. Much of the utility code in the Cookbook is packaged into classes. This is the form in which it is easiest for you to slide the code into your app without name conflicts. We recommend you use classes to organise your own code! But even if you don't, you need to know at least how to use classes. This is a deep subject, but all you need to know is the basics: creating an instance of a class and using its methods and properties, or just using the methods of a static class. See _Dyalog Programmer's Reference Guide_ for an introduction. 
+
+
+## Acknowledgements
+
+We are deeply grateful for contributions, ideas, comments and outright help from our colleagues, particularly from Gil Athoraya, Morten Kromberg and Nick Nickolov. 
+
+We jealously claim any errors as entirely our own work. 
 
 
 Stephen Taylor & Kai Jaeger

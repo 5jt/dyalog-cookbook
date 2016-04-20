@@ -1,3 +1,5 @@
+# Handling errors
+
 # Initialising with INI files 
 
 # Testing: the sound of breaking glass

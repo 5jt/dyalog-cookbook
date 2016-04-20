@@ -19,12 +19,12 @@ How can you distribute your program?
 
 Could not be simpler. If your user has a Dyalog interpreter, she can also save and send you the crash workspace if your program hits an execution error. But she will also be able to read your code -- which might be more than you wish for. 
 
-If she doesn't have an interpreter, and you are not worried about her someday getting one and reading your code, and you have a Run-Time Agreement with Dyalog, you can send her the Dyalog Run-Time DLL[^ext] with the workspace. The Run-Time DLL will not allow the program to suspend, so when the program breaks the task will vanish, and your user won't see your code. All right so far. But she will also not have a crash workspace to send you. So you need your program to catch and report any errors before it dies. 
+If she doesn't have an interpreter, and you are not worried about her someday getting one and reading your code, and you have a Run-Time Agreement with Dyalog, you can send her the Dyalog Run-Time interpreter[^ext] with the workspace. The Run-Time interpreter will not allow the program to suspend, so when the program breaks the task will vanish, and your user won't see your code. All right so far. But she will also not have a crash workspace to send you. So you need your program to catch and report any errors before it dies. 
 
 
 ### Send an executable file (EXE)
 
-This is the simplest form of the program to install, because there is nothing else it needs to run: everything is embedded within the EXE. You export the workspace as an EXE, which can have the Dyalog Run-Time DLL bound into it. The code cannot be read. As with the workspace-based runtime above, your program cannot suspend, so you need it to catch and report any errors before dying. 
+This is the simplest form of the program to install, because there is nothing else it needs to run: everything is embedded within the EXE. You export the workspace as an EXE, which can have the Dyalog Run-Time interpreter bound into it. The code cannot be read. As with the workspace-based runtime above, your program cannot suspend, so you need it to catch and report any errors before dying. 
 
 We'll do that! 
 
@@ -45,7 +45,7 @@ For this there are many _source-control management_ (SCM) systems and repositori
 
 Whichever SCM you use (we used GitHub for writing this book and the code in it) your source code will comprise class and namespace scripts (DYALOGs) and a _build script_ (DYAPP) to assemble them.
 
-You'll keep your local working copy (or _branch_ in Git terms) in whatever folder you please. We'll refer to this _working folder_ as `Z:\` but it will of course be wherever suits you. 
+You'll keep your local working copy in whatever folder you please. We'll refer to this _working folder_ as `Z:\` but it will of course be wherever suits you. 
 
 ## Versions
 
@@ -83,6 +83,30 @@ From the `code\v01` folder on the book website load `LetterCount.dws`. Again, th
 
 Function `TxtToCsv` takes the filepath of a TXT (text file) and writes a sibling CSV file containing the frequency count for the letters in the file. It uses function `CountLetters` to produce the table. 
 
+~~~
+      ∆←'Now is the time for all good men'
+      ∆,←' to come to the aid of the party.'
+      MyApp.CountLetters ∆
+N 2
+O 8
+W 1
+I 3
+S 1
+T 7
+H 3
+E 6
+M 3
+F 2
+R 2
+A 3
+L 2
+G 1
+D 2
+C 1
+P 1
+Y 1
+~~~
+
 `CountLetters` returns a table of the letters in `⎕A` and the number of times each is found in the text. The count is insensitive to case and ignores accents, mapping accented to unaccented characters:
 
 ~~~
@@ -94,9 +118,9 @@ AAAAAACDEEEEIIIINOOOOOOUUUUY
 That amounts to five functions. Two of them are specific to the application: `TxtToCsv` and `CountLetters`. The other three -- `caseUp`, `join`, and `map` are utilities, of general use. 
 
 
-`caseUp` uses the fast case-folding I-beam introduced in Dyalog 15. 
+`caseUp` uses the fast case-folding I-beam introduced in Dyalog 15.0. 
 
-`TxtToCsv` uses the file-system primitives `⎕NINFO`, `⎕NGET`, and `⎕NPUT` introduced in Dyalog 15.
+`TxtToCsv` uses the file-system primitives `⎕NINFO`, `⎕NGET`, and `⎕NPUT` introduced in Dyalog 15.0.
 
 `TxtToCsv` observes _Cannon's Canon_, which tells us to avoid representing options with numeric constants. Instead, it assigns descriptive names at the start and uses those. That's not too bad, but if every function did the same, we risk multiple definitions of the same constant, breaching the DRY principle -- don't repeat yourself. (And open to errors: _A man with two watches never knows what time it is._) We can do better by defining all the Dyalog constants we want to use in a single namespace in the root.       
 
@@ -107,16 +131,27 @@ To expand this program into distributable software we're going to add features, 
 
 Start at the root. We're going to be conservative about defining names in the root of the workspace. Why? Right now the program stands by itself and can do what it likes in the workspace. But in the future your program might become part of a larger APL system. In that case it will share the workspace root with other objects you don't know anything about right now. 
 
-So your program will be a self-contained object in the workspace root. Give it a distinctive name, not a generic name such as `Application` or `Root`. From here on we'll call it `MyApp`. (We know: that's almost as bad!) 
+So your program will be a self-contained object in the workspace root. Give it a distinctive name, not a generic name such as `Application` or `Root`. From here on we'll call it `MyApp`. (We know: almost as bad.) 
 
 But there _are_ other objects you might define in the root. If you're using classes or namespaces that other systems might also use, define them in the root. For example, if `MyApp` should one day become a module of some larger system, it would make no sense for each module to have its own copy of, say, the APLTree class `Logger`. 
 
 With this in mind, let's distinguish some categories of code, and how the code in `MyApp` will refer to them.
 
-1. **General utilities and classes** For example, the `APLTreeUtils` namespace and the `Logger` class. (Your program doesn't yet use these utilities.) In the future, other programs, possibly sharing the same workspace, might use them too.
-2. **Your program and its modules** Your top-level code will be in `#.MyApp`. Other modules and MyApp-specific classes may be defined within it.
-3. **Tools and utility functions specific to MyApp** These might include your own extensions to Dyalog namespaces or classes. Define them inside the app object, eg `#.MyApp.Utils`.
-4. **Your own language extensions and syntax sweeteners** For example, you might like to use functions `means` and `else` as simple conditionals. These are effectively your local _extensions_ to APL, the functions you expect always to be around. Define your collection of such functions into a namespace in the root, eg `#.Utilities`. 
+General utilities and classes
+
+: For example, the `APLTreeUtils` namespace and the `Logger` class. (Your program doesn't yet use these utilities.) In the future, other programs, possibly sharing the same workspace, might use them too.
+
+Your program and its modules
+
+: Your top-level code will be in `#.MyApp`. Other modules and MyApp-specific classes may be defined within it.
+
+Tools and utility functions specific to MyApp
+
+: These might include your own extensions to Dyalog namespaces or classes. Define them inside the app object, eg `#.MyApp.Utils`.
+
+Your own language extensions and syntax sweeteners
+
+: For example, you might like to use functions `means` and `else` as simple conditionals. These are effectively your local _extensions_ to APL, the functions you expect always to be around. Define your collection of such functions into a namespace in the root, eg `#.Utilities`. 
 
 The object tree in the workspace might eventually look something like: 
 
@@ -165,7 +200,7 @@ r←ok,ok means r else 'error'
 
 Trying to resolve the names `means` and `else`, the interpreter would consult `⎕PATH` and find them in `#.Utilities`. So far so good: this is what `⎕PATH` is designed for. It works fine in simple cases, but it will lead us into problems later:
 
-* As long as each name leads unambiguously to an object, shift-clicking on it will display it in the editor, a valuable feature of APL in development and debugging. The editor allows us to change code during execution, and save those changes back to the scripts. But the editor doesn't consult `⎕PATH`, so setting it breaks that valuable connection. 
+* As long as each name leads unambiguously to an object, shift-clicking on it will display it in the editor, a valuable feature of APL in development and debugging. The editor allows us to change code during execution, and save those changes back to the scripts. But `⎕PATH` can interfere wikth this and break that valuable connection. 
 * Understanding the scope of the space in which a GUI callback executes can be challenging enough; introducing `⎕PATH` makes it harder still. 
 
 
@@ -217,6 +252,7 @@ The file tree will look like this:
 
 ~~~
 z:\code\v01\Constants.dyalog
+z:\code\v01\MyApp.dyalog
 z:\code\v01\Utilities.dyalog
 z:\code\v01\MyApp.dyapp
 ~~~
@@ -236,20 +272,15 @@ I> You can download all the scripts in this chapter from the corresponding folde
 
 ~~~
 :Namespace Constants
+   ⍝ Dyalog constants
 
-	⍝ Dyalog constants
+   :Namespace NINFO
+      WILDCARD←1
+   :EndNamespace
 
-	:Namespace NINFO
-
-		WILDCARD←1
-
-	:EndNamespace
-
-	:Namespace NPUT
-
-		OVERWRITE←1
-
-	:EndNamespace
+   :Namespace NPUT
+      OVERWRITE←1
+   :EndNamespace
 
 :EndNamespace
 ~~~
@@ -267,7 +298,9 @@ And `Utilities.dyalog`:
 
     caseDn←{0(819⌶)⍵}
     caseUp←{1(819⌶)⍵}
+~~~
 
+~~~
       map←{
           (old new)←⍺
           nw←∪⍵
@@ -294,9 +327,11 @@ And another:
     CountLetters←{
       {⍺(≢⍵)}⌸⎕A{⍵⌿⍨⍵∊⍺}(↓ACCENTS)U.map U.caseUp ⍵
     } ⍝ Table of letter counts in string ⍵
+~~~
 
-   
-    ∇ {ok}←TxtToCsv fullfilepath;xxx;csv;stem;path;files;txt;type;lines;nl;enc;tgt;src;tbl
+~~~ 
+    ∇ {ok}←TxtToCsv fullfilepath;xxx;csv;stem;path;files;txt;type;lines;nl
+	;enc;tgt;src;tbl
    ⍝ Write a sibling CSV of the TXT located at fullfilepath,
    ⍝ containing a frequency count of the letters in the file text
       csv←'.csv'
@@ -325,18 +360,18 @@ Launch the DYAPP by double-clicking on its icon in Windows Explorer. Examine the
 
 ~~~
 - Constants
-	- NINFO
-		- WILDCARD
-	- NPUT
-		- OVERWRITE
+  - NINFO
+    - WILDCARD
+  - NPUT
+    - OVERWRITE
 - LocalAPL
-	- caseDn 
-	- caseUp
-	- map
+  - caseDn 
+  - caseUp
+  - map
 - MyApp 
-	- ACCENTS
-	- CountLetters
-	- TxtToCsv
+  - ACCENTS
+  - CountLetters
+  - TxtToCsv
 ~~~
 
 W> If you also see containers `SALT_Data` ignore them. They are part of how the Dyalog editor updates script files.

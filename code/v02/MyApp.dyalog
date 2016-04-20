@@ -27,8 +27,7 @@
 
     ∇ StartFromCmdLine
    ⍝ Read command parameters, run the application
-      {}TxtToCsv 2⊃2↑⌷2 ⎕NQ'.' 'getcommandlineargs'
-      W.PolishCurrentDir ⍝ set current dir to that of EXE
+      {}TxtToCsv 2⊃2↑⌷2 ⎕NQ'.' 'GetCommandLineArgs'
     ∇
 
     ∇ {ok}←TxtToCsv fullfilepath;∆;xxx;Log;csv;stem;path;files;txt;type;lines;nl;enc;tgt;src;tbl

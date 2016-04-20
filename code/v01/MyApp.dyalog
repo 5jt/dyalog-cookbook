@@ -27,10 +27,9 @@
 
     ∇ StartFromCmdLine
    ⍝ Read command parameters, run the application
-      {}TxtToCsv 2⊃2↑⌷2 ⎕NQ'.' 'getcommandlineargs'
+      {}TxtToCsv 2⊃2↑⌷2 ⎕NQ'.' 'GetCommandLineArgs'
     ∇
 
-	
     ∇ {ok}←TxtToCsv fullfilepath;xxx;csv;stem;path;files;txt;type;lines;nl;enc;tgt;src;tbl
    ⍝ Write a sibling CSV of the TXT located at fullfilepath,
    ⍝ containing a frequency count of the letters in the file text
