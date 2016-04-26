@@ -1,4 +1,4 @@
-# Handling errors
+{:: encoding="utf-8" /}
 
 # Initialising with INI files 
 

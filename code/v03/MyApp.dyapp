@@ -1,0 +1,9 @@
+Target #
+Load ..\AplTree\APLTreeUtils
+Load ..\AplTree\HandleError
+Load ..\AplTree\Logger
+Load ..\AplTree\WinFile
+Load Constants
+Load Utilities
+Load MyApp
+Run MyApp.SetLX

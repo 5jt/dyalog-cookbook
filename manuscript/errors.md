@@ -1,336 +1,272 @@
+{:: encoding="utf-8" /}
+
 Handling errors
 ===============
 
-Our app now anticipates, tests for and reports certain foreseeable problems with the parameters. We'll now handle errors more comprehensively.
+MyApp now anticipates, tests for and reports certain foreseeable problems with the parameters. We'll now move on to handle errors more comprehensively.
+
+Save a copy of `Z:\code\v02` as `Z:\code\v03`.
 
 
-What are we missing? 
---------------------
+## What are we missing? 
 
 1. Other problems are foreseeable. The file system is a rich source of ephemeral problems and displays. Many of these are caught and handled by the APLTree utilities. They might make several attempts to read or write a file before giving up and signalling an error. Hooray. We need to handle the events signalled when the utilities give up. 
 
 2. The MyApp EXE terminates with an all-OK zero exit code even when it has caught and handled an error. Some custom exit codes would make it a better Windows citizen.
 
-3. By definition, unforeseeable problems can't be foreseen. But we foresee there will be some! A mere typo in the code could break execution. We need a master trap to catch any events that would break execution, save them for analysis, and report them in an orderly way. 
+3. By definition, unforeseen problems haven't been foreseen. But we foresee there will be some! A mere typo in the code could break execution. We need a master trap to catch any events that would break execution, save them for analysis, and report them in an orderly way. 
 
 
-Foreseen errors
-------------------
+## Foreseen errors
 
-We'll start with the first two. Quite a bit of restructuring here. We'll get `Compile` to return an exit code to be used by `⎕OFF`. So we'll begin by defining in the `MyApp` namespace a reference namespace of constants and their exit codes.  
+We'll start with the second item from the list above. Now the result of `TxtToCsv` gets passed to `⎕OFF` to be returned to the operating system as an exit code. 
 
-~~~~~~~~
-:Namespace MyApp
-    ⎕IO←1 ⋄ ⎕ML←1 ⋄ ⎕WX←3
-    (A L W)←#.(APLTreeUtils Logger WinFile) ⍝ aliases for all
-
-leanpub-start-insert
-   ⍝ define Exit Code constants
-    EXIT←⎕NS''
-    EXIT.OK←0
-    EXIT.INVALID_SOURCE_FOLDER←101
-    EXIT.INVALID_TARGET_FOLDER←102
-    EXIT.UNABLE_TO_READ_MANIFEST←103
-    EXIT.NO_FILES_FOUND←104
-    EXIT.UNABLE_TO_READ_SOURCE←105
-    EXIT.UNABLE_TO_WRITE_TO_TARGET←106
-leanpub-end-insert
-~~~~~~~~
-
-Note that we define an `OK` value of zero for completeness. All the exit codes are defined here. The function code can refer to them by name, so the meaning is clear. And this is the only definition of the exit-code values. 
-  
 ~~~~~~~~
     ∇ StartFromCmdLine
-    ⍝ Initialise environment, read command parameters, and run the application
-      W.PolishCurrentDir ⍝ set current dir to that of EXE
-      ⎕OFF Compile 1↓3↑(⌷2 ⎕NQ'.' 'getcommandlineargs'),'' ''
+   ⍝ Read command parameters, run the application
+    ⎕OFF TxtToCsv 2⊃2↑⌷2 ⎕NQ'.' 'GetCommandLineArgs'
     ∇
 ~~~~~~~~
 
-No change here. 
-
-`Compile` still starts and stops the logging, but it now calls `CheckAgenda` to examine the agenda (things to be done) and `CompileFiles` to do them. 
+And we'll define in `#.MyApp` a child namespace of exit codes.  
 
 ~~~~~~~~
-    ∇ exit←Compile(srcfolder tgtfile);∆;Log;Error;files
-     ⍝ Dyalog Cookbook compiler
-     ⍝ Compile files from srcfolder to tgtfile
+    :Namespace EXIT
+        OK←0
+        INVALID_SOURCE←101
+        UNABLE_TO_READ_SOURCE←102
+        UNABLE_TO_WRITE_TARGET←103
+    :EndNamespace
+~~~~~~~~
+
+We define an `OK` value of zero for completeness. (We really _are_ trying to eliminate from our functions numerical constants that the reader has to interpret.) An exit code of zero is a normal exit. All the exit codes are defined in this namespace. The function code can refer to them by name, so the meaning is clear. And this is the _only_ definition of the exit-code values. 
+
+A> We could have defined `EXIT` in `#.Constants`, but we reserve it for Dyalog constants, keeping the script as a component that could be used in other Dyalog applications. These exit codes are specific to MyApp, so are better defined in `#.MyApp`. 
+
+`TxtToCsv` still starts and stops the logging, but it now calls `CheckAgenda` to examine what's to be done, and `CountLettersIn` to do them. Both these functions use the function `Error`, local to `TxtToCsv`, to log errors.  
+
+~~~~~~~~
+    ∇ exit←TxtToCsv fullfilepath;∆;xxx;Log;Error;files;tgt
+     ⍝ Write a sibling CSV of the TXT located at fullfilepath,
+     ⍝ containing a frequency count of the letters in the file text
       'CREATE!'W.CheckPath'Logs' ⍝ ensure subfolder of current dir
-      ∆←L.CreatePropertySpace
-      ∆.path←'Logs\' ⍝ subfolder of current directory
+      ∆←L.CreatePropertySpace      ∆.path←'Logs\' ⍝ subfolder of current directory
       ∆.encoding←'UTF8'
       ∆.filenamePrefix←'MyApp'
       ∆.refToUtils←#
       Log←⎕NEW L(,⊂∆)
-      Log.Log'Started MyApp in ',∆.path
-      Log.Log'Source: ' 'Target: ',¨srcfolder tgtfile
+      Log.Log'Started MyApp in ',W.PWD
+      Log.Log'Source: ',fullfilepath
 
 leanpub-start-insert     
       Error←Log∘{code←EXIT⍎⍵ ⋄ code⊣⍺.LogError code ⍵}
-     
-      :If 0=⊃(exit files)←CheckAgenda srcfolder tgtfile
-          exit←CompileFiles files tgtfile
+      
+      :If EXIT.OK=⊃(exit files)←CheckAgenda fullfilepath
+          Log.Log'Target: ',tgt←(⊃,/2↑⎕NPARTS fullfilepath),'.CSV'
+          exit←CountLettersIn files tgt
       :EndIf
 leanpub-end-insert     
-     
       Log.Log'All done'
-      Log.Close
     ∇
 ~~~~~~~~
 
-**Some comments**
+Note the exit code is tested against `EXIT.OK`. Testing `~×exit` would work and read as well, but relies on EXIT.OK being 0. The point of defining the codes in `EXIT` is to make the functions relate to the exit codes only by their names.  
 
-* `Error`: this direct function aids clarity by avoiding some repetition in `CheckAgenda` and `CompileFiles`, where one would otherwise write perhaps:
-~~~~~~~~
-    exit←EXIT.INVALID_SOURCE_FOLDER
-    Log.LogError exit 'INVALID_SOURCE_FOLDER'
-~~~~~~~~
+`CheckAgenda` looks for foreseeable errors. In general, we like functions to start at the top and exit at the bottom. `CheckAgenda` follows a common pattern of validation logic: a cascade of tests with corresponding actions to handle the error, terminating in an 'all clear'.
 
-`Compile` now uses `CheckAgenda` to confirm it has work to do.
-
-~~~~~~~~
-    ∇ r←CheckAgenda(srcfolder tgtfile);∆;_srcfolder;orbust;manifest;files;srcfile;exit;n
-      ⍝ Validate and set up agenda
-      ⍝ r: errorcode filelist
-      ⍝ errorcode: (int) see EXIT
-      ⍝ filelist: (strs) full filepaths
-      _srcfolder←{⍵,(~'\/'∊⍨⊃⌽⍵)/'\'}srcfolder
-leanpub-start-insert
-      orbust←{11::0 ⋄ ⍺⍺ ⍵} ⍝ return 0 if test breaks
-leanpub-end-insert
-      exit←EXIT.OK ⋄ files←'' ⍝ default values
-     
-      :If ~W.DoesExistDir orbust _srcfolder
-          exit←Error'INVALID_SOURCE_FOLDER'
-      :ElseIf ~W.DoesExistDir orbust W.Parent tgtfile
-          exit←Error'INVALID_TARGET_FOLDER'
+~~~
+    ∇ (exit files)←CheckAgenda fullfilepath;type
+      :If ~(type←1 ⎕NINFO fullfilepath)∊C.NINFO.TYPE.(DIRECTORY FILE)
+          (files exit)←(Error 'INVALID_SOURCE')('')
+      :ElseIf ~⎕NEXISTS fullfilepath
+          (files exit)←(Error 'SOURCE_NOT_FOUND')('')
       :Else
-          manifest←_srcfolder,'MANIFEST.DAT'
-          :If W.DoesExistFile orbust manifest
-              :Trap 0
-                  files←A.ReadUtf8File manifest
-                  Log.Log(⍕≢files),' files specified in manifest'
-              :Else
-                  exit←Error'UNABLE_TO_READ_MANIFEST'
-              :EndTrap
-          :Else
-              files←W.Dir _srcfolder,'*.TXT'
-          :EndIf
-     
-          :If exit=EXIT.OK ⍝ let's see what we got...
-              files,⍨¨←⊂_srcfolder ⍝ full filepaths
-              files/⍨←W.DoesExistFile files
-              :If ×n←≢files
-                  Log.Log(⍕n),' file',('s'/⍨n>1),' found in folder'
-              :Else
-                  exit←Error'NO_FILES_FOUND'
-              :EndIf
-          :EndIf
-     
+          :Select type
+          :Case C.NINFO.TYPE.DIRECTORY
+              files←⊃(⎕NINFO⍠C.NINFO.WILDCARD)fullfilepath,'\*.txt'
+          :Case C.NINFO.TYPE.FILE
+              files←,⊂fullfilepath
+          :EndSelect
+          exit←EXIT.OK
       :EndIf
-     
-      r←exit files
     ∇
-~~~~~~~~
+~~~
 
-**Some comments**
+`CountLettersIn` can get to work now knowing its arguments are valid. But it's working with the file system, and valid file operations can fail for all sorts of reasons, including unpredictable and ephemeral network conditions. So we set traps to catch and report failures. 
 
-* Testing and logging the parameters has swollen this part of the code to where we're pleased to have it in its own function. It also defines files and is the last code to read `srcfolder`, so this is a good functional encapsulation.
-* `_srcfolder`: suffixing a folder path with `\` is so common we might define a `suffix` function to do it. But the definition is barely twice the length of the name we would give it!
-* The `⍺⍺` in `orbust` marks it as an operator, modifying how a function works. `⍺⍺` refers to the function. The error guard `0::0` means in the event of any error return 0 (false). For example, `W.DoesExistDir` signals 11 (domain error) if its argument contains a wildcard. Moderated by `orbust`, it returns 0. 
-* `files,⍨¨←⊂_srcfolder` combines the _commute_ and _each_ operators with assignment through a function to prefix each filename with `_srcfolder`. Assignment through a function elides the left argument of a dyadic function, so `file,←_srcfolder` is equivalent to `file←file,_srcfolder`. But we want to prefix `file` with `_srcfolder`, not suffix it. So we use _commute_ to switch the arguments of _catenate_: `file,⍨←_srcfolder`, equivalent to `file←_srcfolder,file`. Finally, we want to prefix every file in `files` so the assignment is done through `,⍨¨` and the right argument enclosed. Similarly `files/⍨←` compresses `files` with a Boolean vector.     
-* Note the exit code is tested `exit=EXIT.OK`. Testing `~×exit` would work and read as well, but relies on EXIT.OK being 0. The point of defining the codes in `EXIT` was to make the functions relate to the exit codes only by their names.  
-* In general, we like functions to start at the top and exit at the bottom. The best form is a cascade of tests:
+~~~
+    ∇ exit←CountLettersIn (files tgt);i;txt;tbl;enc;nl;lines;bytes
+     ⍝ Exit code from writing a letter-frequency count for a list of files
+      tbl←0 2⍴'A' 0
+      exit←EXIT.OK ⋄ i←1
+      :While exit=EXIT.OK
+          :Trap 0
+              (txt enc nl)←⎕NGET i⊃files
+              tbl⍪←CountLetters txt
+          :Else
+              exit←Error 'UNABLE_TO_READ_SOURCE'
+          :EndTrap
+      :Until (≢files)<i←i+1
+      :If exit=EXIT.OK
+          lines←{⍺,',',⍕⍵}/⊃{⍺(+/⍵)}⌸/↓[1]tbl
+          :Trap 0
+              bytes←(lines ec nl)⎕NPUT tgt C.NPUT.OVERWRITE
+          :Else
+              exit←Error'UNABLE_TO_WRITE_TARGET'
+              bytes←0
+          :EndTrap
+          Log.Log(⍕bytes),' bytes written to ',tgt
+      :Endif
+    ∇
+~~~
 
-~~~~~~~~
-:If    ~ok←test1 ⋄ emsg←'Failed test 1'
-:ElseIf~ok←test2 ⋄ emsg←'Failed test 2'
-:ElseIf~ok←test3 ⋄ emsg←'Failed test 3'
-:Else
-	(ok emsg)←DoAllThe Work
-:EndIf
-r←ok emsg
-~~~~~~~~~
-	 
+In this context the `:Trap` structure has an advantage over `⎕TRAP`. When it fires, and control advances to its `:Else` fork, the trap is immediately cleared. So there is no need explicitly to reset the trap to avoid an open loop. 
+
 The handling of error codes and messages can easily obscure the rest of the logic. Clarity is not always easy to find, but is well worth working for. This is particularly true where there is no convenient test for an error, only a trap for when it is encountered. 
 
-In such cases, it is tempting to use a `:Return` statement to abort the function. It can be confusing when a function 'aborts' in the middle. We have learned a great respect for our capacity to get confused. Aborting from the middle of a function may also skip essential tidying up at the end.  
+In such cases, it is tempting to use a `:Return` statement to abort the function. But it can be confusing when a function 'aborts' in the middle, and we have learned a great respect for our capacity to get confused. Aborting from the middle of a function may also skip essential tidying up at the end.  
 
-We meet the same issue in `CompileFiles`, where we trap errors and abort within a loop. Note how the use of repeat/until allows -- unlike a for loop -- to test at the bottom of the loop both the counter and the exit code.
+We meet this issue reading files, where we trap errors and abort within a loop. Note how the use of while/until allows -- unlike a for loop -- to test at the ends of the loop both the counter and the exit code.
 
-~~~~~~~~
-    ∇ exit←CompileFiles(srcfiles tgtfile);srcfile;txt;i
-    ⍝ Copy srcfiles to tgtfile
-    ⍝ exit: (int) see EXIT
-    ⍝ srcfiles: (strs) full filepaths
-    ⍝ tgtfile: (str) full filepath of target file
-      W.Delete tgtfile
-      (exit i)←EXIT.OK ⎕IO
-      :Repeat
-          srcfile←i⊃srcfiles
-          :Trap 0
-              txt←'flat'A.ReadUtf8File srcfile
-          :Else
-              exit←Error'UNABLE_TO_READ_SOURCE'
-          :EndTrap
-          :If exit=EXIT.OK
-              Log.Log'Read ',(⍕≢txt),' bytes from ',srcfile
-              :Trap 0
-                  'append'A.WriteUtf8File tgtfile txt
-              :Else
-                  exit←Error'UNABLE_TO_WRITE_TO_TARGETFILE'
-              :EndTrap
-          :EndIf
-          i+←1
-      :Until i>≢srcfiles
-      :OrIf exit≠EXIT.OK
-    ∇
-~~~~~~~~
-	 
-**Some comments**
+Rather than simply reporting an error in the file operation, you might prefer to delay a fraction of a second, then retry, perhaps two or three times, in case the problem is ephemeral and clears quickly. 
 
-* `:Trap 0`: trap any error 
+This is in fact a deep topic. Many real-world problems can be treated by fix-and-resume when running under supervision, ie with a UI. Out of disk space? Offer the user a chance to delete some files and resume. But at this point we're working 'headless' -- without a UI -- and the simplest and lightest form of resilience will serve for now. 
+
+We'll provide this in the form of a `retry` operator. This will catch errors in its operand (monadic or dyadic) and retry up to twice at 500-msec intervals. 
+
+~~~
+      retry←{
+          ⍺←⊣
+          0::⍺ ⍺⍺ ⍵⊣⎕DL .5
+          0::⍺ ⍺⍺ ⍵⊣⎕DL .5
+          ⍺ ⍺⍺ ⍵
+      }
+~~~
+
+The `⍺⍺` in `retry` marks it as an operator, modifying how a function works. `⍺⍺` refers to the function. The error guard `0::` means _in the event of any error_. We use `retry` to modify the file reads and writes in `CountLettersIn`:
+
+~~~
+              (txt enc nl)←⎕NGET retry i⊃files
+              ...
+              bytes←(lines enc nl)⎕NPUT retry tgt C.NPUT.OVERWRITE
+~~~
+
+The `retry` operator goes into `#.MyApp`, not `#.Utilities`, because its strategy of two-more-tries is specific to this application. 
 
 
-Unforeseen errors
------------------
+
+## Unforeseen errors
 
 Our code so far covers the errors we foresee: errors in the parameters, and errors encountered in the file system. There remain the unforeseen errors, chief among them errors in our own code. If the code we have so far breaks, the EXE will try to report the problem to the session, find no session, and abort with an exit code of 4 to tell Windows "Sorry, it didn't work out."
 
-If the error is easily replicable, we can easily track it down using the development interpreter. But the error might not be easily replicable. It could, for instance, have been produced by ephemeral congestion on a network interfering with file operations. Or the parameters for your app might be so complicated that it is hard to replicate the environment and data with confidence. What you really want for analysing the crash is a crash workspace, a picture of the ship before it went down. 
+If the error is easily replicable, we can easily track it down using the development interpreter. But the error might not be easily replicable. It could, for instance, have been produced by ephemeral congestion on a network interfering with file operations. Or the parameters for your app might be so complicated that it is hard to replicate the environment and data with confidence. What you really want for analysing the crash is a crash workspace, a snapshot of the ship before it went down. 
 
-For this we need a high-level trap to catch any event not trapped by `Compile`. We want it to save the workspace for analysis. We might also want it to report the incident to the developer: users don't always do this. For this we'll use the `HandleError` class from the APLTree.
+For this we need a high-level trap to catch any event not trapped by `CountLettersIn`. We want it to save the workspace for analysis. We might also want it to report the incident to the developer: users don't always do this. For this we'll use the `HandleError` class from the APLTree.
 
-Place into `C:\dev\Myapp\src\` a copy of `HandleError.dyalog` from the APLTree. Edit `C:\dev\MyApp\MyApp.dyapp`:
+Edit `Z:\code\MyApp.dyapp`:
 
 ~~~~~~~~ 
 Target #
-Load C:\dev\MyApp\src\APLTreeUtils
-Load C:\dev\MyApp\src\WinFile
-Load C:\dev\MyApp\src\HandleError
-Load C:\dev\MyApp\src\Logger 
-Load C:\dev\MyApp\src\MyApp 
+Load ..\AplTree\APLTreeUtils
+leanpub-start-insert
+Load ..\AplTree\HandleError
+leanpub-end-insert
+Load ..\AplTree\Logger
+Load ..\AplTree\WinFile
+Load Constants
+Load Utilities
+Load MyApp
+Run MyApp.SetLX
 ~~~~~~~~ 
 
 And set an alias `H` for it in the preamble of the `MyApp` namespace:
 
-~~~~~~~~
-:Namespace MyApp
-    ⎕IO←1 ⋄ ⎕ML←1 ⋄ ⎕WX←3
-leanpub-start-insert
-    (A H L W)←#.(APLTreeUtils HandleError Logger WinFile)
-leanpub-end-insert
+~~~
+    (A H L W)←#.(APLTreeUtils HandleError Logger WinFile) ⍝ from APLTree
+~~~
 
-   ⍝ define Exit Code constants
-    EXIT←⎕NS''
-    EXIT.OK←0
+Define a new exit code constant:
+
+~~~
+    OK←0
 leanpub-start-insert
-    EXIT.APPLICATION_CRASHED←100
+    APPLICATION_CRASHED←100
 leanpub-end-insert
-    EXIT.INVALID_SOURCE_FOLDER←101
-    EXIT.INVALID_TARGET_FOLDER←102
-    EXIT.UNABLE_TO_READ_MANIFEST←103
-    EXIT.NO_FILES_FOUND←104
-    EXIT.UNABLE_TO_READ_SOURCE←105
-    EXIT.UNABLE_TO_WRITE_TO_TARGET←106
+    INVALID_SOURCE←101
 ~~~~~~~~ 
 
-Note the new exit code to indicate the application crashed. 
+We want the high-level trap only when we're running headless, so we'll start as soon as `StartFromCmdLine` begins, setting `HandleError` to do whatever it can before we can give it more specific information derived from the calling environment. 
 
-We'll start as soon as `StartFromCmdLine` begins, setting `HandleError` to do whatever it can before we can give it more specific information derived from the calling environment. 
-
-~~~~~~~~
-    ∇ exit←StartFromCmdLine args
-    ⍝ Initialise environment, and run the application
-    ⍝ args: command line arguments
-    ⍝ exit: Windows exit code -- see EXIT
-      W.PolishCurrentDir ⍝ set current dir to that of EXE
+~~~
+    ∇ StartFromCmdLine
+     ⍝ Read command parameters, run the application
 leanpub-start-insert
       ⎕TRAP←0 'E' '#.HandleError.Process ''''' ⍝ trap unforeseen problems
 leanpub-end-insert
-      exit←Compile(args,'' '')[2 3]
+      ⎕OFF TxtToCsv 2⊃2↑⌷2 ⎕NQ'.' 'GetCommandLineArgs'
     ∇
-~~~~~~~~
-	 
-This trap will do to get things started and catch anything that falls over immediately. We need to get more specific in `Compile`.
+~~~
+ 
+This trap will do to get things started and catch anything that falls over immediately. We need to get more specific now in `TxtToCsv`. Before getting to work with `CheckAgenda`, refine the global trap definition:
 
-~~~~~~~~
-    ∇ exit←Compile(srcfolder tgtfile);∆;Log;Error;files
-     ⍝ Dyalog Cookbook compiler
-     ⍝ Compile files from srcfolder to tgtfile
-     
-      'CREATE!'W.CheckPath'Logs' ⍝ ensure subfolder of current dir
-      ∆←L.CreatePropertySpace
-      ∆.path←'Logs\' ⍝ subfolder of current directory
-      ∆.encoding←'UTF8'
-      ∆.filenamePrefix←'MyApp'
-      ∆.refToUtils←#
-      Log←⎕NEW L(,⊂∆)
-      Log.Log'Started MyApp in ',∆.path
-      Log.Log'Source: ' 'Target: ',¨srcfolder tgtfile
+~~~
+        ...
       Error←Log∘{code←EXIT⍎⍵ ⋄ code⊣⍺.LogError code ⍵}
-
+      
 leanpub-start-insert     
+      isDev←'Development'≡4⊃'.'⎕WG'APLVersion'
       ⍝ refine trap definition
       #.ErrorParms←H.CreateParms
       #.ErrorParms.errorFolder←W.PWD
       #.ErrorParms.returnCode←EXIT.APPLICATION_CRASHED
       #.ErrorParms.(logFunctionParent logFunction)←Log'Log'
       #.ErrorParms.trapInternalErrors←~isDev
-      mayBreak←'Development'≡4⊃'.'⎕WG'APLVersion'
-      means←{⊃⍺⌽⍵} ⋄ else←{⍵ ⍺}
-      ⎕TRAP←mayBreak means(0⍴⎕TRAP)else 0 'E' '#.HandleError.Process ''#.ErrorParms'''
-leanpub-end-insert
-     
-      :If 0=⊃(exit files)←CheckAgenda srcfolder tgtfile
-          exit←CompileFiles files tgtfile
+      :If 'Development'≡4⊃'.'⎕WG'APLVersion'
+          ⎕TRAP0⍴⎕TRAP
+      :Else
+          ⎕TRAP←0 'E' '#.HandleError.Process ''#.ErrorParms'''
       :EndIf
-     
-      Log.Log'All done'
-      Log.Close
-    ∇
-~~~~~~~~
+leanpub-end-insert
 
-`CheckAgenda` and `CompileFiles` are as before. 
+      :If EXIT.OK=⊃(exit files)←CheckAgenda fullfilepath
+        ...
+~~~
 
-**Some comments**
+`CheckAgenda` and `CountLettersIn` are as before. 
 
-* `mayBreak` flags whether (true) the application is allowed to suspend, or (false) errors are to be caught and handled. Later we will set this flag in an INI file. For now we set it by testing whether the interpreter is development or runtime. 
-* `means` … `else` are 'syntax sweeteners' for a simple conditional. A bit over the top to define them merely to use them on the next line. Later we shall look at how you can incorporate functions such as these into your development environment as your local extensions to the APL language. Watch Out: unlike with control structures, both expressions get evaluated, regardless of the value of `test`.    
-* `⎕TRAP` -- if we're using a Development interpreter, any error will simply suspend -- including errors inside `HandleError` itself. Note the form `⊃test⌽expn1 expn2` as a simple conditional construct. 
-* `#.ErrorParms.errorFolder` -- write crash files as siblings of the EXE. 
-* `#.ErrorParms.(logFunctionParent logFunction)` -- we set a ref to the `Logger` instance, so `HandleError` can write on the log.
+The test for `isDev` determines whether (true) the application is allowed to suspend, or (false) errors are to be caught and handled. Later we will set this in an INI file. For now we set it by testing whether the interpreter is development or runtime. 
 
-We can test this! Put a stop[^stop] in `CompileFiles` after copying the first file to the target. 
+`#.ErrorParms.errorFolder` -- write crash files as siblings of the EXE. 
 
-~~~~~~~~
-          :EndIf
-          i+←1
+`#.ErrorParms.(logFunctionParent logFunction)` -- we set a ref to the `Logger` instance, so `HandleError` can write on the log.
+
+
+### Test the global trap
+
+We can test this! Put a stop[^stop] in `CompileFiles` after reading the first file. 
+
+~~~
+          :EndTrap
+leanpub-start-insert
           . ⍝ DEBUG
-      :Until i>≢srcfiles
-      :OrIf exit≠EXIT.OK
-    ∇
-~~~~~~~~
-	 
-This will definitely break. It is not caught by any of the other traps. Export the workspace as before, run it from the DOS command shell… and what do we get?
+leanpub-end-insert
+      :Until (≢files)<i←i+1
+~~~
 
-Predictably we get a new TXT, with only the first file copied to it. In `C:\dev`, we find in the LOG a record of what happened. 
+This will definitely break. It is not caught by any of the other traps. Export the workspace as before, run it from the DOS command shell… 
+
+~~~
+Z:>myapp.exe texts\en
+~~~
+
+and what do we get?
+
+Predictably we get no new result CSV. In `Z:\code\v03\Logs`, we find in the LOG a record of what happened. 
 
 First, the log entry records the crash then breaks off:
 
 ~~~~~~~~
-2014-12-21 15:42:43 *** Log File opened
-2014-12-21 15:42:43 (0) Started C:\dev\myapp
-2014-12-21 15:42:43 (0) Source: temp\source
-2014-12-21 15:42:43 (0) Target: temp\test.txt
-2014-12-21 15:42:43 (0) 2 files specified in manifest
-2014-12-21 15:42:43 (0) 2 files found
-2014-12-21 15:42:43 (0) Read 45 bytes from temp\source\foo.txt
-2014-12-21 15:42:43 (0) *** Error
-2014-12-21 15:42:43 (0) Error number=2
-2014-12-21 15:42:43 (0) SYNTAX ERROR
-2014-12-21 15:42:43 (0) CompileFiles[17] . ⍝ DEBUG
-2014-12-21 15:42:43 (0)                 ∧
+FIXME
 ~~~~~~~~
 
 We also have an HTM with a crash report, an eponymous DWS containing the workspace saved at the time it broke, and an eponymous DCF whose single component is a namespace of all the variables defined in the workspace. Some of this has got to help. 
@@ -338,14 +274,10 @@ We also have an HTM with a crash report, an eponymous DWS containing the workspa
 Remove the deliberate error from `#.MyApp` and save your work. 
 
 
-Discussion
-----------
+## Discussion
 
 [SJT] What's a convenient way to show the exit codes returned to the Windows command shell?
 
-
-Offcuts
--------
 
 
 
