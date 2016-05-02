@@ -12,7 +12,7 @@ Save a copy of `Z:\code\v02` as `Z:\code\v03`.
 
 1. Other problems are foreseeable. The file system is a rich source of ephemeral problems and displays. Many of these are caught and handled by the APLTree utilities. They might make several attempts to read or write a file before giving up and signalling an error. Hooray. We need to handle the events signalled when the utilities give up. 
 
-2. The MyApp EXE terminates with an all-OK zero exit code even when it has caught and handled an error. Some custom exit codes would make it a better Windows citizen.
+2. The MyApp EXE terminates with an all-OK zero exit code even when it has caught and handled an error. It would be a better Windows citizen if it returned custom exit codes, letting a calling program know how it terminated..
 
 3. By definition, unforeseen problems haven't been foreseen. But we foresee there will be some! A mere typo in the code could break execution. We need a master trap to catch any events that would break execution, save them for analysis, and report them in an orderly way. 
 
@@ -39,9 +39,9 @@ And we'll define in `#.MyApp` a child namespace of exit codes.
     :EndNamespace
 ~~~~~~~~
 
-We define an `OK` value of zero for completeness. (We really _are_ trying to eliminate from our functions numerical constants that the reader has to interpret.) An exit code of zero is a normal exit. All the exit codes are defined in this namespace. The function code can refer to them by name, so the meaning is clear. And this is the _only_ definition of the exit-code values. 
+We define an `OK` value of zero for completeness. (We really _are_ trying to eliminate from our functions numerical constants that the reader has to interpret.) In Windows, an exit code of zero is a normal exit. All the exit codes are defined in this namespace. The function code can refer to them by name, so the meaning is clear. And this is the _only_ definition of the exit-code values. 
 
-A> We could have defined `EXIT` in `#.Constants`, but we reserve it for Dyalog constants, keeping the script as a component that could be used in other Dyalog applications. These exit codes are specific to MyApp, so are better defined in `#.MyApp`. 
+A> We could have defined `EXIT` in `#.Constants`, but we reserve that script for Dyalog constants, keeping it as a component that could be used in other Dyalog applications. _These_ exit codes are specific to MyApp, so are better defined in `#.MyApp`. 
 
 `TxtToCsv` still starts and stops the logging, but it now calls `CheckAgenda` to examine what's to be done, and `CountLettersIn` to do them. Both these functions use the function `Error`, local to `TxtToCsv`, to log errors.  
 
@@ -50,7 +50,8 @@ A> We could have defined `EXIT` in `#.Constants`, but we reserve it for Dyalog c
      ⍝ Write a sibling CSV of the TXT located at fullfilepath,
      ⍝ containing a frequency count of the letters in the file text
       'CREATE!'W.CheckPath'Logs' ⍝ ensure subfolder of current dir
-      ∆←L.CreatePropertySpace      ∆.path←'Logs\' ⍝ subfolder of current directory
+      ∆←L.CreatePropertySpace
+      ∆.path←'Logs\' ⍝ subfolder of current directory
       ∆.encoding←'UTF8'
       ∆.filenamePrefix←'MyApp'
       ∆.refToUtils←#
@@ -70,7 +71,9 @@ leanpub-end-insert
     ∇
 ~~~~~~~~
 
-Note the exit code is tested against `EXIT.OK`. Testing `~×exit` would work and read as well, but relies on EXIT.OK being 0. The point of defining the codes in `EXIT` is to make the functions relate to the exit codes only by their names.  
+Note the exit code is tested against `EXIT.OK`. Testing `~×exit` would work and read as well, but relies on `EXIT.OK` being 0. The point of defining the codes in `EXIT` is to make the functions relate to the exit codes only by their names.  
+
+A> See _Delta, the Heracitlean variable_ in Part 2 for a discussion of how and why we use the `∆` variable. 
 
 `CheckAgenda` looks for foreseeable errors. In general, we like functions to start at the top and exit at the bottom. `CheckAgenda` follows a common pattern of validation logic: a cascade of tests with corresponding actions to handle the error, terminating in an 'all clear'.
 

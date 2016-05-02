@@ -5,6 +5,7 @@ part 1.md
 structure.md
 packaging.md
 logging.md
+errors.md
 part 1 chapters.md
 part 2.md
 part 2 chapters.md
