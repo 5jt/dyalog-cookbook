@@ -1,4 +1,4 @@
-:Namespace Constants
+﻿:Namespace Constants
 ⍝ Dyalog Cookbook, Version 03
 ⍝ Vern: sjt25apr16
 

@@ -41,7 +41,7 @@ Sometimes a code change turns out to be for the worse, and you need to undo it. 
 
 We'll keep the program in manageable pieces – 'modules' – and keep those pieces in text files under version control. 
 
-For this there are many _source-control management_ (SCM) systems and repositories available. Subversion, SourceForge, GitHub and Mercurial are presently popular. These SCMs support multiple programmers working on the same program, and have sophisticated features to help resolve conflicts between them. 
+For this there are many _source-control management_ (SCM) systems and repositories available. Subversion, GitHub and Mercurial are presently popular. These SCMs support multiple programmers working on the same program, and have sophisticated features to help resolve conflicts between them. 
 
 Whichever SCM you use (we used GitHub for writing this book and the code in it) your source code will comprise class and namespace scripts (DYALOGs) and a _build script_ (DYAPP) to assemble them.
 
@@ -170,7 +170,7 @@ The object tree in the workspace might eventually look something like:
 
 I> `⍟` denotes a namespace, `○` a class. 
 
-The objects in the root are 'public'. They comprise `MyApp` and objects other applications might use. (You might add another appliation that uses `#.Utilities`. Everything else is encapsulated within `MyApp`. Here's how to refer in in the MyApp code to these different categories of object. 
+The objects in the root are 'public'. They comprise `MyApp` and objects other applications might use. (You might add another application that uses `#.Utilities`. Everything else is encapsulated within `MyApp`. Here's how to refer in the MyApp code to these different categories of objects. 
 
 1. `log←⎕NEW #.Logger`
 2. `queue←⎕NEW TaskQueue`
@@ -200,7 +200,7 @@ r←ok,ok means r else 'error'
 
 Trying to resolve the names `means` and `else`, the interpreter would consult `⎕PATH` and find them in `#.Utilities`. So far so good: this is what `⎕PATH` is designed for. It works fine in simple cases, but it will lead us into problems later:
 
-* As long as each name leads unambiguously to an object, shift-clicking on it will display it in the editor, a valuable feature of APL in development and debugging. The editor allows us to change code during execution, and save those changes back to the scripts. But `⎕PATH` can interfere wikth this and break that valuable connection. 
+* As long as each name leads unambiguously to an object, shift-clicking on it will display it in the editor, a valuable feature of APL in development and debugging. The editor allows us to change code during execution, and save those changes back to the scripts. But `⎕PATH` can interfere with this and break that valuable connection. 
 * Understanding the scope of the space in which a GUI callback executes can be challenging enough; introducing `⎕PATH` makes it harder still. 
 
 
@@ -257,7 +257,7 @@ z:\code\v01\Utilities.dyalog
 z:\code\v01\MyApp.dyapp
 ~~~
 
-So `z:\code\v00\MyApp.dyapp` looks like this:
+So `z:\code\v01\MyApp.dyapp` looks like this:
 
 ~~~
 Target #

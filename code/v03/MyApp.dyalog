@@ -1,7 +1,7 @@
-:Namespace MyApp
+﻿:Namespace MyApp
 ⍝ Dyalog Cookbook, Version 03
 ⍝ Error handling
-⍝ Vern: sjt20apr16
+⍝ Vern: sjt02may16
 
 ⍝ Environment
     (⎕IO ⎕ML ⎕WX)←1 1 3
@@ -11,6 +11,7 @@
     (C U)←#.(Constants Utilities) ⍝ must be defined previously
 
     :Namespace EXIT
+       ⍝ Custom Windows exit codes
         OK←0
         APPLICATION_CRASHED←100
         INVALID_SOURCE←101
@@ -35,19 +36,22 @@
           0::⍺ ⍺⍺ ⍵⊣⎕DL 0.5
           ⍺ ⍺⍺ ⍵
       }
-      
+
     ∇ SetLX
-     ⍝ Set Latent Expression in root ready to export workspace as EXE
-      #.⎕LX←'MyApp.StartFromCmdLine'
+    ⍝ set Latent Expression ready to export EXE
+      #.⎕LX←'StartFromCmdLine'
     ∇
 
-    ∇ StartFromCmdLine
+    ∇ StartFromCmdLine;exit;args
      ⍝ Read command parameters, run the application
-⍝      ⎕TRAP←0 'E' '#.HandleError.Process ''''' ⍝ trap unforeseen problems
-      ⎕OFF TxtToCsv 2⊃2↑⌷2 ⎕NQ'.' 'GetCommandLineArgs'
+      ⎕TRAP←0 'E' '#.HandleError.Process ''''' ⍝ trap unforeseen problems 
+      ⎕WSID←'MyApp'
+      args←⌷2 ⎕NQ'.' 'GetCommandLineArgs'
+      exit←TxtToCsv 2⊃2↑args
+      ⎕OFF exit
     ∇
 
-    ∇ exit←TxtToCsv fullfilepath;∆;xxx;isDev;Log;Error;files;tgt
+    ∇ exit←TxtToCsv fullfilepath;∆;isDev;Log;Error;files;tgt
      ⍝ Write a sibling CSV of the TXT located at fullfilepath,
      ⍝ containing a frequency count of the letters in the file text
       'CREATE!'W.CheckPath'Logs' ⍝ ensure subfolder of current dir
@@ -69,11 +73,11 @@
       #.ErrorParms.returnCode←EXIT.APPLICATION_CRASHED
       #.ErrorParms.(logFunctionParent logFunction)←Log'Log'
       #.ErrorParms.trapInternalErrors←~isDev
-⍝      :If isDev
-⍝          ⎕TRAP←0⍴⎕TRAP
-⍝      :Else
-⍝          ⎕TRAP←0 'E' '#.HandleError.Process ''#.ErrorParms'''
-⍝      :EndIf
+      :If isDev
+          ⎕TRAP←0⍴⎕TRAP
+      :Else
+          ⎕TRAP←0 'E' '#.HandleError.Process ''#.ErrorParms'''
+      :EndIf
      
       :If EXIT.OK=⊃(exit files)←CheckAgenda fullfilepath
           Log.Log'Target: ',tgt←(⊃,/2↑⎕NPARTS fullfilepath),'.CSV'
@@ -83,10 +87,11 @@
     ∇
 
     ∇ (exit files)←CheckAgenda fullfilepath;type
-      :If ~(type←1 ⎕NINFO fullfilepath)∊C.NINFO.TYPE.(DIRECTORY FILE)
-          (files exit)←(Error'INVALID_SOURCE')('')
-      :ElseIf ~⎕NEXISTS fullfilepath
-          (files exit)←(Error'SOURCE_NOT_FOUND')('')
+      :If 0=≢fullfilepath~' '
+      :OrIf ~⎕NEXISTS fullfilepath
+          (exit files)←(Error'SOURCE_NOT_FOUND')('')
+      :ElseIf ~(type←1 ⎕NINFO fullfilepath)∊C.NINFO.TYPE.(DIRECTORY FILE)
+          (exit files)←(Error'INVALID_SOURCE')('')
       :Else
           :Select type
           :Case C.NINFO.TYPE.DIRECTORY
@@ -101,7 +106,7 @@
     ∇ exit←CountLettersIn(files tgt);i;txt;tbl;enc;nl;lines;bytes
      ⍝ Exit code from writing a letter-frequency count for a list of files
       tbl←0 2⍴'A' 0
-      exit←EXIT.OK ⋄ i←1
+      exit←EXIT.OK ⋄ i←1 
       :While exit=EXIT.OK
           :Trap 0
               (txt enc nl)←⎕NGET retry i⊃files
