@@ -1,7 +1,7 @@
 ﻿:Namespace MyApp
-⍝ Dyalog Cookbook, Version 03
+⍝ Dyalog Cookbook, MyApp Version 03
 ⍝ Error handling
-⍝ Vern: sjt02may16
+⍝ Vern: sjt01jun16
 
 ⍝ Environment
     (⎕IO ⎕ML ⎕WX)←1 1 3
@@ -27,7 +27,7 @@
 ⍝ === End of variables definition ===
 
       CountLetters←{
-          {⍺(≢⍵)}⌸⎕A{⍵⌿⍨⍵∊⍺}(↓ACCENTS)U.map U.caseUp ⍵
+          {⍺(≢⍵)}⌸⎕A{⍵⌿⍨⍵∊⍺}(↓ACCENTS)U.map U.toUppercase ⍵
       }
 
       retry←{
@@ -47,11 +47,18 @@
       ⎕TRAP←0 'E' '#.HandleError.Process ''''' ⍝ trap unforeseen problems 
       ⎕WSID←'MyApp'
       args←⌷2 ⎕NQ'.' 'GetCommandLineArgs'
-      exit←TxtToCsv 2⊃2↑args
-      ⎕OFF exit
+      Off TxtToCsv 2⊃2↑args
     ∇
 
-    ∇ exit←TxtToCsv fullfilepath;∆;isDev;Log;Error;files;tgt
+    ∇ Off returncode
+      :If #.A.IsDevelopment
+        →
+      :Else
+        ⎕OFF returncode
+      :Endif
+    ∇
+
+    ∇ exit←TxtToCsv fullfilepath;∆;isDev;Log;LogError;files;tgt
      ⍝ Write a sibling CSV of the TXT located at fullfilepath,
      ⍝ containing a frequency count of the letters in the file text
       'CREATE!'W.CheckPath'Logs' ⍝ ensure subfolder of current dir
@@ -64,9 +71,9 @@
       Log.Log'Started MyApp in ',W.PWD
       Log.Log'Source: ',fullfilepath
      
-      Error←Log∘{code←EXIT⍎⍵ ⋄ code⊣⍺.LogError code ⍵}
+      LogError←Log∘{code←EXIT⍎⍵ ⋄ code⊣⍺.LogError code ⍵}
      
-      isDev←'Development'≡4⊃'.'⎕WG'APLVersion'
+      isDev←#.A.IsDevelopment
       ⍝ refine trap definition
       #.ErrorParms←H.CreateParms
       #.ErrorParms.errorFolder←W.PWD
@@ -89,14 +96,14 @@
     ∇ (exit files)←CheckAgenda fullfilepath;type
       :If 0=≢fullfilepath~' '
       :OrIf ~⎕NEXISTS fullfilepath
-          (exit files)←(Error'SOURCE_NOT_FOUND')('')
-      :ElseIf ~(type←1 ⎕NINFO fullfilepath)∊C.NINFO.TYPE.(DIRECTORY FILE)
-          (exit files)←(Error'INVALID_SOURCE')('')
+          (exit files)←(LogError'SOURCE_NOT_FOUND')('')
+      :ElseIf ~(type←C.NINFO.TYPE ⎕NINFO fullfilepath)∊C.NINFO.TYPES.(DIRECTORY FILE)
+          (exit files)←(LogError'INVALID_SOURCE')('')
       :Else
           :Select type
-          :Case C.NINFO.TYPE.DIRECTORY
-              files←⊃(⎕NINFO⍠C.NINFO.WILDCARD)fullfilepath,'\*.txt'
-          :Case C.NINFO.TYPE.FILE
+          :Case C.NINFO.TYPES.DIRECTORY
+              files←⊃(⎕NINFO⍠'Wildcard' 1)fullfilepath,'\*.txt'
+          :Case C.NINFO.TYPES.FILE
               files←,⊂fullfilepath
           :EndSelect
           exit←EXIT.OK
@@ -112,7 +119,7 @@
               (txt enc nl)←⎕NGET retry i⊃files
               tbl⍪←CountLetters txt
           :Else
-              exit←Error'UNABLE_TO_READ_SOURCE'
+              exit←LogError'UNABLE_TO_READ_SOURCE'
           :EndTrap
           ⍝ . ⍝ DEBUG
       :Until (≢files)<i←i+1
@@ -121,7 +128,7 @@
           :Trap 0
               bytes←(lines enc nl)⎕NPUT retry tgt C.NPUT.OVERWRITE
           :Else
-              exit←Error'UNABLE_TO_WRITE_TARGET'
+              exit←LogError'UNABLE_TO_WRITE_TARGET'
               bytes←0
           :EndTrap
           Log.Log(⍕bytes),' bytes written to ',tgt

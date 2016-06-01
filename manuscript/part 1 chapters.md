@@ -1,7 +1,5 @@
 {:: encoding="utf-8" /}
 
-# Initialising with INI files 
-
 # Testing: the sound of breaking glass
 
 Our app here is as simple as we could make it – just join a folder of text files into a single TXT. For many purposes, simply tieing all the source files to a vector of tie numbers `srcs` and creating a new file on tie number `tgt` would reduce the app to a single line:

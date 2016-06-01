@@ -1,7 +1,7 @@
 {:: encoding="utf-8" /}
 
 Package MyApp as an executable
-==========================
+===========================
 
 For Version 1.0 we'll package `MyApp` as an EXE. Version 1.0 will run from the command line and it will run 'headless' -- without a user interface (UI). It won't have a session either. 
 
@@ -55,7 +55,7 @@ We're now nearly ready to export the first version of our EXE.
 5. Check the *Runtime application* and *Console application* boxes.
 6. Click *Save*. 
 
-You should see an alert message: _File Z:\\MyApp.exe successfully created._
+You should see an alert message: _File Z:\\MyApp.exe successfully created._ (This occasionally fails for no obvious reason. If it does, delete or rename any prior version and try again.) 
 
 T> Use the *Version* button to bind to the EXE information about the application, author, version, copyright and so on. Specify an icon file to replace the Dyalog icon with one of your own. 
 

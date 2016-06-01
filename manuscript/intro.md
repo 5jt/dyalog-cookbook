@@ -2,7 +2,7 @@
 
 # Introduction
 
-You want to write an application in Dyalog APL. You have already learned enough of the language to put some of your specialist knowledge into functions you can use in your work. The code works for you. Now you want to turn it into an application others can use. Perhaps even sell it. 
+You want to write a Windows[^win] application in Dyalog APL. You have already learned enough of the language to put some of your specialist knowledge into functions you can use in your work. The code works for you. Now you want to turn it into an application others can use. Perhaps even sell it. 
 
 This is where you need professional programming skills. How to install your code into an unknown computer. Have it catch, handle and log errors. Manage the different versions of your software as it evolves. Provide online help. 
 
@@ -33,3 +33,6 @@ We jealously claim any errors as entirely our own work.
 
 
 Stephen Taylor & Kai Jaeger
+
+
+[^win]: Perhaps one day you would like it to ship on multiple platforms. Perhaps one day we'll write that book too. Meanwhile, Microsoft Windows.

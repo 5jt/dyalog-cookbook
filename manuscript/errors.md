@@ -39,9 +39,19 @@ Exit Code is 101
 We'll start with the second item from the list above. Now the result of `TxtToCsv` gets passed to `⎕OFF` to be returned to the operating system as an exit code. 
 
 ~~~~~~~~
-    ∇ StartFromCmdLine
-   ⍝ Read command parameters, run the application
-    ⎕OFF TxtToCsv 2⊃2↑⌷2 ⎕NQ'.' 'GetCommandLineArgs'
+    ∇ StartFromCmdLine;exit;args
+     ⍝ Read command parameters, run the application
+      ⎕WSID←'MyApp'
+      args←⌷2 ⎕NQ'.' 'GetCommandLineArgs'
+      Off TxtToCsv 2⊃2↑args
+    ∇
+
+    ∇ Off returncode
+      :If #.A.IsDevelopment
+        →
+      :Else
+        ⎕OFF returncode
+      :Endif
     ∇
 ~~~~~~~~
 
@@ -63,7 +73,7 @@ A> We could have defined `EXIT` in `#.Constants`, but we reserve that script for
 `TxtToCsv` still starts and stops the logging, but it now calls `CheckAgenda` to examine what's to be done, and `CountLettersIn` to do them. Both these functions use the function `Error`, local to `TxtToCsv`, to log errors.  
 
 ~~~~~~~~
-    ∇ exit←TxtToCsv fullfilepath;∆;isDev;Log;Error;files;tgt
+    ∇ exit←TxtToCsv fullfilepath;∆;isDev;Log;LogError;files;tgt
      ⍝ Write a sibling CSV of the TXT located at fullfilepath,
      ⍝ containing a frequency count of the letters in the file text
       'CREATE!'W.CheckPath'Logs' ⍝ ensure subfolder of current dir
@@ -77,7 +87,7 @@ A> We could have defined `EXIT` in `#.Constants`, but we reserve that script for
       Log.Log'Source: ',fullfilepath
 
 leanpub-start-insert     
-      Error←Log∘{code←EXIT⍎⍵ ⋄ code⊣⍺.LogError code ⍵}
+      LogError←Log∘{code←EXIT⍎⍵ ⋄ code⊣⍺.LogError code ⍵}
       
       :If EXIT.OK=⊃(exit files)←CheckAgenda fullfilepath
           Log.Log'Target: ',tgt←(⊃,/2↑⎕NPARTS fullfilepath),'.CSV'
@@ -96,15 +106,15 @@ A> See _Delta, the Heracitlean variable_ in Part 2 for a discussion of how and w
 
 ~~~
     ∇ (exit files)←CheckAgenda fullfilepath;type
-      :If ~(type←1 ⎕NINFO fullfilepath)∊C.NINFO.TYPE.(DIRECTORY FILE)
-          (files exit)←(Error 'INVALID_SOURCE')('')
+      :If ~(type←C.NINFO.TYPE ⎕NINFO fullfilepath)∊C.NINFO.TYPES.(DIRECTORY FILE)
+          (files exit)←(LogError 'INVALID_SOURCE')('')
       :ElseIf ~⎕NEXISTS fullfilepath
-          (files exit)←(Error 'SOURCE_NOT_FOUND')('')
+          (files exit)←(LogError 'SOURCE_NOT_FOUND')('')
       :Else
           :Select type
-          :Case C.NINFO.TYPE.DIRECTORY
-              files←⊃(⎕NINFO⍠C.NINFO.WILDCARD)fullfilepath,'\*.txt'
-          :Case C.NINFO.TYPE.FILE
+          :Case C.NINFO.TYPES.DIRECTORY
+              files←⊃(⎕NINFO⍠'Wildcard' 1)fullfilepath,'\*.txt'
+          :Case C.NINFO.TYPES.FILE
               files←,⊂fullfilepath
           :EndSelect
           exit←EXIT.OK
@@ -124,7 +134,7 @@ A> See _Delta, the Heracitlean variable_ in Part 2 for a discussion of how and w
               (txt enc nl)←⎕NGET i⊃files
               tbl⍪←CountLetters txt
           :Else
-              exit←Error 'UNABLE_TO_READ_SOURCE'
+              exit←LogError 'UNABLE_TO_READ_SOURCE'
           :EndTrap
       :Until (≢files)<i←i+1
       :If exit=EXIT.OK
@@ -132,7 +142,7 @@ A> See _Delta, the Heracitlean variable_ in Part 2 for a discussion of how and w
           :Trap 0
               bytes←(lines ec nl)⎕NPUT tgt C.NPUT.OVERWRITE
           :Else
-              exit←Error'UNABLE_TO_WRITE_TARGET'
+              exit←LogError'UNABLE_TO_WRITE_TARGET'
               bytes←0
           :EndTrap
           Log.Log(⍕bytes),' bytes written to ',tgt
@@ -220,12 +230,14 @@ A> 100? Why not 4, the standard Windows code for a crashed application? The dist
 We want the high-level trap only when we're running headless, so we'll start as soon as `StartFromCmdLine` begins, setting `HandleError` to do whatever it can before we can give it more specific information derived from the calling environment. 
 
 ~~~
-    ∇ StartFromCmdLine
+    ∇ StartFromCmdLine;exit;args
      ⍝ Read command parameters, run the application
 leanpub-start-insert
-      ⎕TRAP←0 'E' '#.HandleError.Process ''''' ⍝ trap unforeseen problems
+      ⍝ trap unforeseen problems 
+      ⎕TRAP←0 'E' '#.HandleError.Process '''''  
 leanpub-end-insert
-      ⎕OFF TxtToCsv 2⊃2↑⌷2 ⎕NQ'.' 'GetCommandLineArgs'
+      args←⌷2 ⎕NQ'.' 'GetCommandLineArgs'
+      Off TxtToCsv 2⊃2↑args
     ∇
 ~~~
  
@@ -233,10 +245,10 @@ This trap will do to get things started and catch anything that falls over immed
 
 ~~~
         ...
-      Error←Log∘{code←EXIT⍎⍵ ⋄ code⊣⍺.LogError code ⍵}
+      LogError←Log∘{code←EXIT⍎⍵ ⋄ code⊣⍺.LogError code ⍵}
       
 leanpub-start-insert     
-      isDev←'Development'≡4⊃'.'⎕WG'APLVersion'
+      isDev←#.A.IsDevelopment
       ⍝ refine trap definition
       #.ErrorParms←H.CreateParms
       #.ErrorParms.errorFolder←W.PWD
@@ -327,7 +339,8 @@ We can improve this by setting the Workspace Identification at launch time.
 ~~~
     ∇ StartFromCmdLine;exit;args
      ⍝ Read command parameters, run the application
-      ⎕TRAP←0 'E' '#.HandleError.Process ''''' ⍝ trap unforeseen problems 
+      ⍝ trap unforeseen problems 
+      ⎕TRAP←0 'E' '#.HandleError.Process '''''
 leanpub-start-insert
       ⎕WSID←'MyApp'
 leanpub-end-insert

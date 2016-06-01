@@ -1,7 +1,7 @@
 :Namespace MyApp
-⍝ Dyalog Cookbook, Version 02
+⍝ Dyalog Cookbook, MyApp Version 02
 ⍝ Logging installed
-⍝ Vern: sjt06apr16
+⍝ Vern: sjt01jun16
 
 ⍝ Environment
     (⎕IO ⎕ML ⎕WX)←1 1 3
@@ -17,7 +17,7 @@
 ⍝ === End of variables definition ===
 
       CountLetters←{
-          {⍺(≢⍵)}⌸⎕A{⍵⌿⍨⍵∊⍺}(↓ACCENTS)U.map U.caseUp ⍵
+          {⍺(≢⍵)}⌸⎕A{⍵⌿⍨⍵∊⍺}(↓ACCENTS)U.map U.toUppercase ⍵
       }
       
     ∇ SetLX
@@ -48,10 +48,10 @@
           Log.Log'Invalid source'
       :Else
           csv←'.csv'
-          :Select type←1 ⎕NINFO fullfilepath
+          :Select type←C.NINFO.TYPE ⎕NINFO fullfilepath
           :Case 1 ⍝ folder
               tgt←fullfilepath,csv
-              files←⊃(⎕NINFO⍠C.NINFO.WILDCARD)fullfilepath,'\*.txt'
+              files←⊃(⎕NINFO⍠'Wildcard' 1)fullfilepath,'\*.txt'
           :Case 2 ⍝ file
               (path stem xxx)←⎕NPARTS fullfilepath
               tgt←path,stem,csv

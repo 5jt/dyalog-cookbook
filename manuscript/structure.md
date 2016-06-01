@@ -19,7 +19,11 @@ How can you distribute your program?
 
 Could not be simpler. If your user has a Dyalog interpreter, she can also save and send you the crash workspace if your program hits an execution error. But she will also be able to read your code -- which might be more than you wish for. 
 
-If she doesn't have an interpreter, and you are not worried about her someday getting one and reading your code, and you have a Run-Time Agreement with Dyalog, you can send her the Dyalog Run-Time interpreter[^ext] with the workspace. The Run-Time interpreter will not allow the program to suspend, so when the program breaks the task will vanish, and your user won't see your code. All right so far. But she will also not have a crash workspace to send you. So you need your program to catch and report any errors before it dies. 
+If she doesn't have an interpreter, and you are not worried about her someday getting one and reading your code, and you have a Run-Time Agreement with Dyalog, you can send her the Dyalog Run-Time interpreter[^ext] with the workspace. The Run-Time interpreter will not allow the program to suspend, so when the program breaks the task will vanish, and your user won't see your code. All right so far. But she will also not have a crash workspace to send you. 
+
+If your application uses multiple threads, the thread states can't be saved in a crash workspace anyway. 
+
+You need your program to catch and report any errors before it dies. 
 
 
 ### Send an executable file (EXE)
@@ -118,7 +122,7 @@ AAAAAACDEEEEIIIINOOOOOOUUUUY
 That amounts to five functions. Two of them are specific to the application: `TxtToCsv` and `CountLetters`. The other three -- `caseUp`, `join`, and `map` are utilities, of general use. 
 
 
-`caseUp` uses the fast case-folding I-beam introduced in Dyalog 15.0. 
+`toUppercase` uses the fast case-folding I-beam introduced in Dyalog 15.0. 
 
 `TxtToCsv` uses the file-system primitives `⎕NINFO`, `⎕NGET`, and `⎕NPUT` introduced in Dyalog 15.0.
 
@@ -127,7 +131,7 @@ That amounts to five functions. Two of them are specific to the application: `Tx
 
 ### How to organise the code     
 
-To expand this program into distributable software we're going to add features, many of them drawn from the APLTree library. To facilitate that we'll first organise the existing code into script files, and write a _build script_ to assemble a workspace from them.  
+To expand this program into distributable software we're going to add features, many of them drawn from the [APLTree library](http://archive.vector.org.uk/art10500730). To facilitate that we'll first organise the existing code into script files, and write a _build script_ to assemble a workspace from them.  
 
 Start at the root. We're going to be conservative about defining names in the root of the workspace. Why? Right now the program stands by itself and can do what it likes in the workspace. But in the future your program might become part of a larger APL system. In that case it will share the workspace root with other objects you don't know anything about right now. 
 
@@ -138,19 +142,15 @@ But there _are_ other objects you might define in the root. If you're using clas
 With this in mind, let's distinguish some categories of code, and how the code in `MyApp` will refer to them.
 
 General utilities and classes
-
 : For example, the `APLTreeUtils` namespace and the `Logger` class. (Your program doesn't yet use these utilities.) In the future, other programs, possibly sharing the same workspace, might use them too.
 
 Your program and its modules
-
 : Your top-level code will be in `#.MyApp`. Other modules and MyApp-specific classes may be defined within it.
 
 Tools and utility functions specific to MyApp
-
 : These might include your own extensions to Dyalog namespaces or classes. Define them inside the app object, eg `#.MyApp.Utils`.
 
 Your own language extensions and syntax sweeteners
-
 : For example, you might like to use functions `means` and `else` as simple conditionals. These are effectively your local _extensions_ to APL, the functions you expect always to be around. Define your collection of such functions into a namespace in the root, eg `#.Utilities`. 
 
 The object tree in the workspace might eventually look something like: 
@@ -165,6 +165,7 @@ The object tree in the workspace might eventually look something like:
 | |-⍟Engine
 | |-○TaskQueue
 | \-⍟UI
+| \-⍟Utils
 \-○Logger
 ~~~~~~~~
 
@@ -175,9 +176,37 @@ The objects in the root are 'public'. They comprise `MyApp` and objects other ap
 1. `log←⎕NEW #.Logger`
 2. `queue←⎕NEW TaskQueue`
 3. `tbl←Engine.CountLetters txt`
-4. `r←ok,ok #.Utilities.means r #.Utilities.else 'error'`
+4. `foo←(bar>3) #.Utilities.means 'ok' #.Utilities.else 'error'`
 
-That last is pretty horrible, but we can improve it by defining aliases within `#.MyApp`:
+That last is pretty horrible. It needs some explanation. 
+
+Many languages offer a short-form syntax for if/else, eg (JavaScript, PHP) 
+
+~~~
+foo = bar>3 ? 'ok' : 'error' ;
+~~~
+
+Some equivalents in Dyalog:
+
+~~~
+:If bar>3 ⋄ foo←'ok' ⋄ :Else ⋄ foo←'error' ⋄ :EndIf
+foo←(⎕IO+bar>3)⊃'error' 'ok'
+foo←⊃(bar>3)⌽'error' 'ok'
+~~~
+
+`means` and `else` here provide a short-form syntax:
+
+~~~
+foo←(bar>3) means 'ok' else 'error'
+~~~
+
+The readability gain is largely lost if we have to qualify the functions with their full paths:
+
+~~~
+foo←(bar>3) #.Utilities.means 'ok' #.Utilities.else 'error'
+~~~
+
+We can improve it by defining aliases within `#.MyApp`:
 
 ~~~
 (C U)←#.(Constants Utilities)
@@ -186,7 +215,7 @@ That last is pretty horrible, but we can improve it by defining aliases within `
 allowing (4) to be written as 
 
 ~~~
-r←ok,ok U.means r U.else 'error'
+foo←(bar>3) U.means 'ok' U.else 'error'
 ~~~
 
 
@@ -195,7 +224,7 @@ r←ok,ok U.means r U.else 'error'
 `⎕PATH` tempts us. We could set `⎕PATH←'#.Utilities'`. The expression above could then take its most readable form:
 
 ~~~
-r←ok,ok means r else 'error'
+foo←(bar>3) means 'ok' else 'error'
 ~~~
 
 Trying to resolve the names `means` and `else`, the interpreter would consult `⎕PATH` and find them in `#.Utilities`. So far so good: this is what `⎕PATH` is designed for. It works fine in simple cases, but it will lead us into problems later:
@@ -211,7 +240,7 @@ We'll raid [Project Gutenberg](https://www.gutenberg.org/) for some texts to rea
 We're tempted by the complete works of William Shakespeare but we don't know that letter distribution stayed constant over four centuries. Interesting to find out, though, so we'll save a copy as `Z:\texts\en\shakespeare.dat`. And we'll download some 20th-century books as TXTs into the same folder. Here are some texts we can use. 
 
 ~~~
-      ↑⊃(⎕NINFO⍠1) 'z:\texts\en\*.txt'
+      ↑⊃(⎕NINFO⍠'Wildcard' 1) 'z:\texts\en\*.txt'
 z:/texts/en/ageofinnocence.txt 
 z:/texts/en/dubliners.txt      
 z:/texts/en/heartofdarkness.txt
@@ -272,11 +301,33 @@ I> You can download all the scripts in this chapter from the corresponding folde
 
 ~~~
 :Namespace Constants
-   ⍝ Dyalog constants
+    ⍝ Dyalog constants
 
-   :Namespace NINFO
-      WILDCARD←1
-   :EndNamespace
+    :Namespace NINFO
+
+        ⍝ left arguments
+        NAME←0
+        TYPE←1
+        SIZE←2
+        MODIFIED←3
+        OWNER_USER_ID←4
+        OWNER_NAME←5
+        HIDDEN←6
+        TARGET←7
+~~~
+~~~        
+        :Namespace TYPES
+            NOT_KNOWN←0
+            DIRECTORY←1
+            FILE←2
+            CHARACTER_DEVICE←3
+            SYMBOLIC_LINK←4
+            BLOCK_DEVICE←5
+            FIFO←6
+            SOCKET←7
+        :EndNamespace
+
+    :EndNamespace
 
    :Namespace NPUT
       OVERWRITE←1
@@ -292,20 +343,14 @@ And `Utilities.dyalog`:
 ~~~
 :Namespace Utilities
 
-    ⍝ Ubiquitous functions that for local purposes 
-    ⍝  effectively extend the language
-    ⍝ Treat as reserved words: do not shadow
-
-    caseDn←{0(819⌶)⍵}
-    caseUp←{1(819⌶)⍵}
-~~~
-
-~~~
-      map←{
+    map←{
           (old new)←⍺
           nw←∪⍵
           (new,nw)[(old,nw)⍳⍵]
       }
+
+    toLowercase←0∘(819⌶)
+    toUppercase←1∘(819⌶)
 
 :EndNamespace
 ~~~ 
@@ -325,20 +370,20 @@ And another:
 ⍝ === End of variables definition ===
 
     CountLetters←{
-      {⍺(≢⍵)}⌸⎕A{⍵⌿⍨⍵∊⍺}(↓ACCENTS)U.map U.caseUp ⍵
+      {⍺(≢⍵)}⌸⎕A{⍵⌿⍨⍵∊⍺}(↓ACCENTS)U.map U.toUppercase ⍵
     } ⍝ Table of letter counts in string ⍵
 ~~~
 
 ~~~ 
     ∇ {ok}←TxtToCsv fullfilepath;xxx;csv;stem;path;files;txt;type;lines;nl
-	;enc;tgt;src;tbl
+      ;enc;tgt;src;tbl
    ⍝ Write a sibling CSV of the TXT located at fullfilepath,
    ⍝ containing a frequency count of the letters in the file text
       csv←'.csv'
-      :Select type←1 ⎕NINFO fullfilepath
+      :Select type←C.NINFO.TYPE ⎕NINFO fullfilepath
       :Case 1 ⍝ folder
           tgt←fullfilepath,csv
-          files←⊃(⎕NINFO⍠C.NINFO.WILDCARD)fullfilepath,'\*.txt'
+          files←⊃(⎕NINFO⍠'Wildcard' 1)fullfilepath,'\*.txt'
       :Case 2 ⍝ file
           (path stem xxx)←⎕NPARTS fullfilepath
           tgt←path,stem,csv
@@ -361,20 +406,25 @@ Launch the DYAPP by double-clicking on its icon in Windows Explorer. Examine the
 ~~~
 - Constants
   - NINFO
-    - WILDCARD
+    - NAME
+    - ...
+    - TYPES
+      - NOT_KNOWN
+      - DIRECTORY
+      - ...
   - NPUT
     - OVERWRITE
-- LocalAPL
-  - caseDn 
-  - caseUp
-  - map
 - MyApp 
   - ACCENTS
   - CountLetters
   - TxtToCsv
+- Utilities
+  - map
+  - toLowercase
+  - toUppercase
 ~~~
 
-W> If you also see containers `SALT_Data` ignore them. They are part of how the Dyalog editor updates script files.
+W> If you also see namespaces `SALT_Data` ignore them. They are part of how the Dyalog editor updates script files.
 
 We have converted the saved workspace to a DYAPP that assembles the workspace from DYALOGs. We can use `MyApp.dyapp` anytime to recreate the app as a workspace. But we have not saved a workspace. We will always assemble a workspace from scripts. 
 

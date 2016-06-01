@@ -21,7 +21,7 @@ MyApp 2.0 could do better. In several ways.
 
 Save a copy of `Z:\code\v01` as `Z:\code\v02`.
 
-Start with the log file. We'll use the APLTree `Logger` class, which we'll now install in the workspace root. If you've not already done so, copy the APLTree library folder into `Z:\code`. Now edit `Z:\code\v02\MyApp.dyapp` to include some library code:
+Start with the log file. We'll use the APLTree `Logger` class, which we'll now install in the workspace root. If you've not already done so, copy the APLTree library folder into `Z:\code`.[^apltree] Now edit `Z:\code\v02\MyApp.dyapp` to include some library code:
 
 ~~~
 Target #
@@ -70,10 +70,10 @@ Current Directory is `Z:` and the logfiles will appear in  `Z:\Logs`.
 
 If this version of MyApp were for shipping that would be a problem. An application installed in `C:\Program Files` cannot rely on being able to write logfiles there. That is a problem to be solved by an installer. We'll come to that later. But for this version of MyApp the logfiles are for your eyes only. It's fine that the logfiles appear wherever you launch the EXE. You just have know where they are. 
 
-In developing and testing MyApp, we create the active workspace by running `MyApp.dyapp`. That sets the Current Directory of the active workspace as the DYAPP's container. That too is sure to exist. 
+In developing and testing MyApp, we create the active workspace by running `MyApp.dyapp`. The interpreter sets the Current Directory of the active workspace as the DYAPP's parent folder. That too is sure to exist. 
 
 ~~~
-      #.WinFile.Cd ''
+      #.WinFile.PWD
 Z:\code\v02
 ~~~
 
@@ -82,6 +82,8 @@ We need `TxtToCsv` to ensure the Current Directory contains a `Logs` folder.
 ~~~
       'CREATE!' W.CheckPath 'Logs' ⍝ ensure subfolder of current dir
 ~~~
+
+Now we set up the parameters for the Logger object. First we use the Logger class' sttaic `CreatePropertySpace` method to get a property space (object) with an initial a set of default parameters. We then modify those and use the object to create the Logger object. You can use the property space's `List` method to display its properties.) 
 
 If `TxtToCsv` can log what it's doing, it makes sense to check its argument. We wrap the earlier version of the function in an if/else:
 
@@ -165,3 +167,7 @@ Yes!
 We now have MyApp logging its work in a subfolder of the application folder and reporting problems which it has anticipated.
 
 Next we need to consider how to handle and report errors we have _not_ anticipated. We should also return some kind of error code to Windows. If MyApp encounters an error, any process calling it needs to know. 
+
+
+
+[^apltree]: You can download the complete APLTree library from the [APL Wiki](http://aplwiki.com/CategoryAplTree).

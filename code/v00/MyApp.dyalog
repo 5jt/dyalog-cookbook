@@ -1,7 +1,7 @@
 :Namespace MyApp
-⍝ Dyalog Cookbook, Version 00
+⍝ Dyalog Cookbook, MyApp Version 00
 ⍝ Converted from DWS
-⍝ Vern: sjt06apr16
+⍝ Vern: sjt01jun16
 
 
 
@@ -17,17 +17,17 @@
 ⍝ === End of variables definition ===
 
       CountLetters←{
-          {⍺(≢⍵)}⌸⎕A{⍵⌿⍨⍵∊⍺}(↓ACCENTS)U.map U.caseUp ⍵
+          {⍺(≢⍵)}⌸⎕A{⍵⌿⍨⍵∊⍺}(↓ACCENTS)U.map U.toUppercase ⍵
       }
 
     ∇ {ok}←TxtToCsv fullfilepath;xxx;csv;stem;path;files;txt;type;lines;nl;enc;tgt;src;tbl
    ⍝ Write a sibling CSV of the TXT located at fullfilepath,
    ⍝ containing a frequency count of the lett○ers in the file text
       csv←'.csv'
-      :Select type←1 ⎕NINFO fullfilepath
+      :Select type←C.NINFO.TYPE ⎕NINFO fullfilepath
       :Case 1 ⍝ folder
           tgt←fullfilepath,csv
-          files←⊃(⎕NINFO⍠C.NINFO.WILDCARD)fullfilepath,'\*.txt'
+          files←⊃(⎕NINFO⍠'Wildcard' 1)fullfilepath,'\*.txt'
       :Case 2 ⍝ file
           (path stem xxx)←⎕NPARTS fullfilepath
           tgt←path,stem,csv

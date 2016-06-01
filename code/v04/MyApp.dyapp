@@ -1,9 +1,11 @@
 Target #
 Load ..\AplTree\APLTreeUtils
+Load ..\AplTree\ADOC
 Load ..\AplTree\HandleError
+Load ..\AplTree\IniFiles
 Load ..\AplTree\Logger
 Load ..\AplTree\WinFile
 Load Constants
 Load Utilities
 Load MyApp
-Run MyApp.SetLX
+Run MyApp.Start 'Session'
