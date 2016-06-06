@@ -73,7 +73,7 @@
      
       LogError←Log∘{code←EXIT⍎⍵ ⋄ code⊣⍺.LogError code ⍵}
      
-      isDev←#.A.IsDevelopment
+      isDev←A.IsDevelopment
       ⍝ refine trap definition
       #.ErrorParms←H.CreateParms
       #.ErrorParms.errorFolder←W.PWD

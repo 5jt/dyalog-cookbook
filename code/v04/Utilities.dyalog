@@ -1,6 +1,6 @@
 ﻿:Namespace Utilities
 ⍝ Dyalog Cookbook, MyApp v04
-⍝ Vern: sjt01jun16
+⍝ Vern: sjt06jun16
 
     ∇ env←GetEnv;addr;copy;getenv;this;⎕IO;⎕ML;isUnicode;incr;mult;k;v          ⍝ Get environment strings
      ⍝ Adapted from Dyalog workspace QUADNA to return a namespace
@@ -30,15 +30,28 @@
       :End
     ∇
 
+     ⍝ element of ⍵ that matches (case-independently) ⍺
+      ciFindin←{
+          ⍵⊃⍨(toUppercase¨⍵)⍳⊂toUppercase ⍺
+      }
+
+    m2n←{trim¨↓⍵}                               ⍝ matrix to nest
+
       map←{
           (old new)←⍺
           nw←∪⍵
           (new,nw)[(old,nw)⍳⍵]
       }
-      
-      trim←{⍵/⍨(∨\b)∧⌽∨\⌽b←⍵≠' '}
+
+    trim←{⍵/⍨(∨\b)∧⌽∨\⌽b←⍵≠' '}
 
     toLowercase←0∘(819⌶)
     toUppercase←1∘(819⌶)
+      toTitlecase←{
+          l←~u←1,¯1↓' '=z←⍵
+          (u/z)←toUppercase u/z
+          (l/z)←toLowercase l/z
+          z
+      }
 
 :EndNamespace

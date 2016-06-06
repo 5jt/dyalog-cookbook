@@ -1,7 +1,7 @@
 ﻿:Namespace MyApp
 ⍝ Dyalog Cookbook, Version 04
 ⍝ Error handling
-⍝ Vern: sjt01jun16
+⍝ Vern: sjt03jun16
 
 ⍝ Environment
     (⎕IO ⎕ML ⎕WX)←1 1 3
@@ -23,13 +23,6 @@
         INVALID_ALPHABET_NAME←105
     :EndNamespace
 
-    :Namespace ALPHABETS
-        English←⎕A
-        French←'AÁÂÀBCÇDEÈÊÉFGHIÌÍÎJKLMNOÒÓÔPQRSTUÙÚÛVWXYZ'
-        German←'AÄBCDEFGHIJKLMNOÖPQRSßTUÜVWXYZ'
-        Greek←'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ'
-    :EndNamespace
-
 ⍝ === VARIABLES ===
 
     ∆←'ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝάΆέΈήΉίϊΐΊόΌύϋΎώΏ'
@@ -49,38 +42,44 @@
           ⍺ ⍺⍺ ⍵
       }
 
-    ∇ Start mode
+    ∇ Start mode;exit
     ⍝ Initialise workspace for session or application
     ⍝ mode: ['Application' | 'Session']
       :If mode≡'Application'
           ⍝ trap problems in startup
-          ⎕TRAP←0 'E' '#.HandleError.Process ''''' 
+          ⎕TRAP←0 'E' '#.HandleError.Process '''''
       :EndIf
       ⎕WSID←'MyApp'
       Params←GetParameters mode
       :Select mode
       :Case 'Session'
-          #.⎕LX←'Start ''Application''' ⍝ ready to export
+          ⎕←'Alphabet is ',Params.alphabet
+          ⎕←'Defined alphabets: ',⍕U.m2n Params.ALPHABETS.⎕NL 2
+          #.⎕LX←'#.MyApp.Start ''Application''' ⍝ ready to export
       :Case 'Application'
-          exit←Params TxtToCsv Params.source
+          exit←TxtToCsv Params.source
           Off exit
       :EndSelect
     ∇
-    
+
     ∇ Off returncode
-      :If #.A.IsDevelopment
-        →
+      :If A.IsDevelopment
+          →
       :Else
-        ⎕OFF returncode
-      :Endif
+          ⎕OFF returncode
+      :EndIf
     ∇
 
-    ∇ p←GetParameters mode;args;fromexe;fromallusers;fromcmdline;fromuser;env;paths;ini;alp
+    ∇ p←GetParameters mode;args;fromexe;fromallusers;fromcmdline;fromuser;env;alp;path;paths;ini;parm;vars;a;∆;PARAMS;k;v
      ⍝ Derive parameters from defaults and command-line args (if any)
-
+     
      ⍝ Application defaults: in the absence of any other values
-      (p←⎕NS'').(accented alphabet source)←0 'English' '' ⍝ defaults
+      (p←⎕NS'').(accented alphabet source output)←0 'English' '' '' ⍝ defaults
       p.ALPHABETS←⎕NS'' ⍝ container for new alphabet definitions
+      p.ALPHABETS.English←⎕A
+      p.ALPHABETS.French←'AÁÂÀBCÇDEÈÊÉFGHIÌÍÎJKLMNOÒÓÔPQRSTUÙÚÛVWXYZ'
+      p.ALPHABETS.German←'AÄBCDEFGHIJKLMNOÖPQRSßTUÜVWXYZ'
+      p.ALPHABETS.Greek←'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ'
      
       args←⌷2 ⎕NQ'.' 'GetCommandLineArgs'   ⍝ Command Line
       env←U.GetEnv                          ⍝ Windows Environment
@@ -100,20 +99,35 @@
       :Case 'Session'
           paths←fromexe fromallusers fromuser
       :EndSelect
-
-      :If ×≢paths←{⍵/⍨⎕NEXISTS¨⍵}{⍵/⍨×≢¨⍵~¨U.trim¨⍵}paths
-          ini←(⎕NEW #.IniFiles paths).Convert p ⍝ FIXME alphabet defns?
-         ⍝ read only specific parameters
-          :If ×ini.⎕NC'alphabetName' ⋄ p.alphabetName←ini.defaultalphabet ⋄ :EndIf
-          :If ×ini.⎕NC'source' ⋄ p.source←ini.source ⋄ :EndIf
-         ⍝ import definitions into ALPHABETS
-          :For alp :In ↓p.ALPHABETS.⎕NC 2
-              ⍎'ALPHABETS.',alp,'←p,ALPHABETS.',alp
+     
+      PARAMS←'accented' 'alphabet' 'source' 'output'
+     
+      :For path :In {⍵/⍨⎕NEXISTS¨⍵}{⍵/⍨×≢¨U.trim¨⍵}paths
+         ⍝ Allow INI entries to be case-insensitive
+          ini←⎕NEW #.IniFiles(,⊂path)
+          vars←U.m2n ini.⎕NL 2
+          :For parm :In {⍵/⍨ini.Exist¨'Config:'∘,¨⍵}PARAMS
+             ⍝ Alphabet names are title case, eg Greek
+              parm p.{⍎⍺,'←⍵'}U.toTitlecase⍣(parm≡'alphabet')⊃ini.Get'Config:',parm
           :EndFor
+          :If ini.Exist'Alphabets:'
+              ∆←(ini.Convert ⎕NS'') ⍝ breaks if key names are not valid APL names
+              a←∆.⍎'ALPHABETS'U.ciFindin U.m2n ∆.⎕NL 9
+             ⍝ Alphabet names are title case, eg Russian
+              ∆←,' ',a.⎕NL 2 ⍝ alphabet names
+              (U.toTitlecase ∆)p.ALPHABETS.{⍎⍺,'←⍵'}a⍎∆
+          :EndIf
+      :EndFor
+     
+      :If mode≡'Application' ⍝ set params from the command line
+      :AndIf ×≢a←{⍵/⍨'='∊¨⍵}args
+          ∆←a⍳¨'=' ⋄ (k v)←((∆-1)↑¨a)((∆+1)↓¨a)
+          ∆←(≢PARAMS)≥i←⊃⍳/U.toUppercase¨¨PARAMS k
+          (⍕PARAMS[∆/i]) p.{⍎⍺,'←⍵'} ∆/v
       :EndIf
     ∇
 
-    ∇ exit←{alphabetName}TxtToCsv fullfilepath;∆;isDev;Log;LogError;files;tgt;alpha
+    ∇ exit←TxtToCsv fullfilepath;∆;Log;LogError;files;alpha;out
      ⍝ Write a sibling CSV of the TXT located at fullfilepath,
      ⍝ containing a frequency count of the letters in the file text
       'CREATE!'W.CheckPath'Logs' ⍝ ensure subfolder of current dir
@@ -123,41 +137,44 @@
       ∆.filenamePrefix←'MyApp'
       ∆.refToUtils←#
       Log←⎕NEW L(,⊂∆)
+     
       Log.Log'Started MyApp in ',W.PWD
       Log.Log'Source: ',fullfilepath
      
+     ⍝ Output defaults to CSV sibling of source
+      :If 0=×≢out←Params.output
+          out←(⊃,/2↑⎕NPARTS fullfilepath),'.CSV'
+      :EndIf
+     
       LogError←Log∘{code←EXIT⍎⍵ ⋄ code⊣⍺.LogError code ⍵}
      
-      isDev←'Development'≡4⊃'.'⎕WG'APLVersion'
-      ⍝ refine trap definition
+      ⍝ Refine trap definition
       #.ErrorParms←H.CreateParms
       #.ErrorParms.errorFolder←W.PWD
       #.ErrorParms.returnCode←EXIT.APPLICATION_CRASHED
       #.ErrorParms.(logFunctionParent logFunction)←Log'Log'
-      #.ErrorParms.trapInternalErrors←~isDev
-      :If isDev
+      #.ErrorParms.trapInternalErrors←~A.IsDevelopment
+      :If A.IsDevelopment
           ⎕TRAP←0⍴⎕TRAP
       :Else
           ⎕TRAP←0 'E' '#.HandleError.Process ''#.ErrorParms'''
       :EndIf
      
-      :If 2≠⎕NC'alphabetName' ⋄ alphabetName←Params.alphabetName ⋄ :EndIf
-     
-      :If EXIT.OK=⊃(exit files alpha)←CheckAgenda alphabetName fullfilepath
-          Log.Log'Target: ',tgt←(⊃,/2↑⎕NPARTS fullfilepath),'.CSV'
-          exit←alpha CountLettersIn files tgt
+      :If EXIT.OK=⊃(exit files alpha)←Params CheckAgenda fullfilepath
+          exit←alpha CountLettersIn files out
       :EndIf
       Log.Log'All done'
     ∇
 
-    ∇ (exit files alphabet)←CheckAgenda(alphabetName fullfilepath);type
+    ∇ (exit files alphabet)←params CheckAgenda fullfilepath;type
+      (files alphabet)←'' '' ⍝ error defaults
       :If 0=≢fullfilepath~' '
       :OrIf ~⎕NEXISTS fullfilepath
-          (exit files alphabet)←(LogError'SOURCE_NOT_FOUND')('')('')
+          exit←LogError'SOURCE_NOT_FOUND'
       :ElseIf ~(type←C.NINFO.TYPE ⎕NINFO fullfilepath)∊C.NINFO.TYPES.(DIRECTORY FILE)
-          (exit files alphabet)←(LogError'INVALID_SOURCE')('')('')
-      :ElseIf 2≠ALPHABETS.⎕NC alphabetName
-          (exit files alphabet)←(LogError'INVALID_ALPHABET_NAME')('')('')
+          exit←LogError'INVALID_SOURCE'
+      :ElseIf 2≠params.(ALPHABETS.⎕NC alphabet)
+          exit←LogError'INVALID_ALPHABET_NAME'
       :Else
           exit←EXIT.OK
           :Select type
@@ -166,7 +183,7 @@
           :Case C.NINFO.TYPES.FILE
               files←,⊂fullfilepath
           :EndSelect
-          alphabet←ALPHABETS⍎alphabetName
+          alphabet←params.{(ALPHABETS⍎alphabet)~(~accented)/⍵}ACCENTS[1;]
       :EndIf
     ∇
 

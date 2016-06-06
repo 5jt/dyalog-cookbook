@@ -24,6 +24,8 @@ Finally in Part 2 we'll introduce some professional writing techniques that migh
 * The Dyalog Version 15.0 Unicode interpreter or later.
 * To know how to use namespaces, classes and instances. Much of the utility code in the Cookbook is packaged into classes. This is the form in which it is easiest for you to slide the code into your app without name conflicts. We recommend you use classes to organise your own code! But even if you don't, you need to know at least how to use classes. This is a deep subject, but all you need to know is the basics: creating an instance of a class and using its methods and properties, or just using the methods of a static class. See _Dyalog Programmer's Reference Guide_ for an introduction. 
 
+We have not attempted to 'dumb down' our use of the language for readers with less experience. In a some cases we stop to discuss linguistic features; mostly not. If you see an expression you cannot read, a little experimentation and consultation of the reference material should show how it works. We encourage you to take the time to do this. Generally speaking -- not invariably -- short, crisp expressions are less work for you and the interpreter to read. Learn them and prefer them. 
+
 
 ## Acknowledgements
 

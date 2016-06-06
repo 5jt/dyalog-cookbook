@@ -32,7 +32,7 @@ From the above we get a general pattern for configuration settings:
 
 The Windows Registry is held in memory, so it is fast to read. It has been widely used to store configuration settings. Many would say _abused_. We follow a consensus opinion that it is well to minimise use of the Registry. 
 
-Settings needed by Windows itself _have_ to be store in the Registry. For example, associating a file extension with your application, so that double clicking on its icon launches your application. 
+Settings needed by Windows itself _have_ to be stored in the Registry. For example, associating a file extension with your application, so that double clicking on its icon launches your application. 
 
 The APLTree class [WinReg](http://aplwiki.com/WinReg) provides methods for handling the Windows Registry. 
 
@@ -128,41 +128,9 @@ Z:\code\v04>MyApp.exe J:\profiles\p06.ini SOURCE=M:\texts\Rimbaud.txt OUTPUT=J:\
 ~~~
 
 
-## Configuration parameters in program code
+## Manifest
 
-We'll start by implementing these parameters in the program code, independently of any external configuration files. 
-
-
-### Alphabets
-
-We'll provide MyApp with some language-specific alphabets. These will include accented characters used in the corresponding languages:
-
-~~~
-    :Namespace ALPHABETS
-        English←⎕A
-        French←'AÁÂÀBCÇDEÈÊÉFGHIÌÍÎJKLMNOÒÓÔPQRSTUÙÚÛVWXYZ'
-        German←'AÄBCDEFGHIJKLMNOÖPQRSßTUÜVWXYZ'
-        Greek←'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ'
-    :EndNamespace
-~~~
-
-We've arbitrarily supposed here that diacritical marks in classical Greek are guides to pronunciation and are not to be counted as accented characters. 
-
-And we extend our map of accented characters, remembering different characters can look the same:
-
-~~~
-    ∆←'ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝάΆέΈήΉίϊΐΊόΌύϋΎώΏ'
-    ACCENTS←↑∆ 'AAAAAACDEEEEIIIINOOOOOOUUUUYΑΑΕΕΗΗΙΙΙΙΟΟΥΥΥΩΩ'
-~~~
-
-~~~
-    =/⊃¨#.MyApp.ALPHABETS.(English French) ⍝ A is A
-1
-    =/⊃¨#.MyApp.ALPHABETS.(English Greek)  ⍝ A is not Alpha
-0
-~~~
-
-We modify how the workspace is initialised, in both Session and Application modes. For this we'll merge `SetLX` and `StartFromCmdLine` into `Start`, as seen here in the DYAPP:
+Here's our manifest for Version 4: `MyApp.dyapp`:
 
 ~~~
 Target #
@@ -182,45 +150,60 @@ Run MyApp.Start 'Session'
 leanpub-end-insert
 ~~~
 
-We've also added ADOC and IniFiles to the DYAPP's build list. We'll use IniFiles to handle INI files. ADOC is useful for reading a class's documentation. We'll come to that later. 
+We've included ADOC and IniFiles to the DYAPP's build list. We'll use IniFiles to handle INI files. 
+
+ADOC is useful for reading a class's documentation. The APLTree library scripts all have ADOC documentation. You can read it in a browser: 
 
 ~~~
-    ∇ Start mode
-    ⍝ Initialise workspace for session or application
-    ⍝ mode: ['Application' | 'Session']
-      :If mode≡'Application'
-          ⍝ trap problems in startup
-          ⎕TRAP←0 'E' '#.HandleError.Process ''''' 
-      :EndIf
-      ⎕WSID←'MyApp'
-      Params←GetParameters mode
-      :Select mode
-      :Case 'Session'
-          #.⎕LX←'Start ''Application''' ⍝ ready to export
-      :Case 'Application'
-          exit←Params TxtToCsv Params.source
-          ⎕OFF exit
-      :EndSelect
-    ∇
+#.ADOC.Browse #.IniFiles
 ~~~
 
-`GetParameters` defines the default parameters. They get passed to `TxtToCsv` as its optional left argument. (That is redundant, since `TxtToCsv` will read them anyway if omitted, but it allows us to substitute other parameter namespaces when testing in Session mode, while stil being able to call the function monadically.) 
+The DYAPP's`Run` command now calls `MyApp.Start`, specifying the mode. 
 
-We'll start `GetParameters` by defining its default result:
+
+## Configuration parameters in program code
+
+We'll start by implementing these parameters in the program code, independently of any external configuration files. Then continue to look for other sources of configuration parameters. A new function `GetParameters` will do that when the application starts, and put the results -- all the configuration parameters -- in `#.MyApp.Params`. 
+
+The INIs can define new alphabets, so we'll put a namsepace `ALPHABETS` inside `#.MyApp.Params`.
 
 ~~~
-      (p←⎕NS'').(accented alphabet source)←0 'English' ''
+    ∇ p←GetParameters mode;args;fromexe;fromallusers;fromcmdline;fromuser;env;paths;ini;alp
+     ⍝ Derive parameters from defaults and command-line args (if any)
+     
+     ⍝ Application defaults: in the absence of any other values
+      (p←⎕NS'').(accented alphabet source)←0 'English' '' ⍝ defaults
       p.ALPHABETS←⎕NS'' ⍝ container for new alphabet definitions
+      p.ALPHABETS.English←⎕A
+      p.ALPHABETS.French←'AÁÂÀBCÇDEÈÊÉFGHIÌÍÎJKLMNOÒÓÔPQRSTUÙÚÛVWXYZ'
+      p.ALPHABETS.German←'AÄBCDEFGHIJKLMNOÖPQRSßTUÜVWXYZ'
+      p.ALPHABETS.Greek←'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ'
 ~~~
 
-Now let's look for other parameter values. We'll be wanting the command line:
+A> We've arbitrarily supposed here that diacritical marks in classical Greek are guides to pronunciation and are not to be counted as accented characters. 
+
+And we extend our map of accented characters, remembering different characters can look the same:
+
+~~~
+    ∆←'ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝάΆέΈήΉίϊΐΊόΌύϋΎώΏ'
+    ACCENTS←↑∆ 'AAAAAACDEEEEIIIINOOOOOOUUUUYΑΑΕΕΗΗΙΙΙΙΟΟΥΥΥΩΩ'
+~~~
+
+~~~
+    =/⊃¨p.ALPHABETS.(English French) ⍝ A is A
+1
+    =/⊃¨p.ALPHABETS.(English Greek)  ⍝ A is not Alpha
+0
+~~~
+
+Setting values in the program code ensures `MyApp.exe` will be able to run in the absence of any external INIs. 
+
+Now we see what is on the command line that called it, and look around for other INIs. 
 
 ~~~
       args←⌷2 ⎕NQ'.' 'GetCommandLineArgs'   ⍝ Command Line
       env←U.GetEnv                          ⍝ Windows Environment
 ~~~
-
-and via a new function in `#.Utilities`, the Windows environment variables. We also need a list of INI files to read:
 
 ~~~
      ⍝ An INI for this app as a sibling of the EXE
@@ -233,7 +216,7 @@ and via a new function in `#.Utilities`, the Windows environment variables. We a
       fromuser←env.USERPROFILE,'\',⎕WSID,'.INI'
 ~~~
 
-Which of those we look for and read depends on the mode:
+That identifies four possible INIs we might read. Which ones we consult depends on the mode:
 
 ~~~
       :Select mode
@@ -244,8 +227,155 @@ Which of those we look for and read depends on the mode:
       :EndSelect
 ~~~
 
-If any of these paths exists, `#.IniFiles.Convert` will merge them and return them as a namespace
 
+## Case and configuration parameters
+
+It looks like we're almost there with configuration parameters. We can create an instance of IniFiles. Its `Convert` method will take a list of INIs, and return a namespace of parameters, with conflicts between the INIs resolved. 
+
+But case gets in the way. 
+
+Windows is case-insensitive, so `ALPHABET=FRENCH`, `alphabet=french`, and `Alphabet=French` should be equivalent.  Any of them has to be interpreted to set the APL variable `alphabet`: in APL, case matters. So we'll loop through the paths. 
+
+We have already defined some alphabets `English`, `French` etc, so we'll set a convention that alphabet names are in title case. 
+
+~~~
+      :For path :In {⍵/⍨⎕NEXISTS¨⍵}{⍵/⍨×≢¨U.trim¨⍵}paths
+         ⍝ Allow INI entries to be case-insensitive
+          ini←⎕NEW #.IniFiles(,⊂path)
+          vars←U.m2n ini.⎕NL 2
+          :For parm :In {⍵/⍨ini.Exist¨'Config:'∘,¨⍵}PARAMS
+             ⍝ Alphabet names are title case, eg Greek
+              parm p.{⍎⍺,'←⍵'}U.toTitlecase⍣(parm≡'alphabet')⊃ini.Get'Config:',parm
+          :EndFor
+~~~
+~~~
+          :If ini.Exist'Alphabets:'
+              ∆←(ini.Convert ⎕NS'') ⍝ breaks if key names are not valid APL names
+              a←∆.⍎'ALPHABETS'U.ciFindin U.m2n ∆.⎕NL 9
+             ⍝ Alphabet names are title case, eg Russian
+              ∆←,' ',a.⎕NL 2 ⍝ alphabet names
+              (U.toTitlecase ∆)p.ALPHABETS.{⍎⍺,'←⍵'}a⍎∆
+          :EndIf
+      :EndFor
+~~~
+
+For this we've put new functions into `#.Utilities`: `m2n` _matrix to nest_, `ciFind` _case-independent find_, and `toTitlecase`. You can also observe the use of the _power_ operator `⍣` instead of an if/else control structure. 
+
+Finally, in Appllication mode, we check the command line for any parameters set directly:
+
+~~~
+      :If mode≡'Application' ⍝ set params from the command line
+      :AndIf ×≢a←{⍵/⍨'='∊¨⍵}args
+          ∆←a⍳¨'=' ⋄ (k v)←((∆-1)↑¨a)((∆+1)↓¨a)
+          ∆←(≢PARAMS)≥i←⊃⍳/U.toUppercase¨¨PARAMS k
+          (⍕PARAMS[∆/i]) p.{⍎⍺,'←⍵'} ∆/v
+      :EndIf
+~~~
+
+
+## Checking the agenda
+
+Now that configuration parameters can be specified in INIs, there is more to check. So we pass the entire namespace of parameters to `CheckAgenda` as a left argument. `CheckAgenda` deploys a new error code -- for an invalid alphabet name - and extends its result also to return the collation alphabet, with or without accented characters. 
+
+~~~
+    ∇ (exit files alphabet)←params CheckAgenda fullfilepath;type
+      (files alphabet)←'' '' ⍝ error defaults
+      :If 0=≢fullfilepath~' '
+      :OrIf ~⎕NEXISTS fullfilepath
+          exit←LogError'SOURCE_NOT_FOUND'
+      :ElseIf ~(type←C.NINFO.TYPE ⎕NINFO fullfilepath)∊C.NINFO.TYPES.(DIRECTORY FILE)
+          exit←LogError'INVALID_SOURCE'
+leanpub-start-insert
+      :ElseIf 2≠params.(ALPHABETS.⎕NC alphabet)
+          exit←LogError'INVALID_ALPHABET_NAME'
+leanpub-end-insert
+      :Else
+          exit←EXIT.OK
+          :Select type
+          :Case C.NINFO.TYPES.DIRECTORY
+              files←⊃(⎕NINFO⍠'Wildcard' 1)fullfilepath,'\*.txt'
+          :Case C.NINFO.TYPES.FILE
+              files←,⊂fullfilepath
+          :EndSelect
+leanpub-start-insert
+          alphabet←params.{(ALPHABETS⍎alphabet)~(~accented)/⍵}ACCENTS[1;]
+leanpub-end-insert
+      :EndIf
+    ∇
+~~~
+
+
+## Initialising the workspace
+
+Checking the agenda requires more or less the same work whether we are starting in Session or in Application mode. That's why the DYAPP (see above) now finishes with: 
+
+~~~
+Run MyApp.Start 'Session'
+~~~
+
+The validated configuration parameters will be set in a namespace `MyApp.Params`:
+
+~~~
+    ∇ Start mode;exit
+    ⍝ Initialise workspace for session or application
+    ⍝ mode: ['Application' | 'Session']
+      :If mode≡'Application'
+          ⍝ trap problems in startup
+          ⎕TRAP←0 'E' '#.HandleError.Process '''''
+      :EndIf
+~~~
+~~~
+      ⎕WSID←'MyApp'
+      Params←GetParameters mode
+      :Select mode
+      :Case 'Session'
+          ⎕←'Alphabet is ',Params.alphabet
+          ⎕←'Defined alphabets: ',⍕U.m2n Params.ALPHABETS.⎕NL 2
+          #.⎕LX←'#.MyApp.Start ''Application''' ⍝ ready to export
+      :Case 'Application'
+          exit←TxtToCsv Params.source
+          Off exit
+      :EndSelect
+    ∇
+~~~
+
+
+## What we think about when we think about encapsulating state
+
+The configuration parameters are set in `Start` but the `Params` namespace is not passed explicitly to `TxtToCsv`. Perhaps `TxtToCsv` just refers to `Params`?
+
+~~~
+    ∇ exit←TxtToCsv fullfilepath;∆;Log;LogError;files;tgt;alpha
+
+    ...
+
+leanpub-start-insert    
+      :If EXIT.OK=⊃(exit files alpha)←Params CheckAgenda fullfilepath
+leanpub-end-insert    
+          Log.Log'Target: ',tgt←(⊃,/2↑⎕NPARTS fullfilepath),'.CSV'
+          exit←alpha CountLettersIn files tgt
+      :EndIf
+      Log.Log'All done'
+    ∇
+~~~
+
+Yes, that's it. Bit of a compromise here. Let's pause to look at some other ways to write this:
+
+* Let `TxtToCsv` ignore `Params`. It doesn't read or set the contents. `CheckAgenda` can read `Params` instead. But, where we can, we avoid passing information through globals and 'semiglobals'. The exact opposite practice is to pass everything through function arguments. There is no appreciable performance penalty for this. The interpreter doesn't make 'deep copies' of the arguments unless and until they are modified in the called function (which we hardly ever do) -- instead the interpreter just passes around references to the orginal variables. 
+* So we could pass `Params` as a left argument of `TxtToCsv`, which then simply gets passed to `CheckAgenda`. No performance penalty for this, as just explained, but now we've loaded the syntax of `TxtToCsv` with a namespace it makes no direct use of, an unnecessary complication of the writing. And we've set a left argument we (mostly) won't want to specify when working in Session mode. We could make this left argument optional, taking `#.MyApps.Params` as its default. The cost of that is an if/else control statement, setting a value that, er, `TxtToCsv` still isn't reading or setting for itself. (And if we did want to set a left argument for `TxtToCsv` to use in Session mode, it would probably be the name of an alphabet... 
+
+The matter of _encapsulating state_ -- which functions have access to state information, and how it is shared between them -- is very important. Poor choices can lead to tangled and obscure code. 
+
+From time to time you will be offered (not by us) rules that attempt to make the choices simple. For example: _never communicate through globals_. (Or semi-globals.[^semi]) There is some wisdom in these rules, but they masquerade as satisfactory substitutes for thought, which they are not. Just as in a natural language, any rule about writing style meets occasions when it can and should be broken. Following style 'rules' without considering the alternatives will from time to time have horrible results, such as functions that accept complex arguments only to pass them on unexamined to other functions. 
+
+Think about the value of style 'rules' and learn when to apply them. 
+
+Sometimes it's only after writing many lines of code that it becomes apparent that a different choice would have been better. And sometimes it becomes apparent that the other choice would be so much better that it's worth unwinding and rewriting a good deal of what you've done. (Then be glad you're writing in  a terse language.) 
+
+We share these musings here so you can see what we think about when we think about encapsulating state; and also that there is often no clear right answer. Think hard, make your best choices, and be ready to unwind and remake them later if necessary. 
+
+
+## Accents
 
 We'll retain our map of accented to unaccented characters and convert any accented character _not in the alphabet_ to its unaccented equivalent. 
 
@@ -259,9 +389,9 @@ However, we'll suppose that the diacritical marks in classical Greek are not to 
 Note that for Greek this will map Á to the Greek Alpha, not the visually indistinguishable Roman A.
 
 ~~~
-      #.MyApp.(ACCENTS∊ALPHABETS.GREEK)
-0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+      '.*'[1+#.MyApp.(ACCENTS∊Params.ALPHABETS.Greek)]
+.............................................
+............................*****************
 ~~~
 
 Where and how shall we set the alphabet to be used? We start by revising `CountLetters` to take an alphabet as left argument. And now that the alphabet is explicit, it makes sense to sort the result into alphabetical order. 
@@ -273,7 +403,7 @@ Where and how shall we set the alphabet to be used? We start by revising `CountL
       }
 ~~~
 
-Reality check. From [Project Gutenberg]{http://www.projectgutenberg.org/) save the UTF-8 text files for Homer's Iliad and Odyssey in Greek. Top and tail them in a text editor to remove the English-language header and licence. That will still leave a few stray Roman characters, and lots of line numbers:
+Reality check. From [Project Gutenberg](http://www.projectgutenberg.org/) save the UTF-8 text files for Homer's _Iliad_ and _Odyssey_ in Greek. Top and tail them in a text editor to remove the English-language header and licence. That will still leave a few stray Roman characters, and lots of line numbers:
 
 ~~~
       )CS #.MyApp
@@ -300,7 +430,7 @@ Reality check. From [Project Gutenberg]{http://www.projectgutenberg.org/) save t
 But most of it is in the Greek alphabet:
 
 ~~~
-      ALPHABETS.GREEK CountLetters il
+      Params.ALPHABETS.Greek CountLetters il
 Α 50459
 Β  4533
 Γ  8955
@@ -327,40 +457,87 @@ But most of it is in the Greek alphabet:
 Ω  5877
 ~~~
 
-We make `TxtToCsv` ambivalent, so we can test it in the session with a non-default alphabet. 
+
+## Putting it together
+
+For our first 'sea trial' we'll use an INI file to define the Russian alphabet, and specify it to count the letter frequency in a [poem by Pushkin](http://www.gutenberg.org/ebooks/5316). 
+
+One INI should define everything we need:
 
 ~~~
-    ∇ exit←{ALPHABET}TxtToCsv fullfilepath;∆;isDev;Log;Error;files;tgt
-          ...
-leanpub-start-insert
-          :If 2≠⎕NC'ALPHABET' ⋄ ALPHABET←ALPHABETS.ENGLISH ⋄ :EndIf
-leanpub-end-insert
-          exit←ALPHABET CountLettersIn files tgt
-          ...
+[CONFIG]
+ALPHABET=RUSSIAN
+SOURCE=Z:\TEXTS\PUSHKIN.TXT
+[ALPHABETS]
+RUSSIAN=АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ
 ~~~
 
-Simularly we make `CountLettersIn` dyadic and have it call `CountLetters` dyadically. 
+Happily, Wikipedia assures us we have no accented characters to handle. 
+
+We'll save the INI in the All-users Profile:
 
 ~~~
-leanpub-start-insert
-    ∇ exit←ALPHABET CountLettersIn(files tgt);i;txt;tbl;enc;nl;lines;bytes
-leanpub-end-insert
-     ⍝ Exit code from writing a letter-frequency count for a list of files
-      tbl←0 2⍴'A' 0
-      exit←EXIT.OK ⋄ i←1
-      :While exit=EXIT.OK
-          :Trap 0
-              (txt enc nl)←⎕NGET retry i⊃files
-leanpub-start-insert
-              tbl⍪←ALPHABET CountLetters txt
-leanpub-end-insert
-          :Else
-          ...
+      ⎕CMD 'echo %allusersprofile%'
+C:\ProgramData
 ~~~
 
-In the above, `TxtToCsv` handles its ambivalence and sets the alphabet if it's called monadically. Other functions that need to refer to the alphabet have it passed them as an argument. So `TxtToCsv` is the only function that need to know the rule that the default alphabet is English. 
+i.e. in `C:\ProgramData\MyApp.ini` and test in Session mode. 
 
-Sadly, this won't do. MyApp might be called from the command line in a configuration that sets a _different_ alphabet by default. Some process has to figure all this out, whether MyApp is called from the command line or built by the DYAPP and run in the session. 
+~~~
+clear ws
+Booting Z:\code\v04\MyApp.dyapp
+Loaded: #.APLTreeUtils
+Loaded: #.ADOC
+Loaded: #.HandleError
+Loaded: #.IniFiles
+Loaded: #.Logger
+Loaded: #.WinFile
+Loaded: #.Constants
+Loaded: #.Utilities
+Loaded: #.MyApp
+Alphabet is Russian
+Defined alphabets:  English  French  German  Greek  Russian 
+      MyApp.TxtToCsv 'Z:\texts\ru'
+0
+~~~
 
-We'll change the last line of the DYAPP to run `#.MyApp.InitSession`, which will do the job for the interactive session, before setting the Latent Expression for export. 
+And the result? In `Z:\texts\ru.csv`:
 
+~~~
+А,109
+Б,22
+В,57
+Г,19
+Д,32
+Е,101
+Ж,13
+З,16
+И,61
+Й,29
+К,48
+Л,45
+М,30
+Н,75
+О,99
+П,34
+Р,58
+С,76
+Т,87
+У,42
+Ф,2
+Х,14
+Ц,4
+Ч,10
+Ш,12
+Щ,6
+Ы,31
+Ь,18
+Э,2
+Ю,7
+Я,26
+~~~
+
+Looks like a win.
+
+
+[^semi]: So-called _semi-globals_ are variables to be read or set by functions to which they are not localised. They are _semi-globals_ rather than globals because they are local to either a function or a namespace. From the point of view of the functions that do read or set them, they are indistinguishable from globals -- they are just mysteriously 'around'. 
