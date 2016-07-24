@@ -1,0 +1,13 @@
+Target #
+Load ..\AplTree\APLTreeUtils
+Load ..\AplTree\ADOC
+Load ..\AplTree\HandleError
+Load ..\AplTree\IniFiles
+Load ..\AplTree\Logger
+Load ..\AplTree\WinFile
+Load ..\AplTree\Tester
+Load Constants
+Load Utilities
+Load Tests
+Load MyApp
+Run MyApp.Start 'Session'

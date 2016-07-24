@@ -1,21 +1,5 @@
 {:: encoding="utf-8" /}
 
-# Testing: the sound of breaking glass
-
-Our app here is as simple as we could make it – just join a folder of text files into a single TXT. For many purposes, simply tieing all the source files to a vector of tie numbers `srcs` and creating a new file on tie number `tgt` would reduce the app to a single line:
-
-    (⎕NREAD¨srcs,¨82,¨⎕NSIZE¨srcs) ⎕NAPPEND¨ tgt
-
-Pretty much all the other code has been written to package that ‘app’ for shipment and to control how it behaves when it encounters problems. 
-
-Developing code refines and extends it. We have more developing to do. Some of that developing is liable to break what we already have working. Too bad. No one’s perfect. But we would at least like to know when we’ve broken something – to hear the sound of breaking glass behind us. Then we can fix the error before going any further. 
-
-In our ideal world we would have a team of testers continually testing and retesting our latest build to see if it still does what it’s supposed to do. The testers would tell us if we broke anything. In the real world we have programs – tests – to do that. 
-
-What should we write tests for? “Anything you think might break,” says Kent Beck[^beck], author of _Extreme Programming Explained_. We’ve written code to allow for ways in which the file system might surprise us. We should write tests to discover if that code works. We’ll eventually discover conditions we haven’t foreseen and write fixes for them. Now those conditions too join the things we think might break, and get added to the test suite. 
-
-[^beck]: in conversation with one of the authors.
-
 # Testing in different versions of Windows 
 
 # User interface – native
