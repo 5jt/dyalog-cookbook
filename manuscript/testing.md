@@ -51,7 +51,7 @@ In contrast, this line from `TxtToCsv` reads a value from a namespace external t
 
       #.ErrorParms.returnCode←EXIT.APPLICATION_CRASHED
 
-In principle, `TxtToCsv` _could_ be written in purely functional style. References to classes and namespaces `#.HandleError`, `#.APLTreeUtils`, `#.WinFile`, `EXIT`, and `#.ErrorParms` could all be passed to it as arguments. If those references ever varied -- for example, if there were an alternative namespace `ReturnCodes` sometimes used instead of `EXIT` -- that might be a useful way to write `TxtToCsv`. But as things are, cluttering up the function's _signature_ -- its name and arguments -- with these references harms rather than helps readability. It is an example of the cure being worse than disease. 
+In principle, `TxtToCsv` _could_ be written in purely functional style. References to classes and namespaces `#.HandleError`, `#.APLTreeUtils`, `#.FilesAndDirs`, `EXIT`, and `#.ErrorParms` could all be passed to it as arguments. If those references ever varied -- for example, if there were an alternative namespace `ReturnCodes` sometimes used instead of `EXIT` -- that might be a useful way to write `TxtToCsv`. But as things are, cluttering up the function's _signature_ -- its name and arguments -- with these references harms rather than helps readability. It is an example of the cure being worse than disease. 
 
 You can't write _everything_ in pure functional style but the closer you stick to it, the better your code will be, and the easier to test. Functional style goes hand in hand with good abstractions, and ease of testing. 
 
@@ -85,11 +85,10 @@ and include both scripts in the DYAPP:
 
     Target #
     Load ..\AplTree\APLTreeUtils
-    Load ..\AplTree\ADOC
+    Load ..\AplTree\FilesAndDir
     Load ..\AplTree\HandleError
     Load ..\AplTree\IniFiles
     Load ..\AplTree\Logger
-    Load ..\AplTree\WinFile
     leanpub-start-insert
     Load ..\AplTree\Tester
     leanpub-end-insert
@@ -101,7 +100,7 @@ and include both scripts in the DYAPP:
     Load MyApp
     Run MyApp.Start 'Session'
 
-Run the DYAPP to build the workspace. In the session execute `#.ADOC.Browse #.Tester` to see the documentation for the Tester class, and browse also to [aplwiki.com/Tester](http://aplwiki.com/Tester) to see the discussion there. 
+Run the DYAPP to build the workspace. In the session execute `]adoc_browse #.Tester` to see the documentation for the Tester class, and browse also to [aplwiki.com/Tester](http://aplwiki.com/Tester) to see the discussion there. 
 
 
 ## Unit and functional tests 
@@ -339,7 +338,7 @@ Investigation reveals the problem:
       ...
       ⎕WSID←'MyApp'
         
-      'CREATE!'W.CheckPath'Logs' ⍝ ensure subfolder of current dir
+      'CREATE!'F.CheckPath'Logs' ⍝ ensure subfolder of current dir
       ∆←L.CreatePropertySpace
       ∆.path←'Logs\' ⍝ subfolder of current directory
       ∆.encoding←'UTF8'
@@ -347,7 +346,7 @@ Investigation reveals the problem:
       ∆.refToUtils←#
       Log←⎕NEW L(,⊂∆)
      
-      Log.Log'Started MyApp in ',W.PWD
+      Log.Log'Started MyApp in ',F.PWD
      
       LogError←Log∘{code←EXIT⍎⍵ ⋄ code⊣⍺.LogError code ⍵}
        

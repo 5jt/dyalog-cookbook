@@ -1,32 +1,35 @@
 ﻿:Class Logger
-⍝ <h2>Overview
-⍝ This class is designed to write log files. It does not need any parameters _
-⍝ when instantiated but you can specify up to
-⍝ # path          Where the lgo file should be created; default is current dir.
-⍝ # encoding      Is ANSI in Classic and may be UTF8 or ASCII in a Unicode interpreter.
-⍝ # filenameType  Determines the file name. Defaults to yyyymmdd.log
-⍝ # debug         By default (0) all internal errors are trapped.
-⍝ # timestamp     Practically never used accept for test cases.
-⍝ # refToUtils    Points to where `Logger` will find `WinSys`. See there.
-⍝ <h2> Syntax
-⍝ <pre>⎕NEW Logger ([path encoding filenameType debug timestamp refToUtils])
+⍝ ## Overview
+⍝ This class is designed to write log files. It does not need any parameters
+⍝ when instantiated but you may specify the following parameters:
+⍝ |`path`         | Where the log file should be created; default is the current directory.
+⍝ |`encoding`     | Is either UTF8 or ANSI.
+⍝ |`filenameType` | Determines the file name. Defaults to yyyymmdd.log
+⍝ |`debug`        | By default (0) all internal errors are trapped.
+⍝ |`timestamp`    | Practically never used accept for test cases.
+⍝
+⍝ ## Syntax
+⍝ ~~~
+⍝ ⎕NEW Logger ([path encoding filenameType debug timestamp refToUtils])
 ⍝ ⎕NEW Logger
 ⍝ ⎕NEW Logger (,⊂commandSpace)
-⍝ ⎕NEW Logger</pre>
-⍝ Only by creating a command space can one set <b>all</b> possible parameters.
+⍝ ⎕NEW Logger
+⍝ ~~~
+⍝ Only by creating a command space can one set **all** possible parameters.\\
 ⍝ Example:
-⍝ <pre>
+⍝ ~~~
 ⍝ myParms←#.Logger.CreatePropertySpace
 ⍝ myParms.filenamePrefix←'MYAPP'
 ⍝ ⍝ ....
-⍝ ⍝ Note that the namespace returned by `CreatePropertySpace` offers a method _
+⍝ ⍝ Note that the namespace returned by `CreatePropertySpace` offers a method
 ⍝ `List` which list both, the names and their current values.
 ⍝ ⎕NEW Logger (,⊂myParms)
-⍝ </pre>
-⍝ <h2>Misc
-⍝ Needs: Dyalog Version 12, Unicode or Classic
-⍝ Author: Kai Jaeger ⋄ APL Team Ltd ⋄ http://aplteam.com
-⍝ Homepage: http://aplwiki.com/Logger
+⍝ ~~~
+⍝
+⍝ ## Misc
+⍝ Needs: At least Dyalog Version 12, Unicode or Classic\\
+⍝ Author: Kai Jaeger ⋄ APL Team Ltd\\
+⍝ Homepage: <http://aplwiki.com/Logger>
 
     :Include APLTreeUtils
 
@@ -36,24 +39,18 @@
 
     ∇ r←Version
       :Access Public shared
-      ⍝ Returns a three-element vector each of which is a string:
-      ⍝ # The (fully qualified) name
-      ⍝ # The version number as a.b.c
-      ⍝ # The version date as YYYY-MM-DD
-      r←(Last⍕⎕THIS)'1.9.0' '2015-01-10'
-      ⍝ 1.9.0: APL inline code is marked up now with ticks (`).
-      ⍝        The `Version` function returns just the name (no path).
-      ⍝        `History` method removed.
-      ⍝ 1.8.2: odd numbers of " made ADOC crash on ADOC.Browser Logger
-    ∇
-
-    ∇ r←Copyright
-      :Access Public Shared
-    ⍝ Prints copyright information
-      r←''
-      r,←⊂'This software comes on an "as-is" basis without any obligations.'
-      r,←⊂'It can be used in any way you like!'
-      r←⎕FMT,[1.5]r
+      ⍝ * 2.1.0:
+      ⍝   * Requires at least Dyalog 15 Unicode
+      ⍝   * `refToUtils` removed: `FilesAndDirs (or a ref to it) must *just like
+      ⍝     `APLTreeUtils`) live in the same space as `Logger` itself.
+      ⍝   * Because Logger now requires a Unicode interpreter the "ASCII" encoding has lost
+      ⍝     its meanings. It's still accepted but internally changed to ANSI.
+      ⍝ * 2.0.0: Doc converted to Markdown (requires at least ADOC 5.0).
+      ⍝ * 1.9.0:
+      ⍝   * APL inline code is marked up now with ticks (`).
+      ⍝   * The `Version` function returns just the name (no path).
+      ⍝   * `History` method removed.
+      r←(Last⍕⎕THIS)'2.1.0' '2016-09-04'
     ∇
 
 ⍝ --------------- Properties and Fields
@@ -61,8 +58,9 @@
     :Field Private ReadOnly  constructorIsRunning←0
 
     :Property encoding
-    ⍝ In a Unicode interprter, this can be either 'ASCII' or 'UTF8'.
-    ⍝ In a Classic interpreter any other setting than ANSII will be ignored.
+    ⍝ In a Unicode interpreter, this can be either "ANSI" or "UTF8".\\
+    ⍝ "ASCII" is deprecated since version 2.1 but still allowed and internally
+    ⍝ switched to "ANSI".
     :Access Public
         ∇ r←get
           r←_encoding
@@ -70,10 +68,10 @@
     :EndProperty
 
     :Property autoReOpen
-    ⍝ Boolean. Defaults to 1, meaning that an instance of `Logger` re-opens its log file _
-    ⍝ itself when this is appropriate. For example, if `filenameType` is "year", the file _
-    ⍝ re-opens with a new name  as soon as a new year comes along.
-    ⍝ Note that `Logger` throws an error when `autoReOpen` is 1 and `filename` is _
+    ⍝ Boolean. Defaults to 1, meaning that an instance of `Logger` re-opens its log file
+    ⍝ itself when this is appropriate. For example, if `filenameType` is "year", the file
+    ⍝ re-opens with a new name  as soon as a new year comes along.\\
+    ⍝ Note that `Logger` throws an error when `autoReOpen` is 1 and `filename` is
     ⍝ not empty.
     :Access Public Instance
         ∇ r←get
@@ -86,7 +84,7 @@
     :EndProperty
 
     :Property filenameType
-    ⍝ Might be one of: "DATE" (the default) or "YEAR" or "MONTH".
+    ⍝ Might be one of: "DATE" (the default) or "YEAR" or "MONTH".\\
     ⍝ The name of the logfile then becomes accordingly "yyyymmdd" or "yyyy" of "yyyymm"
     :Access Public Instance
         ∇ r←get
@@ -100,8 +98,8 @@
     :EndProperty
 
     :Property debug
-    ⍝ Since logging information to a file for analyzing purposes should never break an application, _
-    ⍝ error trapping is used heavily within `Logger`. However, this is not appropriate for debugging _
+    ⍝ Since logging information to a file for analyzing purposes should never break an application,
+    ⍝ error trapping is used heavily within `Logger`. However, this is not appropriate for debugging
     ⍝ `Logging`. Therefore, setting `debug` to 1 switches error trapping off completely.
     :Access Public Instance
         ∇ r←get
@@ -114,7 +112,7 @@
     :EndProperty
 
     :Property printToSession
-    ⍝ Setting this to 1 let an instance print every entry not only to the underlying file but also _
+    ⍝ Setting this to 1 let an instance print every entry not only to the underlying file but also
     ⍝ to the session. Appropriate when debugging an application. Is ignored if `debug` is 0!
     ⍝ Defaults to 0.
     :Access Public Instance
@@ -141,12 +139,15 @@
     :EndProperty
 
     :Property refToUtils
-    ⍝ The `Logger` class needs two scripts, `WinFile` and `APLTreeUtils`. While `APLTreeUtils` _
-    ⍝ <b>must</b> be situated in the same namespace as `Logger` because it's :Included, _
-    ⍝ Logger looks for `WinFile` at several places: it will find it automatically if _
-    ⍝ it is situated either in the same namespace as `Logger` itself or in # or where _
-    ⍝ `Logger` got instanciated from. If this is not appropriate for you, you <b>must</b> _
-    ⍝  set `refToUtils` to the namespace which keeps `WinFile`.
+    ⍝ The `Logger` class needs a couple of scripts:
+    ⍝ * `FilesAndDirs`
+    ⍝ * `APLTreeUtils`
+    ⍝
+    ⍝ While `APLTreeUtils` **must** be situated in the same namespace as `Logger` because it's :Included,
+    ⍝ `Logger` looks for `FilesAndDirs` at several places: it will find it automatically if
+    ⍝ it is situated either in the same namespace as `Logger` itself or in `#` or where
+    ⍝ `Logger` got instanciated from. If this is not appropriate for you, you **must**
+    ⍝  set `refToUtils` to the namespace which keeps `FilesAndDirs`.
     :Access Public Instance
         ∇ r←get
           r←_refToUtils
@@ -157,10 +158,10 @@
     :EndProperty
 
     :Property timestamp
-    ⍝ Use this for debugging purposes only: if `timestamp` is not empty it is used instead of _
-    ⍝ `⎕TS`. Useful to test the "re-open" feature, for example.
-    ⍝ `timestamp` must be a vector of integers with 6 items: y,m,d,h,m,s.
-    ⍝ Note that this is <b>ignored</b> if `debug` is 0!
+    ⍝ Use this for debugging purposes only: if `timestamp` is not empty it is used instead of
+    ⍝ `⎕TS`. Useful to test the "re-open" feature, for example.\\
+    ⍝ `timestamp` must be a vector of integers with 6 items: y,m,d,h,m,s.\\
+    ⍝ Note that this is **ignored** if `debug` is 0!
     :Access Public Instance
         ∇ r←get
           r←_timestamp
@@ -174,11 +175,11 @@
     :EndProperty
 
     :Property active
-    ⍝ Use this to switch logging effectively on and off. If it is zero, there is not even _
-    ⍝ a log file opened. If later `active` is set to 1, the log file will be opened by then.
-    ⍝ If an instance is created with `active←1` and is set later to 0 the then opened _
-    ⍝ logfile will not be closed, however. In this case any operations are _
-    ⍝ suppressed, but the log file will remain open.
+    ⍝ Use this to switch logging effectively on and off. If it is zero, there is not even
+    ⍝ a log file opened. If later `active` is set to 1, the log file will be opened by then.\\
+    ⍝ If an instance is created with `active←1` and is set later to 0 the then opened
+    ⍝ logfile will not be closed, however. In this case any operations are
+    ⍝ suppressed, but the log file will remain open.\\
     ⍝ See also `fileFlag`.
     :Access Public Instance
         ∇ r←get
@@ -197,16 +198,16 @@
     :EndProperty
 
     :Property fileFlag
-    ⍝ Use this to suppress any file operations. In any other respect `Logger` behaves as _
-    ⍝ usual, in particular the `Log` and the `LogError` methods return their explicit _
-    ⍝ results. That is the difference to `active` which switches off everything meaning _
-    ⍝ that the `Log` method as well as the `LogError` method return empty vectors.
-    ⍝ Note this can be set as part of a command space. If it is zero there is not even a _
-    ⍝ log file opened. If `fileFlag` is set later to 1 (and `active` is 1 by then), the _
-    ⍝ log file will be opened then.
-    ⍝ If an instance is created with `fileFlag←1` and it is set later to 0 the then _
-    ⍝ opened logfile will not be closed, however. In this case any file operations are _
-    ⍝ suppressed but the log file will remain open.
+    ⍝ Use this to suppress any file operations. In any other respect `Logger` behaves as
+    ⍝ usual, in particular the `Log` and the `LogError` methods return their explicit
+    ⍝ results. That is the difference to `active` which switches off everything meaning
+    ⍝ that the `Log` method as well as the `LogError` method return empty vectors.\\
+    ⍝ Note this can be set as part of a command space. If it is zero there is not even a
+    ⍝ log file opened. If `fileFlag` is set later to 1 (and `active` is 1 by then), the
+    ⍝ log file will be opened then.\\
+    ⍝ If an instance is created with `fileFlag←1` and it is set later to 0 the then
+    ⍝ opened logfile will not be closed, however. In this case any file operations are
+    ⍝ suppressed but the log file will remain open.\\
     ⍝ See also `active`.
     :Access Public
         ∇ r←get
@@ -226,11 +227,11 @@
 
 
     :Property filenamePrefix
-    ⍝ Adds a prefix to the filename. For example, if the defaults for `filenameType` and _
-    ⍝ `extension` are in effect, setting `filenamePrefix` to "foo" leads to _
-    ⍝ foo_20080601.log on the first of June 2008.
-    ⍝ Setting this after having already created an instance is too late for this instance, of _
-    ⍝ course, although it will be taken into account when the log file is reopened. To specify _
+    ⍝ Adds a prefix to the filename. For example, if the defaults for `filenameType` and
+    ⍝ `extension` are in effect, setting `filenamePrefix` to "foo" leads to
+    ⍝ foo_20080601.log on the first of June 2008.\\
+    ⍝ Setting this after having already created an instance is too late for this instance, of
+    ⍝ course, although it will be taken into account when the log file is reopened. To specify
     ⍝ it in time pass a command space to the constructor.
     :Access Public Instance
         ∇ r←get
@@ -243,11 +244,11 @@
     :EndProperty
 
     :Property filenamePostfix
-    ⍝ Adds a postfix to the filename. For example, if the defaults for `filenameType` and _
-    ⍝ `extension` are in effect, setting "filenamePostfix" to "foo" leads to _
-    ⍝ 20080601_foo.log on the first of June 2008.
-    ⍝ Setting this after having already created an instance is too late for this instance, of _
-    ⍝ course, although it will be taken into account when the log file is reopened. To specify _
+    ⍝ Adds a postfix to the filename. For example, if the defaults for `filenameType` and
+    ⍝ `extension` are in effect, setting "filenamePostfix" to "foo" leads to
+    ⍝ 20080601_foo.log on the first of June 2008.\\
+    ⍝ Setting this after having already created an instance is too late for this instance, of
+    ⍝ course, although it will be taken into account when the log file is reopened. To specify
     ⍝ it in time pass a command space to the constructor.
     :Access Public Instance
         ∇ r←get
@@ -260,9 +261,9 @@
     :EndProperty
 
     :Property errorPrefix
-    ⍝ Adds a prefix to an error message to be logged by calling `LogError`. Defaults to "*** ERROR"
-    ⍝ Setting this after having already created an instance might be too late for this instance, _
-    ⍝ although it will be taken into account from then. To specify it in time pass a command _
+    ⍝ Adds a prefix to an error message to be logged by calling `LogError`. Defaults to `*** ERROR`.\\
+    ⍝ Setting this after having already created an instance might be too late for this instance,
+    ⍝ although it will be taken into account from then. To specify it in time pass a command
     ⍝ space to the constructor.
     :Access Public Instance
         ∇ r←get
@@ -283,9 +284,9 @@
     :EndProperty
 
     :Property filename
-    ⍝ Return the log's current filename which is fully qualified.
-    ⍝ You can specify this property when calling `⎕NEW` but not later.
-    ⍝ Note that `Logger` throws an error when `autoReOpen` is 1 and `filename` is _
+    ⍝ Return the log's current filename which is fully qualified.\\
+    ⍝ You can specify this property when calling `⎕NEW` but not later.\\
+    ⍝ Note that `Logger` throws an error when `autoReOpen` is 1 and `filename` is
     ⍝ not empty.
     :ACcess Public Instance
         ∇ r←get
@@ -302,8 +303,8 @@
     :EndProperty
 
     :Property errorCounter
-    ⍝ Integer that returns the number of errors that have occured in an instance _
-    ⍝ so far - ideally this is 0.
+    ⍝ Integer that returns the number of errors that have occured in an instance
+    ⍝ so far - ideally this is 0.\\
     ⍝ This is maintained only if `debug` is zero.
     :ACcess Public Instance
         ∇ r←get
@@ -326,9 +327,10 @@
 
     ∇ make1(pathOrCommandSpace);bool;list;this;constructorIsRunning;msg
     ⍝ `pathOrCommandSpace` can be either a path or a command space:
-    ⍝ path: Directory the log file is going to.
-    ⍝ Command space: Useful to set all possible parameters. Note that you can ask _
-    ⍝ `Logger` to create a command space for you, see method `CreatePropertySpace`. _
+    ⍝ | path          | Directory the log file is going to.
+    ⍝ | Command space | Useful to set all possible parameters.
+    ⍝ Note that you can ask
+    ⍝ `Logger` to create a command space for you, see method `CreatePropertySpace`.
     ⍝ Then simply set those where the defaults do not fit your needs.
       :Access Public Instance
       :Implements Constructor
@@ -375,7 +377,7 @@
     ∇
 
     ∇ make2(path_ encoding_);constructorIsRunning;msg
-    ⍝ `encoding` is a flag defining the encoding. 0 (the default) is ASCII/ANSI, 1=UTF-8
+    ⍝ `encoding` is a flag defining the encoding. 0 (the default) is ANSI, 1=UTF-8.
       :Access Public Instance
       :Implements Constructor
       constructorIsRunning←1
@@ -390,8 +392,8 @@
     ∇
 
     ∇ make3(path_ encoding_ filenameType_);constructorIsRunning;msg
-    ⍝ `filenameType_` (default: 'DATE') defines when a log files is reopened with a new name. _
-    ⍝ The default means that every night at 23:59:59 a new file is opened. _
+    ⍝ `filenameType_` (default: 'DATE') defines when a log files is reopened with a new name.
+    ⍝ The default means that every night at 23:59:59 a new file is opened.
     ⍝ Can be "MONTH" or "YEAR" instead.
       :Access Public Instance
       :Implements Constructor
@@ -423,7 +425,7 @@
     ∇
 
     ∇ make5(path_ encoding_ filenameType_ debug_ timestamp_);constructorIsRunning;msg
-    ⍝ `timestamp` defaults to `6↑⎕TS`. For testing purposes, for example the _
+    ⍝ `timestamp` defaults to `6↑⎕TS`. For testing purposes, for example the
     ⍝ re-open feature of the `Logging` class, you can specify a particular timestamp.
       :Access Public Instance
       :Implements Constructor
@@ -442,7 +444,7 @@
     ∇
 
     ∇ make6(path_ encoding_ filenameType_ debug_ timestamp_ refToUtils_);constructorIsRunning;msg
-    ⍝ `refToUtils` must be a ref to the namespace which contains `WinFile`.
+    ⍝ `refToUtils` must be a ref to the namespace which contains `FilesAndDirs`.
       :Access Public Instance
       :Implements Constructor
       constructorIsRunning←1
@@ -461,16 +463,16 @@
     ∇
 
     ∇ InitialyzeProperties
-    ⍝ Guess what: initialyzes the properties.
+    ⍝ Guess what: initialyzes the properties.\\
     ⍝ Called very early in the constructors but also by CreateCommandspace
       _active←1
       _fileFlag←1
       _debug←0                  ⍝ Switch of error trapping
-      _encoding←'ANSI'          ⍝ One of "ANSI", "ASCII", "UTF". Note that "ANSI" makes a difference to "ASCII" on Classic only.
+      _encoding←'ANSI'          ⍝ Either "ANSI" or "UTF".
       _autoReOpen←1             ⍝ re-opens log file with a new name according to the "filenameType"
       _filenameType←'DATE'      ⍝ default filenameType is "yyyymmdd" which is re-opened daily
       _printToSession←0         ⍝ If this is 1, every entry is printed to the session as well
-      _refToUtils←FindPathTo'WinFile'
+      _refToUtils←FindPathTo'FilesAndDirs'
       _path←''                  ⍝ Directory the log file will go into; empty=current dir
       _filename←''              ⍝ the actual name
       _timestamp←⍬              ⍝ To simulate []TS; ignored when debug=0
@@ -486,7 +488,7 @@
     ⍝ Is called by the "official" constructors but is private, strictly speaking.
       r←0
       msg←''
-      flag←9≠_refToUtils.⎕NC'WinFile'
+      flag←9≠_refToUtils.⎕NC'FilesAndDirs'
       :If ~0∊⍴_filename
       :AndIf _autoReOpen
           r←1
@@ -494,7 +496,7 @@
           :Return
       :EndIf
       :If flag
-          msg←'Not found: script "WinFile"'
+          msg←'Not found: script "FilesAndDirs"'
           :If _debug
               msg ⎕SIGNAL 6
           :Else flag
@@ -512,9 +514,9 @@
 
     ∇ r←CreatePropertySpace
       :Access Public Shared
-      ⍝ Use this to create a command space which can then be modified and finally _
-      ⍝ passed to the constructor
-      ⍝ Note that the resulting namespace contains a method `List` which prints _
+      ⍝ Use this to create a command space which can then be modified and finally
+      ⍝ passed to the constructor.\\
+      ⍝ Note that the resulting namespace contains a method `List` which prints
       ⍝ all names and their values to the session.
       r←⎕NS''
       InitialyzeProperties
@@ -538,8 +540,8 @@
 
     ∇ {r}←Log msg;rc;newFilename;flag;buffer;thisTimestamp;⎕TRAP
       :Access Public Instance
-    ⍝ Writes `msg` into the Log File.
-    ⍝ `r` gets the message written to the log file together with the time stamp and thread no.
+    ⍝ Writes `msg` into the Log File.\\
+    ⍝ `r` gets the message written to the log file together with the time stamp and thread no.\\
     ⍝ `msg` can be one of:
     ⍝ * A vector
     ⍝ * A matrix
@@ -565,9 +567,9 @@
     ∇ {r}←LogError y;rc;msg;more;⎕TRAP;timestamp
       :Access Public Instance
      ⍝ y is a two- or three-item vector with:
-     ⍝ # rc (Return code) 0 means that `LogError` won't do anything at all.
-     ⍝ # msg              Either a simple char vector or a vector of char vectors.
-     ⍝ # more (optional)  Any array that has a depth of 2 or less and a rank of 2 or less.
+     ⍝ | rc (Return code) | 0 means that `LogError` won't do anything at all.
+     ⍝ | msg              | Either a simple char vector or a vector of char vectors.
+     ⍝ | more (optional)  | Any array that has a depth of 2 or less and a rank of 2 or less.
      ⍝ Returns an empty vector in case rc←0 otherwise what was printed to the log file.
       r←''
       ⎕TRAP←(999 'E' '({⍵↑⍨1⍳⍨''rc=''{⍺⍷⍵}⍵}⎕IO⊃⎕DM)⎕SIGNAL {⍎⍵↑⍨-''=''⍳⍨⌽⍵}⎕IO⊃⎕DM')((0 1000)'N')
@@ -605,9 +607,9 @@
 ⍝ --------------- Private stuff
 
     ∇ (rc more filename)←MakeNewFilename filename
-    ⍝ Compiles a new filename and takes any changes in the timestamp into account.
+    ⍝ Compiles a new filename and takes any changes in the timestamp into account.\\
     ⍝ As a result, the compiled filename might differ from the one used so far.
-    ⍝ In that case, obviously the log file needs to be re-opened when autoReOpen←→1
+    ⍝ In that case, obviously the log file needs to be re-opened when `autoReOpen ←→ 1`.
       rc←0 ⋄ more←''
       :Trap SetTrap 0
           :If _autoReOpen
@@ -617,6 +619,7 @@
           :EndIf
           filename←_filenamePostfix{0∊⍴⍺:⍵ ⋄ ⍵,'_',⍺}filename
           filename←_filenamePrefix{0∊⍴⍺:⍵ ⋄ ⍺,'_',⍵}filename
+          'No log filename specified and autoReOpen is 0'⎕SIGNAL 11/⍨0∊⍴filename
       :Else
           :If _debug
               . ⍝ something is wrong here
@@ -678,7 +681,7 @@
               :EndIf
               _filename←newFilename
               :If ~0∊⍴_path
-                  :If ~'CREATE!'_refToUtils.WinFile.CheckPath _path
+                  :If ~'CREATE!'_refToUtils.FilesAndDirs.CheckPath _path
                       msg←'Could not open the log file, check the path'
                       :If _debug
                           msg ⎕SIGNAL 11
@@ -705,7 +708,7 @@
               :Else
                   ⎕SIGNAL 11
               :EndTrap
-              ((Timestamp 1),' ','*** Log File opened',CrLf)⎕NAPPEND _fileDescriptor Encoding
+              ((Timestamp 1),' ','*** Log File opened',CrLf)⎕NAPPEND _fileDescriptor 80
           :Else
               r←1
               msg←'Error during open of logfiles'
@@ -717,9 +720,9 @@
     ∇
 
     ∇ (r newFilename)←CheckForReopen;rc;hint;string
-     ⍝ r←0   if there is no need to re-open the log file
-     ⍝ r←1   if the log file needs to be re-opened
-     ⍝ r←¯1  in case of an error
+     ⍝ | `r←0` | if there is no need to re-open the log file.
+     ⍝ | `r←1` | if the log file needs to be re-opened.
+     ⍝ | r←¯1` | in case of an error.
       newFilename←''
       :If r←~0∊⍴,_autoReOpen
           (rc hint newFilename)←MakeNewFilename _filename
@@ -748,9 +751,10 @@
       :EndIf
     ∇
 
-    ∇ Close;This;was
+    ∇ {r}←Close;This;was
       :Access Public
     ⍝ Closes the log file
+      r←⍬
       :Trap 0
           Log'*** Log file closed'
       :EndTrap
@@ -760,16 +764,12 @@
 
     ∇ r←FullFilename
       :Access Public Instance
-    ⍝ Returns the fully qualified file name of the log file: path+filename
+    ⍝ Returns the fully qualified file name of the log file: path+filename.
       r←_path,_filename
+      (('\'=r)/r)←'/'
     ∇
 
 ⍝ --------------- Private stuff
-
-    ∇ r←Encoding
-      r←{82=⎕DR' ':82
-          ('ASCII' 'UTF8'⍳⊂⍵)⊃82 80 82}_encoding
-    ∇
 
     ∇ r←QavPoints
     ⍝ Returns the Unicode points of all chars in the standard ⎕AV:  ⎕UCS ⎕AV
@@ -791,10 +791,10 @@
       }
 
       ProcessEncoding←{
-          0=1↑0⍴∊⍵:'ASCII'
-          w←Uppercase ⍵
-          (⊂w)∊'ASCII' 'UTF8' 'ANSI':w
-          '' ⍝ invalid!
+          0=1↑0⍴∊⍵:'ANSI'
+          W←Uppercase ⍵
+          ~(⊂W)∊'UTF8' 'ANSI' 'ASCII':''
+          ('UTF8' 'ANSI' 'ASCII'⍳⊂W)⊃'UTF8' 'ANSI' 'ANSI'
       }
 
       PolishMsg←{
@@ -807,25 +807,17 @@
           r
       }
 
-    ∇ r←IsUnicodeInterpreter
-      r←80=⎕DR' '
-    ∇
-
-    ∇ txt←HandleEncoding txt;ascii;nestedFlag
+    ∇ txt←HandleEncoding txt;nestedFlag;ansi
       nestedFlag←0 1∧.<≡txt
       txt←Nest txt
-      :If (_encoding≡'UTF8')∧IsUnicodeInterpreter
+      :If _encoding≡'UTF8'
           txt←⎕UCS¨'UTF-8'∘⎕UCS¨txt
       :Else
-          :If IsUnicodeInterpreter
-              :If _encoding≡'ASCII'
-                  ascii←'1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM!"$%∧&*()-_=+]}[{#~''@;:/?.>,<\| ',⎕UCS 8 13 10
-                  txt←ascii∘{0=+/bool←~(w←⍵)∊⍺:w ⋄ (bool/w)←'?' ⋄ w}¨,¨txt
-              :Else
-                  txt←{~(⎕DR ⍵)∊80 160:⍕⍵ ⋄ 0=+/bool←128<⎕UCS w←⍵:⍵ ⋄ (bool/w)←'¿' ⋄ w}¨,¨txt  ⍝ replace non-ASCII chars by "¿"
-              :EndIf
+          :If _encoding≡'ANSI'
+              ansi←'1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM!"$%∧&*()-_=+]}[{#~''@;:/?.>,<\| ',⎕UCS 8 13 10
+              txt←ansi∘{0=+/bool←~(w←⍵)∊⍺:w ⋄ (bool/w)←'?' ⋄ w}¨,¨txt
           :Else
-                  ⍝ It's a "Classic" interpreter so it's ANSI by definition: we don't need to do anything here.
+              txt←{~(⎕DR ⍵)∊80 160:⍕⍵ ⋄ 0=+/bool←128<⎕UCS w←⍵:⍵ ⋄ (bool/w)←'¿' ⋄ w}¨,¨txt  ⍝ replace non-ansi chars by "¿"
           :EndIf
       :EndIf
       txt←∊⍣(↑~nestedFlag)⊣txt
@@ -852,7 +844,7 @@
           :EndIf
       :Case 1
           buffer←thisTimestamp,' (',(⍕⎕TID),') *** Log File is going to be closed and then reopened with a new filename',CrLf
-          buffer ⎕NAPPEND _fileDescriptor Encoding
+          buffer ⎕NAPPEND _fileDescriptor 80
           ⎕NUNTIE _fileDescriptor
           _fileDescriptor←⍬
           Open newFilename
@@ -864,13 +856,13 @@
       :EndSelect
       flag←0
       :Trap 0
-          (∊((Timestamp 1),' (',(⍕⎕TID),') ')∘,¨msg)⎕NAPPEND _fileDescriptor Encoding
+          (∊((Timestamp 1),' (',(⍕⎕TID),') ')∘,¨msg)⎕NAPPEND _fileDescriptor 80
           r←msg
       :Else
           _errorCounter+←1
           flag←1
           :Trap 0
-              ((Timestamp 1),' (',(⍕⎕TID),')')∘{(⍺,' ',∊⍵,CrLf)⎕NAPPEND _fileDescriptor Encoding}¨buffer←(⊂'Invalid msg passed via:'),1↓(⎕LC{⍵,' [',(⍕⍺),']'}¨⎕XSI)
+              ((Timestamp 1),' (',(⍕⎕TID),')')∘{(⍺,' ',∊⍵,CrLf)⎕NAPPEND _fileDescriptor 80}¨buffer←(⊂'Invalid msg passed via:'),1↓(⎕LC{⍵,' [',(⍕⍺),']'}¨⎕XSI)
           :EndTrap
       :EndTrap
       :If _printToSession
@@ -945,13 +937,14 @@
       Close2
     ∇
 
-    ∇ Close2
+    ∇ {r}←Close2
  ⍝ When the destructor (which calls "Close2"!) is finally executed _
  ⍝ the tie number originally used might well have be re-used by something _
  ⍝ else. That's the reason why we use a randomly generated tie number, _
  ⍝ and it also means that we need to check whether the file is still _
  ⍝ associated with the original (or any) file. Only then takes the
  ⍝ destructor action.
+      r←⍬
       :If 0<⎕NC'_fileDescriptor'
       :AndIf ⍬≢_fileDescriptor
       :AndIf _fileDescriptor∊⎕NNUMS

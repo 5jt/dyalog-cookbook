@@ -7,7 +7,7 @@
     (⎕IO ⎕ML ⎕WX)←1 1 3
 
 ⍝ Aliases
-    (A H L W)←#.(APLTreeUtils HandleError Logger WinFile) ⍝ from APLTree
+    (A F H L)←#.(APLTreeUtils FilesAndDirs HandleError Logger) ⍝ from APLTree
     (C U)←#.(Constants Utilities) ⍝ must be defined previously
 
 ⍝ Constants
@@ -32,7 +32,7 @@
 
       CountLetters←{
           accents←↓ACCENTS/⍨~ACCENTS[2;]∊⍺ ⍝ ignore accented chars in alphabet ⍺
-          ⍺{⍵[⍺⍋⍵[;1];]}{⍺(≢⍵)}⌸⍺{⍵⌿⍨⍵∊⍺}accents U.map U.toUppercase ⍵
+          ⍺{⍵[⍺⍋⍵[;1];]}{×≢⍵:{⍺(≢⍵)}⌸⍵ ⋄ 0 2⍴' ' 0}⍺{⍵⌿⍨⍵∊⍺}accents U.map U.toUppercase ⍵
       }
 
       retry←{
@@ -130,7 +130,7 @@
     ∇ exit←TxtToCsv fullfilepath;∆;Log;LogError;files;alpha;out
      ⍝ Write a sibling CSV of the TXT located at fullfilepath,
      ⍝ containing a frequency count of the letters in the file text
-      'CREATE!'W.CheckPath'Logs' ⍝ ensure subfolder of current dir
+      'CREATE!'F.CheckPath'Logs' ⍝ ensure subfolder of current dir
       ∆←L.CreatePropertySpace
       ∆.path←'Logs\' ⍝ subfolder of current directory
       ∆.encoding←'UTF8'
@@ -138,19 +138,24 @@
       ∆.refToUtils←#
       Log←⎕NEW L(,⊂∆)
      
-      Log.Log'Started MyApp in ',W.PWD
+      Log.Log'Started MyApp in ',F.PWD
       Log.Log'Source: ',fullfilepath
      
      ⍝ Output defaults to CSV sibling of source
       :If 0=×≢out←Params.output
+      :select C.NINFO.TYPE ⎕NINFO fullfilepath
+      :case C.TYPES.DIRECTORY
+          out←{'.CSV',⍨⍵↓⍨-'\'=⊃⌽⍵}fullfilepath
+      :case C.TYPES.FILE
           out←(⊃,/2↑⎕NPARTS fullfilepath),'.CSV'
+      :endselect
       :EndIf
      
       LogError←Log∘{code←EXIT⍎⍵ ⋄ code⊣⍺.LogError code ⍵}
      
       ⍝ Refine trap definition
       #.ErrorParms←H.CreateParms
-      #.ErrorParms.errorFolder←W.PWD
+      #.ErrorParms.errorFolder←F.PWD
       #.ErrorParms.returnCode←EXIT.APPLICATION_CRASHED
       #.ErrorParms.(logFunctionParent logFunction)←Log'Log'
       #.ErrorParms.trapInternalErrors←~A.IsDevelopment

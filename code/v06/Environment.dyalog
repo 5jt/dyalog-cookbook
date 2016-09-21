@@ -1,6 +1,6 @@
 ﻿:Namespace Environment
 ⍝ Dyalog Cookbook, Version 06
-⍝ Vern: sjt25jul16
+⍝ Vern: sjt10aug16
 
 ⍝ Environment
     (⎕IO ⎕ML ⎕WX)←1 1 3
@@ -8,33 +8,37 @@
 ⍝ Aliases
     U←#.Utilities ⍝ must be defined previously
 
-    ∇ Start mode;∆
+    ∇ Start mode;∆;args;env
     ⍝ Initialise workspace for development, export or use
     ⍝ mode: ['Develop' | 'Export' | 'Run']
-      :If mode≡'Run`'
+      :If mode≡'Run'
           ⍝ trap problems in startup
           #.⎕TRAP←0 'E' '#.HandleError.Process '''''
       :EndIf
       ⎕WSID←'MyApp'
      
-      'CREATE!'#.WinFile.CheckPath'Logs' ⍝ ensure subfolder of current dir
-      ∆←{
+      'CREATE!'#.FilesAndDirs.CheckPath'Logs' ⍝ ensure subfolder of current dir
+      ∆←mode{
           ⍵.path←'Logs\' ⍝ subfolder of current directory
           ⍵.encoding←'UTF8'
-          ⍵.filenamePrefix←'MyApp'
+          ⍵.filenamePrefix←'MyApp_',⊃⍺ ⍝ distinct logfiles for devt, export and run
           ⍵.refToUtils←#
           ⍵
       }#.Logger.CreatePropertySpace
       #.MyApp.Log←⎕NEW #.Logger(,⊂∆)
      
-      #.MyApp.Params←mode GetParameters #.MyApp.PARAMETERS 
+      args←⌷2 ⎕NQ'.' 'GetCommandLineArgs'   ⍝ command line
+      #.MyApp.Log.Log¨('Command line arg ['∘,¨(⍕¨⍳≢args),¨⊂']: '),¨args
+     
+      env←U.GetEnv                          ⍝ Windows Environment
+      #.MyApp.PARAMETERS GetParameters mode args env
      
       :Select mode
      
       :Case 'Develop'
           #.⎕TRAP←0⍴#.⎕TRAP
-          ⎕←'Alphabet is ',#.MyApp.Params.alphabet
-          ⎕←'Defined alphabets: ',⍕U.m2n #.MyApp.Params.ALPHABETS.⎕NL 2
+          ⎕←'Alphabet is ',#.MyApp.PARAMETERS.alphabet
+          ⎕←'Defined alphabets: ',⍕U.m2n #.MyApp.PARAMETERS.ALPHABETS.⎕NL 2
           #.Tester.EstablishHelpersIn #.Tests
           #.Tests.Run
      
@@ -47,18 +51,19 @@
      
       :Case 'Run'
           #.ErrorParms←{
-              ⍵.errorFolder←#.WinFile.PWD
+              ⍵.errorFolder←#.FilesAndDirs.PWD
               ⍵.returnCode←#.MyApp.EXIT.APPLICATION_CRASHED
               ⍵.(logFunctionParent logFunction)←(#.MyApp.Log)('Log')
               ⍵.trapInternalErrors←~#.APLTreeUtils.IsDevelopment
+              ⍵
           }#.HandleError.CreateParms
           #.⎕TRAP←0 'E' '#.HandleError.Process ''#.ErrorParms'''
-          Off #.MyApp.TxtToCsv #.MyApp.Params.source
+          mode Off #.MyApp.TxtToCsv #.MyApp.PARAMETERS.source
      
       :EndSelect
     ∇
 
-    ∇ msg←Export filename;type;flags;resource;icon;cmdline;nl
+    ∇ msg←Export filename;type;flags;resource;icon;cmdline;nl;success;try
       #.⎕LX←'#.Environment.Start ''Run'''
      
       type←'StandaloneNativeExe'
@@ -66,27 +71,31 @@
       resource←''
       icon←'.\images\gear.ico'
       cmdline←''
-      :Trap 0
-          2 ⎕NQ'.' 'Bind',filename type flags resource icon cmdline
-          msg←'Exported ',filename
-      :Else
-          msg←'**ERROR: Failed to export EXE.'
-      :EndTrap
+     
+      success←try←0
+      :Repeat
+          :Trap 11
+              2 ⎕NQ'.' 'Bind',filename type flags resource icon cmdline
+              success←1
+          :Else
+              ⎕DL 0.2
+          :EndTrap
+      :Until success∨50<try+←1
+      msg←⊃success⌽('**ERROR: Failed to export EXE')('Exported ',filename)
+      msg,←(try>1)/' after ',(⍕try),'tries'
+      #.MyApp.Log.Log msg
     ∇
 
-    ∇ Off returncode
-      :If #.APLTreeUtils.IsDevelopment
-          →
-      :Else
+    ∇ mode Off returncode
+      :If mode≡'Run'
           ⎕OFF returncode
+      :Else
+          →
       :EndIf
     ∇
 
-    ∇ p←mode GetParameters p;args;fromexe;fromallusers;fromcmdline;fromuser;env;alp;path;paths;ini;parm;vars;a;∆;PARAMS;k;v
+    ∇ p GetParameters(mode args env);fromexe;fromallusers;fromcmdline;fromuser;alp;path;paths;ini;parm;vars;a;∆;PARAMS;k;v
      ⍝ Derive parameters from defaults and command-line args (if any)
-     
-      args←⌷2 ⎕NQ'.' 'GetCommandLineArgs'   ⍝ Command Line
-      env←U.GetEnv                          ⍝ Windows Environment
      
      ⍝ An INI for this app as a sibling of the EXE
       fromexe←(⊃⎕NPARTS⊃args),⎕WSID,'.INI' ⍝ first arg is source of EXE
@@ -127,9 +136,9 @@
      
       :If mode≡'Run' ⍝ set params from the command line
       :AndIf ×≢a←{⍵/⍨'='∊¨⍵}args
-          ∆←a⍳¨'=' ⋄ (k v)←((∆-1)↑¨a)((∆+1)↓¨a)
+          ∆←a⍳¨'=' ⋄ (k v)←((∆-1)↑¨a)(∆↓¨a)
           ∆←(≢PARAMS)≥i←⊃⍳/U.toUppercase¨¨PARAMS k
-          (⍕PARAMS[∆/i])p.{⍎⍺,'←⍵'}∆/v
+          (⍕PARAMS[∆/i])p.{⍎⍺,'←⍵'}(⊃⍣(1=+/∆))∆/v
       :EndIf
     ∇
 

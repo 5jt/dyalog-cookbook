@@ -1,30 +1,38 @@
 ﻿:Class WinReg
 ⍝ Offers shared methods useful to deal with the Windows Registry.
-⍝ Note that the Window Registry contains data saved under a kind _
+⍝
+⍝ Note that the Window Registry contains data saved under a kind
 ⍝ of "path". Such a path consists of:
+⍝
 ⍝ * A so-called "Main Key" like HKEY_CURRENT_USER (or short HKCU)
-⍝ * A so called sub key (which is displayed by RegEdt32 as a folder) _
-⍝ like "HKEY_CURRENT_USER\Software\Dyalog\Dyalog APL/W 12.0"
+⍝ * A so called sub key (which is displayed by RegEdt32 as a folder)
+⍝   like "HKEY_CURRENT_USER\Software\Dyalog\Dyalog APL/W 12.0"
 ⍝ * A so-called value like "maxws"
-⍝ These terms might look strange but they are used by this class for _
+⍝
+⍝ These terms might look strange but they are used by this class for
 ⍝ the sake of consistency with the Microsoft documentation.
-⍝ This class is also able to read and write default values of a _
-⍝ sub-key. For that you have to add a "\" to the end of the sub-key.
-⍝ Note that the class as such does not come with any limitations _
-⍝ regarding the amount of data (REG_SZ, REG_MULTI, REG_EXPAND_SZ, _
-⍝ REG_BINARY) you can write. However, Microsoft suggest not to save _
-⍝ anything bigger than 2048 bytes (Unicode 4096?!) to avoid performance _
-⍝ penalties. One should save larger amounts of data in a file and _
+⍝
+⍝ `WinReg` is also able to read and write default values of a
+⍝ sub-key. For that you have to add a `\` to the end of the sub-key.
+⍝
+⍝ This class as such does not come with any limitations
+⍝ regarding the amount of data (REG_SZ, REG_MULTI, REG_EXPAND_SZ,
+⍝ REG_BINARY) you can write. However, Microsoft suggests not to save
+⍝ anything bigger than 2048 bytes (Unicode 4096?!) to avoid performance
+⍝ penalties. One should save larger amounts of data in a file and
 ⍝ save the filename rather then the data in the Registry.
-⍝ Note that this class supports only a limited number of data types ×
-⍝ for writing:
+⍝
+⍝ `WinReg` supports only a limited number of data types for writing:
+⍝
 ⍝ * REG_SZ (Strings)
 ⍝ * REG_EXPAND_SZ (STRINGS where variables between % get expanded on read)
 ⍝ * REG_MULTI_SZ (Vectors of strings)
 ⍝ * REG_BINARY (Binary data)
 ⍝ * REG_DWORD (32-bit signed integer)
+⍝
 ⍝ Author: Kai Jaeger ⋄ APL Team Ltd ⋄ http://aplteam.com
-⍝ Homepage: http://aplwiki.com/WinReg
+⍝
+⍝ Homepage: <http://aplwiki.com/WinReg>
     ⎕ML←3
     ⎕IO←1
 
@@ -32,11 +40,15 @@
 
     ∇ R←Version
       :Access Public Shared
-      R←(Last⍕⎕THIS)'2.5.1' '2015-06-03'
-      ⍝ 2.5.1  Wrong comment correected.
-      ⍝ 2.5.0: APL inline code is now marked up with ticks.
-      ⍝        `Version` now returns just the name, no path.
-      ⍝        `History` removed.
+      ⍝ * 2.7.0:
+      ⍝   * Requires ata least Dyalog 15.0 Unicode!
+      ⍝ * 2.6.0: Documentation improved and converted to Markdown (Requires at least ADOC 5.0).
+      ⍝ * 2.5.1: Wrong comment corrected.
+      ⍝ * 2.5.0:
+      ⍝   * APL inline code is now marked up with ticks.
+      ⍝   * `Version` now returns just the name, no path.
+      ⍝   * `History` removed.
+      R←(Last⍕⎕THIS)'2.7.0' '2016-09-01'
     ∇
 
   ⍝ All data types, including those not supported yet
@@ -96,10 +108,11 @@
 
     ∇ r←{default}GetString y;multiByte;yIsHandle;handle;value;subKey;path;bufSize;∆RegQueryValueEx;rc;type;data;errMsg
       :Access Public Shared
-    ⍝ Use this function in order to read a value of type REG_SZ or REG_EXPAND_SZ or REG_MULTI_SZ
-    ⍝ y can be one of:
-    ⍝ # A simple string which is supposed to be a full path then (sub-key plus value name).
-    ⍝ # A vector of length 2 with a handle to the sub-key in [1] and a value name in [2].
+    ⍝ Use this function in order to read a value of type REG_SZ or REG_EXPAND_SZ or REG_MULTI_SZ.
+    ⍝
+    ⍝ `⍵` can be one of:
+    ⍝ * A simple string which is supposed to be a full path then (sub-key plus value name).
+    ⍝ * A vector of length 2 with a handle to the sub-key in [1] and a value name in [2].
       default←{0<⎕NC ⍵:⍎⍵ ⋄ ''}'default'
       r←default
       multiByte←1+80=⎕DR'A' ⍝ 2 in Unicode System
@@ -128,7 +141,7 @@
           :Return
       :EndIf
       value←((,'\')≢,value)/value        ⍝ For access to the default value
-      '∆RegQueryValueEx'⎕NA'I ADVAPI32.dll.C32|RegQueryValueEx',AnsiOrWide,' U <0T I =I >0T =I4'
+      '∆RegQueryValueEx'⎕NA'I ADVAPI32.dll.C32|RegQueryValueEx* U <0T I =I >0T =I4'
       bufSize←1024
       :Repeat
           (rc type data bufSize)←∆RegQueryValueEx handle value 0 REG_SZ,bufSize bufSize
@@ -137,7 +150,7 @@
       :If type=REG_EXPAND_SZ
           data←ExpandEnv data
       :ElseIf type=REG_MULTI_SZ
-          '∆RegQueryValueEx'⎕NA'I ADVAPI32.dll.C32|RegQueryValueEx',AnsiOrWide,' U <0T I =I >T[] =I4'
+          '∆RegQueryValueEx'⎕NA'I ADVAPI32.dll.C32|RegQueryValueEx* U <0T I =I >T[] =I4'
           :Repeat
               (rc type data bufSize)←∆RegQueryValueEx handle value 0 REG_SZ,bufSize bufSize
               :If type=REG_MULTI_SZ ⋄ :Leave ⋄ :EndIf
@@ -165,20 +178,22 @@
 
     ∇ r←ListReg
       :Access Public Shared
-      ⍝ List all vars starting with "REG_"
+      ⍝ List all vars starting with "REG\_"
       r←List'REG_'
       r←r,[1.5]⍎¨r
     ∇
 
     ∇ r←{default}GetValue y;yIsHandle;handle;value;subKey;∆RegQueryValueEx;type;rc;errMsg;bufSize;length;data
       :Access Public Shared
-    ⍝ y can be either a vector of length one or two:
-    ⍝ If length 1:
-    ⍝   [1] path (subkey + value name)
-    ⍝ If length 2:
-    ⍝   [1] handle to the sub key
-    ⍝   [2] value name
-    ⍝ Returns the data saved as "path" in the Registry, or "Default". The data type is _
+    ⍝ `⍵` can be either a vector of length one or two:
+    ⍝
+    ⍝ * If length 1:
+    ⍝   * [1] path (subkey + value name)
+    ⍝ * If length 2:
+    ⍝   * [1] handle to the sub key
+    ⍝   * [2] value name
+    ⍝
+    ⍝ Returns the data saved as "path" in the Registry, or "Default". The data type is
     ⍝ determined from the Registry.
       default←{0<⎕NC ⍵:⍎⍵ ⋄ 0}'default'
       r←default
@@ -194,7 +209,7 @@
           :If ~DoesKeyExist subKey ⋄ :Return ⋄ :EndIf
           handle←OpenKey subKey
       :EndIf
-      '∆RegQueryValueEx'⎕NA'I ADVAPI32.dll.C32|RegQueryValueEx',AnsiOrWide,' U <0T I >I >I4 =I4'
+      '∆RegQueryValueEx'⎕NA'I ADVAPI32.dll.C32|RegQueryValueEx* U <0T I >I >I4 =I4'
       :If (,'\')≡,value
           value←''       ⍝ Default value has no value name
       :EndIf
@@ -209,11 +224,11 @@
       bufSize←1024
       :Select type
       :Case REG_BINARY
-          '∆RegQueryValueEx'⎕NA'I ADVAPI32.dll.C32|RegQueryValueEx',AnsiOrWide,' U <0T I >I4 >I1[] =I4 '
+          '∆RegQueryValueEx'⎕NA'I ADVAPI32.dll.C32|RegQueryValueEx* U <0T I >I4 >I1[] =I4 '
       :Case REG_DWORD
-          '∆RegQueryValueEx'⎕NA'I ADVAPI32.dll.C32|RegQueryValueEx',AnsiOrWide,' U <0T I >I4 >I4 =I4'
+          '∆RegQueryValueEx'⎕NA'I ADVAPI32.dll.C32|RegQueryValueEx* U <0T I >I4 >I4 =I4'
       :CaseList REG_SZ,REG_EXPAND_SZ,REG_MULTI_SZ
-          '∆RegQueryValueEx'⎕NA'I ADVAPI32.dll.C32|RegQueryValueEx',AnsiOrWide,' U <0T I =I >T[] =I4'
+          '∆RegQueryValueEx'⎕NA'I ADVAPI32.dll.C32|RegQueryValueEx* U <0T I =I >T[] =I4'
       :Else
           ('WinReg error: unsupported data type: ',GetTypeAsString type)⎕SIGNAL 11
       :EndSelect
@@ -235,7 +250,7 @@
 
     ∇ {r}←{type}PutString y;yIsHandle;path;data;value;subKey;handle;multiByte;rc
       :Access Public Shared
-    ⍝ y can be either a vector of length two or three:
+    ⍝ `⍵` can be either a vector of length two or three:
     ⍝ If length 2:
     ⍝   [1] path (subkey + value name)
     ⍝   [2] data to be saved
@@ -243,10 +258,12 @@
     ⍝   [1] handle to the sub key
     ⍝   [2] value name
     ⍝   [3] data to be saved
-    ⍝ Stores "data" under `¯1↓y`. If "path" ends with a "\" char, "data" _
+    ⍝ Stores "data" under `¯1↓y`. If "path" ends with a "\\" char, "data"
     ⍝ is saved as the default value of "path"; data type is always "REG_SZ" then.
-    ⍝ Note that type defaults to "REG_SZ" except when "data" is nested, then _
+    ⍝
+    ⍝ Note that type defaults to "REG_SZ" except when "data" is nested, then
     ⍝ the default is "REG_MULTI_SZ.
+    ⍝
     ⍝ You can set "type" to one of: REG_SZ, REG_EXPAND_SZ, REG_MULTI_SZ.
       :Select ↑⍴,y
       :Case 2
@@ -277,7 +294,7 @@
           data←data,{NULL=⍵:'' ⋄ NULL}¯1↑data
       :EndIf
       'WinReg error: invalid data type - must be one of REG_SZ,REG_MULTI_SZ,REG_EXPAND_SZ'⎕SIGNAL 11/⍨~type∊REG_SZ,REG_MULTI_SZ,REG_EXPAND_SZ
-      '∆RegSetValueEx'⎕NA'I ADVAPI32.dll.C32|RegSetValueEx',AnsiOrWide,' I <0T I I <T[] I'
+      '∆RegSetValueEx'⎕NA'I ADVAPI32.dll.C32|RegSetValueEx* I <0T I I <T[] I'
       :If yIsHandle
       :AndIf (,'\')≡,value
           rc←∆RegSetValueEx handle'' 0 type data(multiByte×↑⍴data)
@@ -291,12 +308,14 @@
 
     ∇ {r}←PutValue y;yIsHandle;data;path;subKey;value;handle;multiByte;∆RegSetValueEx
       :Access Public Shared
-    ⍝ Stores "data" under "path". Note that you cannot save a default value _
-    ⍝ with "PutValue" (=path ends with a backslash) because default values _
-    ⍝ MUST be of type REG_SZ. Therefore use "PutString" in order to set a _
-    ⍝ default value. If path ends with a backslash, an exception is thrown.
-    ⍝ Note that you can only save REG_DWORDs with PutVales, that is 32-bit _
-    ⍝ integers.
+    ⍝ Stores "data" under "path". Note that you cannot save a default value
+    ⍝ with `PutValue` (=path ends with a backslash) because default values
+    ⍝ **must** be of type REG_SZ. Therefore use `PutString` in order to set a
+    ⍝ default value.
+    ⍝
+    ⍝ If path ends with a backslash, an exception is thrown.
+    ⍝
+    ⍝ Note that you can only save REG_DWORDs with PutVales, that is 32-bit integers.
       :Select ↑⍴,y
       :Case 2
           yIsHandle←0
@@ -314,7 +333,7 @@
       :EndSelect
       data←,data
      ⍝ multiByte←1+80=⎕DR'A' ⍝ 2 in Unicode System
-      '∆RegSetValueEx'⎕NA'I ADVAPI32.dll.C32|RegSetValueEx',AnsiOrWide,' I <0T I I <I4 I'
+      '∆RegSetValueEx'⎕NA'I ADVAPI32.dll.C32|RegSetValueEx* I <0T I I <I4 I'
       :If (1≠≡data)∨1≠⍴data←,data
           Close(~yIsHandle)/handle
           'WinReg error: data has invalid depth/shape'⎕SIGNAL 11
@@ -335,15 +354,20 @@
     ∇ {r}←PutBinary y;yIsHandle;path;data;value;subKey;handle;multiByte;∆RegSetValueEx
       :Access Public Shared
     ⍝ Stores binary "data".
-    ⍝ y may be one of:
-    ⍝ # A vector of length 2 with the full path (sub-key + value name) in _
+    ⍝
+    ⍝ `⍵` may be one of:
+    ⍝ * A vector of length 2 with the full path (sub-key + value name) in
     ⍝   the first item and the data in the second item.
-    ⍝ # A vector of length 3 with a handle in [1], the value name in [2] _
+    ⍝ * A vector of length 3 with a handle in [1], the value name in [2]
     ⍝   and the data in [3].
-    ⍝ Note that you cannot save a default _
-    ⍝ value with "PutBinary" (=path ends with a backslash) because default _
-    ⍝ values MUST be of type REG_SZ. Therefore use "PutString" in order to _
-    ⍝ set a default value. If path ends with a backslash, an exception is thrown.
+    ⍝
+    ⍝ Note that you cannot save a default
+    ⍝ value with `PutBinary` (=path ends with a backslash) because default
+    ⍝ values *must* be of type REG_SZ. Therefore use `PutString` in order to
+    ⍝ set a default value.
+    ⍝
+    ⍝ If path ends with a backslash, an exception is thrown.
+    ⍝
     ⍝ Note that for binary you must specify Integer (¯128 to 128).
       :Select ↑⍴,y
       :Case 2
@@ -363,21 +387,23 @@
       :EndSelect
       data←,data
       'WinReg error: invalid data for "Binary"'⎕SIGNAL 11/⍨∨/~data∊¯129+⍳256
-      '∆RegSetValueEx'⎕NA'I ADVAPI32.dll.C32|RegSetValueEx',AnsiOrWide,' I <0T I I <I1[] I'
+      '∆RegSetValueEx'⎕NA'I ADVAPI32.dll.C32|RegSetValueEx* I <0T I I <I1[] I'
       _←∆RegSetValueEx handle value 0 REG_BINARY data(↑⍴data)
       Close(~yIsHandle)/handle
       r←⍬
     ∇
 
     ∇ r←KeyInfo y;yIsHandle;handle;∆RegQueryInfoKey;buffer;rc;noofValues;noofSubKeys;maxNameLength;maxValueLength
-    ⍝ Returns a vector with information about the Key (not Value!) in question
-    ⍝ # No. of values
-    ⍝ # No. of subkeys
-    ⍝ # Largest length of all value names (without \n)
-    ⍝ # Largest length of value data (without \n)
-    ⍝ y can be one of:
-    ⍝ # A handle
-    ⍝ # A path (sub key)
+    ⍝ Returns a vector with information about the Key (not Value!) in question.
+    ⍝
+    ⍝ 1. No. of values
+    ⍝ 1. No. of subkeys
+    ⍝ 1. Largest length of all value names (without \\n)
+    ⍝ 1. Largest length of value data (without \\n)
+    ⍝
+    ⍝ `y` can be one of:
+    ⍝ * A handle
+    ⍝ * A path (sub key)
       :Access Public Shared
       :If (0=1↑0⍴y)∧1=⍴,y       ⍝ Is it a handle?
           yIsHandle←1
@@ -388,7 +414,7 @@
       :Else
           'WinReg error: invalid right argument'⎕SIGNAL 11
       :EndIf
-      '∆RegQueryInfoKey'⎕NA'I ADVAPI32|RegQueryInfoKey',AnsiOrWide,' I >T[] =I I >I >I >I >I >I >I >I >{U U}'
+      '∆RegQueryInfoKey'⎕NA'I ADVAPI32|RegQueryInfoKey* I >T[] =I I >I >I >I >I >I >I >I >{U U}'
       buffer←∆RegQueryInfoKey handle 0 0 0 1 1 1 1 0 0 0 0
       rc←1⊃buffer
       :If 0=rc
@@ -406,20 +432,25 @@
 
     ∇ r←GetAllValues y
       :Access Public Shared
+      ⍝⍝  ⍝TODO⍝  ⍝TODO⍝  ⍝TODO⍝
       ⍝ DEPRECATED
       ⍝ This was a misnomer from the start.
-      ⍝ Expect this method to disappear in the next major release.
+      ⍝
+      ⍝ This method will disappear with version 3.0
       r←GetAllNamesAndValues y
     ∇
 
     ∇ r←GetAllNamesAndValues y;names;handle;noof;i;yIsHandle
-    ⍝ This method gets all values for a given subkey
-    ⍝ r is a matrix with:
-    ⍝ [;1] Value name
-    ⍝ [;2] The data
-    ⍝ y can be one of:
-    ⍝ # A string representing a path (sub key)
-    ⍝ # A handle
+    ⍝ This method gets all values for a given subkey.
+    ⍝
+    ⍝ `r` is a matrix with:
+    ⍝ |[;1]| Value name
+    ⍝ |[;2]| The data
+    ⍝
+    ⍝ `⍵` can be one of:
+    ⍝
+    ⍝ * A string representing a path (sub key)
+    ⍝ * A handle
       :Access Public Shared
       :If (0=1↑0⍴y)∧1=⍴,y       ⍝ Is it a handle?
           yIsHandle←1
@@ -447,14 +478,18 @@
 
     ∇ r←{verbose}GetAllValueNames y;yIsHandle;handle;noofValues;noofSubkeys;For;∆RegEnumValue;i;rc;data;length;type;keyLength;dataLength
     ⍝ This method gets all value names for a given subkey.
-    ⍝ r is a vector with value names or, if the left argument is the string _
+    ⍝
+    ⍝ `r` is a vector with value names or, if the left argument is the string
     ⍝ "verbose" (default is `''`), a matrix with 2 columns:
-    ⍝ [;1] names
-    ⍝ [;2] data types
-    ⍝ y can be one of:
-    ⍝ # A string which is treated as a path (sub key)
-    ⍝ # An integer which is treated as a handle
-    ⍝ Note that for a default value a "\" is returned as value name.
+    ⍝
+    ⍝ |[;1]| names
+    ⍝ |[;2]| data types
+    ⍝ `⍵` can be one of:
+    ⍝
+    ⍝ * A string which is treated as a path (sub key)
+    ⍝ * An integer which is treated as a handle
+    ⍝
+    ⍝ Note that for a default value a "\\" is returned as value name.
       :Access Public Shared
       verbose←{2=⎕NC ⍵:'verbose'≡⍎⍵ ⋄ 0}'verbose'
       :If (0=1↑0⍴y)∧1=⍴,y       ⍝ Is it a handle?
@@ -467,7 +502,7 @@
       :Else
           'WinReg error: invalid right argument'⎕SIGNAL 11
       :EndIf
-      '∆RegEnumValue'⎕NA'I ADVAPI32|RegEnumValue',AnsiOrWide,' I I >T[] =I I >I >T[] =I'
+      '∆RegEnumValue'⎕NA'I ADVAPI32|RegEnumValue* I I >T[] =I I >I >T[] =I'
       (noofValues noofSubkeys keyLength dataLength)←4↑KeyInfo handle  ⍝ No. of values, no. of SubKeys, max name length, data length
       r←(noofValues,2)⍴' '
       :For i :In (⍳noofValues)-1
@@ -501,7 +536,7 @@
       :Else
           'WinReg error: invalid right argument'⎕SIGNAL 11
       :EndIf
-      '∆RegEnumKey'⎕NA'I ADVAPI32|RegEnumKeyEx',AnsiOrWide,' I4 I4 >T[] =P P P P P'
+      '∆RegEnumKey'⎕NA'I ADVAPI32|RegEnumKeyEx* I4 I4 >T[] =P P P P P'
       flag←i←0
       bufSize←1024×1+80=⎕DR''
       r←''
@@ -526,10 +561,11 @@
 
     ∇ r←{depth}GetTree key;handle;depth;allValues;AllSubKeys;thisSubKey;buffer;allSubKeys
     ⍝ Takes the name of a key (but no handle!) and returns a (possibly empty) matrix with:
-    ⍝ [;1] depth
-    ⍝ [;2] fully qualified name
+    ⍝ |[;1]| depth
+    ⍝ |[;2]| fully qualified name
     ⍝ Note that sub-keys end with a backslash.
-    ⍝ See "GetTreeWithValues" if you need the data of the values, too.
+    ⍝
+    ⍝ See `GetTreeWithValues` if you need the data of the values, too.
       :Access Public Shared
       depth←{0=⎕NC ⍵:0 ⋄ ⍎⍵}'depth'
       :If (0=1↑0⍴key)∧1=⍴,key                   ⍝ Is it a valid handle?
@@ -559,11 +595,12 @@
 
     ∇ r←{depth}GetTreeWithValues key;handle;depth;allValues;AllSubKeys;thisSubKey;buffer;allSubKeys
     ⍝ Takes the name of a key (but no handle!) and returns a (possibly empty) matrix with:
-    ⍝ [;1] depth
-    ⍝ [;2] fully qualified name
-    ⍝ [;3] value data (empty for sub-keys)
+    ⍝ |[;1]| depth
+    ⍝ |[;2]| fully qualified name
+    ⍝ |[;3]| value data (empty for sub-keys)
     ⍝ Note that sub-keys end with a backslash.
-    ⍝ See "GetTree" if you don't need the data of the values.
+    ⍝
+    ⍝ See `GetTree` if you don't need the data of the values.
       :Access Public Shared
       depth←{0=⎕NC ⍵:0 ⋄ ⍎⍵}'depth'
       :If (0=1↑0⍴key)∧1=⍴,key                   ⍝ Is it a valid handle?
@@ -594,11 +631,13 @@
 
     ∇ {r}←CopyTree(source destination);sourceHandle;destinationHandle;wv;sourceIsHandle;destinationIsHandle;∆RegCopyTree
       :Access Public Shared
-     ⍝ Use this to copy a Registry Key from "source" to "destination".
+     ⍝ Use this to copy a Registry Key from `source` to `destination`.
+     ⍝
      ⍝ Note that this method needs at least Vista.
-     ⍝ Both, "source" as well as "destination" can be one of:
-     ⍝ # A path (sub key)
-     ⍝ # A handle
+     ⍝
+     ⍝ Both, `source` as well as `destination` can be one of:
+     ⍝ * A path (sub key)
+     ⍝ * A handle
       :If (0=1↑0⍴source)∧1=⍴,source       ⍝ Is it a handle?
           sourceIsHandle←1
           sourceHandle←source
@@ -623,7 +662,7 @@
       wv←GetVersion                 ⍝ Get the Windows version
       'WinReg error: "CopyTree" is not supported in this version of Windows'⎕SIGNAL 11/⍨6>1⊃wv
       'WinReg error: recursive copy failed'⎕SIGNAL 11/⍨source≡(⍴source)↑destination
-      '∆RegCopyTree'⎕NA'I ADVAPI32.dll.C32|RegCopyTree',AnsiOrWide,' U <0T[] U'
+      '∆RegCopyTree'⎕NA'I ADVAPI32.dll.C32|RegCopyTree* U <0T[] U'
       r←∆RegCopyTree sourceHandle''destinationHandle
       Close(~sourceIsHandle)/sourceHandle
       Close(~destinationIsHandle)/destinationHandle
@@ -632,12 +671,15 @@
     ∇ {r}←DeleteSubKey y;handle;HKEY;subKey;∆RegDeleteKey;wv;yIsHandle;path
       :Access Public Shared
      ⍝ Deletes a subkey "path", even if this subkeys holds values.
-     ⍝ The subkey to be deleted must not have subkeys. (You can achieve _
-     ⍝ this with the "DeleteSubKeyTree" function, see there)
-     ⍝ y can be one of:
-     ⍝ # A string which is treated as a path (sub key)
-     ⍝ # An integer which is treated as a handle
-     ⍝ Note that for a default value a "\" is returned as value name.
+     ⍝
+     ⍝ The subkey to be deleted must not have subkeys. (You can achieve
+     ⍝ this with the `DeleteSubKeyTree` function, see there)
+     ⍝
+     ⍝ `⍵` can be one of:
+     ⍝ * A string which is treated as a path (sub key)
+     ⍝ * An integer which is treated as a handle
+     ⍝
+     ⍝ Note that for a default value a "\\" is returned as value name.
       :Access Public Shared
       :If (0=1↑0⍴y)∧1=⍴,y       ⍝ Is it a handle?
           handle←y
@@ -654,7 +696,7 @@
       :If 0=handle ⋄ r←0 ⋄ :Return ⋄ :EndIf  ⍝ handle is 0? Nothing to delete then.
       wv←GetVersion                 ⍝ Get the Windows version
       'WinReg error: "DeleteSubKey" is not supported in this version of Windows'⎕SIGNAL 11/⍨6>1⊃wv
-      '∆RegDeleteKey'⎕NA'I ADVAPI32.dll.C32|RegDeleteKey',AnsiOrWide,' U <0T[]'
+      '∆RegDeleteKey'⎕NA'I ADVAPI32.dll.C32|RegDeleteKey* U <0T[]'
       r←∆RegDeleteKey handle subKey
       Close(~yIsHandle)/handle
     ∇
@@ -662,11 +704,14 @@
     ∇ {r}←DeleteSubKeyTree y;handle;∆RegDeleteTree;yIsHandle;subKey;path
       :Access Public Shared
      ⍝ Deletes a subkey "path", even if this subkeys holds values.
+     ⍝
      ⍝ Any subkeys in "path" will be deleted as well.
+     ⍝
      ⍝ Note that this methods needs at least Vista.
-     ⍝ y can be one of:
-     ⍝ # A path (sub key)
-     ⍝ # A handle to a sub key
+     ⍝
+     ⍝ `⍵` can be one of:
+     ⍝ * A path (sub key)
+     ⍝ * A handle to a sub key
       'WinReg error: right argument must not be empty'⎕SIGNAL 11/⍨0∊⍴y
       :If 1≠≡y
       :AndIf (0=1↑0⍴1⊃,y)∧1=⍴,1⊃,y       ⍝ Is it a handle?
@@ -681,7 +726,7 @@
       :Else
           'WinReg error: invalid right argument'⎕SIGNAL 11
       :EndIf
-      '∆RegDeleteTree'⎕NA'I ADVAPI32.dll.C32|RegDeleteTree',AnsiOrWide,' U <0T[]'
+      '∆RegDeleteTree'⎕NA'I ADVAPI32.dll.C32|RegDeleteTree* U <0T[]'
       r←∆RegDeleteTree handle subKey
       Close(~yIsHandle)/handle
     ∇
@@ -689,10 +734,11 @@
     ∇ {r}←DeleteValue y;path;RegDeleteValueA;handle;∆RegDeleteValue;value;subKey;yIsHandle
       :Access Public Shared
      ⍝ Delete a value from the Windows Registry.
-     ⍝ y can be one of:
-     ⍝ [1] A full path (sub key + value name)
-     ⍝ [2] A vector of length 2 with a handle in [1] and a value name in [2]
-     ⍝ This method normally returns either ERROR_SUCCESS or ERROR_FILE_NOT_FOUND ×
+     ⍝
+     ⍝ `⍵` can be one of:
+     ⍝ |[1]| A full path (sub key + value name)
+     ⍝ |[2]| A vector of length 2 with a handle in [1] and a value name in [2]
+     ⍝ This method normally returns either ERROR_SUCCESS or ERROR_FILE_NOT_FOUND
      ⍝ in case the value did not exist from the start.
       :If 1≠≡y
       :AndIf (0=1↑0⍴1⊃,y)∧1=⍴,1⊃,y       ⍝ Is it a handle?
@@ -706,16 +752,17 @@
       :Else
           'WinReg error: invalid right argument'⎕SIGNAL 11
       :EndIf
-      '∆RegDeleteValue'⎕NA'I ADVAPI32.dll.C32|RegDeleteValue',AnsiOrWide,' U <0T[]'
+      '∆RegDeleteValue'⎕NA'I ADVAPI32.dll.C32|RegDeleteValue* U <0T[]'
       r←∆RegDeleteValue handle value
       Close(~yIsHandle)/handle
     ∇
 
     ∇ bool←DoesKeyExist path;handle
       :Access Public Shared
-    ⍝ Checks if a given Registry key exists
-    ⍝ Note that you cannot pass a handle as right argument because _
-    ⍝ that makes no sense: if there is a handle the sub key MUST exist.
+    ⍝ Checks if a given Registry key exists.
+    ⍝
+    ⍝ Note that you cannot pass a handle as right argument because
+    ⍝ that makes no sense: if there is a handle the sub key **must** exist.
       'WinReg error: right argument must not be empty'⎕SIGNAL 11/⍨0∊⍴path
       handle←OpenKey path
       bool←handle≠0
@@ -723,8 +770,8 @@
     ∇
 
     ∇ r←GetTypeAsStringFrom value;l;values;mask
-    ⍝ Use this to convert a value like 3 to REG_BINARY or 'REG_BINARY' _
-    ⍝ into 3. Specify an empty argument to get a matrix with all possible _
+    ⍝ Use this to convert a value like 3 to REG_BINARY or 'REG_BINARY'
+    ⍝ into 3. Specify an empty argument to get a matrix with all possible
     ⍝ names and their values.
       :Access Public Shared
       'WinReg error: invalid right argument'⎕SIGNAL 11/⍨~0 1∊⍨≡value
@@ -734,7 +781,8 @@
 
     ∇ r←GetErrorAsStringFrom value;l;values;mask
     ⍝ Use this to convert a value like 8 to "ERROR_NOT_ENOUGH_MEMORY".
-    ⍝ Specify an empty argument to get a matrix with all possible _
+    ⍝
+    ⍝ Specify an empty argument to get a matrix with all possible
     ⍝ names and their values.
       :Access Public Shared
       'WinReg error: invalid right argument'⎕SIGNAL 11/⍨~0 1∊⍨≡value
@@ -745,9 +793,10 @@
     ∇ bool←DoesValueExist y;names;yIsHandle;value;handle;subKey
       :Access Public Shared
     ⍝ Checks if a value exists in the Registry.
-    ⍝ y can be one of:
-    ⍝ # Path (sub key)
-    ⍝ # A handle to a sub key
+    ⍝
+    ⍝ `⍵` can be one of:
+    ⍝ * Path (sub key)
+    ⍝ * A handle to a sub key
       :If 1≠≡y
       :AndIf (0=1↑0⍴1⊃,y)∧1=⍴,1⊃,y       ⍝ Is it a handle?
           yIsHandle←1
@@ -780,8 +829,10 @@
 
     ∇ handle←{accessRights}OpenKey path;HKEY;subKey;∆RegCreateKeyEx;rc
     ⍝ Opens a key. This will fail if the key does not already exist.
-    ⍝ See also: OpenKeyAndCreate
-    ⍝ The optional left argument defaults to KEY_ALL_ACCESS which includes "Create"). _
+    ⍝
+    ⍝ See also: [`OpenKeyAndCreate`](#).
+    ⍝
+    ⍝ The optional left argument defaults to KEY_ALL_ACCESS which includes "Create").
     ⍝ Instead you can specify KEY_READ in case of lacking the rights to create anything.
       :Access Public Shared
       accessRights←{2=⎕NC ⍵:⍎⍵ ⋄ KEY_ALL_ACCESS}'accessRights'
@@ -792,14 +843,16 @@
       :Else
           HKEY←Get_HKEY_From'HKEY_CURRENT_USER'  ⍝ Default
       :EndIf
-      '∆RegCreateKeyEx'⎕NA'I ADVAPI32.dll.C32|RegOpenKeyEx',AnsiOrWide,' U <0T I I >I'
+      '∆RegCreateKeyEx'⎕NA'I ADVAPI32.dll.C32|RegOpenKeyEx* U <0T I I >I'
       (rc handle)←∆RegCreateKeyEx HKEY subKey 0 accessRights 1
       ('WinReg error: opening Registry key failed with ',ConvertErrorCode rc)⎕SIGNAL 11/⍨~rc∊ERROR_SUCCESS,ERROR_FILE_NOT_FOUND
     ∇
 
     ∇ handle←OpenAndCreateKey path;HKEY;subKey;∆RegCreateKeyEx;rc;newFlag
     ⍝ Opens a key. If the key does not already exist it is going to be created.
-    ⍝ See also: OpenKey
+    ⍝
+    ⍝ See also: [`OpenKey`](#).
+    ⍝
     ⍝ Note that this method needs KEY_ALL_ACCESS otherwise it cannot work properly.
       :Access Public Shared
       path←CheckPath path
@@ -809,13 +862,13 @@
       :Else
           HKEY←Get_HKEY_From'HKEY_CURRENT_USER'  ⍝ Default
       :EndIf
-      '∆RegCreateKeyEx'⎕NA'I ADVAPI32.dll.C32|RegCreateKeyEx',AnsiOrWide,' U <0T I <0T I I I >U >U'
+      '∆RegCreateKeyEx'⎕NA'I ADVAPI32.dll.C32|RegCreateKeyEx* U <0T I <0T I I I >U >U'
       (rc handle newFlag)←∆RegCreateKeyEx HKEY subKey 0 '' 0 KEY_ALL_ACCESS 0 1 1
       ('WinReg error: opening/creating Registry key failed with ',ConvertErrorCode rc)⎕SIGNAL 11/⍨ERROR_SUCCESS≠rc
     ∇
 
     ∇ r←GetDyalogRegPath aplVersion;v
-    ⍝ Returns the full Registry key for `aplVersion` which defaults to '#'⎕WG'APLVersion' when empty.
+    ⍝ Returns the full Registry key for `aplVersion` which defaults to `'#' ⎕WG 'APLVersion'` when empty.
       :Access Public Shared
       r←'HKEY_CURRENT_USER\Software\Dyalog\Dyalog APL/W'
       v←{0∊⍴⍵:'#'⎕WG'APLVersion' ⋄ ⍵}aplVersion
@@ -907,7 +960,7 @@
     ⍝ Example:
     ⍝ <pre>'C:\Windows\MyDir' ←→ ExpandEnv '%WinDir%\MyDir'</pre>
       :If '%'∊R←Y
-          'ExpandEnvironmentStrings'⎕NA'I4 KERNEL32.C32|ExpandEnvironmentStrings',AnsiOrWide,' <0T >0T I4'
+          'ExpandEnvironmentStrings'⎕NA'I4 KERNEL32.C32|ExpandEnvironmentStrings* <0T >0T I4'
           multiByte←1+80=⎕DR' '       ⍝ Unicode version? (used to double the buffer size)
           R←2⊃ExpandEnvironmentStrings(Y(multiByte×1024)(multiByte×1024))
       :EndIf
@@ -927,11 +980,6 @@
       :Case REG_MULTI_SZ
           r←Partition(¯1+length÷1+multiByte)↑data
       :EndSelect
-    ∇
-
-    ∇ r←AnsiOrWide;⎕IO
-      ⎕IO←0
-      r←'*A'⊃⍨12>{⍎⍵↑⍨⍵⍳'.'}1⊃'.'⎕WG'APLVersion'
     ∇
 
     ∇ r←mat GetAsString value;values

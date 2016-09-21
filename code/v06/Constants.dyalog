@@ -1,8 +1,13 @@
 ﻿:Namespace Constants
-⍝ Dyalog Cookbook, Version 03
-⍝ Vern: sjt25apr16
+⍝ Dyalog Cookbook, Version 063
+⍝ Vern: sjt06aug16
 
     ⍝ Dyalog constants
+
+    :Namespace NGET
+        CHARS←0
+        LINES←1
+    :EndNamespace
 
     :Namespace NINFO
 

@@ -1,27 +1,26 @@
 ﻿:Class IniFiles
-⍝ == APL-like INI files
-⍝ === Overview
+⍝ ## APL-like INI files
+⍝ ### Overview
 ⍝ This class provides a kind of APL-like INI files.
-⍝ ````
+⍝ ~~~
 ⍝ MyInstance1←⎕NEW IniFiles (⊂,'MyIniFile.ini')
 ⍝ MyInstance2←⎕NEW IniFiles ('MyIniFile1.ini' 'MyIniFile2.ini')
-⍝ AsNamespace←MyInstance2.Convert ⎕NNS ''
-⍝ ````
-⍝ For details refer to the home page
+⍝ AsNamespace←MyInstance2.Convert ⎕NS ''
+⍝ ~~~
 ⍝ Author: Kai Jaeger ⋄ APL Team Ltd ⋄ http://aplteam.com
+⍝
 ⍝ Homepage: http://aplwiki.com/IniFiles
 
-    ⎕io←1 ⋄ ⎕ml←3
+    ⎕IO←1 ⋄ ⎕ML←3
     :Include APLTreeUtils  ⍝∇:require =/apltreeutils
 
     ∇ r←Version
       :Access Public Shared
-      r←(Last⍕⎕THIS)'2.9.3' '2015-05-15'
-      ⍝ 2.9.3 * Documentation improved.
-      ⍝       * Improved hints in case something is wrong in the INI file.
-      ⍝ 2.9.2 * "Version" returns just the name now
-      ⍝       * APL inline code is marked up now with ticks.
-      ⍝       * "History" removed.
+      ⍝ * 3.0.0:
+      ⍝   * Needs at least Dyalog version 15.0 Unicode
+      ⍝   * Does not need either `WinFile` or `FilesAndDirs` anymore.
+      ⍝   * Documentation converted to Markdown. Requires at least ADOC 5.0.
+      r←(Last⍕⎕THIS)'3.0.0' '2016-09-04'
     ∇
 
     ∇ r←GetSections
@@ -32,19 +31,23 @@
 
     ∇ r←GetIniFiles filename;p;fn;ext;fn2;fn1;f1;f2
       :Access Public Shared
-    ⍝ Returns a list of INI files. Assume that "foo.ini" ←→ filename. _
-    ⍝ Assume also that the current computer's name is "JohnDoe". Assume _
+    ⍝ Returns a list of INI files. Assume that "foo.ini" ←→ filename.
+    ⍝ Assume also that the current computer's name is "JohnDoe". Assume
     ⍝ further that there are two INI files in the current directory:
-    ⍝ # foo.ini
-    ⍝ # foo_johndoe.ini
+    ⍝ * foo.ini
+    ⍝ * foo_johndoe.ini
+    ⍝
     ⍝ Then `GetIniFiles` returns:
+    ⍝
     ⍝ `'foo.ini' 'foo_johndoe,ini' ← #.IniFiles.GetIniFiles`
+    ⍝
     ⍝ If there is no file foo_johndoe.ini however then the result is:
+    ⍝
     ⍝ `'foo.ini' ← #.IniFiles.GetIniFiles`
       (p fn)←{('\'∊⍵):SplitPath ⍵ ⋄ ''⍵}filename
       (fn ext)←{('.'∊⍵):'.'SplitPath ⍵ ⋄ (⍵,'.')'ini'}fn
-      f1←GetRefToUtils.WinFile.DoesExistFile fn1←p,fn,ext
-      f2←GetRefToUtils.WinFile.DoesExistFile fn2←p,(¯1↓fn),'_',GetComputerName,'.',ext
+      f1←⎕NEXISTS fn1←p,fn,ext
+      f2←⎕NEXISTS fn2←p,(¯1↓fn),'_',GetComputerName,'.',ext
       ⍎('Could not find ',fn1)Signal 6/⍨f1=0
       r←(f1/⊂fn1),f2/⊂fn2
     ∇
@@ -64,11 +67,11 @@
       r←0 3⍴⊂''
       :For this :In il
           :If (~':'∊this)∧~(1⍴this)∊'/\'        ⍝ Does not start with / and has no drive letter?
-              fullName←GetRefToUtils.WinFile.PWD,'\',this     ⍝ Then make it absolute
+              fullName←(↑1 ⎕NPARTS''),'\',this  ⍝ Then make it absolute
           :Else
               fullName←this                     ⍝ Is already absolute
           :EndIf
-          fullName←GetRefToUtils.WinFile.ExpandPath fullName
+          fullName←↑,/1 ⎕NPARTS fullName
           'Tries to import itself'⎕SIGNAL 11/⍨(⊂Lowercase fullName)∊Lowercase _IniFilename
           temp←(⎕NEW refToIniFile(fullName _debugFlag)).Convert ⎕NS''  ⍝ Create an instance
           buff←temp.List''
@@ -87,7 +90,7 @@
 
     :Property Default
     :Access Public
-    ⍝ This property is ''initialised''! If set, indexing an unknown key will _
+    ⍝ This property is **initialised**! If set, indexing an unknown key will
     ⍝ return the value of this property.
         ∇ r←get
           ⍎'No default defined!'Signal 6/⍨0=⎕NC'_default'
@@ -108,6 +111,7 @@
 
     :Property EstablishedAt
     ⍝ Stores date and time as float (date.time) when the instance was established.
+    ⍝
     ⍝ Usefult if you want to find out whether the INI file was changed since it was instanciated.
     ⍝ See `HasInifileChanged`
     :Access Public
@@ -119,6 +123,7 @@
 
     :Property Changed
     ⍝ Read-only property that tells you that the data from the INI file was changed later on by assignment.
+    ⍝
     ⍝ Note that those changes will persist only if the `Save` method is invoked at some point.
     :Access Public
         ∇ r←get
@@ -283,12 +288,13 @@
     ∇ make2(IniFilename debugFlag)
       :Implements Constructor
       :Access Public
-      ⍝ Takes the name of the INI file and what originally was supposed _
-      ⍝ to be a reference to the "UnicodeFile" class as parameters. _
-      ⍝ However, that property is not needed any longer (since version 1.6), _
-      ⍝ and for that reason the argument "debugFlag" is ignored when it is _
-      ⍝ a string. If it is a Boolean then however it is treated as a debug _
+      ⍝ Takes the name of the INI file and what originally was supposed
+      ⍝ to be a reference to the `UnicodeFile` class as parameters.
+      ⍝ However, that property is not needed any longer (since version 1.6),
+      ⍝ and for that reason the argument "debugFlag" is ignored when it is
+      ⍝ a string. If it is a Boolean then however it is treated as a debug
       ⍝ flag. It default is 0 but one can specify a 1.
+      ⍝
       ⍝ Setting it to 1 has two effects:
       ⍝ * All error trapping is deactivated.
       ⍝ * Instead of signalling an error the program stops.
@@ -428,14 +434,18 @@
 
     ∇ r←{type}Convert r;data;thisSection;s;noOf;n;v;rf;allValues;this;theseNames;theseValues;code
       :Access Public
-    ⍝ Takes a ref to a (typically empty) namespace and populates it with the values _
+    ⍝ Takes a ref to a (typically empty) namespace and populates it with the values
     ⍝ defined by the INI file entries.
-    ⍝ If the optional left argument is "flat", sections are ignored and every entry _
+    ⍝
+    ⍝ If the optional left argument is "flat", sections are ignored and every entry
     ⍝ gets a simple variable.
+    ⍝
     ⍝ If it's not "flat" then section names are used as names for sub-namespaces.
-    ⍝ Note that `Convert` will fail if the names used for sections and values _
+    ⍝
+    ⍝ Note that `Convert` will fail if the names used for sections and values
     ⍝ are not proper APL names.
-    ⍝ `Convert` injects a method `List` into the resulting namespace which _
+    ⍝
+    ⍝ `Convert` injects a method `List` into the resulting namespace which
     ⍝ prints a matrix to the session with all names and values.
       type←{0<⎕NC ⍵:⍎⍵ ⋄ ''}'type'
       ⍎'Left argument must be either empty or "flat"'Signal 11/⍨~(0∊⍴type)∨'flat'≡type
@@ -490,6 +500,9 @@
       :EndIf
       ⍎'Invalid syntax!'Signal 11/⍨∧/2=¨≡¨section key
       section←{0∊⍴⍵:⍵ ⋄ '_',⍵}section
+      :If ⍬≡section
+          section←''
+      :EndIf
       SECTION←Uppercase section
       :If ((⊂section)∊''⍬)∧(⊂key)∊''⍬
           r←0 3⍴''
@@ -549,24 +562,25 @@
     ∇
 
     ∇ r←{default}Get name
-    ⍝ Returns the (enclosed) value for a single value or a vector of values _
+    ⍝ Returns the (enclosed) value for a single value or a vector of values
     ⍝ if more than one key was provided.
-    ⍝ `name` might be either
-    ⍝ `('sectionName' 'key')`
-    ⍝ or
-    ⍝ `(('sectionName' 'key1')('sectionName' 'key2'))`
-    ⍝ or
-    ⍝ `'sectionName:key'`
-    ⍝ or
-    ⍝ `('sectionName:key1' 'sectionName:key2')`
+    ⍝
+    ⍝ `name` might be one of:
+    ⍝ * `('sectionName' 'key')`
+    ⍝ * `(('sectionName' 'key1')('sectionName' 'key2'))`
+    ⍝ * `'sectionName:key'`
+    ⍝ * `('sectionName:key1' 'sectionName:key2')`
+    ⍝
     ⍝ Note that mixed syntax is not supported:
-    ⍝ ````
+    ⍝
+    ⍝ ~~~
     ⍝ ('sectionName' ('key1' 'key2')) ⍝  invalid!
-    ⍝ ('sectionName' 'key1') ''sectionName:key2' ⍝  invalid!
-    ⍝ ````
-    ⍝ If "key" is empty, ''all'' values of that sections are returned.
-    ⍝ If a requested value is not available, "default" (the left argument) _
-    ⍝ is returned if specified, otherwise the property "Default" is returned _
+    ⍝ ('sectionName' 'key1') 'sectionName:key2' ⍝  invalid!
+    ⍝ ~~~
+    ⍝ If "key" is empty, **all** values of that sections are returned.
+    ⍝
+    ⍝ If a requested value is not available, "default" (the left argument)
+    ⍝ is returned if specified, otherwise the property "Default" is returned
     ⍝ if specified; otherwise an interrupt is signalled.
       :Access Public
       :If 0=⎕NC'default'
@@ -578,13 +592,17 @@
 
     ∇ {r}←data Put name
     ⍝ Set `name` to `data`.
+    ⍝
     ⍝ Note that `name` can be:
-    ⍝ * A simple string. Must provide both, a "section" and a `name`, _
-    ⍝ separated by a colon as in "section:key"
+    ⍝ * A simple string. Must provide both, a "section" and a `name`,
+    ⍝   separated by a colon as in "section:key"
     ⍝ * A nested vector of length 2.
+    ⍝
     ⍝ Examples for the latter:
+    ⍝ ~~~
     ⍝ `1⊃name ←→ section name`
     ⍝ `2⊃name ←→ key (or entry name)`
+    ⍝ ~~~
       :Access Public
       r←⍬
       data Put_ name
@@ -635,21 +653,31 @@
     ∇ {r}←Delete name;section;key;ref;bool;this;TOC
       :Access Public
     ⍝ Delete a key or a section. Returns 1 if there was something to delete.
+    ⍝
     ⍝ To delete "myKey" from "MySection":
+    ⍝ ~~~
     ⍝ `('MySection' 'MyKey')`
+    ⍝ ~~~
     ⍝ "name" can also be a nested vector:
+    ⍝ ~~~
     ⍝ `(('SectionA' 'key1') ('SectionA' 'key2'))`
+    ⍝ ~~~
     ⍝ or a full name like:
+    ⍝ ~~~
     ⍝ `('section:key') or (('section:key1') ('section:key1'))`
-    ⍝ Note that `('section' ('key1' 'key2'))` is ''not'' a valid syntax.
+    ⍝ ~~~
+    ⍝ Note that `('section' ('key1' 'key2'))` is **not** a valid syntax.
+    ⍝
     ⍝ To delete an entire section:
-    ⍝ `>Delete 'foo:'`
+    ⍝ ~~~
+    ⍝ `Delete 'foo:'`
+    ⍝ ~~~
     ⍝ If `name` is a vector of names, `Delete` calls itself recursively.
-    ⍝ Mixed syntax is ''not'' supported, so use one of:
-    ⍝ ````
+    ⍝ Mixed syntax is **not** supported, so use one of:
+    ⍝ ~~~
     ⍝ Delete ('sectiona' 'key1')('otherSection' 'key2')('thirdSection' '')
     ⍝ Delete ('sectiona:key1' 'otherSection:key2' 'thirdSection:')
-    ⍝ ````
+    ⍝ ~~~
       r←0
       :If 0 1∊⍨≡name
           ⍎'Invalid right argument'Signal 11/⍨1≠':'+.=name
@@ -696,21 +724,35 @@
 
     ∇ r←Exist name;section;key;ref;this
       :Access Public
-    ⍝ Returns 1 if "name" exists. "name" can be either a nested vector like _
-    ⍝ <pre>('Section' 'key')</pre>
+    ⍝ Returns 1 if `name` exists. `name` can be either a nested vector like
+    ⍝ ~~~
+    ⍝ ('Section' 'key')
+    ⍝ ~~~
     ⍝ or
-    ⍝ <pre>(('Section' 'key1') ('Section' 'key2'))</pre>
+    ⍝ ~~~
+    ⍝ (('Section' 'key1') ('Section' 'key2'))
+    ⍝ ~~~
     ⍝ or a full name like
-    ⍝ <pre>('section:key')</pre>
+    ⍝ ~~~
+    ⍝ ('section:key')
+    ⍝ ~~~
     ⍝  or
-    ⍝ <pre>(('section:key1') ('section:key1'))</pre>
-    ⍝ Note that ('section' ('key1' 'key2')) is NOT a valid syntax.
+    ⍝ ~~~
+    ⍝ (('section:key1') ('section:key1'))
+    ⍝ ~~~
+    ⍝ Note that `('section' ('key1' 'key2'))` is **not** a valid syntax.
+    ⍝
     ⍝ To check the existence of a section use
-    ⍝ <pre>Exist 'foo:'</pre>
-    ⍝ If "name" is a vector of names, `Exist` calls itself recursively.
-    ⍝ Mixed syntax is NOT supported, so use one of:
-    ⍝ <pre>Exist ('section' 'key1')('otherSection' 'key2')('thirdSection' '')
-    ⍝ Exist ('section:key1' 'otherSection:key2' 'thirdSection:')</pre>
+    ⍝ ~~~
+    ⍝ Exist 'foo:'
+    ⍝ ~~~
+    ⍝ If `name` is a vector of names, `Exist` calls itself recursively.
+    ⍝
+    ⍝ Mixed syntax is **not** supported, so use one of:
+    ⍝ ~~~
+    ⍝ Exist ('section' 'key1')('otherSection' 'key2')('thirdSection' '')
+    ⍝ Exist ('section:key1' 'otherSection:key2' 'thirdSection:')
+    ⍝ ~~~
       :If 0 1∊⍨≡name
           (section key)←' '~¨⍨Uppercase 2↑{⍵⊂⍨':'≠⍵}name
           section←'_',section
@@ -743,6 +785,7 @@
 
     ∇ {r}←AddSection name;NAME;ref
  ⍝ Adds a new section to the INI file.
+ ⍝
  ⍝ Return a 1 if a section was added. A 0 is rerturned in case the section already exists.
       :Access Public
       NAME←Uppercase name←'_',name
@@ -756,18 +799,18 @@
       :EndIf
     ∇
 
-    ∇ boolean←HasInifileChanged;ts;rf
+    ∇ boolean←HasInifileChanged;ts
    ⍝ Returns a 1 in case the (any) ini file has changed since the instance was created.
       :Access Public Instance
-      rf←GetRefToUtils.WinFile
-      ts←(↑⍪/{('FileTime' 1)rf.DirX ⍵}¨_IniFilename)[;rf.COL_LastWriteDate]
+      ts←{⊃3 ⎕NINFO ⍵}¨_IniFilename
       boolean←_EstablishedAt∨.<Timestamp2Float¨ts
     ∇
 
     ∇ {oldFilename}←Save filename;thisSection;thisKey;thisData;ref;buffer;origValue;THISSECTION;thisRemark;data;bool;where;i;this;thisKEY
       :Access Public
     ⍝ If `filename` is empty the INI is saved into the same file it originally came from.
-    ⍝ Note that `Save` will throw a SYNTAX ERROR when...
+    ⍝
+    ⍝ Note that `Save` will throw a SYNTAX ERROR in case...
     ⍝ * the instance was defined by more than one INI file.
     ⍝ * another INI file was imported.
       ⍎'An INI file with !Import statement cannot be saved'Signal 11/⍨_import
@@ -822,7 +865,6 @@
                   :EndIf
                   data,←⊂buffer
               :Else
-             ⍝buffer←(⊂thisKey,'='''''),((⍴thisData)⍴⊂thisKey,',='),¨{0=1↑0⍴⍵:⍕⍵ ⋄ '''',(DoubleQuotes ⍵),''''}¨⍎¨origValue
                   buffer←(⊂thisKey,'='''''),(⊂thisKey,',='),¨{0=1↑0⍴⍵:⍕⍵ ⋄ '''',(DoubleQuotes ⍵),''''}¨⍎¨origValue
                   :If ~0∊⍴thisRemark
                       buffer,¨←{⍵,⍨(~0∊⍴⍵)/(⎕UCS 9),'; '}¨thisRemark
@@ -846,7 +888,7 @@
     ∇
 
     ∇ {r}←DeleteDefault
-    ⍝ As soon as the `Default` property is set, one can get rid of it only be calling _
+    ⍝ As soon as the `Default` property is set, one can get rid of it only be calling
     ⍝ this method. Returns a 1 if there was a default, otherwise 0.
       :Access Public
       r←2=⎕NC'_default'
@@ -885,7 +927,7 @@
     ∇
 
     ∇ value←ReplaceCurlies(toc value);bool;val2;where;name;names;noOf
-    ⍝ Replace "{foo}" with real data, if there are any curlies
+    ⍝ Replace `{foo}` with real data, if there are any curlies.
       value←ExchangeDoubleCourlies value'{'(⎕UCS 0)
       value←ExchangeDoubleCourlies value'}'(⎕UCS 1)
       :If ∧/'{}'∊value
@@ -920,8 +962,8 @@
           ⍵
       }
     ∇ (data locals allRemarks)←GetLocals(data allRemarks);where;toc;i;name;value;remark;data2;allRemarks2;value2;itemNo;ref;NAME
-⍝ Extract any "local" variabels.
-⍝ Locals are defined as those assigned above the first section
+    ⍝ Extract any "local" variabels.
+    ⍝ Locals are defined as those assigned above the first section
       locals←0 5⍴''                                     ⍝ Initialize the main result
       :If '['∊↑¨data
           :If 0<where←¯1+'['⍳⍨↑¨data                    ⍝ Where starts the first section
@@ -986,11 +1028,14 @@
     ∇
 
     ∇ (oldStyleFlag DM EN)←CheckValues(data filename);vals;f;emptyFlag;swq;ewq;iv;in;b;tq;bool;lnos
-     ⍝ Returns either ({boolean} '' ⍬) or ({Boolean} 'Error msg' {number}) with _
+     ⍝ Returns either ({boolean} '' ⍬) or ({Boolean} 'Error msg' {number}) with
      ⍝ Boolean being OldStyleFlag.
+     ⍝
      ⍝ Therefore the result can be used for a ⎕SIGNAL statement.
+     ⍝
      ⍝ We don't have to worry about comments and trailing blanks: handled by now.
-     ⍝ Side effect: sets global _oldStyleFlag
+     ⍝
+     ⍝ Side effect: sets global /_oldStyleFlag
       (oldStyleFlag DM EN)←¯1 '' 0      ⍝ ¯1: not decided yet. As soon it is something else the case is settled
       bool←0<↑∘⍴¨dlb data
       lnos←bool/⍳⍴data                  ⍝ Create line numbers

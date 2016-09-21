@@ -135,13 +135,12 @@ Here's our manifest for Version 4: `MyApp.dyapp`:
 ~~~
 Target #
 Load ..\AplTree\APLTreeUtils
-Load ..\AplTree\ADOC
+Load ..\AplTree\FilesAndDirs
 Load ..\AplTree\HandleError
 leanpub-start-insert
 Load ..\AplTree\IniFiles
 leanpub-end-insert
 Load ..\AplTree\Logger
-Load ..\AplTree\WinFile
 Load Constants
 Load Utilities
 Load MyApp
@@ -150,12 +149,12 @@ Run MyApp.Start 'Session'
 leanpub-end-insert
 ~~~
 
-We've included ADOC and IniFiles to the DYAPP's build list. We'll use IniFiles to handle INI files. 
+We've included IniFiles to the DYAPP's build list. We'll use IniFiles to handle INI files. 
 
 ADOC is useful for reading a class's documentation. The APLTree library scripts all have ADOC documentation. You can read it in a browser: 
 
 ~~~
-#.ADOC.Browse #.IniFiles
+]adoc_browse #.IniFiles
 ~~~
 
 The DYAPP's`Run` command now calls `MyApp.Start`, specifying the mode. 
@@ -487,11 +486,10 @@ i.e. in `C:\ProgramData\MyApp.ini` and test in Session mode.
 clear ws
 Booting Z:\code\v04\MyApp.dyapp
 Loaded: #.APLTreeUtils
-Loaded: #.ADOC
+Loaded: #.FilesAndDirs
 Loaded: #.HandleError
 Loaded: #.IniFiles
 Loaded: #.Logger
-Loaded: #.WinFile
 Loaded: #.Constants
 Loaded: #.Utilities
 Loaded: #.MyApp

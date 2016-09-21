@@ -1,10 +1,9 @@
 Target #
 Load ..\AplTree\APLTreeUtils
-Load ..\AplTree\ADOC
+Load ..\AplTree\FilesAndDirs
 Load ..\AplTree\HandleError
 Load ..\AplTree\IniFiles
 Load ..\AplTree\Logger
-Load ..\AplTree\WinFile
 Load ..\AplTree\Tester
 Load Constants
 Load Utilities

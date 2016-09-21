@@ -15,21 +15,20 @@ We resume, as usual, by saving a copy of `Z:\code\v05` as `Z:\code\v06`.
 
 Our makefile, `MyApp.dyapp`, includes scripts we have no reason to include in the exported EXE:
 
-	Target #
-	Load ..\AplTree\APLTreeUtils
-	Load ..\AplTree\ADOC
-	Load ..\AplTree\HandleError
-	Load ..\AplTree\IniFiles
-	Load ..\AplTree\Logger
-	Load ..\AplTree\WinFile
-	Load ..\AplTree\Tester
-	Load Constants
-	Load Utilities
-	Load Tests
-	Load MyApp
-	Run MyApp.Start 'Session'
+    Target #
+    Load ..\AplTree\APLTreeUtils
+    Load ..\AplTree\FilesAndDirs
+    Load ..\AplTree\HandleError
+    Load ..\AplTree\IniFiles
+    Load ..\AplTree\Logger
+    Load ..\AplTree\Tester
+    Load Constants
+    Load Utilities
+    Load Tests
+    Load MyApp
+    Run MyApp.Start 'Session'
 
-`ADOC`, `Tester` and `Tests` have no place in the finished application. 
+`Tester` and `Tests` have no place in the finished application. 
 
 We could expunge them before exporting the active workspace as an EXE. Or -- have _two_ makefiles, one for the development environment, one for export. 
 
@@ -37,10 +36,10 @@ Duplicate `MyApp.dyapp` and name the files `Develop.dyapp` and `Export.dyapp`. E
 
     Target #
     Load ..\AplTree\APLTreeUtils
+    Load ..\AplTree\FilesAndDirs
     Load ..\AplTree\HandleError
     Load ..\AplTree\IniFiles
     Load ..\AplTree\Logger
-    Load ..\AplTree\WinFile
     Load Constants
     Load Utilities
     Load MyApp
@@ -110,7 +109,7 @@ That lets us cut `MyApp` down to size:
 
 It must now create the `Log` object 'over there' -- within `#.MyApp`. 
 
-      'CREATE!'#.WinFile.CheckPath'Logs' ⍝ ensure subfolder of current dir
+      'CREATE!'#.FilesAndDirs.CheckPath'Logs' ⍝ ensure subfolder of current dir
       ∆←{
           ⍵.path←'Logs\' ⍝ subfolder of current directory
           ⍵.encoding←'UTF8'
@@ -150,7 +149,7 @@ We'll define that `Export` function in a moment. Right now, we'll set out what t
 
       :Case 'Run'
           #.ErrorParms←{
-              ⍵.errorFolder←#.WinFile.PWD
+              ⍵.errorFolder←#.FilesAndDirs.PWD
               ⍵.returnCode←#.MyApp.EXIT.APPLICATION_CRASHED
               ⍵.(logFunctionParent logFunction)←(#.MyApp.Log)('Log')
               ⍵.trapInternalErrors←~#.APLTreeUtils.IsDevelopment
@@ -158,7 +157,7 @@ We'll define that `Export` function in a moment. Right now, we'll set out what t
           #.⎕TRAP←0 'E' '#.HandleError.Process ''#.ErrorParms'''
           Off #.MyApp.TxtToCsv #.MyApp.Params.source
 
-Now that `Export` function. You'll have noticed exporting an EXE can fail from time to time, and you've performed this from the _File_ menu enough times to have wearied of it. So we'll automate it. Automating it doesn't make it any more reliable, but it certainly makes retries easier. 
+Now that `Export` function. You'll have noticed exporting an EXE can fail from time to time, and you've performed this from the _File_ menu enough times to have tired of it. So we'll automate it. Automating it doesn't make it any more reliable, but it certainly makes retries easier. 
 
     ∇ msg←Export filename;type;flags;resource;icon;cmdline;nl
       #.⎕LX←'#.Environment.Start ''Run'''
@@ -195,11 +194,10 @@ A few tweaks now to the makefiles. `Develop.dyapp`:
 
     Target #
     Load ..\AplTree\APLTreeUtils
-    Load ..\AplTree\ADOC
+    Load ..\AplTree\FilesAndDirs
     Load ..\AplTree\HandleError
     Load ..\AplTree\IniFiles
     Load ..\AplTree\Logger
-    Load ..\AplTree\WinFile
     Load ..\AplTree\Tester
     Load Constants
     Load Tests
@@ -217,11 +215,10 @@ Running the DYAPP creates our working environment and runs the tests:
     clear ws
     Booting Z:\code\v06\Develop.dyapp
     Loaded: #.APLTreeUtils
-    Loaded: #.ADOC
+    Loaded: #.FilesAndDirs
     Loaded: #.HandleError
     Loaded: #.IniFiles
     Loaded: #.Logger
-    Loaded: #.WinFile
     Loaded: #.Tester
     Loaded: #.Constants
     Loaded: #.Tests
@@ -255,10 +252,10 @@ Slight tweaks to the export makefile and we can export an EXE. `Export.dyapp`:
 
     Target #
     Load ..\AplTree\APLTreeUtils
+    Load ..\AplTree\FilesAndDirs
     Load ..\AplTree\HandleError
     Load ..\AplTree\IniFiles
     Load ..\AplTree\Logger
-    Load ..\AplTree\WinFile
     Load Constants
     Load Utilities
     Load MyApp
@@ -270,10 +267,10 @@ Run this new export makefile and we get a new session:
     clear ws
     Booting Z:\code\v06\Export.dyapp
     Loaded: #.APLTreeUtils
+    Loaded: #.FilesAndDirs
     Loaded: #.HandleError
     Loaded: #.IniFiles
     Loaded: #.Logger
-    Loaded: #.WinFile
     Loaded: #.Constants
     Loaded: #.Utilities
     Loaded: #.MyApp

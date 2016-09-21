@@ -76,14 +76,14 @@ A> We could have defined `EXIT` in `#.Constants`, but we reserve that script for
     ∇ exit←TxtToCsv fullfilepath;∆;isDev;Log;LogError;files;tgt
      ⍝ Write a sibling CSV of the TXT located at fullfilepath,
      ⍝ containing a frequency count of the letters in the file text
-      'CREATE!'W.CheckPath'Logs' ⍝ ensure subfolder of current dir
+      'CREATE!'F.CheckPath'Logs' ⍝ ensure subfolder of current dir
       ∆←L.CreatePropertySpace
       ∆.path←'Logs\' ⍝ subfolder of current directory
       ∆.encoding←'UTF8'
       ∆.filenamePrefix←'MyApp'
       ∆.refToUtils←#
       Log←⎕NEW L(,⊂∆)
-      Log.Log'Started MyApp in ',W.PWD
+      Log.Log'Started MyApp in ',F.PWD
       Log.Log'Source: ',fullfilepath
 
 leanpub-start-insert     
@@ -198,11 +198,11 @@ Edit `Z:\code\v03\MyApp.dyapp`:
 ~~~~~~~~ 
 Target #
 Load ..\AplTree\APLTreeUtils
+Load ..\AplTree\FilesAndDirs
 leanpub-start-insert
 Load ..\AplTree\HandleError
 leanpub-end-insert
 Load ..\AplTree\Logger
-Load ..\AplTree\WinFile
 Load Constants
 Load Utilities
 Load MyApp
@@ -212,7 +212,7 @@ Run MyApp.SetLX
 And set an alias `H` for it in the preamble of the `MyApp` namespace:
 
 ~~~
-    (A H L W)←#.(APLTreeUtils HandleError Logger WinFile) ⍝ from APLTree
+    (A F H L)←#.(APLTreeUtils FilesAndDirs HandleError Logger) ⍝ from APLTree
 ~~~
 
 Define a new exit code constant:
@@ -251,7 +251,7 @@ leanpub-start-insert
       isDev←#.A.IsDevelopment
       ⍝ refine trap definition
       #.ErrorParms←H.CreateParms
-      #.ErrorParms.errorFolder←W.PWD
+      #.ErrorParms.errorFolder←F.PWD
       #.ErrorParms.returnCode←EXIT.APPLICATION_CRASHED
       #.ErrorParms.(logFunctionParent logFunction)←Log'Log'
       #.ErrorParms.trapInternalErrors←~isDev

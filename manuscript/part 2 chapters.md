@@ -67,7 +67,7 @@ The obvious exception is where different possible values are most clearly expres
 
 # APL.local
 
-Every developer, and every development group, has utility functions uses throughout the code base. Most of these can and should be grouped into topic-specific namespaces, such as the WinFile namespace from the APLTree library. Aliasing the namespaces, such as `W←#.WinFile` allows utility functions to be called in abbreviated form, e.g. `W.Dir` instead of `#.WinFile.Dir`. 
+Every developer, and every development group, has utility functions uses throughout the code base. Most of these can and should be grouped into topic-specific namespaces, such as the FilesAndDirs namespace from the APLTree library. Aliasing the namespaces, such as `F←#.FilesAndDirs` allows utility functions to be called in abbreviated form, e.g. `F.Dir` instead of `#.FilesAndDirs.Dir`. 
 
 But some functions are so ubiquitous and general it makes better sense to treat them as your local extensions to the language itself. For example the simplified conditional functions `means` and `else` are ‘syntax sweeteners’ that allow you to write 
 

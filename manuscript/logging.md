@@ -26,8 +26,8 @@ Start with the log file. We'll use the APLTree `Logger` class, which we'll now i
 ~~~
 Target #
 Load ..\AplTree\APLTreeUtils
+Load ..\AplTree\FilesAndDirs
 Load ..\AplTree\Logger
-Load ..\AplTree\WinFile
 Load Constants
 Load Utilities
 Load MyApp
@@ -42,7 +42,7 @@ Within `MyApp`, some changes. Some aliases for the new code.
 
 ~~~
 ⍝ Aliases (referents must be defined previously)
-    (A L W)←#.(APLTreeUtils Logger WinFile) ⍝ from APLTree
+    (A F L)←#.(APLTreeUtils FilesAndDirs Logger) ⍝ from APLTree
     (C U)←#.(Constants Utilities) 
 ~~~
 
@@ -73,14 +73,14 @@ If this version of MyApp were for shipping that would be a problem. An applicati
 In developing and testing MyApp, we create the active workspace by running `MyApp.dyapp`. The interpreter sets the Current Directory of the active workspace as the DYAPP's parent folder. That too is sure to exist. 
 
 ~~~
-      #.WinFile.PWD
+      #.FilesAndDirs.PWD
 Z:\code\v02
 ~~~
 
 We need `TxtToCsv` to ensure the Current Directory contains a `Logs` folder. 
 
 ~~~
-      'CREATE!' W.CheckPath 'Logs' ⍝ ensure subfolder of current dir
+      'CREATE!' F.CheckPath 'Logs' ⍝ ensure subfolder of current dir
 ~~~
 
 Now we set up the parameters for the Logger object. First we use the Logger class' sttaic `CreatePropertySpace` method to get a property space (object) with an initial a set of default parameters. We then modify those and use the object to create the Logger object. You can use the property space's `List` method to display its properties.) 
@@ -92,14 +92,14 @@ If `TxtToCsv` can log what it's doing, it makes sense to check its argument. We 
         ;enc;tgt;src;tbl
    ⍝ Write a sibling CSV of the TXT located at fullfilepath,
    ⍝ containing a frequency count of the letters in the file text
-      'CREATE!'W.CheckPath'Logs' ⍝ ensure subfolder of current dir
+      'CREATE!'F.CheckPath'Logs' ⍝ ensure subfolder of current dir
       ∆←L.CreatePropertySpace
       ∆.path←'Logs\' ⍝ subfolder of current directory
       ∆.encoding←'UTF8'
       ∆.filenamePrefix←'MyApp'
       ∆.refToUtils←#
       Log←⎕NEW L(,⊂∆)
-      Log.Log'Started MyApp in ',W.PWD
+      Log.Log'Started MyApp in ',F.PWD
       Log.Log'Source: ',fullfilepath
 
       :If ~⎕NEXISTS fullfilepath

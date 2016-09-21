@@ -1,13 +1,13 @@
-:Namespace MyApp
+﻿:Namespace MyApp
 ⍝ Dyalog Cookbook, MyApp Version 02
 ⍝ Logging installed
-⍝ Vern: sjt01jun16
+⍝ Vern: sjt05aug16
 
 ⍝ Environment
     (⎕IO ⎕ML ⎕WX)←1 1 3
 
 ⍝ Aliases
-    (A L W)←#.(APLTreeUtils Logger WinFile) ⍝ from APLTree
+    (A F L)←#.(APLTreeUtils FilesAndDirs Logger) ⍝ from APLTree
     (C U)←#.(Constants Utilities) ⍝ must be defined previously
 
 ⍝ === VARIABLES ===
@@ -33,14 +33,14 @@
     ∇ {ok}←TxtToCsv fullfilepath;∆;xxx;Log;csv;stem;path;files;txt;type;lines;nl;enc;tgt;src;tbl
    ⍝ Write a sibling CSV of the TXT located at fullfilepath,
    ⍝ containing a frequency count of the letters in the file text
-      'CREATE!'W.CheckPath'Logs' ⍝ ensure subfolder of current dir
+      'CREATE!'F.CheckPath'Logs' ⍝ ensure subfolder of current dir
       ∆←L.CreatePropertySpace
       ∆.path←'Logs\' ⍝ subfolder of current directory
       ∆.encoding←'UTF8'
       ∆.filenamePrefix←'MyApp'
       ∆.refToUtils←#
       Log←⎕NEW L(,⊂∆)
-      Log.Log'Started MyApp in ',W.PWD
+      Log.Log'Started MyApp in ',F.PWD
       Log.Log'Source: ',fullfilepath
      
       ok←0

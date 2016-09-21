@@ -1,13 +1,13 @@
 ﻿:Namespace MyApp
 ⍝ Dyalog Cookbook, Version 05
 ⍝ Error handling
-⍝ Vern: sjt03jun16
+⍝ Vern: sjt19sep16
 
 ⍝ Environment
     (⎕IO ⎕ML ⎕WX)←1 1 3
 
 ⍝ Aliases
-    (A H L W)←#.(APLTreeUtils HandleError Logger WinFile) ⍝ from APLTree
+    (A F H L)←#.(APLTreeUtils FilesAndDirs HandleError Logger ) ⍝ from APLTree
     (C U)←#.(Constants Utilities) ⍝ must be defined previously
 
 ⍝ Constants
@@ -51,7 +51,7 @@
       :EndIf
       ⎕WSID←'MyApp'
 
-      'CREATE!'W.CheckPath'Logs' ⍝ ensure subfolder of current dir
+      'CREATE!'F.CheckPath'Logs' ⍝ ensure subfolder of current dir
       ∆←L.CreatePropertySpace
       ∆.path←'Logs\' ⍝ subfolder of current directory
       ∆.encoding←'UTF8'
@@ -59,7 +59,7 @@
       ∆.refToUtils←#
       Log←⎕NEW L(,⊂∆)
      
-      Log.Log'Started MyApp in ',W.PWD
+      Log.Log'Started MyApp in ',F.PWD
      
       LogError←Log∘{code←EXIT⍎⍵ ⋄ code⊣⍺.LogError code ⍵}
 
@@ -83,7 +83,7 @@
       :EndIf
     ∇
 
-    ∇ p←GetParameters mode;args;fromexe;fromallusers;fromcmdline;fromuser;env;alp;path;paths;ini;parm;vars;a;∆;PARAMS;k;v
+    ∇ p←GetParameters mode;args;fromexe;fromallusers;fromcmdline;fromuser;env;alp;path;paths;ini;parm;vars;a;∆;PARAMS;k;v;i
      ⍝ Derive parameters from defaults and command-line args (if any)
      
      ⍝ Application defaults: in the absence of any other values
@@ -153,7 +153,7 @@
      
       ⍝ Refine trap definition
       #.ErrorParms←H.CreateParms
-      #.ErrorParms.errorFolder←W.PWD
+      #.ErrorParms.errorFolder←F.PWD
       #.ErrorParms.returnCode←EXIT.APPLICATION_CRASHED
       #.ErrorParms.(logFunctionParent logFunction)←Log'Log'
       #.ErrorParms.trapInternalErrors←~A.IsDevelopment

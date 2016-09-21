@@ -1,13 +1,13 @@
 ﻿:Namespace MyApp
 ⍝ Dyalog Cookbook, MyApp Version 03
 ⍝ Error handling
-⍝ Vern: sjt01jun16
+⍝ Vern: sjt19sep16
 
 ⍝ Environment
     (⎕IO ⎕ML ⎕WX)←1 1 3
 
 ⍝ Aliases
-    (A H L W)←#.(APLTreeUtils HandleError Logger WinFile) ⍝ from APLTree
+    (A F H L)←#.(APLTreeUtils FilesAndDirs HandleError Logger) ⍝ from APLTree
     (C U)←#.(Constants Utilities) ⍝ must be defined previously
 
     :Namespace EXIT
@@ -61,14 +61,14 @@
     ∇ exit←TxtToCsv fullfilepath;∆;isDev;Log;LogError;files;tgt
      ⍝ Write a sibling CSV of the TXT located at fullfilepath,
      ⍝ containing a frequency count of the letters in the file text
-      'CREATE!'W.CheckPath'Logs' ⍝ ensure subfolder of current dir
+      'CREATE!'F.CheckPath'Logs' ⍝ ensure subfolder of current dir
       ∆←L.CreatePropertySpace
       ∆.path←'Logs\' ⍝ subfolder of current directory
       ∆.encoding←'UTF8'
       ∆.filenamePrefix←'MyApp'
       ∆.refToUtils←#
       Log←⎕NEW L(,⊂∆)
-      Log.Log'Started MyApp in ',W.PWD
+      Log.Log'Started MyApp in ',F.PWD
       Log.Log'Source: ',fullfilepath
      
       LogError←Log∘{code←EXIT⍎⍵ ⋄ code⊣⍺.LogError code ⍵}
@@ -76,7 +76,7 @@
       isDev←A.IsDevelopment
       ⍝ refine trap definition
       #.ErrorParms←H.CreateParms
-      #.ErrorParms.errorFolder←W.PWD
+      #.ErrorParms.errorFolder←F.PWD
       #.ErrorParms.returnCode←EXIT.APPLICATION_CRASHED
       #.ErrorParms.(logFunctionParent logFunction)←Log'Log'
       #.ErrorParms.trapInternalErrors←~isDev

@@ -1,17 +1,25 @@
 ﻿:Class SevenZip
 ⍝ Use this class to zip files and directories with the Open Source software 7zip.
-⍝ This class relies on an installed version of 7zip. The EXE is found via the _
+⍝
+⍝ This class relies on an installed version of 7zip. The EXE is found via the
 ⍝ Windows Registry.
-⍝ Note that 7-zip suffers from a bug: these two files cannot go into the _
+⍝
+⍝ Note that 7-zip suffers from a bug: that these two files cannot go into the
 ⍝ same zip file:
-⍝ `C:\folder2\foo`
-⍝ `C:\folder1\foo`
-⍝ while these can:
-⍝ `folder2\foo`
-⍝ `folder1\foo`
-
-⍝ == Examples
-⍝ <pre>
+⍝
+⍝ ~~~
+⍝ C:\My\folder2\foo
+⍝ C:\My\folder1\foo
+⍝ ~~~
+⍝ while these:
+⍝ ~~~
+⍝ folder2\foo
+⍝ folder1\foo
+⍝ ~~~
+⍝ would actually work when the current directory is C:\My. Well...
+⍝
+⍝ ## Examples
+⍝ ~~~
 ⍝       myZipper←⎕new #.SevenZip (,⊂'MyZipFile')
 ⍝       ⎕←myZipper
 ⍝ [SevenZip@MyZipFile]
@@ -19,24 +27,29 @@
 ⍝       ⎕←myZipper.List 0
 ⍝ foo.txt
 ⍝       myZipper.Unzip 'c:\output\'
-⍝       myZipper.Add 'c:\temp\*'
-⍝ ⍝ This would zip everything inside c:\temp\ recursively.
-⍝ </pre>
+⍝ ~~~
+⍝ Homepage: <http://http://aplwiki.com/SevenZip>
+⍝
 ⍝ Author: Kai Jaeger ⋄ APL Team Ltd
 
     :Include APLTreeUtils
 
-    ⎕IO←0 ⋄ ⎕ML←3
+    ⎕IO←0
+    ⎕ML←3
 
     :Field Public Shared types←'7z' 'split' 'zip' 'gzip' 'bzip2' 'tar'
 
     ∇ r←Version
       :Access Public Shared
-      r←(Last⍕⎕THIS)'1.3.0' '2015-05-14'
-    ⍝ 1.3.0: * Documenation improved.
-    ⍝ 1.2.1: * Invalid call to GetLastError fixed.
-    ⍝        * Destination (zip) filenanme must not be lowercased.
-    ⍝ 1.2.0: APL inline code is now marked up with ticks.
+    ⍝ * 1.6.0:
+    ⍝   * Requires at least Dyalog version 15.0 Unicode.
+    ⍝   * SevenZip now uses `FilesAndDirs` rather than `WinFile`.
+    ⍝     Note however that SevenZip is **not** platform independent yet.
+    ⍝ * 1.5.0:
+    ⍝   * Via the left argument additional flags can be passed to `Unzip`.
+    ⍝   * Bug fixes:
+    ⍝     * `Unzip` should really run in `x` mode rather than 'e' mode in order to preserve paths.
+      r←({⍵↓⍨1+⍵⍳'.'}⍕⎕THIS)'1.6.0' '2016-09-01'
     ∇
 
     :Property zipFilename
@@ -48,7 +61,7 @@
     :EndProperty
 
     :Property  refToUtils
-    ⍝ Ref that points to a namespace where we can find APLTreeUtils, WinReg, WinFile
+    ⍝ Ref that points to a namespace where we can find `APLTreeUtils` and `WinReg`
     :Access Public
         ∇ r←get
           r←refToUtils_
@@ -73,7 +86,7 @@
       refToUtils_←#
       type_←''
       Init
-      ('cannot find ',pathToExe_)⎕SIGNAL 11/⍨~refToUtils_.WinFile.DoesExistFile pathToExe_
+      ('cannot find ',pathToExe_)⎕SIGNAL 11/⍨~⎕NEXISTS pathToExe_
     ∇
 
     ∇ make2(_zipFilename _refToUtils)
@@ -117,12 +130,15 @@
 
 ⍝⍝⍝ Public stuff
 
-    ∇ {r}←Add pattern;fno;cmd;b
+    ∇ {r}←Add pattern;fno;cmd;b;counter
     ⍝ Add zero, one or more files to the ZIP file.
+    ⍝
     ⍝ `pattern` can use wildcards `*` and `?`.
-    ⍝ ''Note'': in order to get ''all'' files one ''must'' specify `*`; _
-    ⍝ the expression `*.*` catches all files with an extension, ''not'' all files.
-    ⍝ When `pattern` is something like "c:\directory\*" then all files _
+    ⍝
+    ⍝ **Note**: in order to get **all** files one **must** specify `*`;
+    ⍝ the expression `*.*` catches only all files with an extension.
+    ⍝
+    ⍝ When `pattern` is something like "c:\directory\*" then all files
     ⍝ including all sub directories are zipped recursively.
       :Access Public Instance
       :If 0∊⍴pattern
@@ -136,7 +152,11 @@
               cmd,←' -- '
               cmd,←zipFilename_,' '
               cmd,←'"',(pattern~'"'),'"'
-              r←#.Execute.Process cmd
+              counter←1
+              :Repeat
+                  r←#.Execute.Process cmd
+                  ⎕DL 0.2+1<counter  ⍝ Otherwise we are very likely to see all sorts of problems
+              :Until (0=↑r)∨2<counter←counter+1
           :Case 2
               b←~{∨/'?*'∊⍵}¨{0 1∊⍨≡⍵:⊂⍵ ⋄ ⍵}pattern     ⍝ Which ones do not contain any wildcards?
               cmd←PathToExe,' a '
@@ -150,17 +170,25 @@
               'Invalid right argument'⎕SIGNAL 11
           :EndSelect
           :If 2=2⊃r
-          :AndIf ∨/∨/¨'Duplicate filename:'∘⍷¨1⊃r
-          :AndIf ∨/∨/¨('\\' ':')∊¨2⍴¨pattern
-              (1⊃r)←(1⊃r),⊂'Use relative path names rather than absolute ones to avoid the problem'
+              :If ∨/∨/¨'Duplicate filename'∘⍷¨1⊃r
+                  (1⊃r)←(1⊃r),⊂'Use relative path names rather than absolute ones to avoid the problem'
+              :EndIf
+              :If 0=↑r
+              :AndIf ∨/'ERROR'⍷∊1⊃r
+                  (↑r)←2⊃r
+              :EndIf
+          :EndIf
+          :If 0=↑r
+              (↑r)←{0∊⍴⍵:0 ⋄ 'Everything is Ok'≢↑¯1↑⍵}1⊃r
           :EndIf
       :EndIf
     ∇
 
     ∇ r←List verboseFlag;cmd;rc;more;exitCode
     ⍝ Returns information about what is saved in the archive.
-    ⍝ If "verboseFlag" is 1 then the 7zip output is returned which contains all _
-    ⍝ sorts of pieces of information. If `verboseFlag` is 0 only a vector of file _
+    ⍝
+    ⍝ If "verboseFlag" is 1 then the 7zip output is returned which contains all
+    ⍝ sorts of pieces of information. If `verboseFlag` is 0 only a vector of file
     ⍝ namesis returned with the names of all files (and sub dirs) fond in this file.
       :Access Public Instance
       cmd←PathToExe,' l '
@@ -177,13 +205,18 @@
       r←exitCode more
     ∇
 
-    ∇ r←Unzip outputFolder;cmd;more;rc;exitCode
+    ∇ r←{flags}Unzip outputFolder;cmd;more;rc;exitCode
     ⍝ Extracts the full contents of the zip file into `outputFolder`.
+    ⍝ Use the left argument for adding more flags. You should know what you are doing then however.
       :Access Public Instance
-      cmd←PathToExe,' e '
+      flags←{0<⎕NC ⍵:⍎⍵ ⋄ ''}'flags'
+      cmd←PathToExe,' x '
       cmd,←zipFilename_,' '
       :If ~0∊⍴outputFolder
           cmd,←' -o',outputFolder,' '
+      :EndIf
+      :If ~0∊⍴flags
+          cmd,←' ',flags,' '
       :EndIf
       cmd,←' -aoa '         ⍝ Overwrite mode
       (rc more exitCode)←refToUtils_.Execute.Process cmd
