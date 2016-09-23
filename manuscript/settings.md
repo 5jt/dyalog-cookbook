@@ -157,7 +157,7 @@ ADOC is useful for reading a class's documentation. The APLTree library scripts 
 ]adoc_browse #.IniFiles
 ~~~
 
-The DYAPP's`Run` command now calls `MyApp.Start`, specifying the mode. 
+The DYAPP's `Run` command now calls `MyApp.Start`, specifying the mode. 
 
 
 ## Configuration parameters in program code
@@ -237,30 +237,28 @@ Windows is case-insensitive, so `ALPHABET=FRENCH`, `alphabet=french`, and `Alpha
 
 We have already defined some alphabets `English`, `French` etc, so we'll set a convention that alphabet names are in title case. 
 
-~~~
       :For path :In {⍵/⍨⎕NEXISTS¨⍵}{⍵/⍨×≢¨U.trim¨⍵}paths
          ⍝ Allow INI entries to be case-insensitive
           ini←⎕NEW #.IniFiles(,⊂path)
           vars←U.m2n ini.⎕NL 2
           :For parm :In {⍵/⍨ini.Exist¨'Config:'∘,¨⍵}PARAMS
              ⍝ Alphabet names are title case, eg Greek
-              parm p.{⍎⍺,'←⍵'}U.toTitlecase⍣(parm≡'alphabet')⊃ini.Get'Config:',parm
+              ∆←⊃ini.Get'Config:',parm
+              parm p.{⍎⍺,'←⍵'}U.toTitlecase⍣(parm≡'alphabet') ∆
           :EndFor
-~~~
-~~~
+
           :If ini.Exist'Alphabets:'
-              ∆←(ini.Convert ⎕NS'') ⍝ breaks if key names are not valid APL names
+              ∆←(ini.Convert ⎕NS'') ⍝ breaks if keys are not valid APL names
               a←∆.⍎'ALPHABETS'U.ciFindin U.m2n ∆.⎕NL 9
              ⍝ Alphabet names are title case, eg Russian
               ∆←,' ',a.⎕NL 2 ⍝ alphabet names
               (U.toTitlecase ∆)p.ALPHABETS.{⍎⍺,'←⍵'}a⍎∆
           :EndIf
       :EndFor
-~~~
 
 For this we've put new functions into `#.Utilities`: `m2n` _matrix to nest_, `ciFind` _case-independent find_, and `toTitlecase`. You can also observe the use of the _power_ operator `⍣` instead of an if/else control structure. 
 
-Finally, in Appllication mode, we check the command line for any parameters set directly:
+Finally, in Application mode, we check the command line for any parameters set directly:
 
 ~~~
       :If mode≡'Application' ⍝ set params from the command line
@@ -277,12 +275,14 @@ Finally, in Appllication mode, we check the command line for any parameters set 
 Now that configuration parameters can be specified in INIs, there is more to check. So we pass the entire namespace of parameters to `CheckAgenda` as a left argument. `CheckAgenda` deploys a new error code -- for an invalid alphabet name - and extends its result also to return the collation alphabet, with or without accented characters. 
 
 ~~~
-    ∇ (exit files alphabet)←params CheckAgenda fullfilepath;type
+    ∇ (exit files alphabet)←params CheckAgenda ffp;fullfilepath;type
       (files alphabet)←'' '' ⍝ error defaults
+      fullfilepath←F.NormalizePath ffp
+      type←C.NINFO.TYPE ⎕NINFO fullfilepath
       :If 0=≢fullfilepath~' '
       :OrIf ~⎕NEXISTS fullfilepath
           exit←LogError'SOURCE_NOT_FOUND'
-      :ElseIf ~(type←C.NINFO.TYPE ⎕NINFO fullfilepath)∊C.NINFO.TYPES.(DIRECTORY FILE)
+      :ElseIf ~type∊C.NINFO.TYPES.(DIRECTORY FILE)
           exit←LogError'INVALID_SOURCE'
 leanpub-start-insert
       :ElseIf 2≠params.(ALPHABETS.⎕NC alphabet)
@@ -360,7 +360,7 @@ leanpub-end-insert
 
 Yes, that's it. Bit of a compromise here. Let's pause to look at some other ways to write this:
 
-* Let `TxtToCsv` ignore `Params`. It doesn't read or set the contents. `CheckAgenda` can read `Params` instead. But, where we can, we avoid passing information through globals and 'semiglobals'. The exact opposite practice is to pass everything through function arguments. There is no appreciable performance penalty for this. The interpreter doesn't make 'deep copies' of the arguments unless and until they are modified in the called function (which we hardly ever do) -- instead the interpreter just passes around references to the orginal variables. 
+* Let `TxtToCsv` ignore `Params`. It doesn't read or set the contents. `CheckAgenda` can read `Params` instead. But, where we can, we avoid passing information through globals and 'semiglobals'. The exact opposite practice is to pass everything through function arguments. There is no appreciable performance penalty for this. The interpreter doesn't make 'deep copies' of the arguments unless and until they are modified in the called function (which we hardly ever do) -- instead the interpreter just passes around references to the original variables. 
 * So we could pass `Params` as a left argument of `TxtToCsv`, which then simply gets passed to `CheckAgenda`. No performance penalty for this, as just explained, but now we've loaded the syntax of `TxtToCsv` with a namespace it makes no direct use of, an unnecessary complication of the writing. And we've set a left argument we (mostly) won't want to specify when working in Session mode. We could make this left argument optional, taking `#.MyApps.Params` as its default. The cost of that is an if/else control statement, setting a value that, er, `TxtToCsv` still isn't reading or setting for itself. (And if we did want to set a left argument for `TxtToCsv` to use in Session mode, it would probably be the name of an alphabet... 
 
 The matter of _encapsulating state_ -- which functions have access to state information, and how it is shared between them -- is very important. Poor choices can lead to tangled and obscure code. 

@@ -1,7 +1,7 @@
 ﻿:Namespace MyApp
 ⍝ Dyalog Cookbook, Version 05
 ⍝ Error handling
-⍝ Vern: sjt19sep16
+⍝ Vern: sjt21sep16
 
 ⍝ Environment
     (⎕IO ⎕ML ⎕WX)←1 1 3
@@ -32,7 +32,8 @@
 
       CountLetters←{
           accents←↓ACCENTS/⍨~ACCENTS[2;]∊⍺ ⍝ ignore accented chars in alphabet ⍺
-          ⍺{⍵[⍺⍋⍵[;1];]}{⍺(≢⍵)}⌸⍺{⍵⌿⍨⍵∊⍺}accents U.map U.toUppercase ⍵
+          (l c)←↓⍉{⍺(≢⍵)}⌸⍺{⍵⌿⍨⍵∊⍺}accents U.map U.toUppercase ⍵
+          ⍉↑(⍺)((c,0)[l⍳⍺])
       }
 
       retry←{
@@ -50,10 +51,10 @@
           ⎕TRAP←0 'E' '#.HandleError.Process '''''
       :EndIf
       ⎕WSID←'MyApp'
-
+     
       'CREATE!'F.CheckPath'Logs' ⍝ ensure subfolder of current dir
       ∆←L.CreatePropertySpace
-      ∆.path←'Logs\' ⍝ subfolder of current directory
+      ∆.path←'Logs',F.CurrentSep ⍝ subfolder of current directory
       ∆.encoding←'UTF8'
       ∆.filenamePrefix←'MyApp'
       ∆.refToUtils←#
@@ -62,7 +63,7 @@
       Log.Log'Started MyApp in ',F.PWD
      
       LogError←Log∘{code←EXIT⍎⍵ ⋄ code⊣⍺.LogError code ⍵}
-
+     
       Params←GetParameters mode
       :Select mode
       :Case 'Session'
@@ -112,6 +113,7 @@
       :Case 'Session'
           paths←fromexe fromallusers fromuser
       :EndSelect
+      paths←F.NormalizePath¨paths
      
       PARAMS←'accented' 'alphabet' 'source' 'output'
      
@@ -136,20 +138,15 @@
       :AndIf ×≢a←{⍵/⍨'='∊¨⍵}args
           ∆←a⍳¨'=' ⋄ (k v)←((∆-1)↑¨a)((∆+1)↓¨a)
           ∆←(≢PARAMS)≥i←⊃⍳/U.toUppercase¨¨PARAMS k
-          (⍕PARAMS[∆/i]) p.{⍎⍺,'←⍵'} ∆/v
+          (⍕PARAMS[∆/i])p.{⍎⍺,'←⍵'}∆/v
       :EndIf
     ∇
 
-    ∇ exit←TxtToCsv fullfilepath;files;alpha;out
+    ∇ exit←TxtToCsv ffp;fullfilepath;files;alpha;out
      ⍝ Write a sibling CSV of the TXT located at fullfilepath,
      ⍝ containing a frequency count of the letters in the file text
-      Log.Log'Source: ',fullfilepath
-
-     ⍝ Output defaults to CSV sibling of source
-      :If 0=×≢out←Params.output
-          out←(⊃,/2↑⎕NPARTS fullfilepath),'.CSV'
-      :EndIf
-     
+      Log.Log'Source: ',ffp
+      fullfilepath←F.NormalizePath ffp
      
       ⍝ Refine trap definition
       #.ErrorParms←H.CreateParms
@@ -163,14 +160,14 @@
           ⎕TRAP←0 'E' '#.HandleError.Process ''#.ErrorParms'''
       :EndIf
      
-      :If EXIT.OK=⊃(exit files alpha)←Params CheckAgenda fullfilepath
+      :If EXIT.OK=⊃(exit files alpha out)←Params CheckAgenda fullfilepath
           exit←alpha CountLettersIn files out
       :EndIf
       Log.Log'All done'
     ∇
 
-    ∇ (exit files alphabet)←params CheckAgenda fullfilepath;type
-      (files alphabet)←'' '' ⍝ error defaults
+    ∇ (exit files alphabet out)←params CheckAgenda fullfilepath;type
+      (files alphabet out)←'' '' '' ⍝ error defaults
       :If 0=≢fullfilepath~' '
       :OrIf ~⎕NEXISTS fullfilepath
           exit←LogError'SOURCE_NOT_FOUND'
@@ -182,10 +179,20 @@
           exit←EXIT.OK
           :Select type
           :Case C.NINFO.TYPES.DIRECTORY
-              files←⊃(⎕NINFO⍠'Wildcard' 1)fullfilepath,'\*.txt'
+              files←⊃(⎕NINFO⍠'Wildcard' 1)fullfilepath,F.CurrentSep,'*.txt'
           :Case C.NINFO.TYPES.FILE
               files←,⊂fullfilepath
           :EndSelect
+          files←F.NormalizePath¨files
+     
+          ⍝ Output defaults to CSV sibling of source
+          :Select type,×≢out←params.output
+          :Case C.NINFO.TYPES.DIRECTORY 0
+              out←fullfilepath F.{{⍵↓⍨-CurrentSep=⊃⌽⍵}NormalizePath ⍺}'.CSV'
+          :Case C.NINFO.TYPES.FILE 0
+              out←fullfilepath F.{(NormalizePath⊃,/2↑⎕NPARTS ⍺),⍵}'.CSV'
+          :EndSelect
+     
           alphabet←params.{(ALPHABETS⍎alphabet)~(~accented)/⍵}ACCENTS[1;]
       :EndIf
     ∇

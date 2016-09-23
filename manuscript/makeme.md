@@ -111,7 +111,7 @@ It must now create the `Log` object 'over there' -- within `#.MyApp`.
 
       'CREATE!'#.FilesAndDirs.CheckPath'Logs' ⍝ ensure subfolder of current dir
       ∆←{
-          ⍵.path←'Logs\' ⍝ subfolder of current directory
+          ⍵.path←'Logs',F.CurrentSep ⍝ subfolder of current directory
           ⍵.encoding←'UTF8'
           ⍵.filenamePrefix←'MyApp'
           ⍵.refToUtils←#
@@ -119,9 +119,14 @@ It must now create the `Log` object 'over there' -- within `#.MyApp`.
       }#.Logger.CreatePropertySpace
       #.MyApp.Log←⎕NEW #.Logger(,⊂∆)
 
-Similarly it must set the `Params` namespace in `#.MyApp`:
+Read the arguments from the command line:
 
-      #.MyApp.Params←mode GetParameters #.MyApp.PARAMETERS 
+      args←⌷2 ⎕NQ'.' 'GetCommandLineArgs'   ⍝ command line
+      #.MyApp.Log.Log¨('Command line arg ['∘,¨(⍕¨⍳≢args),¨⊂']: '),¨args
+
+Set the `PARAMETERS` namespace in `#.MyApp`:
+
+      #.MyApp.PARAMETERS GetParameters mode args env
 
 While we're at this, we've switched the arguments in `GetParameters` to follow an ancient APL convention for functions, that the right argument represents data and any left argument, some modifier for the function.[^circle] 
 
@@ -131,8 +136,8 @@ What happens next depends upon the mode. If we're getting ready to develop, we w
      
       :Case 'Develop'
           #.⎕TRAP←0⍴#.⎕TRAP
-          ⎕←'Alphabet is ',#.MyApp.Params.alphabet
-          ⎕←'Defined alphabets: ',⍕U.m2n #.MyApp.Params.ALPHABETS.⎕NL 2
+          ⎕←'Alphabet is ',#.MyApp.PARAMETERS.alphabet
+          ⎕←'Defined alphabets: ',⍕U.m2n #.MyApp.PARAMETERS.ALPHABETS.⎕NL 2
           #.Tester.EstablishHelpersIn #.Tests
           #.Tests.Run
 
@@ -159,21 +164,29 @@ We'll define that `Export` function in a moment. Right now, we'll set out what t
 
 Now that `Export` function. You'll have noticed exporting an EXE can fail from time to time, and you've performed this from the _File_ menu enough times to have tired of it. So we'll automate it. Automating it doesn't make it any more reliable, but it certainly makes retries easier. 
 
-    ∇ msg←Export filename;type;flags;resource;icon;cmdline;nl
+    ∇ msg←Export filename;type;flags;resource;icon;cmdline;nl;success;try
       #.⎕LX←'#.Environment.Start ''Run'''
      
       type←'StandaloneNativeExe'
       flags←2 ⍝ BOUND_CONSOLE
       resource←''
-      icon←'.\images\gear.ico'
+      icon←F.NormalizePath '.\images\gear.ico'
       cmdline←''
-      :Trap 0
-          2 ⎕NQ'.' 'Bind',filename type flags resource icon cmdline
-          msg←'Exported ',filename
-      :Else
-          msg←'**ERROR: Failed to export EXE.'
-      :EndTrap
+
+      success←try←0
+      :Repeat
+          :Trap 11
+              2 ⎕NQ'.' 'Bind',filename type flags resource icon cmdline
+              success←1
+          :Else
+              ⎕DL 0.2
+          :EndTrap
+      :Until success∨50<try+←1
+      msg←⊃success⌽('**ERROR: Failed to export EXE')('Exported ',filename)
+      msg,←(try>1)/' after ',(⍕try),' tries'
+      #.MyApp.Log.Log msg
     ∇
+
 
 Basically, the choices you have been making from the _File > Export_ dialogue, now wrapped as a function. 
 
@@ -287,6 +300,60 @@ And if we execute the suggested expression...[^export]
 
 
 ## Testing the EXE
+
+We've written tests for running MyApp from the session. We also need to test whether the EXE works too. We'll write `Test_Exe_001`.
+
+It's not enough to examine the exit code that MyApp.exe returns to Windows. We also need to examine the results. So our test will follow the same strategy used in `Test_CountLettersIn_001`: it will generate a set of test files and a corresponding result table. This time it will run the EXE, then see if the result file exists and holds the correct results. 
+
+We start by refactoring out of `Test_Count_LettersIn` the code to be shared with `Test_Exe_001`:
+
+    ∇ failed←Test_CountLettersIn_001(debugFlag batchFlag)
+     ⍝ across multiple files
+      failed←testOnFiles'APL' 5 'English'
+    ∇
+
+    ∇ failed←testOnFiles(testmode nfiles alph) ;cd;files;res;cc2n;cf;xxx;alphabet;cmd
+      EraseFilesIn TEST_FLDR
+      alphabet←#.MyApp.PARAMETERS.ALPHABETS⍎alph
+      cf←?1000⍴⍨nfiles,≢alphabet                            ⍝ random freqs for nfiles files
+      files←{TEST_FLDR,'test',⍵,'.txt'}∘⍕¨⍳nfiles           ⍝ full filenames
+      ({⍵[?⍨≢⍵]}¨(↓cf)/¨⊂alphabet)⎕NPUT¨files
+      res←(¯1↓TEST_FLDR),'.csv'                             ⍝ result file
+
+      :If ~failed←{~⎕NEXISTS ⍵:0 ⋄ ~⎕NDELETE ⍵}res
+          :Select testmode
+          :Case 'APL'
+              failed←#.MyApp.EXIT.OK≢alphabet #.MyApp.CountLettersIn files res
+          :Case 'EXE'
+              cmd←'.\myapp.exe source="',TEST_FLDR,'" alphabet=',alph
+              xxx←⎕CMD cmd
+              failed←~⎕NEXISTS res
+          :EndSelect
+          :If ~failed
+              cc2n←{2 1∘⊃¨⎕VFI¨2↓¨⍵}                        ⍝ CSV col 2 as numbers
+              failed←(+⌿cf)≢cc2n⊃⎕NGET res C.NGET.LINES
+          :EndIf
+      :EndIf
+    ∇
+
+    ∇ EraseFilesIn folder
+      :For file :In ⊃C.NINFO.NAME(⎕NINFO⍠'Wildcard' 1)folder,'*.*'
+          ⎕NDELETE file
+      :EndFor
+    ∇
+
+As we can see, `testOnFiles` sets up the test files and results, then according to its argument, either runs `CountLettersIn` or launches the EXE.
+
+Obvious to say but easy to overlook: after making any changes to the DYALOGs, export a new EXE to ensure that the EXE tests are testing the changes you just made. Then launch Develop.dyapp to run all the tests. 
+
+## Workflow
+
+With the two DYAPPs, your development cycle now looks like this:
+
+1. Launch Develop.dyapp and review test results. 
+2. Fix any errors and rerun `#.Tests.Run`. (If you edit the test themselves, either rerun `#,Tester.EstablishHelpersIn #.Tests` or simply close the session and relaunch Develop.dyapp.) 
+3. Launch Export.dyapp, which will export a new EXE. Close the session. 
+
 
 
 [^circle]: the best example of this are the circle functions represented by `○`. 

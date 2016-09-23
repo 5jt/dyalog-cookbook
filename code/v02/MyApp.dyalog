@@ -1,7 +1,7 @@
 ﻿:Namespace MyApp
 ⍝ Dyalog Cookbook, MyApp Version 02
 ⍝ Logging installed
-⍝ Vern: sjt05aug16
+⍝ Vern: sjt21sep16
 
 ⍝ Environment
     (⎕IO ⎕ML ⎕WX)←1 1 3
@@ -19,7 +19,7 @@
       CountLetters←{
           {⍺(≢⍵)}⌸⎕A{⍵⌿⍨⍵∊⍺}(↓ACCENTS)U.map U.toUppercase ⍵
       }
-      
+
     ∇ SetLX
    ⍝ Set Latent Expression in root ready to export workspace as EXE
       #.⎕LX←'MyApp.StartFromCmdLine'
@@ -30,9 +30,10 @@
       {}TxtToCsv 2⊃2↑⌷2 ⎕NQ'.' 'GetCommandLineArgs'
     ∇
 
-    ∇ {ok}←TxtToCsv fullfilepath;∆;xxx;Log;csv;stem;path;files;txt;type;lines;nl;enc;tgt;src;tbl
-   ⍝ Write a sibling CSV of the TXT located at fullfilepath,
+    ∇ {ok}←TxtToCsv ffp;fullfilepath;∆;xxx;Log;csv;stem;path;files;txt;type;lines;nl;enc;tgt;src;tbl
+   ⍝ Write a sibling CSV of the TXT located at full filepath ffp,
    ⍝ containing a frequency count of the letters in the file text
+      fullfilepath←F.NormalizePath ffp
       'CREATE!'F.CheckPath'Logs' ⍝ ensure subfolder of current dir
       ∆←L.CreatePropertySpace
       ∆.path←'Logs\' ⍝ subfolder of current directory

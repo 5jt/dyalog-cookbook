@@ -78,7 +78,7 @@ A> We could have defined `EXIT` in `#.Constants`, but we reserve that script for
      ⍝ containing a frequency count of the letters in the file text
       'CREATE!'F.CheckPath'Logs' ⍝ ensure subfolder of current dir
       ∆←L.CreatePropertySpace
-      ∆.path←'Logs\' ⍝ subfolder of current directory
+      ∆.path←'Logs',F.CurrentSep ⍝ subfolder of current directory
       ∆.encoding←'UTF8'
       ∆.filenamePrefix←'MyApp'
       ∆.refToUtils←#
@@ -173,7 +173,7 @@ We'll provide this in the form of a `retry` operator. This will catch errors in 
       }
 ~~~
 
-The `⍺⍺` in `retry` marks it as an operator, modifying how a function works. `⍺⍺` refers to the function. The error guard `0::` means _in the event of any error_. We use `retry` to modify the file reads and writes in `CountLettersIn`:
+The `⍺⍺` in `retry` marks it as an operator, modifying how a function works. `⍺⍺` refers to the function. Assigning `⊣` as the default value of `⍺` makes the operator _ambivalent_: it can modify dyadic functions as well as monadic functions. The error guard `0::` means _in the event of any error_. We use `retry` to modify the file reads and writes in `CountLettersIn`:
 
 ~~~
               (txt enc nl)←⎕NGET retry i⊃files
@@ -404,7 +404,7 @@ CountLettersIn[4] . ⍝ DEBUG
                  ∧
 ~~~
 
-More information is saved in a single component -- a namespece -- on the DCF.
+More information is saved in a single component -- a namespace -- on the DCF.
 
 ~~~
       'Z:/code/v03/MyApp_20160513112024.dcf' ⎕FTIE 1
@@ -464,7 +464,7 @@ The State Indicator shows the workspace captured at the moment the HandleError o
 #.MyApp.StartFromCmdLine[5]
 ~~~
 
-You can clear `HandleError` off the stack with a naked branch arrow. When you do so, you'll find the original global trap restored. Disable it. Otherwise any error you produce while investigating will trigger `HandlError` again! 
+You can clear `HandleError` off the stack with a naked branch arrow. When you do so, you'll find the original global trap restored. Disable it. Otherwise any error you produce while investigating will trigger `HandleError` again! 
 
 ~~~
       →
@@ -481,4 +481,4 @@ You can clear `HandleError` off the stack with a naked branch arrow. When you do
 In development you'll discover and fix most errors while working from the APL session. Unforeseen errors encountered by the EXE will be much rarer. Now you're all set to investigate them! 
 
 
-[^stop]: The English poets among us love that the tersest way to bring a function to a full stop is to type one. (American poets will of course have typed a period and will have to think of it as calling time out.) 
+[^stop]: The English poets among us love that the tersest way to bring a function to a full stop is to type one. (American poets will of course have typed a period and will think of it as calling time out.) 

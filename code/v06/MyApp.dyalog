@@ -1,15 +1,15 @@
 ﻿:Namespace MyApp
 ⍝ Dyalog Cookbook, Version 06
 ⍝ Error handling
-⍝ Vern: sjt10ug16
+⍝ Vern: sjt21sep16
 
-⍝ Objects Log and Params are defined by #.Environment.Start
+⍝ Object Log is defined by #.Environment.Start
 
 ⍝ Environment
     (⎕IO ⎕ML ⎕WX)←1 1 3
 
 ⍝ Aliases
-    (C U)←#.(Constants Utilities) ⍝ must be defined previously
+    (C F U)←#.(Constants FilesAndDirs Utilities) ⍝ must be defined previously
 
 ⍝ Constants and defaults
 
@@ -48,13 +48,8 @@
       CountLetters←{
           accents←↓ACCENTS/⍨~ACCENTS[2;]∊⍺ ⍝ ignore accented chars in alphabet ⍺
           0=≢⍺∩⍵:0 2⍴'' 0 ⍝ nothing of this alphabet in text
-          ⍺{⍵[⍺⍋⍵[;1];]}{⍺(≢⍵)}⌸⍺{⍵⌿⍨⍵∊⍺}accents U.map U.toUppercase ⍵
-      }
-
-      normalise←{ ⍝ filepaths with / instead of \
-          r←⍵
-          ((r='\')/r)←'/'
-          r
+          (l c)←↓⍉{⍺(≢⍵)}⌸⍺{⍵⌿⍨⍵∊⍺}accents U.map U.toUppercase ⍵
+          ⍉↑(⍺)((c,0)[l⍳⍺])
       }
 
       retry←{
@@ -66,17 +61,18 @@
 
       within←{ ⍝ file(string) ⍺ within filepath ⍵
           ⍺≡'':⍵
-          f←normalise ⍵ ⍝ filepath
-          f,('/'/⍨'/'≠⊃⌽f),⍺
+          s←F.CurrentSep
+          f←F.NormalizePath ⍵ ⍝ filepath
+          f,(s/⍨s≠⊃⌽f),⍺
       }
 
-    ∇ exit←TxtToCsv fullfilepath;files;alpha;out;LogError
+    ∇ exit←TxtToCsv ffp;fullfilepath;files;alpha;out;LogError
      ⍝ Write a sibling CSV of the TXT located at fullfilepath,
      ⍝ containing a frequency count of the letters in the file text
-      Log.Log'Source: ',fullfilepath
+      Log.Log'Source: ',ffp
+      fullfilepath←F.NormalizePath ffp
       LogError←Log∘{code←EXIT⍎⍵ ⋄ code⊣⍺.LogError code ⍵}
      
-     ⍝ Output defaults to CSV sibling of source
       :If EXIT.OK=⊃(exit files alpha out)←PARAMETERS CheckAgenda fullfilepath
           exit←alpha CountLettersIn files out
       :EndIf
@@ -102,16 +98,16 @@
       :If exit≡EXIT.OK
           :If ''≡out←p.output
               :Select type
-              :Case C.NINFO.TYPES.FILE
-                  out←(⊃,/2↑⎕NPARTS fullfilepath),'.CSV'
               :Case C.NINFO.TYPES.DIRECTORY
-                  out←fullfilepath,'COUNT.CSV'
+                  out←fullfilepath F.{{⍵↓⍨-CurrentSep=⊃⌽⍵}NormalizePath ⍺}'.CSV'
+              :Case C.NINFO.TYPES.FILE
+                  out←fullfilepath F.{(NormalizePath⊃,/2↑⎕NPARTS ⍺),⍵}'.CSV'
               :EndSelect
           :ElseIf ~⎕NEXISTS⊃⎕NPARTS out
               exit←EXIT.UNABLE_TO_WRITE_TARGET
           :EndIf
       :EndIf
-            
+     
      ⍝ files and alphabet characters
       :If exit≡EXIT.OK
           :Select type

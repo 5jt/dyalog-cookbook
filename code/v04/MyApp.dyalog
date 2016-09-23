@@ -1,7 +1,7 @@
-﻿:Namespace MyApp
+:Namespace MyApp
 ⍝ Dyalog Cookbook, Version 04
 ⍝ Error handling
-⍝ Vern: sjt03jun16
+⍝ Vern: sjt21sep16
 
 ⍝ Environment
     (⎕IO ⎕ML ⎕WX)←1 1 3
@@ -32,7 +32,8 @@
 
       CountLetters←{
           accents←↓ACCENTS/⍨~ACCENTS[2;]∊⍺ ⍝ ignore accented chars in alphabet ⍺
-          ⍺{⍵[⍺⍋⍵[;1];]}{×≢⍵:{⍺(≢⍵)}⌸⍵ ⋄ 0 2⍴' ' 0}⍺{⍵⌿⍨⍵∊⍺}accents U.map U.toUppercase ⍵
+          (l c)←↓⍉{×≢⍵:{⍺(≢⍵)}⌸⍵ ⋄ 0 2⍴' ' 0}⍺{⍵⌿⍨⍵∊⍺}accents U.map U.toUppercase ⍵
+          ⍉↑ (⍺) ((c,0)[l⍳⍺])
       }
 
       retry←{
@@ -99,6 +100,7 @@
       :Case 'Session'
           paths←fromexe fromallusers fromuser
       :EndSelect
+      paths←F.NormalizePath¨paths
      
       PARAMS←'accented' 'alphabet' 'source' 'output'
      
@@ -108,7 +110,8 @@
           vars←U.m2n ini.⎕NL 2
           :For parm :In {⍵/⍨ini.Exist¨'Config:'∘,¨⍵}PARAMS
              ⍝ Alphabet names are title case, eg Greek
-              parm p.{⍎⍺,'←⍵'}U.toTitlecase⍣(parm≡'alphabet')⊃ini.Get'Config:',parm
+              ∆←⊃ini.Get'Config:',parm
+              parm p.{⍎⍺,'←⍵'}U.toTitlecase⍣(parm≡'alphabet') ∆
           :EndFor
           :If ini.Exist'Alphabets:'
               ∆←(ini.Convert ⎕NS'') ⍝ breaks if key names are not valid APL names
@@ -123,16 +126,17 @@
       :AndIf ×≢a←{⍵/⍨'='∊¨⍵}args
           ∆←a⍳¨'=' ⋄ (k v)←((∆-1)↑¨a)((∆+1)↓¨a)
           ∆←(≢PARAMS)≥i←⊃⍳/U.toUppercase¨¨PARAMS k
-          (⍕PARAMS[∆/i]) p.{⍎⍺,'←⍵'} ∆/v
+          (⍕PARAMS[∆/i])p.{⍎⍺,'←⍵'}∆/v
       :EndIf
     ∇
 
-    ∇ exit←TxtToCsv fullfilepath;∆;Log;LogError;files;alpha;out
+    ∇ exit←TxtToCsv ffp;fullfilepath;∆;Log;LogError;files;alpha;out
      ⍝ Write a sibling CSV of the TXT located at fullfilepath,
      ⍝ containing a frequency count of the letters in the file text
+      fullfilepath←F.NormalizePath ffp
       'CREATE!'F.CheckPath'Logs' ⍝ ensure subfolder of current dir
       ∆←L.CreatePropertySpace
-      ∆.path←'Logs\' ⍝ subfolder of current directory
+      ∆.path←'Logs',F.CurrentSep ⍝ subfolder of current directory
       ∆.encoding←'UTF8'
       ∆.filenamePrefix←'MyApp'
       ∆.refToUtils←#
@@ -143,13 +147,14 @@
      
      ⍝ Output defaults to CSV sibling of source
       :If 0=×≢out←Params.output
-      :select C.NINFO.TYPE ⎕NINFO fullfilepath
-      :case C.TYPES.DIRECTORY
-          out←{'.CSV',⍨⍵↓⍨-'\'=⊃⌽⍵}fullfilepath
-      :case C.TYPES.FILE
-          out←(⊃,/2↑⎕NPARTS fullfilepath),'.CSV'
-      :endselect
+          :Select C.NINFO.TYPE ⎕NINFO fullfilepath
+          :Case C.NINFO.TYPES.DIRECTORY
+              out←fullfilepath F.{{⍵↓⍨-CurrentSep=⊃⌽⍵}NormalizePath ⍺}'.CSV'
+          :Case C.NINFO.TYPES.FILE
+              out←fullfilepath F.{(NormalizePath⊃,/2↑⎕NPARTS ⍺),⍵}'.CSV'
+          :EndSelect
       :EndIf
+      out←F.NormalizePath out
      
       LogError←Log∘{code←EXIT⍎⍵ ⋄ code⊣⍺.LogError code ⍵}
      
@@ -171,12 +176,14 @@
       Log.Log'All done'
     ∇
 
-    ∇ (exit files alphabet)←params CheckAgenda fullfilepath;type
+    ∇ (exit files alphabet)←params CheckAgenda ffp;fullfilepath;type
       (files alphabet)←'' '' ⍝ error defaults
+      fullfilepath←F.NormalizePath ffp
+      type←C.NINFO.TYPE ⎕NINFO fullfilepath
       :If 0=≢fullfilepath~' '
       :OrIf ~⎕NEXISTS fullfilepath
           exit←LogError'SOURCE_NOT_FOUND'
-      :ElseIf ~(type←C.NINFO.TYPE ⎕NINFO fullfilepath)∊C.NINFO.TYPES.(DIRECTORY FILE)
+      :ElseIf ~type∊C.NINFO.TYPES.(DIRECTORY FILE)
           exit←LogError'INVALID_SOURCE'
       :ElseIf 2≠params.(ALPHABETS.⎕NC alphabet)
           exit←LogError'INVALID_ALPHABET_NAME'
@@ -188,6 +195,7 @@
           :Case C.NINFO.TYPES.FILE
               files←,⊂fullfilepath
           :EndSelect
+          files←F.NormalizePath¨files
           alphabet←params.{(ALPHABETS⍎alphabet)~(~accented)/⍵}ACCENTS[1;]
       :EndIf
     ∇

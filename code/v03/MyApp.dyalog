@@ -1,7 +1,7 @@
 ﻿:Namespace MyApp
 ⍝ Dyalog Cookbook, MyApp Version 03
 ⍝ Error handling
-⍝ Vern: sjt19sep16
+⍝ Vern: sjt21sep16
 
 ⍝ Environment
     (⎕IO ⎕ML ⎕WX)←1 1 3
@@ -44,7 +44,7 @@
 
     ∇ StartFromCmdLine;exit;args
      ⍝ Read command parameters, run the application
-      ⎕TRAP←0 'E' '#.HandleError.Process ''''' ⍝ trap unforeseen problems 
+      ⎕TRAP←0 'E' '#.HandleError.Process ''''' ⍝ trap unforeseen problems
       ⎕WSID←'MyApp'
       args←⌷2 ⎕NQ'.' 'GetCommandLineArgs'
       Off TxtToCsv 2⊃2↑args
@@ -52,18 +52,19 @@
 
     ∇ Off returncode
       :If #.A.IsDevelopment
-        →
+          →
       :Else
-        ⎕OFF returncode
-      :Endif
+          ⎕OFF returncode
+      :EndIf
     ∇
 
-    ∇ exit←TxtToCsv fullfilepath;∆;isDev;Log;LogError;files;tgt
+    ∇ exit←TxtToCsv ffp;fullfilepath;∆;isDev;Log;LogError;files;tgt
      ⍝ Write a sibling CSV of the TXT located at fullfilepath,
      ⍝ containing a frequency count of the letters in the file text
+      fullfilepath←F.NormalizePath ffp
       'CREATE!'F.CheckPath'Logs' ⍝ ensure subfolder of current dir
       ∆←L.CreatePropertySpace
-      ∆.path←'Logs\' ⍝ subfolder of current directory
+      ∆.path←'Logs',F.CurrentSep ⍝ subfolder of current directory
       ∆.encoding←'UTF8'
       ∆.filenamePrefix←'MyApp'
       ∆.refToUtils←#
@@ -113,7 +114,7 @@
     ∇ exit←CountLettersIn(files tgt);i;txt;tbl;enc;nl;lines;bytes
      ⍝ Exit code from writing a letter-frequency count for a list of files
       tbl←0 2⍴'A' 0
-      exit←EXIT.OK ⋄ i←1 
+      exit←EXIT.OK ⋄ i←1
       :While exit=EXIT.OK
           :Trap 0
               (txt enc nl)←⎕NGET retry i⊃files

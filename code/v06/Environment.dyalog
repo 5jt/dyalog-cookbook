@@ -1,12 +1,12 @@
 ﻿:Namespace Environment
 ⍝ Dyalog Cookbook, Version 06
-⍝ Vern: sjt10aug16
+⍝ Vern: sjt21sep16
 
 ⍝ Environment
     (⎕IO ⎕ML ⎕WX)←1 1 3
 
 ⍝ Aliases
-    U←#.Utilities ⍝ must be defined previously
+    (F U)←#.FilesAndDirs #.Utilities ⍝ must be defined previously
 
     ∇ Start mode;∆;args;env
     ⍝ Initialise workspace for development, export or use
@@ -17,9 +17,9 @@
       :EndIf
       ⎕WSID←'MyApp'
      
-      'CREATE!'#.FilesAndDirs.CheckPath'Logs' ⍝ ensure subfolder of current dir
+      'CREATE!'F.CheckPath'Logs' ⍝ ensure subfolder of current dir
       ∆←mode{
-          ⍵.path←'Logs\' ⍝ subfolder of current directory
+          ⍵.path←'Logs',F.CurrentSep ⍝ subfolder of current directory
           ⍵.encoding←'UTF8'
           ⍵.filenamePrefix←'MyApp_',⊃⍺ ⍝ distinct logfiles for devt, export and run
           ⍵.refToUtils←#
@@ -69,7 +69,7 @@
       type←'StandaloneNativeExe'
       flags←2 ⍝ BOUND_CONSOLE
       resource←''
-      icon←'.\images\gear.ico'
+      icon←F.NormalizePath '.\images\gear.ico'
       cmdline←''
      
       success←try←0
@@ -82,7 +82,7 @@
           :EndTrap
       :Until success∨50<try+←1
       msg←⊃success⌽('**ERROR: Failed to export EXE')('Exported ',filename)
-      msg,←(try>1)/' after ',(⍕try),'tries'
+      msg,←(try>1)/' after ',(⍕try),' tries'
       #.MyApp.Log.Log msg
     ∇
 
@@ -114,6 +114,7 @@
       :Case 'Run'
           paths←fromexe fromallusers fromcmdline
       :EndSelect
+      paths←F.NormalizePath¨paths
      
       PARAMS←'accented' 'alphabet' 'source' 'output'
      

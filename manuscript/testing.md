@@ -143,7 +143,7 @@ Now some boundary cases
       Z←''≢#.Utilities.toLowercase''
     ∇
         
-    ∇ Z←Test_toLowercase_002(debugFlag batchFlag)
+    ∇ Z←Test_toLowercase_002(debugFlag batchFlag);∆
      ⍝ no case
       Z←∆≢#.Utilities.toLowercase ∆←' .,/'
     ∇
@@ -289,7 +289,7 @@ A> Why loop on `file` rather than `⎕NDELETE¨` the list of files? Because `⎕
      ⍝ across multiple files
       a←#.MyApp.Params.ALPHABETS.English
       cc2n←{2 1∘⊃¨⎕VFI¨2↓¨⍵}                    ⍝ CSV col 2 as numbers
-      res←TEST_FLDR,'count.csv'                 ⍝ results file
+      res←(¯1↓TEST_FLDR),'.csv'                 ⍝ results file
       sas←{⍵[?⍨≢⍵]}                             ⍝ scramble a string
       cf←?1000⍴⍨5,≢a                            ⍝ random freqs for 5 files
       files←{TEST_FLDR,'test',⍵,'.txt'}∘⍕¨⍳≢cf
@@ -340,7 +340,7 @@ Investigation reveals the problem:
         
       'CREATE!'F.CheckPath'Logs' ⍝ ensure subfolder of current dir
       ∆←L.CreatePropertySpace
-      ∆.path←'Logs\' ⍝ subfolder of current directory
+      ∆.path←'Logs',F.CurrentSep ⍝ subfolder of current directory
       ∆.encoding←'UTF8'
       ∆.filenamePrefix←'MyApp'
       ∆.refToUtils←#

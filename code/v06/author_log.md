@@ -19,3 +19,7 @@
 * Disperse DevTools into `#.MyApp` when starting in Session mode. 
 
 
+Workstation player
+SSD 
+
+save for each OS a template machine with preferred tools

@@ -1,7 +1,7 @@
 ﻿:Namespace Tests
 ⍝ Dyalog Cookbook, Version 06
 ⍝ Tests
-⍝ Vern: sjt08aug16
+⍝ Vern: sjt03aug16
 
     (C U)←#.Constants #.Utilities
     EN_lower←'abcdefghijklmnopqrstuvwxyz'
@@ -122,17 +122,17 @@
 
     ∇ failed←Test_within_002(debugFlag batchFlag)
      ⍝ scalars
-      failed←'b/a'≢'a'#.MyApp.within'b'
+      failed←'b\a'≢'a'#.MyApp.within'b'
     ∇
 
     ∇ failed←Test_within_003(debugFlag batchFlag)
      ⍝ plain strings
-      failed←'foo/bar'≢'bar'#.MyApp.within'foo'
+      failed←'foo\bar'≢'bar'#.MyApp.within'foo'
     ∇
 
     ∇ failed←Test_within_004(debugFlag batchFlag)
      ⍝ folder has trailing \
-      failed←'foo/bar'≢'bar'#.MyApp.within'foo\'
+      failed←'foo\bar'≢'bar'#.MyApp.within'foo\'
     ∇
 
     ⍝ #.MyApp.CountLetters
@@ -140,8 +140,8 @@
     ∇ failed←Test_CountLetters_001(debugFlag batchFlag);a;r
      ⍝ base case
       a←#.MyApp.PARAMETERS.ALPHABETS.English
-      r←('BCEFHIKNOQRTUWX')(1 1 1 1 1 1 1 1 2 1 1 1 1 1 1)
-      failed←r≢↓[1]a #.MyApp.CountLetters'The Quick Brown Fox'
+      r←a,[1.5] 0 1 1 0 1 1 0 1 1 0 1 0 0 1 2 0 1 1 0 1 1 0 1 1 0 0
+      failed←r≢a #.MyApp.CountLetters'The Quick Brown Fox'
     ∇
 
     ⍝ #.MyApp.CountLettersIn
@@ -157,7 +157,7 @@
       cf←?1000⍴⍨nfiles,≢alphabet                            ⍝ random freqs for nfiles files
       files←{TEST_FLDR,'test',⍵,'.txt'}∘⍕¨⍳nfiles           ⍝ full filenames
       ({⍵[?⍨≢⍵]}¨(↓cf)/¨⊂alphabet)⎕NPUT¨files
-      res←TEST_FLDR{⍺,((~(⊃⌽⍺)∊'\/')/'\'),⍵}'count.csv'     ⍝ result file
+      res←(¯1↓TEST_FLDR),'.csv'                             ⍝ result file
       :If ~failed←{~⎕NEXISTS ⍵:0 ⋄ ~⎕NDELETE ⍵}res
           :Select testmode
           :Case 'APL'
