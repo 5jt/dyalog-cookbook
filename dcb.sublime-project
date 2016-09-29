@@ -1,17 +1,22 @@
 {
 	"folders":
 	[
-		{ // project folder
-			"path": ".",
-			"file_exclude_patterns":[
+		{
+			"file_exclude_patterns":
+			[
 				"desktop.ini",
 				"*.url"
 			],
-			"folder_exclude_patterns":[
+			"folder_exclude_patterns":
+			[
 				"convert_html",
 				"preview",
 				"scrap"
-			]
+			],
+			"path": "."
+		},
+		{
+			"path": "C:\\temp\\gui"
 		}
 	]
 }
