@@ -1,7 +1,7 @@
 ﻿:Namespace UI
 ⍝ Dyalog Cookbook. Version 07
 ⍝ User interface
-⍝ Vern: sjt29sep16
+⍝ Vern: sjt30sep16
 
    ⍝ aliases
     (A E F M R U)←#.(APLTreeUtils Environment FilesAndDirs MyApp RefNamespace Utilities)
@@ -23,6 +23,7 @@
       ui←CreateForm ui
       ui←CreateMenubar ui
       ui←CreateEdit ui
+      ui←CreateStatusbar ui
     ∇
 
     ∇ ui←CreateForm ui;∆
@@ -72,36 +73,53 @@
 
     ∇ ui←CreateEdit ui;∆
       ∆←''
+      ∆,←⊂'AcceptFiles' 1
       ∆,←⊂'Posn'(0 0)
       ∆,←⊂'Size'ui.∆form.Size
-      ∆,←⊂'AcceptFiles' 1
+      ∆,←⊂'Style' 'Multi'
      
       ui.Edit←ui.∆form.⎕NEW'Edit'∆
       ui.Edit.onDropFiles←'OnDropFiles'
     ∇
 
+    ∇ ui←CreateStatusbar ui;∆
+      ui.SB←ui.∆form.⎕NEW'Statusbar'(⊂'Attach'('Bottom' 'Left' 'Bottom' 'Right'))
+     
+      ∆←''
+      ∆,←⊂'Caption' 'Drag and drop onto this form files you want to review'
+      ∆,←⊂'Coord' 'Prop'
+      ∆,←⊂'Size'(⍬ 99)
+      ui.Info←ui.SB.⎕NEW'StatusField'∆
+      ui.SB.Posn[1]←ui.∆form.Size[1]-ui.SB.Size[1]+1
+    ∇
+
     ∇ ui←Init ui
     ∇
 
-    ∇ Z←OnDropFiles(obj xxx paths xxx xxx);job;ui;text;i;ok;tbl
+    ∇ Z←OnDropFiles(obj xxx paths xxx xxx);job;ui;i;tbl
       ui←GetRef2ui obj
       tbl←0 2⍴' ' 0
-      i←0
-      ok←1
-      :While (≢paths)≥i←i+1
-            job←M.CreateJob
-            job.source←i⊃paths
-          job←M.TxtToCsv job
+      i←1
+      :Repeat
+          job←M.TxtToCsv i⊃paths
           tbl⍪←job.table
-      :Until ~ok←job.status≢'OK'
-      :If ok
-          text←U.join{⍺,',',⍕⍵}/⊃{⍺(+/⍵)}⌸/↓[1]tbl
+      :Until (job.status≢'OK')∨(≢paths)<i←i+1
+     
+      :If job.status≡'OK'
+          ui.Edit.Text←{⍺,',',⍕⍵}/⊃{⍺(+/⍵)}⌸/↓[1]tbl
+          ui.Info.Caption←IdentifySource paths
       :Else
-          text←job.status
+          ui.Edit.Text←job.status
       :EndIf
-      ui.Edit.Text←text
       Z←0
     ∇
+
+      IdentifySource←{
+          1=≢⍵:⊃⍵                
+          p←⎕NPARTS¨⍵
+          {∧/⍵∊⊂⊃⍵}⊃¨p:⍕(⊂1 1 ⊃p),,/↑1↓¨p
+          ⍕⍵
+      }
 
     ∇ Z←OnMenuCommand(obj xxx);ui
       ui←GetRef2ui obj
@@ -120,11 +138,6 @@
     ∇
 
     ∇ Shutdown
-      :If A.IsDevelopment
-          →
-      :Else
-          ⎕OFF
-      :EndIf
     ∇
 
     GetRef2ui←{9=⍵.⎕NC'ui':⍵.ui ⋄ ∇ ⍵.##}
