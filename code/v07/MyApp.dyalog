@@ -1,7 +1,15 @@
 ﻿:Namespace MyApp
-⍝ Dyalog Cookbook, Version 07
-⍝ Error handling
-⍝ Vern: sjt29sep16
+⍝ Counting letter frequencies in text
+
+    ∇ Z←Copyright
+      :Access Public Shared
+      Z←'The Dyalog Cookbook, Kai Jaeger & Stephen Taylor 2016'
+    ∇
+
+    ∇ Z←Version
+      :Access Public Shared
+      Z←'MyApp' '07' '2016-10-03'
+    ∇
 
 ⍝ Object Log is defined by #.Environment.Start
 

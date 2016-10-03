@@ -1,8 +1,17 @@
 # Author's log V07
 
-Get EXE working
-Get UI working
+Agenda
+------
 
+o Get EXEs working
+* Get UI working
+* write Testing in Windows
+o Write ADOC chapter
+- write UI chapter
+
+
+Notes
+-----
 
 Workstation player
 SSD 

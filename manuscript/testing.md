@@ -358,6 +358,22 @@ And `Initial` will call `#MyApp.Start 'Session'`.
 Now we have both stateless and state-full tests passing. This completes Version 5. 
 
 
+## Testing in different versions of Windows 
+
+When you wrote for yourself, your code needed to run only on the version of Windows you use yourself. To ship it as a product you will have to support it on the versions your customers use. 
+
+You need to pick the versions of Windows you will support, and run your tests on all those versions. If you are not already a fan of automated tests, you are about to become one. 
+
+For this you will need either 
+
+* a test machine for each OS (version of Windows) you support; or
+* a test machine and VM (virtual-machine) software 
+
+What VM software should you use? One of us has had good results with _Workstation Player_ from [VMware](http://www.vmware.com).
+
+If you use VM software you will save a _machine image_ for each OS. Include in each machine image your preferred development tools, such as text editor and Dyalog APL. You will need to keep each machine image up to date with fixes and patches to its OS and your tools. 
+
+The machine images are large, about 10Gb each. So you want several hundred gigabytes of fast SSD (solid-state drive) on your test machine. With this you should be able to get a machine image loaded in about 20 seconds. 
 
 
 

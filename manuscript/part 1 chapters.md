@@ -1,9 +1,5 @@
 {:: encoding="utf-8" /}
 
-# The Doc is in
-
-# Testing in different versions of Windows 
-
 # User interface – native
 
 ## A simple UI with native Dyalog forms
