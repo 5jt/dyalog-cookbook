@@ -10,6 +10,7 @@ settings.md
 testing.md
 makeme.md
 documentation.md
+ui.md
 part 1 chapters.md
 part 2.md
 part 2 chapters.md
