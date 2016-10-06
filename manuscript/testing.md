@@ -353,7 +353,7 @@ Investigation reveals the problem:
       Params←GetParameters mode
       ...
 
-And `Initial` will call `#MyApp.Start 'Session'`. 
+And `Initial` will call `#.MyApp.Start 'Session'`. 
 
 Now we have both stateless and state-full tests passing. This completes Version 5. 
 

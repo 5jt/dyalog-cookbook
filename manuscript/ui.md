@@ -87,7 +87,7 @@ Suppose the reference to the UI namespace is embedded in each control as its `ui
 
 This depends on every control being created with a `ui` property referring back to the UI namespace. We can protect against failure to define this property. A utility function `GetRef2ui` can search up the UI tree until it finds an ancestor object with this `ui` property defined. 
 
-We'll use this approach to build a simple user interface for MyApp. 
+We'll use this approach to build a simple user interface for MyApp. How simple? We'll have a menu bar, from which the language can be selected, and an Edit field onto which files and/or folder can be dropped. Analysis results or error messages get displayed in the edit. That simple. 
 
 
 ## A simple UI with native Dyalog forms
@@ -99,6 +99,9 @@ A new namespace script, UI in which a niladic function `Run` runs the user inter
     (M R U)←#.(MyApp RefNamespace Utilities)
 
     ∇ Run;ui
+      ui←R.Create'User Interface'
+      ui←CreateGui ui
+      ui←Init ui
       ui.∆Path←F.PWD
       DQ ui.∆form
       Shutdown
@@ -113,15 +116,154 @@ Functions `CreateGui` and `Init` build and initialise the user interface encapsu
       ui←Init CreateGui R.Create'User Interface'
 
 
-
-
 ### Forms
+
+Again, the functional style of `CreateGui` produces expository code. 
+
+    ∇ ui←CreateGui ui
+      ui.∆LanguageCommands←''
+      ui.∆MenuCommands←''
+     
+      ui←CreateForm ui
+      ui←CreateMenubar ui
+      ui←CreateEdit ui
+      ui←CreateStatusbar ui
+    ∇
+
+The UI namespace gets a couple of empty lists as properties: `∆LanguageCommands` and `∆MenuCommands`. We'll come to those in the menu bar. 
+
+Creating the form is also straightforward:
+
+    ∇ ui←CreateForm ui;∆
+      ui.Font←⎕NEW'Font'(('Pname' 'APL385 Unicode')('Size' 16))
+      ui.Icon←⎕NEW'Icon'(E.IconComponents{↓⍉↑⍵(⍺⍎¨⍵)}'Bits' 'CMap' 'Mask')
+     
+      ∆←''
+      ∆,←⊂'Coord' 'Pixel'
+      ∆,←⊂'Posn'(50 70)
+      ∆,←⊂'Size'(400 500)
+      ∆,←⊂'Caption' 'Frequency Counter'
+      ∆,←⊂'MaxButton' 0
+      ∆,←⊂'FontObj'ui.Font
+      ∆,←⊂'IconObj'ui.Icon
+      ui.∆form←⎕NEW'Form'∆
+      ui.∆form.ui←ui
+    ∇
+
+But notice key moves in the last two lines. When the form is created, its reference is assigned to a new property of the UI namespace: `∆form`. And, as will all its children, the form is given, as property `ui`, a reference to the UI namespace. 
+
+It follows, from any control `obj` in the UI, the form can be referred to as `obj.ui.∆form`. 
+
+We'll see this first in creating the menubar. 
+
 
 ### Controls
 
+Here we create a menubar as a child of the form, which we can refer to as `ui.∆form`. A reference to the menubar is saved in the UI namespace under the name `MB`. 
+
+    ∇ ui←CreateMenubar ui
+      ui.MB←ui.∆form.⎕NEW⊂'Menubar'
+     
+      ui←CreateFileMenu ui
+      ui←CreateLanguageMenu ui
+     
+      ui.∆MenuCommands.onSelect←⊂'OnMenuCommand'
+      ui.∆MenuCommands.ui←ui
+    ∇
+
+When both menus have been made, the callback `OnMenuCommand` is set for all the objects in the list `ui.∆MenuCommands`. Presumably that list was populated as a side effect of `CreateFileMenu` and/or `CreateLanguageMenu`. Just so:
+
+    ∇ ui←CreateFileMenu ui
+      ui.MenuFile←ui.MB.⎕NEW'Menu'(⊂'Caption' '&File')
+     
+      ui.Quit←ui.MenuFile.⎕NEW'MenuItem'(⊂'Caption'('Quit',(⎕UCS 9),'Alt+F4'))
+      ui.∆MenuCommands,←ui.Quit
+    ∇
+
+Just so: the menu item Quit is created as a child of the File menu, and a reference to it appended to `ui.∆MenuCommands`. 
+
+The Language menu has to be created dynamically from the languages defined in `#.MyApp.ALPHABETS`. 
+
+In principle we have a serious potential problem here. We're assigning menu items to alphabet names in the UI. The alphabet names are drawn from (among other sources) INI files. They could conflict with names defined during `CreateGui`. Although that seems highly unlikely, we should encapsulate the language names in their own namespace. For now, we've left a comment on the line that might break, and wrapped the assignment in a for-loop rather than using the _each_ operator. 
+
+    ∇ ui←CreateLanguageMenu ui;alph;mi
+      ui.MenuLanguage←ui.MB.⎕NEW'Menu'(⊂'Caption' '&Language')
+     
+      :For alph :In U.m2n M.ALPHABETS.⎕NL 2
+          mi←ui.MenuLanguage.⎕NEW'MenuItem'(⊂'Caption'alph)
+          alph ui.{⍎⍺,'←⍵'}mi ⍝ FIXME possible conflict with control names
+          ui.∆LanguageCommands,←mi
+      :EndFor
+      ui.∆LanguageCommands.Checked←ui.∆LanguageCommands∊ui⍎M.PARAMETERS.alphabet
+      ui.∆MenuCommands,←ui.∆LanguageCommands
+    ∇
+
+The Language menu items use the `Checked` property to display the current selection. By listing them in the property `∆LanguageCommands`, we can set `Checked` in a single test.
+
+
 ### Callbacks and the event queue
 
-### Extended controls
+A _callback_ function receives as right argument information about the event that triggered it, and a reference to the object that fired it. The callback takes its own action and returns a result that tells `⎕DQ` what else to do before moving on to the next event. A result of 0 tells `⎕DQ` to do nothing more.  
+
+We've set a single callback function `OnMenuCommand` on all the menu items. In this skeleton interface, a 'portmanteau' function such as `OnMenuCommand` looks a bit excessive. After all, it immediately decides whether it has been invoked from the Quit menu item or one of the Language menu items. Simpler to set one callback on the Quit menu item and a different one on all the Language menu items. 
+
+But with many more menu items that strategy produces a 'cloud' of tiny callback functions. More legible to have a single 'portmanteau' callback for all menu items. 
+
+    ∇ Z←OnMenuCommand(obj xxx);ui
+      ui←GetRef2ui obj
+      :Select obj
+      :Case ui.Quit
+          ⎕NQ ui.∆form'Close'
+      :CaseList ui.∆LanguageCommands
+          M.PARAMETERS.alphabet←obj.Caption
+          ui.∆LanguageCommands.Checked←ui.∆LanguageCommands=obj
+      :EndSelect
+      Z←0
+    ∇
+
+The first move of the callback finds the UI namespace. This should be simply `obj.ui` but in case the `ui` property has not been defined for the invoking control, we use `GetRef2ui`, which either returns the property or searches the object's ancestors until it finds it. (Because the `ui` property was defined for the form itself, we know any search will at worst terminate there.)
+
+    GetRef2ui←{9=⍵.⎕NC'ui':⍵.ui ⋄ ∇ ⍵.##}
+
+Object references are scalars, so the expression `ui.∆LanguageCommands=obj` yields a simple Boolean vector. 
+
+
+### Quitting the UI
+
+`⎕DQ` on the form was started by `Run`. (Using the cover function `DQ`, which provides a shell for future logging, tracing and debugging.) 
+
+In the `OnMenuComamnd` callback, if `obj` was the Quit menu, a Close event is enqueued for the form. When the callback exits, that Close event is the next one `⎕DQ` encounters. 
+
+When `⎕DQ` encounters the Close event for its argument, it closes the object and exits. That terminates `DQ`. The `Shutdown` function deletes the form explicitly, rather than relying on Windows to do so when `Run` leaves the execution stack and the UI namespace in its local variable `ui` vanishes.
+
+
+### D functions
+
+Most of the UI functions can be written as Dfns and some writers prefer this form. Here as examples are a constructor and a callback. 
+
+      CreateGui←{
+          ui←⍵
+     
+          ui.∆LanguageCommands←''
+          ui.∆MenuCommands←''
+     
+          ui←CreateForm ui
+          ui←CreateMenubar ui
+          ui←CreateEdit ui
+          ui←CreateStatusbar ui
+     
+          ui
+      }
+
+      OnMenuCommand←{
+          (obj xxx)←⍵
+          ui←GetRef2ui obj
+          obj=ui.Quit:0⊣⎕NQ ui.∆form'Close'
+          M.PARAMETERS.alphabet←obj.Caption
+          ui.∆LanguageCommands.Checked←ui.∆LanguageCommands=obj
+          0
+      }
+
 
 
 

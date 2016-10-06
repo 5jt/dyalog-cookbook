@@ -1,6 +1,8 @@
 The Dyalog Cookbook
 ===================
 
+![Title page](manuscript/images/title_page_thumb.jpg)
+
 A guide to organising, shipping and maintaining an application in Dyalog APL.
 
 By Kai Jaeger and Stephen Taylor
@@ -14,23 +16,14 @@ THIS FOLDER contains child folders and files as follows. Much of the content is 
 `code/`
 : scripts corresponding to different versions of the MyApp application
 
-`convert_html/`
-: private to Leanpub
-
 `manuscript/`
 : files from which the book is generated
 
 `preview/`
 : latest copies of book in multiple formats
 
-`scrap/`
-: offcuts etc, mostly predating the Git repository
-
-`versions/`
-: very early drafts, long predating the Git repository
-
-.gitignore
-: Git exclusion file
+`texts/`
+: sample texts in various alphabets
 
 dcb.sublime-project
 : Sublime Text project file

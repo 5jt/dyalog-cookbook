@@ -2,7 +2,7 @@
 
 # Documentation -- the Doc is in
 
-Documentation is the bad mother of software. Programmers learn early that we depend on it b ut not to trust it. On the one hand we need it for the software we use. On the other we learn a great wariness of it for the software we develop. Understanding why this is so will help us see what to do about documenting MyApp.
+Documentation is the bad mother of software. Programmers learn early that we depend on it but must not trust it. On the one hand we need it for the software we use. On the other we learn a great wariness of it for the software we develop. Understanding why this is so will help us see what to do about documenting MyApp.
 
 It helps to distinguish three quite different things people refer to as _documentation_.
 
@@ -126,7 +126,7 @@ We see that ADOC has found and displayed the script’s header comments. We can 
 
         ∇ Z←Version
           :Access Public Shared
-          Z←'MyApp' '07' '2016-10-03'
+          Z←(⍕⎕THIS)'07' '2016-10-03'
         ∇
 
 This gives us more prominent copyright and version notices. 

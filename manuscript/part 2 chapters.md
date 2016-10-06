@@ -56,14 +56,20 @@ This seems counterintuitive. The point of a variable is that its content can var
 
 Experience has taught us great respect for our capacity for confusion. When tracing and debugging, it is a great comfort to know that having found the definition of a variable, there are no other definitions to consider. 
 
-The obvious exception is where different possible values are most clearly expressed in control structures, in which case minimise the semantic distance between the different definitions.
+Instead of thinking of assignment as storing some data in a named bin, think of it as assigning a name to the data. Giving the same name to different data sounds lke what it is: a recipe for confusion. 
 
-~~~
-:if test1
-:ElseIf test2 ⋄ x←'foo'
-:Else ⋄ x←'bar'
-:EndIf
-~~~
+There are two obvious exceptions. Where variables are redefined in a loop we can read the definition as provisional, just for one iteration.
+
+The other is where different possible values are most clearly expressed in control structures. In this case minimise the semantic distance between the different definitions.
+
+    :if test1
+        x←'foo'
+    :Else
+        x←'bar'
+    :EndIf
+
+The above is better expressed using 'syntactic sweeteners' (see next section)if the alternative results cost little or nothing to evaluate. But if the alternative definitions of `x` are non-trivial to evaluate (or even just lengthy to express), the control strucure serves better.
+
 
 # APL.local
 
@@ -76,14 +82,15 @@ But some functions are so ubiquitous and general it makes better sense to treat 
     :else
        Z←'that'
     :endif
-    
+
 more legibly as `Z←(a=b) means 'this' else 'that'`
 
 Functions `means` and `else` could be defined in say a namespace `#.Utilities` and abbreviated to `U`, permitting
 
     Z←(a=b) U.means 'this' U.else 'that'
-    
+
 But you might reasonably prefer to omit even the `U.` prefix.
+
 
 ## Defining ubiquitous utilities
 
@@ -91,9 +98,11 @@ Here is how to define your `Utilities` namespace in the workspace root so that y
 
 W> Every function or object you include in the root as your ‘local extension’ to the APL language effectively becomes a reserved word in your ‘local’ APL dialect. Be conservative and define functions this way only when you have found them ubiquitous and indispensable!
 
-…
+FIXME `:Require` in scripts...
+
 
 ## Some utilities you might like to make ubiquitous 
+
 
 # Hooray for arrays
 

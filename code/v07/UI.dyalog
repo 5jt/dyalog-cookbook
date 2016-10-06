@@ -1,10 +1,19 @@
 ﻿:Namespace UI
-⍝ Dyalog Cookbook. Version 07
-⍝ User interface
-⍝ Vern: sjt30sep16
+⍝ Dyalog Cookbook, simple user interface
+
+    ∇ Z←Copyright
+      :Access Public Shared
+      Z←'The Dyalog Cookbook, Kai Jaeger & Stephen Taylor 2016'
+    ∇
+
+    ∇ Z←Version
+      :Access Public Shared
+      Z←(⍕⎕THIS)'07' '2016-10-04'
+    ∇
 
    ⍝ aliases
-    (A E F M R U)←#.(APLTreeUtils Environment FilesAndDirs MyApp RefNamespace Utilities)
+    (A E F)←#.(APLTreeUtils Environment FilesAndDirs)
+    (M R U)←#.(MyApp RefNamespace Utilities)
 
     ∇ Run;ui
       ui←R.Create'User Interface'
@@ -12,7 +21,7 @@
       ui←Init ui
       ui.∆Path←F.PWD
       DQ ui.∆form
-      Shutdown
+      Shutdown ui
      ⍝ done
     ∇
 
@@ -26,21 +35,6 @@
       ui←CreateStatusbar ui
     ∇
 
-    ∇ ui←CreateForm ui;∆
-      ui.Font←⎕NEW'Font'(('Pname' 'APL385 Unicode')('Size' 16))
-      ui.Icon←⎕NEW'Icon'(E.IconComponents{↓⍉↑⍵(⍺⍎¨⍵)}'Bits' 'CMap' 'Mask')
-     
-      ∆←''
-      ∆,←⊂'Coord' 'Pixel'
-      ∆,←⊂'Posn'(50 70)
-      ∆,←⊂'Size'(400 500)
-      ∆,←⊂'Caption' 'Frequency Counter'
-      ∆,←⊂'MaxButton' 0
-      ∆,←⊂'FontObj'ui.Font
-      ∆,←⊂'IconObj'ui.Icon
-      ui.∆form←⎕NEW'Form'∆
-      ui.∆form.ui←ui
-    ∇
 
     ∇ ui←CreateMenubar ui
       ui.MB←ui.∆form.⎕NEW⊂'Menubar'
@@ -64,7 +58,7 @@
      
       :For alph :In U.m2n M.ALPHABETS.⎕NL 2
           mi←ui.MenuLanguage.⎕NEW'MenuItem'(⊂'Caption'alph)
-          alph ui.{⍎⍺,'←⍵'}mi ⍝ Watch Out for conflict with control names
+          alph ui.{⍎⍺,'←⍵'}mi ⍝ FIXME possible conflict with control names
           ui.∆LanguageCommands,←mi
       :EndFor
       ui.∆LanguageCommands.Checked←ui.∆LanguageCommands∊ui⍎M.PARAMETERS.alphabet
@@ -125,11 +119,12 @@
       ui←GetRef2ui obj
       :Select obj
       :Case ui.Quit
-          Z←0⊣⎕NQ ui.∆form'Close'
+          ⎕NQ ui.∆form'Close'
       :CaseList ui.∆LanguageCommands
           M.PARAMETERS.alphabet←obj.Caption
           ui.∆LanguageCommands.Checked←ui.∆LanguageCommands=obj
       :EndSelect
+      Z←0
     ∇
 
     ∇ {r}←DQ ref
@@ -137,7 +132,8 @@
      ⍝ done
     ∇
 
-    ∇ Shutdown
+    ∇ Shutdown ui
+      2 ⎕NQ ui.∆form 'Delete'
     ∇
 
     GetRef2ui←{9=⍵.⎕NC'ui':⍵.ui ⋄ ∇ ⍵.##}
