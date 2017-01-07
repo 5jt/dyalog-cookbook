@@ -24,18 +24,12 @@
 
 # User Interface
 
-  ## Native GUI
-
-  ## HTML5/JavaScript
-
-  ## Keep UI separate from the business logic.
-
 > Discuss the pros and cons of both native GUI and the HTML5/JavaScript approach.
 
 > Explain how important it is to separate business logic from UI not only for making it easier to exchange one UI by another
-  one but also for making it easier (or even possible) to implement test cases for the business logic.
+  but also for making it easier (or even possible) to implement test cases for the business logic.
 
-> Discuss why often testing the UI as such is not a good idea and what exceptions there are and why.
+> Discuss why testing the UI as such is often not exactly a brilliant idea, and what exceptions there are and why.
 
 # Providing help
 
