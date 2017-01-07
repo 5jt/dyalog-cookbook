@@ -3,38 +3,53 @@
 # Introduction
 
 # Structure
- 
-# Package MyApp as an exexutable
+
+# Package MyApp as an executable
 
 # Logging what happens
- 
-# Handling errors 
- 
+
+# Handling errors
+
 # Configuration settings
 
 # Testing: the sound of breaking glass
 
+> Needs some more information regarding the advanced features of the test framework.
+
+> Also: the container namespace being a scripted namespace might have significant disadvantages: investigate.
+
 # Make me
 
 # Documentation - the Doc is in
- 
+
 # User Interface
 
   ## Native GUI
-  
+
   ## HTML5/JavaScript
-  
-  ## Keep UI separate from the busines logic.
+
+  ## Keep UI separate from the business logic.
+
+> Discuss the pros and cons of both native GUI and the HTML5/JavaScript approach.
+
+> Explain how important it is to separate business logic from UI not only for making it easier to exchange one UI by another
+  one but also for making it easier (or even possible) to implement test cases for the business logic.
+
+> Discuss why often testing the UI as such is not a good idea and what exceptions there are and why.
 
 # Providing help
 
-Let's focus just on Markdown2Help here because it needs nothing but Dyalog. Although it's a Windows solution we still get a working HTML version on different platforms.
+> We introduce just Markdown2Help because
+> 1. it needs nothing but Dyalog.
+> 2. it provides a functionality that it very close to a CHM file.
+
+> Although it's a Windows solution we still get a working HTML version for Linux and Mac OS.
 
 # Writing an installer
 
-Inno installer (easy) or Wix (meets the needs of large companies) ?
+> We focus on the Inno installer (easy) or Wix (meets the needs of large companies) ?
 
-Linux?
+> We need to discuss the best way of how to install under Linux and Mac-OS with Andy.
 
 # Working with other processes
 
@@ -52,17 +67,17 @@ Linux?
 
  ??
 
-# Managing your source code 
+# Managing your source code
 
 Easy-to-follow introduction into Git? Just to get one going?
 
-## Documentation 
+## Documentation
 
 ## Fire
 
 ## CompareSimple
 
-## Useful user commands 
+## Useful user commands
 
 ??
 
@@ -91,4 +106,4 @@ Get rid of the following and replace them by a (short) chapter about MiServer an
 
 # Deploying as a Web application
 
-# Deploying as a Web service 
+# Deploying as a Web service
