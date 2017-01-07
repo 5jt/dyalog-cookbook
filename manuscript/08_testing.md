@@ -43,9 +43,11 @@ If you are modifying an existing function, write new tests for the new things it
 
 Writing functions with a view to passing formal tests will encourage you to write in _functional style_. In pure functional style, a function reads only the information in its arguments and writes only its result. No side effects or references. 
 
+~~~
       ∇ Z←mean R;r
     [1] Z←((+/r)÷≢r←,R)
       ∇
+~~~	  
 
 In contrast, this line from `TxtToCsv` reads a value from a namespace external to the function (`EXIT.APPLICATION_CRASHED`) and sets another: `#.ErrorParms.returnCode`. 
 
@@ -73,16 +75,18 @@ We'll need the Tester class from the APLTree library. And a namespace of tests, 
 
 Write `Z:\code\v05\Tests.dyalog`:
 
-
+~~~
     :Namespace Tests
     ⍝ Dyalog Cookbook, Version 05
     ⍝ Tests
     ⍝ Vern: sjt24jun16
     
     :EndNamespace
+~~~	
 
 and include both scripts in the DYAPP:
 
+~~~
     Target #
     Load ..\AplTree\APLTreeUtils
     Load ..\AplTree\FilesAndDir
@@ -99,6 +103,7 @@ and include both scripts in the DYAPP:
     leanpub-end-insert
     Load MyApp
     Run MyApp.Start 'Session'
+~~~	
 
 Run the DYAPP to build the workspace. In the session execute `]adoc_browse #.Tester` to see the documentation for the Tester class, and browse also to [aplwiki.com/Tester](http://aplwiki.com/Tester) to see the discussion there. 
 
@@ -126,6 +131,7 @@ Why test that? When could that ever break? Well, an experimental I-beam is just 
 
 One thing we need these functions to do is handle case in bicameral scripts other than Latin, eg Greek and Cyrillic. That is neglected by many case-switching utilities. So we'll test a few Greek characters as well. In `Z:\code\v05\Tests.dyalog`:
 
+~~~
     :Namespace Tests
     ⍝ Dyalog Cookbook, Version 05
     ⍝ Tests
@@ -135,9 +141,11 @@ One thing we need these functions to do is handle case in bicameral scripts othe
         ⍝ accented Latin and Greek characters
         AccentedUpper←'ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝΆΈΉΊόΌύΎΏ'
         AccentedLower←'áâãàäåçðèêëéìíîïñòóôõöøùúûüýάέήίόόύύώ'
+~~~		
 
 Now some boundary cases
 
+~~~
     ∇ Z←Test_toLowercase_001(debugFlag batchFlag)
      ⍝ boundary case
       Z←''≢#.Utilities.toLowercase''
@@ -147,10 +155,13 @@ Now some boundary cases
      ⍝ no case
       Z←∆≢#.Utilities.toLowercase ∆←' .,/'
     ∇
+~~~	
 
 The two-flag right argument is part of the signature of a test function. We'll come back to what the flags do. The result `Z` indicates `¯1`: the test broke ; `0`: no problem found; `1`: problem found. 
 
 Now the basic English alphabet, and the Latin and Greek accented characters
+
+~~~
 
     ∇ Z←Test_toLowercase_003(debugFlag batchFlag)
      ⍝ base case
@@ -161,9 +172,11 @@ Now the basic English alphabet, and the Latin and Greek accented characters
      ⍝ accented Latin and Greek characters
       Z←AccentedLower≢#.Utilities.toLowercase AccentedUpper
     ∇
+~~~	
 
 This is tedious already, but writing tests is all about being thorough, so we'll replicate these four tests for `toUppercase` (reversing the arguments) and throw in a couple for `toTitlecase` as well. 
 
+~~~
     ⍝ #.Utilities.toTitlecase
        
     ∇ Z←Test_toTitlecase_001(debugFlag batchFlag)
@@ -175,11 +188,13 @@ This is tedious already, but writing tests is all about being thorough, so we'll
      ⍝ Greek script
       Z←'Όι Πολλοί'≢ #.Utilities.toTitlecase'όι ΠΟΛΛΟΊ'
     ∇
+~~~	
 
 That will do as a start. Notice each test is defined as a function that returns a scalar flag indicating whether it has found an error. (Not whether it has passed.) No test has referred to any argument: we'll come back to that shortly. 
 
 Let's give these tests a run.
 
+~~~
           #.Tester.Run #.Tests
     --- Tests started at 2016-06-26 14:08:04  on #.Tests -----------------
       Test_toLowercase_001 (1 of 10) : boundary case
@@ -196,32 +211,40 @@ Let's give these tests a run.
        10 test cases executed
        1 test case failed
        0 test cases broken
+~~~	   
 
 Ah. Now there's a surprise. Despite their simplicity, we already have a test that failed. Let's investigate. 
 
+~~~
           )CS #.Tests
     #.Tests
           AccentedLower ≡ #.Utilities.{toLowercase toUppercase ⍵} AccentedLower
     1
           AccentedUpper ≡ #.Utilities.{toUppercase toLowercase ⍵} AccentedUpper
     0
+~~~	
 
 So the problem is with `AccentedUpper`. 
 
+~~~
           where←{⍵/⍳≢⍵}
           where AccentedUpper≠#.Utilities.{toUppercase toLowercase ⍵} AccentedUpper
     33 35
           AccentedUpper[33 35]
     όύ
+~~~	
 
 And there we have it. `AccentedUpper` includes two lowercase characters. Easy enough to miss if you're not familiar with Greek script. Easy enough to find and fix! Testing rocks. Redefine the accented character lists. 
 
+~~~
         ⍝ accented Latin and Greek characters
         AccentedUpper←'ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝΆΈΉΊΌΎΏ'
         AccentedLower←'áâãàäåçðèêëéìíîïñòóôõöøùúûüýάέήίόύώ'
+~~~		
 
 Now our tests all pass. We'll proceed to something more substantial: `CountLetters`. A base case would run it against the English alphabet:
 
+~~~
           Params.ALPHABETS.English CountLetters 'The Quick Brown Fox'
     B 1
     C 1
@@ -238,16 +261,20 @@ Now our tests all pass. We'll proceed to something more substantial: `CountLette
     U 1
     W 1
     X 1
+~~~	
 
 That result could be specified more conveniently as two columns. 
 
+~~~
           ↓[1]Params.ALPHABETS.English CountLetters 'The Quick Brown Fox'
     ┌───────────────┬─────────────────────────────┐
     │BCEFHIKNOQRTUWX│1 1 1 1 1 1 1 1 2 1 1 1 1 1 1│
     └───────────────┴─────────────────────────────┘
+~~~	
 
 So our new section in `#.Tests` becomes 
 
+~~~
         ⍝ #.MyApp.CountLetters
         
     ∇ Z←Test_CountLetters_001(debugFlag batchFlag);a;r
@@ -256,7 +283,7 @@ So our new section in `#.Tests` becomes
       r←('BCEFHIKNOQRTUWX')(1 1 1 1 1 1 1 1 2 1 1 1 1 1 1)
       Z←r≢↓[1]a #.MyApp.CountLetters'The Quick Brown Fox'
     ∇
-
+~~~
 
 ### Unit tests with state
 
@@ -270,6 +297,7 @@ Better to use shorter files for which the correct results can be determined inde
 
 The Tester class looks in the tests for a function called `Initial` and runs that first. We'll use this convention to create test files with known character frequencies.
 
+~~~
     C←#.Constants
     TEST_FLDR←'./tests/'
     ∇ Initial;C;file
@@ -282,9 +310,11 @@ The Tester class looks in the tests for a function called `Initial` and runs tha
       :EndIf
     ∇
     ...
+~~~
 
 A> Why loop on `file` rather than `⎕NDELETE¨` the list of files? Because `⎕NDELETE¨` will break on an empty list. 
 
+~~~
     ∇ Z←Test_CountLettersIn_001(debugFlag batchFlag);a;files;cf;cc2n;sas;res
      ⍝ across multiple files
       a←#.MyApp.Params.ALPHABETS.English
@@ -298,11 +328,13 @@ A> Why loop on `file` rather than `⎕NDELETE¨` the list of files? Because `⎕
       :OrIf Z←(+⌿cf)≢cc2n⊃⎕NGET res 1
       :EndIf
     ∇
+~~~	
 
 A> Admire how elegantly the notation lets us generate randomised character frequencies from alphabet `a` for 5 files (`?1000⍴⍨5,≢a`) and scramble them (`{⍵[?⍨≢⍵]}`). 
 
 But our elegant test breaks!
 
+~~~
           #.Tester.EstablishHelpersIn #.Tests
           #.Tests.Run
     --- Tests started at 2016-07-24 11:18:08  on #.Tests ----------------------
@@ -322,9 +354,11 @@ But our elegant test breaks!
        12 test cases executed
        0 test cases failed
        1 test case broken
+~~~	   
 
 Investigation reveals the problem: 
 
+~~~
           )CS #.Tests
     #.Tests
           Initial
@@ -332,9 +366,11 @@ Investigation reveals the problem:
     VALUE ERROR
     CountLettersIn[21] Log.Log(⍕bytes),' bytes written to ',tgt
                       ∧
+~~~					  
 
 `Log` is undefined. In the envisaged use in production, it is defined by and local to `TxtToCsv`, the function that calls `CountLettersIn`. We have a similar issue with function `LogError`. That design followed Occam's Razor[^occam]: (entities are not to be needlessly multiplied) in keeping the log object in existence only while needed. But it now prevents us from testing `CountLettersIn` independently. So we'll refactor `Log` to be a child of `#.MyApp`, created by `Start`:
 
+~~~
       ...
       ⎕WSID←'MyApp'
         
@@ -352,6 +388,7 @@ Investigation reveals the problem:
        
       Params←GetParameters mode
       ...
+~~~	  
 
 And `Initial` will call `#.MyApp.Start 'Session'`. 
 
