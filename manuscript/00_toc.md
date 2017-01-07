@@ -26,8 +26,10 @@
 
 > Discuss the pros and cons of both native GUI and the HTML5/JavaScript approach.
 
-> Explain how important it is to separate business logic from UI not only for making it easier to exchange one UI by another
-  but also for making it easier (or even possible) to implement test cases for the business logic.
+> Explain how important it is to separate business logic from UI:
+
+> * It is then much easier to exchange one UI by another
+> * It is also easier (or possible at all) to implement test cases for the business logic.
 
 > Discuss why testing the UI as such is often not exactly a brilliant idea, and what exceptions there are and why.
 
@@ -37,7 +39,7 @@
 > 1. it needs nothing but Dyalog.
 > 2. it provides a functionality that it very close to a CHM file.
 
-> Although it's a Windows solution we still get a working HTML version for Linux and Mac OS.
+> Although it's a Windows solution we still get a working --- though very basic --- HTML version for Linux and Mac OS.
 
 # Writing an installer
 
