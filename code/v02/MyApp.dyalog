@@ -21,8 +21,8 @@
       }
 
     ∇ SetLX
-   ⍝ Set Latent Expression in root ready to export workspace as EXE
-      #.⎕LX←'MyApp.StartFromCmdLine'
+   ⍝ Set Latent Expression ready to export workspace as EXE
+      ⎕LX←'#.MyApp.StartFromCmdLine'
     ∇
 
     ∇ StartFromCmdLine
@@ -30,16 +30,15 @@
       {}TxtToCsv 2⊃2↑⌷2 ⎕NQ'.' 'GetCommandLineArgs'
     ∇
 
-    ∇ {ok}←TxtToCsv ffp;fullfilepath;∆;xxx;Log;csv;stem;path;files;txt;type;lines;nl;enc;tgt;src;tbl
+    ∇ {ok}←TxtToCsv ffp;fullfilepath;∆;Log;csv;stem;path;files;txt;type;lines;nl;enc;tgt;src;tbl
    ⍝ Write a sibling CSV of the TXT located at full filepath ffp,
    ⍝ containing a frequency count of the letters in the file text
       fullfilepath←F.NormalizePath ffp
       'CREATE!'F.CheckPath'Logs' ⍝ ensure subfolder of current dir
-      ∆←L.CreatePropertySpace
+      ∆←L.CreateParms
       ∆.path←'Logs\' ⍝ subfolder of current directory
       ∆.encoding←'UTF8'
       ∆.filenamePrefix←'MyApp'
-      ∆.refToUtils←#
       Log←⎕NEW L(,⊂∆)
       Log.Log'Started MyApp in ',F.PWD
       Log.Log'Source: ',fullfilepath
@@ -54,7 +53,7 @@
               tgt←fullfilepath,csv
               files←⊃(⎕NINFO⍠'Wildcard' 1)fullfilepath,'\*.txt'
           :Case 2 ⍝ file
-              (path stem xxx)←⎕NPARTS fullfilepath
+              (path stem)←2↑⎕NPARTS fullfilepath
               tgt←path,stem,csv
               files←,⊂fullfilepath
           :EndSelect

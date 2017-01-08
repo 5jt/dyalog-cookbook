@@ -47,6 +47,13 @@ We want configuration files to be suitable for humans to read and write, so you 
 
 Generally, we prefer simplicity and recommend the INI format where it will serve. 
 
+By using the APLTree class `IniFiles` we get as a bonus additional features:
+
+* Data types (Char and number)
+* Nested vectors
+* Embedded INI files
+* Local variables (place holders)
+
 
 ## Parameters for MyApp
 

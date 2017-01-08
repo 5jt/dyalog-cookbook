@@ -14,7 +14,7 @@ This is an open-source project. You are invited to contribute using the [Forked 
 
 Alternatively, write to Kai and Stephen at the above addresses. 
 
-The project requires Dyalog APL 15.0 or later. 
+The project requires Dyalog APL Unicode 15.0 or later. 
 
 The project is also discussed in the [`#cookbook` thread of The APL Room on Slack](https://theaplroom.slack.com/messages/cookbook/). 
 
@@ -33,6 +33,3 @@ THIS FOLDER contains child folders and files as follows. Much of the content is 
 
 `texts/`
 : sample texts in various alphabets
-
-`dcb.sublime-project`
-: Sublime Text project file

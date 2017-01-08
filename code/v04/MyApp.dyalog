@@ -56,7 +56,7 @@
       :Case 'Session'
           ⎕←'Alphabet is ',Params.alphabet
           ⎕←'Defined alphabets: ',⍕U.m2n Params.ALPHABETS.⎕NL 2
-          #.⎕LX←'#.MyApp.Start ''Application''' ⍝ ready to export
+          ⎕LX←'#.MyApp.Start ''Application''' ⍝ ready to export
       :Case 'Application'
           exit←TxtToCsv Params.source
           Off exit
@@ -131,15 +131,14 @@
     ∇
 
     ∇ exit←TxtToCsv ffp;fullfilepath;∆;Log;LogError;files;alpha;out
-     ⍝ Write a sibling CSV of the TXT located at fullfilepath,
+     ⍝ Write a sibling CSV of the TXT located at ffp (full file path),
      ⍝ containing a frequency count of the letters in the file text
       fullfilepath←F.NormalizePath ffp
       'CREATE!'F.CheckPath'Logs' ⍝ ensure subfolder of current dir
-      ∆←L.CreatePropertySpace
+      ∆←L.CreateParms
       ∆.path←'Logs',F.CurrentSep ⍝ subfolder of current directory
       ∆.encoding←'UTF8'
       ∆.filenamePrefix←'MyApp'
-      ∆.refToUtils←#
       Log←⎕NEW L(,⊂∆)
      
       Log.Log'Started MyApp in ',F.PWD

@@ -57,18 +57,12 @@ We'll write logfiles into a subfolder of the Current Directory. Where will that 
 When the EXE launches, the Current Directory is set by the command shell. Eg:
 
 ~~~
-Z:\code\v02>MyApp.exe Z:\texts\en
+Z:\code\v02\MyApp.exe Z:\texts\en
 ~~~
 
-Current Directory is `Z:\code\v02` and the logfiles will appear in  `Z:\code\v02\Logs`.
+Current Directory is `Z:\code\v02` and therefore the logfiles will appear in  `Z:\code\v02`.
 
-~~~
-Z:>code\v02\MyApp.exe texts\en
-~~~
-
-Current Directory is `Z:` and the logfiles will appear in  `Z:\Logs`.
-
-If this version of MyApp were for shipping that would be a problem. An application installed in `C:\Program Files` cannot rely on being able to write logfiles there. That is a problem to be solved by an installer. We'll come to that later. But for this version of MyApp the logfiles are for your eyes only. It's fine that the logfiles appear wherever you launch the EXE. You just have know where they are. 
+If this version of MyApp were for shipping that would be a problem. An application installed in `C:\Program Files` cannot rely on being able to write logfiles there. That is a problem to be solved by an installer. We'll come to that later. But for this version of MyApp the logfiles are for your eyes only. It's fine that the logfiles appear wherever you launch the EXE. You just have know where they are. We will put them into a sub folder `Logs` within the current directory.
 
 In developing and testing MyApp, we create the active workspace by running `MyApp.dyapp`. The interpreter sets the Current Directory of the active workspace as the DYAPP's parent folder. That too is sure to exist. 
 
@@ -83,21 +77,19 @@ We need `TxtToCsv` to ensure the Current Directory contains a `Logs` folder.
       'CREATE!' F.CheckPath 'Logs' ⍝ ensure subfolder of current dir
 ~~~
 
-Now we set up the parameters for the Logger object. First we use the Logger class' sttaic `CreatePropertySpace` method to get a property space (object) with an initial a set of default parameters. We then modify those and use the object to create the Logger object. You can use the property space's `List` method to display its properties.) 
+Now we set up the parameters for the Logger object. First we use the Logger class' sttaic `CreateParms` method to get a property space (object) with an initial a set of default parameters. We then modify those and use the object to create the Logger object. You can use the property space's `List` method to display its properties.) 
 
 If `TxtToCsv` can log what it's doing, it makes sense to check its argument. We wrap the earlier version of the function in an if/else:
 
 ~~~
-    ∇ {ok}←TxtToCsv fullfilepath;∆;csv;stem;path;files;txt;type;lines;nl
-        ;enc;tgt;src;tbl
+    ∇ {ok}←TxtToCsv fullfilepath;∆;csv;stem;path;files;txt;type;lines;nl;enc;tgt;src;tbl
    ⍝ Write a sibling CSV of the TXT located at fullfilepath,
    ⍝ containing a frequency count of the letters in the file text
       'CREATE!'F.CheckPath'Logs' ⍝ ensure subfolder of current dir
-      ∆←L.CreatePropertySpace
+      ∆←L.CreateParms
       ∆.path←'Logs\' ⍝ subfolder of current directory
       ∆.encoding←'UTF8'
       ∆.filenamePrefix←'MyApp'
-      ∆.refToUtils←#
       Log←⎕NEW L(,⊂∆)
       Log.Log'Started MyApp in ',F.PWD
       Log.Log'Source: ',fullfilepath

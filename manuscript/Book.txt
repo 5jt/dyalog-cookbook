@@ -1,16 +1,16 @@
 frontmatter.txt
-intro.md
+01_intro.md
 mainmatter.txt
-part 1.md
-structure.md
-packaging.md
-logging.md
-errors.md
-settings.md
-testing.md
-makeme.md
-documentation.md
-ui.md
+02_part 1.md
+03_structure.md
+04_packaging.md
+05_logging.md
+06_handlingErrors.md
+07_configSettings.md
+08_testing.md
+09_makeme.md
+10_documentation.md
+11_ui.md
 part 1 chapters.md
 part 2.md
 part 2 chapters.md
