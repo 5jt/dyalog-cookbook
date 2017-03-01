@@ -1,153 +1,212 @@
 ﻿:Namespace MyApp
-⍝ Dyalog Cookbook, Version 06
-⍝ Error handling
-⍝ Vern: sjt21sep16
 
-⍝ Object Log is defined by #.Environment.Start
+    ⎕IO←1 ⋄ ⎕ML←1 ⋄ ⎕WX←3 ⋄ ⎕PP←15 ⋄ ⎕DIV←1
 
-⍝ Environment
-    (⎕IO ⎕ML ⎕WX)←1 1 3
+    ∇ r←Version
+   ⍝ * 1.3.0:
+   ⍝   * Allows to Ride into the application, INI settings permitted.
+   ⍝ * 1.2.0:
+   ⍝   * The application now honours INI files.
+   ⍝ * 1.1.0:
+   ⍝   * Can now deal with non-existent files.
+   ⍝   * Logging implemented.
+   ⍝ * 1.0.0
+   ⍝   * Runs as a stand-alone EXE and takes parameters from the command line.
+      r←(⍕⎕THIS)'1.3.0' '2017-02-26'
+    ∇
 
-⍝ Aliases
-    (C F U)←#.(Constants FilesAndDirs Utilities) ⍝ must be defined previously
+⍝ === Aliases (referents must be defined previously)
 
-⍝ Constants and defaults
+    F←##.FilesAndDirs ⋄ A←##.APLTreeUtils ⍝ from the APLTree lib
+    U←##.Utilities ⋄ C←##.Constants
 
     :Namespace EXIT
-       ⍝ Custom Windows exit codes
         OK←0
-        APPLICATION_CRASHED←100
         INVALID_SOURCE←101
         SOURCE_NOT_FOUND←102
         UNABLE_TO_READ_SOURCE←103
         UNABLE_TO_WRITE_TARGET←104
-        INVALID_ALPHABET_NAME←105
+          GetName←{
+              l←' '~¨⍨↓⎕NL 2
+              ind←({⍎¨l}l)⍳⍵
+              ind⊃l,⊂'Unknown error'
+          }
     :EndNamespace
-
-    :Namespace PARAMETERS
-        :Namespace ALPHABETS
-            English←⎕A
-            French←'AÁÂÀBCÇDEÈÊÉFGHIÌÍÎJKLMNOÒÓÔPQRSTUÙÚÛVWXYZ'
-            German←'AÄBCDEFGHIJKLMNOÖPQRSßTUÜVWXYZ'
-            Greek←'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ'
-        :EndNamespace
-        accented←0
-        alphabet←'English'
-        source←''
-        output←''
-    :EndNamespace
-
-
-⍝ === VARIABLES ===
-
-    ∆←'ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝάΆέΈήΉίϊΐΊόΌύϋΎώΏ'
-    ACCENTS←↑∆ 'AAAAAACDEEEEIIIINOOOOOOUUUUYΑΑΕΕΗΗΙΙΙΙΟΟΥΥΥΩΩ'
-
-⍝ === End of variables definition ===
 
       CountLetters←{
-          accents←↓ACCENTS/⍨~ACCENTS[2;]∊⍺ ⍝ ignore accented chars in alphabet ⍺
-          0=≢⍺∩⍵:0 2⍴'' 0 ⍝ nothing of this alphabet in text
-          (l c)←↓⍉{⍺(≢⍵)}⌸⍺{⍵⌿⍨⍵∊⍺}accents U.map U.toUppercase ⍵
-          ⍉↑(⍺)((c,0)[l⍳⍺])
+          {⍺(≢⍵)}⌸⎕A{⍵⌿⍨⍵∊⍺}G.Accents U.map A.Uppercase ⍵
       }
 
-      retry←{
-          ⍺←⊣
-          0::⍺ ⍺⍺ ⍵⊣⎕DL 0.5
-          0::⍺ ⍺⍺ ⍵⊣⎕DL 0.5
-          ⍺ ⍺⍺ ⍵
-      }
-
-      within←{ ⍝ file(string) ⍺ within filepath ⍵
-          ⍺≡'':⍵
-          s←F.CurrentSep
-          f←F.NormalizePath ⍵ ⍝ filepath
-          f,(s/⍨s≠⊃⌽f),⍺
-      }
-
-    ∇ exit←TxtToCsv ffp;fullfilepath;files;alpha;out;LogError
-     ⍝ Write a sibling CSV of the TXT located at fullfilepath,
-     ⍝ containing a frequency count of the letters in the file text
-      Log.Log'Source: ',ffp
-      fullfilepath←F.NormalizePath ffp
-      LogError←Log∘{code←EXIT⍎⍵ ⋄ code⊣⍺.LogError code ⍵}
-     
-      :If EXIT.OK=⊃(exit files alpha out)←PARAMETERS CheckAgenda fullfilepath
-          exit←alpha CountLettersIn files out
-      :EndIf
-      Log.Log'All done'
-    ∇
-
-    ∇ (exit files alpha out)←p CheckAgenda fullfilepath;type
-    ⍝ p: (ns) parameters
-    ⍝ source
-      :If 0=≢fullfilepath~' '
-      :OrIf ~⎕NEXISTS fullfilepath
-          exit←LogError'SOURCE_NOT_FOUND'
-      :ElseIf ~(type←C.NINFO.TYPE ⎕NINFO fullfilepath)∊C.NINFO.TYPES.(DIRECTORY FILE)
-          exit←LogError'INVALID_SOURCE'
-      :ElseIf 2≠p.(ALPHABETS.⎕NC alphabet)
-          exit←LogError'INVALID_ALPHABET_NAME'
-      :Else
-          type←C.NINFO.TYPE ⎕NINFO fullfilepath
-          exit←EXIT.OK
-      :EndIf
-     
-    ⍝ output
-      :If exit≡EXIT.OK
-          :If ''≡out←p.output
-              :Select type
-              :Case C.NINFO.TYPES.DIRECTORY
-                  out←fullfilepath F.{{⍵↓⍨-CurrentSep=⊃⌽⍵}NormalizePath ⍺}'.CSV'
-              :Case C.NINFO.TYPES.FILE
-                  out←fullfilepath F.{(NormalizePath⊃,/2↑⎕NPARTS ⍺),⍵}'.CSV'
-              :EndSelect
-          :ElseIf ~⎕NEXISTS⊃⎕NPARTS out
-              exit←EXIT.UNABLE_TO_WRITE_TARGET
+    ∇ rc←TxtToCsv fullfilepath;files;tbl;lines;target
+   ⍝ Write a sibling CSV of the TXT located at fullfilepath,
+   ⍝ containing a frequency count of the letters in the file text.
+   ⍝ Returns one of the values defined in `EXIT`.
+      MyLogger.Log'Started MyApp in ',F.PWD
+      MyLogger.Log'Source: ',fullfilepath
+      (rc target files)←GetFiles fullfilepath
+      :If rc=EXIT.OK
+          :If 0∊⍴files
+              MyLogger.Log'No files found to process'
+              rc←EXIT.SOURCE_NOT_FOUND
+          :Else
+              tbl←⊃⍪/(CountLetters ProcessFiles)files
+              lines←{⍺,',',⍕⍵}/{⍵[⍒⍵[;2];]}⊃{⍺(+/⍵)}⌸/↓[1]tbl
+              :Trap G.Trap/FileRelatedErrorCodes
+                  A.WriteUtf8File target lines
+              :Case
+                  MyLogger.LogError'Writing to <',target,'> failed, rc=',(⍕⎕EN),'; ',⊃⎕DM
+                  rc←EXIT.UNABLE_TO_WRITE_TARGET
+                  :Return
+              :EndTrap
+              MyLogger.Log(⍕⍴files),' file',((1<⍴files)/'s'),' processed:'
+              MyLogger.Log' ',↑files
           :EndIf
       :EndIf
-     
-     ⍝ files and alphabet characters
-      :If exit≡EXIT.OK
-          :Select type
-          :Case C.NINFO.TYPES.DIRECTORY
-              files←⊃(⎕NINFO⍠'Wildcard' 1)'*.txt'within fullfilepath
-          :Case C.NINFO.TYPES.FILE
-              files←,⊂fullfilepath
-          :EndSelect
-          alpha←p.{(ALPHABETS⍎alphabet)~(~accented)/⍵}ACCENTS[1;]
-      :Else
-          (alpha files out)←⊂'' ⍝ error defaults
-      :EndIf
-     
-      Log.Log U.join'[Parameters]'{(⊂⍺),⍵}p∘{⍺,'=',⍕⍺⍎⍵}¨'accented' 'alphabet' 'source' 'output'
-      Log.Log'fullfilepath=',fullfilepath
-      Log.Log U.join'[FILES]'U.push files
     ∇
 
-    ∇ exit←alphabet CountLettersIn(files tgt);i;txt;tbl;enc;nl;lines;bytes
-     ⍝ Exit code from writing a letter-frequency count for a list of files
-      tbl←0 2⍴'A' 0
-      exit←EXIT.OK ⋄ i←1
-      :While exit=EXIT.OK
-          :Trap 0
-              (txt enc nl)←⎕NGET retry i⊃files
-              tbl⍪←alphabet CountLetters txt
-          :Else
-              exit←LogError'UNABLE_TO_READ_SOURCE: ',i⊃files
-          :EndTrap
-      :Until (≢files)<i←i+1
-      :If exit=EXIT.OK
-          lines←{⍺,',',⍕⍵}/⊃{⍺(+/⍵)}⌸/↓[1]tbl
-          :Trap 0
-              bytes←(lines enc nl)⎕NPUT retry tgt C.NPUT.OVERWRITE
-          :Else
-              exit←LogError'UNABLE_TO_WRITE_TARGET: ',tgt
-              bytes←0
-          :EndTrap
-          Log.Log(⍕bytes),' bytes written to ',tgt
+    ∇ (rc target files)←GetFiles fullfilepath;csv;target;path;stem;isDir
+   ⍝ Checks argument and returns liast of files (or single file).
+      fullfilepath~←'"'
+      :If 0∊⍴fullfilepath
+          rc←EXIT.INVALID_SOURCE
+          :Return
       :EndIf
+      files←target←''
+      csv←'.csv'
+      :If 0=F.Exists fullfilepath
+          rc←EXIT.SOURCE_NOT_FOUND
+      :ElseIf ~isDir←F.IsDir fullfilepath
+      :AndIf ~F.IsFile fullfilepath
+          rc←EXIT.INVALID_SOURCE
+      :Else
+          :If isDir
+              target←F.NormalizePath fullfilepath,'\total',csv
+              files←⊃F.Dir fullfilepath,'/*.txt'
+          :Else
+              (path stem)←2↑⎕NPARTS fullfilepath
+              target←path,stem,csv
+              files←,⊂fullfilepath
+          :EndIf
+          target←(~0∊⍴files)/target
+          rc←(1+0∊⍴files)⊃EXIT.(OK SOURCE_NOT_FOUND)
+      :EndIf
+    ∇
+
+    ∇ data←(fns ProcessFiles)files;txt;file
+   ⍝ Reads all files and executes `fns` on the contents.
+      data←⍬
+      :For file :In files
+          :Trap G.Trap/FileRelatedErrorCodes
+              txt←'flat'A.ReadUtf8File file
+          :Case
+              MyLogger.LogError'Unable to read source: ',file
+              Off EXIT.UNABLE_TO_READ_SOURCE
+     
+          :EndTrap
+          data,←⊂fns txt
+      :EndFor
+    ∇
+
+    ∇ {r}←SetLX dummy
+   ⍝ Set Latent Expression (needed in order to export workspace as EXE)
+      r←⍬
+      ⎕LX←'#.MyApp.StartFromCmdLine #.MyApp.GetCommandLineArg ⍬'
+    ∇
+
+    ∇ {r}←StartFromCmdLine arg;MyLogger;G
+   ⍝ Needs command line parameters, runs the application.
+      r←⍬
+      (G MyLogger)←Initial ⍬
+      Off TxtToCsv arg
+    ∇
+
+    ∇ r←GetCommandLineArg dummy;buff
+      r←⊃¯1↑1↓2 ⎕NQ'.' 'GetCommandLineArgs'
+    ∇
+
+    ∇ instance←OpenLogFile path;logParms
+      ⍝ Creates an instance of the "Logger" class.
+      ⍝ Provides methods `Log` and `LogError`.
+      ⍝ Make sure that `path` (that is where log files will end up) does exist.
+      ⍝ Returns the instance.
+      logParms←##.Logger.CreateParms
+      logParms.path←path
+      logParms.encoding←'UTF8'
+      logParms.filenamePrefix←'MyApp'
+      'CREATE!'F.CheckPath path
+      instance←⎕NEW ##.Logger(,⊂logParms)
+    ∇
+
+    ∇ (G MyLogger)←Initial dummy
+    ⍝ Prepares the application.
+    ⍝ Side effect: creates `MyLogger`, an instance of the `Logger` class.
+      #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
+      G←CreateGlobals ⍬
+      CheckForRide G
+      MyLogger←OpenLogFile G.LogFolder
+      MyLogger.Log↓⎕FMT G.∆List
+    ∇
+
+    ∇ G←CreateGlobals dummy;myIni;iniFilename
+      G←⎕NS''
+      G.⎕FX'r←∆List' 'r←{0∊⍴⍵:0 2⍴'''' ⋄ ⍵,[1.5]⍎¨⍵}'' ''~¨⍨↓⎕NL 2'
+      G.Debug←A.IsDevelopment
+      G.Trap←1
+      G.Accents←'ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝ' 'AAAAAACDEEEEIIIINOOOOOOUUUUY'
+      G.LogFolder←'./Logs'
+      G.DumpFolder←'./Errors'
+      G.Watch←''    ⍝ not used yet
+      G.Ride←0      ⍝ If this is not 0 the app accepts a Ride & treats G.Ride as port number
+      iniFilename←'expand'F.NormalizePath'MyApp.ini'
+      :If F.Exists iniFilename
+          myIni←⎕NEW ##.IniFiles(,⊂iniFilename)
+          G.Debug{¯1≡⍵:⍺ ⋄ ⍵}←myIni.Get'Config:debug'
+          G.Trap←⊃G.Trap myIni.Get'Config:trap'
+          G.Accents←⊃G.Accents myIni.Get'Config:Accents'
+          G.LogFolder←'expand'F.NormalizePath⊃G.LogFolder myIni.Get'Folders:Logs'
+          G.DumpFolder←'expand'F.NormalizePath⊃G.DumpFolder myIni.Get'Folders:Errors'
+          G.Watch←⊃G.Watch myIni.Get'Folders:Watch'
+          :If myIni.Exist'Ride'
+          :AndIf myIni.Get'Ride:Active'
+              G.Ride←⊃G.Ride myIni.Get'Ride:Port'
+          :EndIf
+      :EndIf
+      G.LogFolder←'expand'F.NormalizePath G.LogFolder
+      G.DumpFolder←'expand'F.NormalizePath G.DumpFolder
+    ∇
+    
+    ∇ {r}←CheckForRide G;rc
+    ⍝ Checks whether the user wants to have a Ride and if so make it possible.
+      r←⍬
+      :If 0≠G.Ride
+          rc←3502⌶0
+          {0=⍵:r←1 ⋄ ⎕←'Problem! rc=',⍕⍵ ⋄.}rc
+          rc←3502⌶'SERVE::',⍕G.Ride
+          {0=⍵:r←1 ⋄ ⎕←'Problem! rc=',⍕⍵ ⋄.}rc
+          rc←3502⌶1
+          {0=⍵:r←1 ⋄ ⎕←'Problem! rc=',⍕⍵ ⋄.}rc
+          {_←⎕DL ⍵ ⋄ ∇ ⍵}1
+      :EndIf
+    ∇
+
+    ∇ Off exitCode
+      :If 0<⎕NC'MyLogger'
+          :If exitCode=EXIT.OK
+              MyLogger.Log'MyApp is closing down gracefully'
+          :Else
+              MyLogger.LogError'MyApp is closing down, return code is ',EXIT.GetName exitCode
+          :EndIf
+      :EndIf
+      :If A.IsDevelopment
+          →
+      :Else
+          ⎕OFF exitCode
+      :EndIf
+    ∇
+
+    ∇ r←FileRelatedErrorCodes
+    ⍝ Useful to trap all file (and directory) related errors.
+      r←12 18 20 21 22 23 24 25 26 28 30 31 32 34 35
     ∇
 
 :EndNamespace

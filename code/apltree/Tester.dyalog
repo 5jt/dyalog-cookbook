@@ -2,14 +2,28 @@
 ⍝ This class establishes a test framework for APL applications. This help
 ⍝ is **not** an introduction into how the test framework works, and
 ⍝ how you should organize your test cases. More information is available
-⍝ from the Tester's home page on the APL Wiki: <http://aplwiki.com/Tester>.
-⍝
+⍝ from the Tester's home page on the APL Wiki: <http://aplwiki.com/Tester>.\\
+⍝ Note that the namespace hosting the test cases **must** be an ordinary
+⍝ named namepsace. In other words, it can be neither an unnamed namespace
+⍝ or a scripted namepsae.\\
 ⍝ These are the `Run*` functions you may call:
 ⍝ * `Run`
 ⍝ * `RunBatchTests`
+⍝ * `RunBatchTestsInDebugMode`
 ⍝ * `RunDebug`
 ⍝ * `RunThese`
-⍝ * `RunTheseIn`
+⍝
+⍝ All `Run*` functions return a two-element vector as result:
+⍝ 1. Is a return code which has one of three values:
+⍝    * 0 means all executed, all okay.
+⍝    * 1 means that some test cases failed or crashed.
+⍝    * 2 means that at least one test case has not been executed but those that were
+⍝      executed passed. Reasons for not being executed can be, among others, that a
+⍝      test case is inactive or cannot run on the current platform.
+⍝ 2. A vector of text vectors. For every test function there is one item added to
+⍝    this vector. In addition there is a summary at the end of the vector, reporting
+⍝    how many test cases got executed, how many failed/broke or were not executed
+⍝    and for what reason.
 ⍝
 ⍝ ## Details
 ⍝ All methods take a right argument which is a ref pointing to an ordinary
@@ -21,7 +35,7 @@
 ⍝ * `Test_001`
 ⍝ * `TEST_9999`
 ⍝
-⍝ In order to allow grouping when complex test cases need to be constructed
+⍝ In order to allow grouping when more complex test cases are needed
 ⍝ the following names are valid as well:
 ⍝ * `Test_GroupA_001`
 ⍝ * `Test_GroupB_002`
@@ -30,10 +44,10 @@
 ⍝ the group. **After** the second underscore only digits are allowed.
 ⍝
 ⍝ ## Comments in line 1
-⍝ Line 1 of a test function must contain information that allows it to identify
+⍝ Line 1 of a test function must contain information that allow a user to identify
 ⍝ what this particular test is all about. The `L` (for "List) function (one
 ⍝ of the [Helpers](#) - see there) lists all test functions with their names
-⍝ and this single comment line.
+⍝ and this single comment line. Also all `Run*` function list this first line.
 ⍝
 ⍝ ## The right argument
 ⍝ All test functions must accept a right argument of length two:
@@ -49,21 +63,20 @@
 ⍝ ## Result of a test function
 ⍝ Test functions must return a result. This is expected to be a single integer.
 ⍝ However, you don't need to worry about those integers; instead use one of the
-⍝ niladic functions established as [Helpers](#) in your test namespace.
-⍝
+⍝ niladic functions established as [Helpers](#) in your test namespace.\\
 ⍝ These are the names of those functions and their meaning:
 ⍝
-⍝ However, you are strongly adviced to used the corresponding niladic functions etablished
-⍝ by the `EstablishHelpersIn` function rather than the numeric values:
-⍝
-⍝ | `∆OK`               | Passed
-⍝ | `∆Failed`           | Unexpected result
-⍝ | `∆NoBatchTest`      | Not executed because `batchFlag` was 1.
-⍝ | `∆InActive`         | Not executed because the test case is inactive (not ready, buggy, whatever)
-⍝ | `∆WindowsOnly`      | Not executed because runs under Windows only.
-⍝ | `∆LinuxOnly`        | Not executed because runs under Linux only.
-⍝ | `∆MacOnly`          | Not executed because runs under Mac OS only.
-⍝ | `∆LinuxOrMacOnly`   | Not executed because runs Linux/Mac OS only.
+⍝ | `∆OK`                | Passed
+⍝ | `∆Failed`            | Unexpected result
+⍝ | `∆NoBatchTest`       | Not executed because `batchFlag` was 1.
+⍝ | `∆InActive`          | Not executed because the test case is inactive (not ready, buggy, whatever)
+⍝ | `∆WindowsOnly`       | Not executed because runs under Windows only.
+⍝ | `∆LinuxOnly`         | Not executed because runs under Linux only.
+⍝ | `∆MacOnly`           | Not executed because runs under Mac OS only.
+⍝ | `∆LinuxOrMacOnly`    | Not executed because runs Linux/Mac OS only.
+⍝ | `∆LinuxOrWindowsOnly`| Not executed because runs Linux/Windows only.
+⍝ | `∆MacOrWindowsOnly`  | Not executed because runs Mac OS/Windows only.
+⍝ | `∆NoAcreTests`       | No acre-related testsa are executed.
 ⍝
 ⍝ Using the functions rather than numeric constants does not only improve readability
 ⍝ but makes searching easier as well.
@@ -79,25 +92,54 @@
 ⍝ ## "Cleanup" function
 ⍝ If a function `Cleanup` exists in the namespace containing the test cases
 ⍝ it is executed automatically after the test cases have been executed.\\
-⍝ Use this to clean up any leftovers.
+⍝ Use this to clean up any leftovers.\\
+⍝ It might be a good idea to call this in line 1 of `Initial`.
 ⍝
 ⍝ ## INI files
-⍝ When running the `RunBatchTests` method it checks for INI files in the current
+⍝ When running any of the `Run*` methods they check for INI files in the current
 ⍝ directory:
 ⍝ * First it tries to find "testcase\_{computername}.ini"
 ⍝ * If no such file exists it tries to find "testcase.ini"
 ⍝
 ⍝ If one of those files exist a namespace `Ini` is created within the
 ⍝ namespace where your test cases live. This namespace is populated by the
-⍝ contents of the INI file(s) found.\\
+⍝ contents of the INI file found.\\
 ⍝ After executing the test cases this namespace is deleted.
 ⍝
 ⍝ ## Helpers
-⍝ There are a couple of helpers you might find useful when creating test
+⍝ There are a several functions called helpers you might find useful when creating test
 ⍝ cases. The method `EstablishHelpersIn` takes a ref pointing to the namespace
 ⍝ hosting the test cases (defaults to `↑⎕RSI` when empty). It copies those helpers
-⍝ into the hosting namespace. The explicit result is a list of all helpers.
-⍝
+⍝ into the hosting namespace. The explicit result is a list of all helpers.\\
+⍝ One of the helpers lists all helpers; execute
+⍝ ~~~
+⍝       #.TestCases.ListHelpers
+⍝ Run                       Run all test cases
+⍝ RunDebug                  Run all test cases with DEBUG flag on
+⍝ RunThese                  Run just the specified tests.
+⍝ RunBatchTests             Run all batch tests
+⍝ RunBatchTestsInDebugMode  Run all batch tests in debug mode (no error trapping) and with stopFlag←1.
+⍝ E                         Get all functions into the editor starting their names with "Test_".
+⍝ L                         Prints a list with all test cases and the first comment line to the session.
+⍝ G                         Prints all groups to the session.
+⍝ FailsIf                   Usage : →FailsIf x, where x is a boolean scalar
+⍝ PassesIf                  Usage : →PassesIf x, where x is a boolean scalar
+⍝ GoToTidyUp                Returns either an empty vector or "Label" which defaults to ∆TidyUp
+⍝ RenameTestFnsTo           Renames a test function and tell acre.
+⍝ ListHelpers               Lists all helpers available from the `Tester` class.
+⍝ ∆OK                       Constant; used as result of a test function
+⍝ ∆Failed                   Constant; used as result of a test function
+⍝ ∆NoBatchTest              Constant; used as result of a test function
+⍝ ∆Inactive                 Constant; used as result of a test function
+⍝ ∆NoAcreTests              Constant; used as result of a test function
+⍝ ∆WindowsOnly              Constant; used as result of a test function
+⍝ ∆LinuxOnly                Constant; used as result of a test function
+⍝ ∆MacOnly                  Constant; used as result of a test function
+⍝ ∆LinuxOrMacOnly           Constant; used as result of a test function
+⍝ ∆LinuxOrWindowsOnly       Constant; used as result of a test function
+⍝ ∆MacOrWindowsOnly         Constant; used as result of a test function
+⍝ ~~~
+⍝ for this.\\
 ⍝ ## Misc
 ⍝ This class is part of the APLTree Open Source project.\\
 ⍝ Home page: <http://aplwiki.com/Tester>\\
@@ -109,23 +151,30 @@
 
     ∇ r←Version
       :Access Public shared
-      ⍝ 2.7.0
-      ⍝ * **Attention:** requires Dyalog 15.0 from now on.
-      ⍝ * Works under all supported platforms now: Windows, Linux and Mac OS.
-      ⍝ * The range of possible return values from a test functions has been
-      ⍝   enhanced. Now a test case can indicate that it is inactive or did
-      ⍝   not run because of the current platform.
-      ⍝ * The `E` helper now accepts the output of `L`.
-      ⍝ * Constants introduced useful to set the explicit result of a test
-      ⍝   : `∆OK`, `∆Failed`, `∆NoBatchTest`, `∆InActive`, `∆WindowsOnly`
-      ⍝   `∆LinuxOnly`,  `∆MacOnly` and  `∆LinuxOrMacOnly`.
-      ⍝
-      ⍝   These are established in the namespace hosting the test case by the
-      ⍝   `EstablishHelpersIn` method.
-      r←(Last⍕⎕THIS)'2.7.0' '2016-08-31'
+      ⍝ * 3.0.0
+      ⍝   * `Initial` may return a Boolean result. 0 means it could not initialize.
+      ⍝   * When `EstablishHelpersIn` or any of the `Run*` functions is executed the hosting
+      ⍝     namespace is checked for being an ordinary named namespace.
+      ⍝   * Bug fixes
+      ⍝     * `Run` should have returned a Boolean flag and a report. Prior to 3.0 is return
+      ⍝       just the report.
+      ⍝ * 2.9.1
+      ⍝   * Documentation corrected regarding INI files.
+      ⍝ * 2.9.0
+      ⍝   * Additional method `RunBatchTestsInDebugMode` (helper) introduced.
+      ⍝   * Additional constant `∆NoAcreTests`
+      ⍝ * 2.8.1
+      ⍝   * Some missing constants added.
+      ⍝   * Typo fixed.
+      ⍝ * 2.8.0
+      ⍝   * Some of the `Run*` methods now accept a partly named qualifier as long as
+      ⍝     what's provided is good enough to actually qualify a group.
+      ⍝   * The `Run*` functions now check whether `⎕TRAP` is localized in all test
+      ⍝     functions and print a warning to the session except in batch mode.
+      r←(Last⍕⎕THIS)'3.0.0' '2017-01-14'
     ∇
 
-    ∇ {log}←Run refToTestNamespace;flags;rc
+    ∇ {(rc log)}←Run refToTestNamespace;flags
     ⍝ Runs all test cases in `refToTestNamespace` with error trapping. Broken
     ⍝ as well as failing tests are reported in the session as such but they
     ⍝ don't stop the program from carrying on.
@@ -234,7 +283,7 @@
       :EndIf
     ∇
 
-    ∇ {r}←{forceTestTemplate}EstablishHelpersIn refToTestNamespace;∆;list;fnsName
+    ∇ {r}←{forceTestTemplate}EstablishHelpersIn refToTestNamespace;∆;list;fnsName;code;buff
     ⍝ Takes a ref to a namespace hosting test cases and establishes some functions,
     ⍝ among them `ListHelpers` which lists all those functions with their leading
     ⍝ comment line.\\
@@ -244,18 +293,41 @@
       forceTestTemplate←{(0=⎕NC ⍵):0 ⋄ ⍎⍵}'forceTestTemplate'
       'Invalid right argument'⎕SIGNAL 11/⍨~{((,1)≡,⍵)∨((,0)≡,⍵)}forceTestTemplate
       refToTestNamespace←⎕RSI{(0∊⍴⍵):⎕IO⊃⍺ ⋄ ⍵}refToTestNamespace
+      'Hosting namespace is scripted'⎕SIGNAL 11/⍨{16::0 ⋄ 1⊣⎕SRC ⍵}refToTestNamespace
       'Invalid right argument'⎕SIGNAL 11/⍨#≡refToTestNamespace
       list←Helpers.GetListHelpers
       :For fnsName :In list
           refToTestNamespace.⎕FX Helpers.GetCode fnsName
       :EndFor
-      :If forceTestTemplate
-      :OrIf 0∊⍴refToTestNamespace.L''  ⍝ Not if there are already any test functions
-          refToTestNamespace.⎕FX Helpers.GetCode'Test_000'
+      code←{16::⍬ ⋄ ⎕SRC ⍵}refToTestNamespace
+      :If ⍬≢code
+          buff←Helpers.GetCode'Test_000'
+          (1⊃buff)←'∇  ',1⊃buff
+          ((⍴buff)⊃buff)←'∇  ',(⍴buff)⊃buff
+          buff←(⊂''),buff,(⊂'')
+          code←(¯1↓code),buff,¯1↑code
+          refToTestNamespace.⎕FIX code
+      :Else
+          :If forceTestTemplate
+          :OrIf 0∊⍴refToTestNamespace.L''  ⍝ Not if there are already any test functions
+              refToTestNamespace.⎕FX Helpers.GetCode'Test_000'
+          :EndIf
       :EndIf
     ∇
 
 ⍝⍝⍝ Private stuff
+
+    :Field Private Shared ReadOnly ∆OK←0
+    :Field Private Shared ReadOnly ∆Failed←1
+    :Field Private Shared ReadOnly ∆NoBatchTest←¯1
+    :Field Private Shared ReadOnly ∆Inactive←¯2
+    :Field Private Shared ReadOnly ∆WindowsOnly←¯10
+    :Field Private Shared ReadOnly ∆LinuxOnly←¯11
+    :Field Private Shared ReadOnly ∆MacOnly←¯12
+    :Field Private Shared ReadOnly ∆LinuxOrMacOnly←¯20
+    :Field Private Shared ReadOnly ∆LinuxOrWindowsOnly←¯21
+    :Field Private Shared ReadOnly ∆MacOrWindowsOnly←¯22
+    :Field Private Shared ReadOnly ∆NoAcreTests←¯30
 
     ∇ {(rc log)}←ref Run__(trapFlag debugFlag batchFlag stopAt testCaseNos);ps
     ⍝ Run all test cases to be found in "ref"
@@ -271,7 +343,7 @@
     ⍝     going to be executed.
     ⍝ The explicit result (shy):
     ⍝ r ←→  0  when all tests got executed succesfully
-    ⍝ r ←→  1  when at least one test failed
+    ⍝ r ←→  1  when at least one test failed of none where executed because `Initial` prevented that.
     ⍝ r ←→ ¯1  when at least one test wasn't exeuted because it's not appropriate _
     ⍝          for batch execution, although none of the tests executed did fail.
       ps←⎕NS''
@@ -283,7 +355,13 @@
       :ElseIf ⎕NEXISTS'Testcases.ini'
           ref.INI←'flat'(⎕NEW #.IniFiles(,⊂'Testcases.ini')).Convert ⎕NS''
       :EndIf
-      ExecuteInitial ref ps
+      :If 0=ExecuteInitial ref ps
+          log←,⊂'Could not initialize; see ',(⍕↑1↓⎕RSI),'.Initial'
+          →∆GetOutOfHere,rc←1
+      :EndIf
+      :If {16::0 ⋄ 1⊣⎕SRC ⍵}ref
+          'Hosting namespace is scripted'⎕SIGNAL 11
+      :EndIf
       :If 0∊⍴ps.list←GetAllTestFns ref
           →∆GetOutOfHere,rc←0
       :EndIf
@@ -296,9 +374,11 @@
       ProcessTestCases ref ps
      ∆GetOutOfHere:
       ExecuteCleanup ref
-      ref.⎕EX'INI'               ⍝ Get rid of any leftovers
-      (rc log)←ReportTestResults ps
-      ref.TestCasesExecutedAt←FormatDateTime ⎕TS
+      ref.⎕EX'INI'              ⍝ Get rid of any leftovers
+      :If 0<ps.⎕NC'list'        ⍝ Then no test cases got executed, probably because `Initial` failed.
+          (rc log)←ReportTestResults ps
+          ref.TestCasesExecutedAt←FormatDateTime ⎕TS
+      :EndIf
     ∇
 
       GetTestNo←{
@@ -306,20 +386,29 @@
           {⍎⌽⍵↑⍨¯1+⍨⍵⍳'_'}⌽⍵
       }
 
-    ∇ ExecuteInitial(ref parms)
+    ∇ {r}←ExecuteInitial(ref parms)
+      r←1
       :If 3=ref.⎕NC'Initial'
           :Select ↑(⎕IO+1)⊃1 ref.⎕AT'Initial'
           :Case 0
-              ref.Initial
+              :If 0=↑↑ref.⎕AT'Initial'
+                  ref.Initial
+              :Else
+                  r←ref.Initial
+              :EndIf
           :Case 1
-              ref.Initial parms
+              :If 0=↑↑ref.⎕AT'Initial'
+                  ref.Initial parms
+              :Else
+                  r←ref.Initial parms
+              :EndIf
           :Else
               11 ⎕SIGNAL⍨'The "Initial" function in ',(⍕ref),' has an invalid signature: it''s neither monadic nor niladic'
           :EndSelect
       :EndIf
     ∇
 
-    ∇ ProcessGroupAndTestCaseNumbers(ref ps);rc;lookFor
+    ∇ ProcessGroupAndTestCaseNumbers(ref ps);rc;lookFor;buff
       ps.group←''
       :If ~0∊⍴ps.testCaseNos
           :If ' '=1↑0⍴∊ps.testCaseNos
@@ -341,10 +430,14 @@
                   lookFor←(('Test_'{⍵≡(⍴⍺)↑⍵}ps.group)/'_'),ps.group
                   :If '*'=¯1↑lookFor
                       lookFor←¯1↓lookFor
+                      ps.list←(∨/¨(⊂lookFor)⍷¨ps.list)/ps.list  ⍝ First restrict to group
                   :Else
-                      lookFor,←'_'
+                      :If 0∊⍴buff←(∨/¨(⊂lookFor)⍷¨ps.list)/ps.list  ⍝ First restrict to group
+                          ps.list←''
+                      :Else
+                          ps.list←(1=⍴∪{2⊃'_'Split ⍵}¨buff)/buff
+                      :EndIf
                   :EndIf
-                  ps.list←(∨/¨(⊂lookFor)⍷¨ps.list)/ps.list  ⍝ First restrict to group
               :EndIf
           :EndIf
           :If 0∊⍴ps.list ⋄ →rc←0 ⋄ :EndIf
@@ -408,25 +501,37 @@
 
     ∇ (rc log)←ReportTestResults ps
       log←ps.log
-      log,←⊂(⎕PW-1)⍴'-'
+      log,←⊂(⎕PW-2)⍴'-'
       log,←⊂'  ',(⍕1⊃⍴ps.list),' test case',((1≠1⊃⍴ps.list)/'s'),' executed'
       log,←⊂'  ',(⍕ps.failedCounter),' test case',((1≠+/ps.failedCounter)/'s'),' failed'
       log,←⊂'  ',(⍕ps.errCounter),' test case',((1≠+/ps.errCounter)/'s'),' broken'
       :If ~0∊⍴ps.returnCodes
-          :If ¯1∊ps.returnCodes
+          :If ∆NoBatchTest∊ps.returnCodes
               log,←⊂'  ',(⍕¯1+.=ps.returnCodes),' test cases not executed because they are not "batchable"'
           :EndIf
-          :If ¯2∊ps.returnCodes
+          :If ∆Inactive∊ps.returnCodes
               log,←⊂'  ',(⍕¯2+.=ps.returnCodes),' test cases not executed because they were inactive'
           :EndIf
-          :If ¯10∊ps.returnCodes
-              log,←⊂'  ',(⍕¯10+.=ps.returnCodes),' test cases not executed because they can only run under Window'
+          :If ∆WindowsOnly∊ps.returnCodes
+              log,←⊂'  ',(⍕∆WindowsOnly+.=ps.returnCodes),' test cases not executed because they can only run under Window'
           :EndIf
-          :If ¯11∊ps.returnCodes
-              log,←⊂'  ',(⍕¯11+.=ps.returnCodes),' test cases not executed because they can only run under Linux'
+          :If ∆LinuxOnly∊ps.returnCodes
+              log,←⊂'  ',(⍕∆LinuxOnly+.=ps.returnCodes),' test cases not executed because they can only run under Linux'
           :EndIf
-          :If ¯12∊ps.returnCodes
-              log,←⊂'  ',(⍕¯12+.=ps.returnCodes),' test cases not executed because they can only run under Mac OS'
+          :If ∆MacOnly∊ps.returnCodes
+              log,←⊂'  ',(⍕∆MacOnly+.=ps.returnCodes),' test cases not executed because they can only run under Mac OS'
+          :EndIf
+          :If ∆LinuxOrMacOnly∊ps.returnCodes
+              log,←⊂'  ',(⍕∆LinuxOrMacOnly+.=ps.returnCodes),' test cases not executed because they can only run under Linux or Mac OS'
+          :EndIf
+          :If ∆LinuxOrWindowsOnly∊ps.returnCodes
+              log,←⊂'  ',(⍕∆LinuxOrWindowsOnly+.=ps.returnCodes),' test cases not executed because they can only run under Linux or Windows'
+          :EndIf
+          :If ∆MacOrWindowsOnly∊ps.returnCodes
+              log,←⊂'  ',(⍕∆MacOrWindowsOnly+.=ps.returnCodes),' test cases not executed because they can only run under Mac OS or Windows'
+          :EndIf
+          :If ∆NoAcreTests∊ps.returnCodes
+              log,←⊂'  ',(⍕∆NoAcreTests+.=ps.returnCodes),' test cases not executed because they are acre-related'
           :EndIf
       :EndIf
       :If ~ps.batchFlag
@@ -446,6 +551,10 @@
     ∇
 
     ∇ rc←ExecuteTestFunction(ref ps testNo fnsName)
+      :If 0=ps.batchFlag
+      :AndIf 0=+/';⎕TRAP;'⍷Uppercase{';',⍵,';'}{⍵↓⍨⍵⍳';'}{⍵↑⍨¯1+⍵⍳'⍝'}↑ref.⎕NR fnsName
+          ⎕←'  *** WARNING: ⎕TRAP is not localized in ',(⍕ref),'.',fnsName
+      :EndIf
       HandleStops(1⊃⎕SI)ps ∆StopHere testNo
      ∆StopHere:rc←ref.⍎fnsName,' ',(⍕ps.debugFlag),' ',(⍕ps.batchFlag)
     ∇
@@ -488,12 +597,12 @@
 
         ∇ {r}←RunDebug debugFlag
 ⍝ Run all test cases with DEBUG flag on
-⍝ If `debugFlag` is 1 then `RunDebug` stops just before executing the test case
+⍝ If `debugFlag` is 1 then `RunDebug` stops just before executing any specific test case.
           r←debugFlag #.Tester.RunDebug ⎕THIS
         ∇
 
         ∇ {r}←RunBatchTestsInDebugMode
-⍝ Run all batch tests in debug mode (no error trapping) and with stopFlag←1
+⍝ Run all batch tests in debug mode (no error trapping) and with stopFlag←1.
           r←0 1 #.Tester.RunBatchTests ⎕THIS
         ∇
 
@@ -503,13 +612,20 @@
         ∇
 
         ∇ {r}←RunThese ids
-⍝ Run just the specified tests
+⍝ Run just the specified tests.
+⍝
+⍝ `ids` can be one of:
+⍝ * A scalar or vector of numbers identifying ungrouped testcases.
+⍝ * A text string that uniquily identified a group.
+⍝ * A text string that ends with a start (*) identifying one or more test groups.
+⍝ * A two-item vector with:
+⍝   * A text string identifying a group
+⍝   * An integer vector identifying test cases within that group.
+⍝
+⍝ If negative numbers are used then they would still idendifying the test cases but
+⍝ `Tester` would feature a stop vctor just before any test case it actually executed,
+⍝ allowing the user to investigate.
           r←ids #.Tester.RunTheseIn ⎕THIS
-        ∇
-
-        ∇ {r}←ids RunTheseIn ref
-⍝ Run just the specified tests in specified namespace
-          r←ids #.Tester.RunTheseIn ref
         ∇
 
         ∇ {list}←E list
@@ -644,9 +760,9 @@
 ⍝ Lists all helpers available from the `Tester` class.
 ⍝ These are all established by calling the `EstablishHelpers' method.
           r←0 2⍴' '
-          list←'Run' 'RunDebug' 'RunThese' 'RunTheseIn' 'RunBatchTests' 'E' 'L' 'G' 'FailsIf' 'PassesIf'
-          list,←'GoToTidyUp' 'RenameTestFnsTo' 'ListHelpers' '∆OK' '∆Failed' '∆NoBatchTest' '∆Inactive'
-          list,←'∆WindowsOnly' '∆LinuxOnly' '∆MacOnly' '∆LinuxOrMacOnly'
+          list←'Run' 'RunDebug' 'RunThese' 'RunBatchTests' 'RunBatchTestsInDebugMode' 'E' 'L' 'G' 'FailsIf' 'PassesIf'
+          list,←'GoToTidyUp' 'RenameTestFnsTo' 'ListHelpers' '∆OK' '∆Failed' '∆NoBatchTest' '∆Inactive' '∆NoAcreTests'
+          list,←'∆WindowsOnly' '∆LinuxOnly' '∆MacOnly' '∆LinuxOrMacOnly' '∆LinuxOrWindowsOnly' '∆MacOrWindowsOnly'
           list←,¨list
           Mix←{⎕ML←3 ⋄ ⊃⍵}
           r←Mix{⍵(#.APLTreeUtils.dlb{⍺⍺{⍵↓⍨(~⎕IO)+⍵⍳'⍝'}⍺⍺ ⍵}⎕IO⊃1↓⎕NR ⍵)}¨list
@@ -723,6 +839,21 @@
         ∇ r←∆LinuxOrMacOnly
         ⍝ Constant; used as result of a test function
           r←¯20
+        ∇
+
+        ∇ r←∆LinuxOrWindowsOnly
+        ⍝ Constant; used as result of a test function
+          r←¯21
+        ∇
+
+        ∇ r←∆MacOrWindowsOnly
+        ⍝ Constant; used as result of a test function
+          r←¯22
+        ∇
+
+        ∇ r←∆NoAcreTests
+        ⍝ Constant; used as result of a test function
+          r←¯30
         ∇
 
     :EndClass

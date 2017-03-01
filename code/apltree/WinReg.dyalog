@@ -40,15 +40,18 @@
 
     ∇ R←Version
       :Access Public Shared
+      ⍝ * 2.8.1:
+      ⍝   * Bug fix in `CopyTree`.
+      ⍝ * 2.8.0:
+      ⍝   * `GetTreeWithValues` now tolerates when a key has data types `WinReg` does not support.
+      ⍝     For this a column (third) was added that reports error messages and is empty otherwise.
+      ⍝   * Support for `REG_QWORD` was added.
+      ⍝   * Bug fixes:
+      ⍝     * Unsupported data types could crash WinReg.
       ⍝ * 2.7.0:
-      ⍝   * Requires ata least Dyalog 15.0 Unicode!
+      ⍝   * Requires ta least Dyalog 15.0 Unicode!
       ⍝ * 2.6.0: Documentation improved and converted to Markdown (Requires at least ADOC 5.0).
-      ⍝ * 2.5.1: Wrong comment corrected.
-      ⍝ * 2.5.0:
-      ⍝   * APL inline code is now marked up with ticks.
-      ⍝   * `Version` now returns just the name, no path.
-      ⍝   * `History` removed.
-      R←(Last⍕⎕THIS)'2.7.0' '2016-09-01'
+      R←(Last⍕⎕THIS)'2.8.1' '2017-02-03'
     ∇
 
   ⍝ All data types, including those not supported yet
@@ -57,8 +60,8 @@
     :Field Public Shared ReadOnly REG_EXPAND_SZ←2                   ⍝ String, but somethign like "%WinDir%" is expanded
     :Field Public Shared ReadOnly REG_BINARY←3                      ⍝ Free form binary
     :Field Public Shared ReadOnly REG_DWORD←4                       ⍝ 32-bit number
-    :Field Public Shared ReadOnly REG_DWORD_LITTLE_ENDIAN← 4        ⍝ 32-bit number (same as REG_DWORD)
-    :Field Public Shared ReadOnly REG_DWORD_BIG_ENDIAN← 5           ⍝ 32-bit number
+    :Field Public Shared ReadOnly REG_DWORD_LITTLE_ENDIAN←4         ⍝ 32-bit number (same as REG_DWORD)
+    :Field Public Shared ReadOnly REG_DWORD_BIG_ENDIAN←5            ⍝ 32-bit number
     :Field Public Shared ReadOnly REG_LINK←6                        ⍝ Symbolic Link (unicode)
     :Field Public Shared ReadOnly REG_MULTI_SZ←7                    ⍝ Multiple Unicode strings
     :Field Public Shared ReadOnly REG_RESOURCE_LIST←8               ⍝ Resource list in the resource map
@@ -106,7 +109,7 @@
   ⍝ Other stuff
     :Field Public Shared ReadOnly NULL←⎕UCS 0
 
-    ∇ r←{default}GetString y;multiByte;yIsHandle;handle;value;subKey;path;bufSize;∆RegQueryValueEx;rc;type;data;errMsg
+    ∇ r←{default}GetString y;yIsHandle;handle;value;subKey;path;bufSize;∆RegQueryValueEx;rc;type;data;errMsg
       :Access Public Shared
     ⍝ Use this function in order to read a value of type REG_SZ or REG_EXPAND_SZ or REG_MULTI_SZ.
     ⍝
@@ -115,7 +118,6 @@
     ⍝ * A vector of length 2 with a handle to the sub-key in [1] and a value name in [2].
       default←{0<⎕NC ⍵:⍎⍵ ⋄ ''}'default'
       r←default
-      multiByte←1+80=⎕DR'A' ⍝ 2 in Unicode System
       'WinReg error: invalid right argument'⎕SIGNAL 11/⍨(~0 1∊⍨≡y)∧2≠⍴,y
       'WinReg error: right argument must not be empty'⎕SIGNAL 11/⍨0∊⍴y
       'WinReg error: invalid right argument'⎕SIGNAL 11/⍨(~(⎕DR y)∊80 82)∧2≠⍴,y
@@ -155,7 +157,7 @@
               (rc type data bufSize)←∆RegQueryValueEx handle value 0 REG_SZ,bufSize bufSize
               :If type=REG_MULTI_SZ ⋄ :Leave ⋄ :EndIf
           :Until rc≠ERROR_MORE_DATA
-          data←Partition(bufSize÷multiByte)↑data
+          data←Partition(bufSize÷2)↑data
       :EndIf
       errMsg←''
       :If rc=ERROR_FILE_NOT_FOUND
@@ -227,10 +229,12 @@
           '∆RegQueryValueEx'⎕NA'I ADVAPI32.dll.C32|RegQueryValueEx* U <0T I >I4 >I1[] =I4 '
       :Case REG_DWORD
           '∆RegQueryValueEx'⎕NA'I ADVAPI32.dll.C32|RegQueryValueEx* U <0T I >I4 >I4 =I4'
+      :Case REG_QWORD
+          '∆RegQueryValueEx'⎕NA'I ADVAPI32.dll.C32|RegQueryValueEx* U <0T I >I8 >I8 =I8'
       :CaseList REG_SZ,REG_EXPAND_SZ,REG_MULTI_SZ
           '∆RegQueryValueEx'⎕NA'I ADVAPI32.dll.C32|RegQueryValueEx* U <0T I =I >T[] =I4'
       :Else
-          ('WinReg error: unsupported data type: ',GetTypeAsString type)⎕SIGNAL 11
+          ('WinReg error: unsupported data type: ',GetTypeAsStringFrom type)⎕SIGNAL 11
       :EndSelect
       :Repeat
           (rc type data length)←∆RegQueryValueEx handle value 0 bufSize bufSize bufSize
@@ -248,7 +252,7 @@
       errMsg ⎕SIGNAL 11/⍨~0∊⍴errMsg
     ∇
 
-    ∇ {r}←{type}PutString y;yIsHandle;path;data;value;subKey;handle;multiByte;rc
+    ∇ {r}←{type}PutString y;yIsHandle;path;data;value;subKey;handle;rc
       :Access Public Shared
     ⍝ `⍵` can be either a vector of length two or three:
     ⍝ If length 2:
@@ -280,7 +284,6 @@
           'WinReg error: invalid right argument'⎕SIGNAL 11
       :EndSelect
       data←,data
-      multiByte←1+80=⎕DR'A' ⍝ 2 in Unicode System
       'WinReg error: invalid "value"'⎕SIGNAL 11/⍨' '≠1↑0⍴value
       type←data{2=⎕NC ⍵:⍎⍵ ⋄ (1+0 1∊⍨≡⍺)⊃REG_MULTI_SZ REG_SZ}'type'
       :If type=REG_MULTI_SZ
@@ -297,25 +300,23 @@
       '∆RegSetValueEx'⎕NA'I ADVAPI32.dll.C32|RegSetValueEx* I <0T I I <T[] I'
       :If yIsHandle
       :AndIf (,'\')≡,value
-          rc←∆RegSetValueEx handle'' 0 type data(multiByte×↑⍴data)
+          rc←∆RegSetValueEx handle'' 0 type data(2×↑⍴data)
       :Else
-          rc←∆RegSetValueEx handle value 0 type data(multiByte×↑⍴data)
+          rc←∆RegSetValueEx handle value 0 type data(2×↑⍴data)
       :EndIf
       ('WinReg error! ',ConvertErrorCode rc)⎕SIGNAL 11/⍨ERROR_SUCCESS≠rc
       Close(~yIsHandle)/handle
       r←⍬
     ∇
 
-    ∇ {r}←PutValue y;yIsHandle;data;path;subKey;value;handle;multiByte;∆RegSetValueEx
+    ∇ {r}←PutValue y;yIsHandle;data;path;subKey;value;handle;∆RegSetValueEx;rc;smallest;biggest;⎕CT
       :Access Public Shared
     ⍝ Stores "data" under "path". Note that you cannot save a default value
     ⍝ with `PutValue` (=path ends with a backslash) because default values
     ⍝ **must** be of type REG_SZ. Therefore use `PutString` in order to set a
-    ⍝ default value.
-    ⍝
-    ⍝ If path ends with a backslash, an exception is thrown.
-    ⍝
-    ⍝ Note that you can only save REG_DWORDs with PutVales, that is 32-bit integers.
+    ⍝ default value.\\
+    ⍝ If path ends with a backslash, an exception is thrown.\\
+    ⍝ Note that you can only save REG_DWORDs with PutValue, that is 32-bit integers.
       :Select ↑⍴,y
       :Case 2
           yIsHandle←0
@@ -332,26 +333,39 @@
           'WinReg error: invalid right argument'⎕SIGNAL 11
       :EndSelect
       data←,data
-     ⍝ multiByte←1+80=⎕DR'A' ⍝ 2 in Unicode System
-      '∆RegSetValueEx'⎕NA'I ADVAPI32.dll.C32|RegSetValueEx* I <0T I I <I4 I'
       :If (1≠≡data)∨1≠⍴data←,data
           Close(~yIsHandle)/handle
           'WinReg error: data has invalid depth/shape'⎕SIGNAL 11
       :EndIf
-      :If data>2147483647
-          Close(~yIsHandle)/handle
-          'WinReg error: data too large; max is 2,147,483,647'⎕SIGNAL 11
+      :If ∨/'-64'⍷1⊃'#'⎕WG'APLVersion'
+          biggest←(2*63)-1
+          smallest←-2*63
+      :Else
+          biggest←(2*31)-1
+          smallest←-2*31
       :EndIf
-      :If data<¯2147483647
+      ⎕CT←1E¯15
+      :If data>biggest
           Close(~yIsHandle)/handle
-          'WinReg error: data too small; min is -2,147,483,647'⎕SIGNAL 11
+          'WinReg error: data too large'⎕SIGNAL 11
       :EndIf
-      _←∆RegSetValueEx handle value 0 REG_DWORD data 4
+      :If data<smallest
+          Close(~yIsHandle)/handle
+          'WinReg error: data too small'⎕SIGNAL 11
+      :EndIf
+      :If data≥¯2147483648
+      :AndIf data≤2147483647
+          '∆RegSetValueEx'⎕NA'I ADVAPI32.dll.C32|RegSetValueEx* I <0T I I <I4 I'
+          rc←∆RegSetValueEx handle value 0 REG_DWORD data 4
+      :Else
+          '∆RegSetValueEx'⎕NA'I ADVAPI32.dll.C32|RegSetValueEx* I <0T I8 I8 <I8 I'
+          rc←∆RegSetValueEx handle value 0 REG_QWORD data 8
+      :EndIf
       Close(~yIsHandle)/handle
       r←⍬
     ∇
 
-    ∇ {r}←PutBinary y;yIsHandle;path;data;value;subKey;handle;multiByte;∆RegSetValueEx
+    ∇ {r}←PutBinary y;yIsHandle;path;data;value;subKey;handle;∆RegSetValueEx
       :Access Public Shared
     ⍝ Stores binary "data".
     ⍝
@@ -446,6 +460,7 @@
     ⍝ `r` is a matrix with:
     ⍝ |[;1]| Value name
     ⍝ |[;2]| The data
+    ⍝ |[;3]| Error message (for example unspported data type)
     ⍝
     ⍝ `⍵` can be one of:
     ⍝
@@ -462,15 +477,23 @@
           'WinReg error: invalid right argument'⎕SIGNAL 11
       :EndIf
       :If 0=handle
-          r←0 2⍴⍬
+          r←0 3⍴''
           :Return
       :EndIf
       noof←⍴names←GetAllValueNames handle
-      r←(noof,2)⍴⍬
+      r←(noof,3)⍴''
       :If ~0∊⍴r
           r[;1]←names
           :For i :In ⍳⍴names
-              r[i;2]←⊂GetValue handle(i⊃names)
+              :Trap 11
+                  r[i;2]←⊂GetValue handle(i⊃names)
+              :Else
+                  :If ∨/'WinReg error: unsupported data type'⍷↑⎕DM
+                      r[i;3]←⊂'Failed due to unsupported data type: ',{dmb ⍵↓⍨1++/2>+\⍵=':'}↑⎕DM
+                  :Else
+                      r[i;3]←⊂(↑⎕DM),'; rc=',⍕⎕EN
+                  :EndIf
+              :EndTrap
           :EndFor
       :EndIf
       Close(~yIsHandle)/handle
@@ -598,6 +621,7 @@
     ⍝ |[;1]| depth
     ⍝ |[;2]| fully qualified name
     ⍝ |[;3]| value data (empty for sub-keys)
+    ⍝ |[;4]| error messages, for example in case of unsupported data types.
     ⍝ Note that sub-keys end with a backslash.
     ⍝
     ⍝ See `GetTree` if you don't need the data of the values.
@@ -613,7 +637,7 @@
       :If handle=0
           11 ⎕SIGNAL⍨'WinReg error: key does not exist'
       :Else
-          r←1 3⍴depth(key,('\'≠¯1↑key)/'\')''
+          r←1 4⍴depth(key,('\'≠¯1↑key)/'\')'' ''
           :If ~0∊⍴allValues←GetAllNamesAndValues handle
               allValues[;1]←(⊂key,('\'≠¯1↑key)/'\'),¨allValues[;1]
               r⍪←(1+depth),allValues
@@ -661,7 +685,7 @@
       :EndIf
       wv←GetVersion                 ⍝ Get the Windows version
       'WinReg error: "CopyTree" is not supported in this version of Windows'⎕SIGNAL 11/⍨6>1⊃wv
-      'WinReg error: recursive copy failed'⎕SIGNAL 11/⍨source≡(⍴source)↑destination
+      'WinReg error: recursive copy failed'⎕SIGNAL 11/⍨source≡destination
       '∆RegCopyTree'⎕NA'I ADVAPI32.dll.C32|RegCopyTree* U <0T[] U'
       r←∆RegCopyTree sourceHandle''destinationHandle
       Close(~sourceIsHandle)/sourceHandle
@@ -954,31 +978,29 @@
       r←3↑1↓r
     ∇
 
-    ∇ R←ExpandEnv Y;ExpandEnvironmentStrings;multiByte
+    ∇ R←ExpandEnv Y;ExpandEnvironmentStrings
     ⍝ If Y does not contain any "%", Y is passed untouched.
     ⍝ In case Y is empty R is empty as well.
     ⍝ Example:
     ⍝ <pre>'C:\Windows\MyDir' ←→ ExpandEnv '%WinDir%\MyDir'</pre>
       :If '%'∊R←Y
           'ExpandEnvironmentStrings'⎕NA'I4 KERNEL32.C32|ExpandEnvironmentStrings* <0T >0T I4'
-          multiByte←1+80=⎕DR' '       ⍝ Unicode version? (used to double the buffer size)
-          R←2⊃ExpandEnvironmentStrings(Y(multiByte×1024)(multiByte×1024))
+          R←2⊃ExpandEnvironmentStrings(Y 2048 2048)
       :EndIf
     ∇
 
-    ∇ r←HandleDataType(type length data);multiByte
-      multiByte←80=⎕DR' '
+    ∇ r←HandleDataType(type length data)
       :Select type
       :Case REG_SZ
-          r←(¯1+length÷1+multiByte)↑data
-      :Case REG_DWORD
+          r←(¯1+length÷2)↑data
+      :CaseList REG_DWORD,REG_QWORD
           r←data
       :Case REG_BINARY
           r←length↑data
       :Case REG_EXPAND_SZ
-          r←ExpandEnv(¯1+length÷1+multiByte)↑data
+          r←ExpandEnv(¯1+length÷2)↑data
       :Case REG_MULTI_SZ
-          r←Partition(¯1+length÷1+multiByte)↑data
+          r←Partition(¯1+length÷2)↑data
       :EndSelect
     ∇
 
@@ -1015,5 +1037,9 @@
       r←(↑string)⎕NL-2
       r←string{⍵⌿⍨((⍴⍺)↑[2]⊃⍵)∧.=⍺}r
     ∇
+
+      GetAllTypes←{
+          'REG_'{⍵/⍨⍺∘≡¨(⍴⍺)↑¨⍵}⎕NL-2
+      }
 
 :EndClass

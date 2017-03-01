@@ -71,18 +71,21 @@
 
     ∇ r←Version
       :Access Public Shared
+      ⍝ * 2.1.1
+      ⍝   * Writing to the Windows Event Log did not work.
+      ⍝   * `⎕LX` got mutilated.
+      ⍝ * 2.1.0
+      ⍝   * The command line added to the crash report and the component file.
+      ⍝   * `HandleError` does not require `FilesAndDirs` any more.
+      ⍝   * Bug fixes
+      ⍝     * Current directory was not reported under Linux/Mac OS.
       ⍝ * 2.0.0
       ⍝   * Supports Windows, Linux, Mac OS.
       ⍝   * Needs at least Dyalog 15.0 Unicode
       ⍝ * 1.9.1:
       ⍝   * `⎕WA` was reported as `⎕ML`.
       ⍝   * Documentation improved
-      ⍝ * 1.9.0:
-      ⍝   * New parameter "checkErrorFolders" introduced.
-      ⍝   * Change of policy: if `errorFolder is a relative path then the current
-      ⍝     directory is added.
-      ⍝   * Documentation problem fixed
-      r←(Last⍕⎕THIS)'2.0.0' '2016-09-03'
+      r←(Last⍕⎕THIS)'2.1.1' '2017-01-23'
     ∇
 
     ∇ {filename}←{signal}Process parms;crash;TRAP;⎕IO;⎕ML;⎕TRAP
@@ -174,19 +177,19 @@
     ⍝ | `customFns`  | Fully qualified name of a monadic function to be executed by `Process`.<<br>>Useful to send an email, for example. See also `customFnsParent`.|
     ⍝ | `customFnsParent` | No default. May be a reference pointing to the parent of the `customFns`.<<br>>Needed only in case that the parent is a class instance since `logFunction` may use dottet syntax.|
     ⍝ | `enforceOff` | 1: `⎕OFF` no matter whether is's a runtime EXE or not. Mainly for test cases.|
-    ⍝ | `errorFolder`| Folder that keeps the component file (crash), the HTML page and the error WS.<<br>>If this is relative then the current directory is added.|
-    ⍝ | `logFunction`| Name of the logging function to be used. See also `logFunction`.|
-    ⍝ | `logFnsParent` | No default. May be a reference pointing to the parent of the `logFunction`.<<br>>Needed only in case that the parent is a class instance since `logFunction` may use dottet syntax.|
+    ⍝ | `errorFolder`| Folder that keeps the component file (`crash`), the HTML page and the error WS.<<br>>If this is relative then the current directory is added.|
+    ⍝ | `logFunction`| Name of the logging function to be used. See also `logFnsParent`.|
+    ⍝ | `logFnsParent` | No default. May be a reference pointing to the parent of `logFunction`.<<br>>Needed only in case that the parent is a class instance since `logFunction` may use dottet syntax.|
     ⍝ | `off`        | By default this function executes `⎕OFF` with `returnCode` when in Runtime. A 0 suppresses this.|
     ⍝ | `returnCode` | The return code passed on to `⎕OFF`.|
-    ⍝ | `saveCrash`  | Boolean that defaults to 1.<<br>>A 0 suppresses the creation of #.Crash & a component file saving this NS.|
-    ⍝ | `saveErrorWS`| Boolean that defaults to 1.<<br>>A 0 suppresses the creation of crash.|
+    ⍝ | `saveCrash`  | Boolean that defaults to 1.<<br>>A 0 suppresses the creation of `crash` & a component file in which `crash` is saved.|
+    ⍝ | `saveErrorWS`| Boolean that defaults to 1.<<br>>A 0 suppresses the creation of a crash workspace.|
     ⍝ | `saveVars`   | Boolean that defaults to 1.<<br>>Is ignored when `saveCrash` is 0. If 1 all visible variables are saved in a sub namepsace `Vars` within `crash`.|
-    ⍝ | `signal`     | When "off" is 0 and "signal" is not 0 then "signal" is signalled by "Process".<<br>>Can be used for a restart attempt.|
+    ⍝ | `signal`     | When `off` is 0 and `signal` is not 0 then `signal` is signalled by `Process`.<<br>>This can be used for a restart attempt.|
     ⍝ | `trapInternalErrors` | By default all internal errors are trapped:<<br>>`Process` should never crash an application.|
-    ⍝ | `trapSaveWSID`       | Boolean that defaults to 1. Makes sure that the ⎕SAVE statement is guarded.<<br>>Useful to trace through it without a problem in versions before 14.1.|
+    ⍝ | `trapSaveWSID`       | Boolean that defaults to 1. Makes sure that the `⎕SAVE` statement is guarded.<<br>>Useful to trace through it without a problem in versions prior to 14.1.|
     ⍝ | `windowsEventSource` | Name of the Windows Event Log to write to. Ignored when empty.|
-    ⍝ | `addToMsg`           | Will be added to log file entries as well as Windows Event Log messages.<<br>>Mainly for test cases.|
+    ⍝ | `addToMsg`           | Will be added to the log file as well as the Windows Event Log messages.<<br>>Mainly for test cases.|
       :Access Public Shared
       ⎕IO←0 ⋄ ⎕ML←3
       r←⎕NS''
@@ -270,6 +273,7 @@
           html,←'Message'MarkupAsTableRow crash.Message
           html,←'OSError'MarkupAsTableRow⍕crash.OSError
           html,←'Current Dir'MarkupAsTableRow⍕crash.CurrentDir
+          html,←'Command line'MarkupAsTableRow⍕crash.CommandLine
           :If ~0∊⍴parms.addToMsg
               html,←'Added Msg'MarkupAsTableRow parms.addToMsg
           :EndIf
@@ -298,17 +302,18 @@
       :EndIf
     ∇
 
-    ∇ {r}←WriteWindowsLog_(source type message);eventLog;sep;⎕USING;buffer
+    ∇ {r}←WriteWindowsLog_(source type message);eventLog;sep;⎕USING;buffer;⎕ML
     ⍝ This function writes to the Windows Event Log.
     ⍝ "message" must either be a string or a vector of strings.
     ⍝ "type"
+      ⎕ML←1
       r←⍬
       ⎕USING←'System,system.dll' 'System.Diagnostics,system.dll'
     ⍝ Should check the source/log exist.
       eventLog←⎕NEW EventLog
       eventLog.Source←source
       sep←⎕UCS 10
-      buffer←¯1↓First,/message,¨sep
+      buffer←¯1↓⊃,/message,¨sep
       eventLog.WriteEntry buffer type
     ∇
 
@@ -371,17 +376,17 @@
       :EndIf
     ∇
 
-    ∇ {r}←SaveErrorWorkspace(filename parms);wsid
+    ∇ {r}←SaveErrorWorkspace(filename parms);wsid;lx
       :If parms.saveErrorWS
           wsid←⎕WSID
           ⎕WSID←filename
+          lx←⎕LX
           ⎕LX←'⎕TRAP←0 ''S'' ⍝',⎕LX
           :Trap parms.trapSaveWSID/0
               ⎕SAVE ⎕WSID
           :EndTrap
-    ⍝ Potentially important (for example when running test cases):
-          ⎕WSID←wsid
-          ⎕LX←{'⍝'∊⍵:⍵↓⍨1+⍵⍳'⍝' ⋄ ⍵}⎕LX
+          ⎕WSID←wsid       ⍝ Potentially important (for example when running test cases)
+          ⎕LX←lx
       :EndIf
     ∇
 
@@ -390,7 +395,8 @@
       crash.(AN DM EN XSI LC WSID TID TNUMS)←⎕AN ⎕DM ⎕EN ⎕XSI ⎕LC ⎕WSID ⎕TID ⎕TNUMS
       crash.WA←⎕WA
       crash.Trap←Trap
-      crash.CurrentDir←⊃⎕CMD'cd'    ⍝ We don't know whether FilsAndDirs is around
+      crash.CurrentDir←GetCurrentDir ⍬
+      crash.CommandLine←2 ⎕NQ'#' 'GetCommandLine'
       :Trap (parms.trapInternalErrors)/0
           crash.(Category DM EM HelpURL EN ENX InternalLocation Message OSError)←⎕DMX.(Category DM EM HelpURL EN ENX InternalLocation Message OSError)
           crash.(XSI LC)←1↓¨crash.(XSI LC)
@@ -450,14 +456,23 @@
 
     ∇ {r}←CheckErrorFolder parms
       r←⍬
-      :If 9=#.⎕NC'FilesAndDirs'
-      :AndIf ~0∊⍴parms.errorFolder
-          parms.errorFolder←'expand'##.FilesAndDirs.NormalizePath parms.errorFolder
-          :If 0=#.FilesAndDirs.IsDir parms.errorFolder
+      :If ~0∊⍴parms.errorFolder
+          parms.errorFolder←{(-(¯1↑⍵)∊'/\')↓⍵}parms.errorFolder
+          :If 0=⎕NEXISTS parms.errorFolder
           :AndIf parms.checkErrorFolder
-              r←'Create!'#.FilesAndDirs.CheckPath parms.errorFolder
+              :If 'Win'≡GetOperatingSystem ⍬
+                  ⎕CMD'MkDir "',parms.errorFolder,'"'
+              :Else
+                  ⎕CMD'MkDir -p ',parms.errorFolder,'"'
+              :EndIf
           :EndIf
       :EndIf
     ∇
+
+      GetCurrentDir←{
+      ⍝ We don't know whether FilsAndDirs is around
+          'Win'≡#.APLTreeUtils.GetOperatingSystem ⍬:⊃⎕CMD'cd'
+          ⊃⎕SH'pwd'
+      }
 
 :EndClass

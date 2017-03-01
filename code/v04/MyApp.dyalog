@@ -1,227 +1,109 @@
-:Namespace MyApp
-⍝ Dyalog Cookbook, Version 04
-⍝ Error handling
-⍝ Vern: sjt21sep16
+﻿:Namespace MyApp
 
-⍝ Environment
-    (⎕IO ⎕ML ⎕WX)←1 1 3
+    ⎕IO←1 ⋄ ⎕ML←1 ⋄ ⎕WX←3 ⋄ ⎕PP←15 ⋄ ⎕DIV←1
+    
+    ∇r←Version
+   ⍝ * 1.1.0:
+   ⍝   * Can now deal with non-existent files.
+   ⍝   * Logging implemented.    
+   ⍝ * 1.0.0
+   ⍝   * Runs as a stand-alone EXE and takes parameters from the command line.
+      r←(⍕⎕THIS) '1.1.0' '2017-02-26'             
+    ∇
 
-⍝ Aliases
-    (A F H L)←#.(APLTreeUtils FilesAndDirs HandleError Logger) ⍝ from APLTree
-    (C U)←#.(Constants Utilities) ⍝ must be defined previously
+⍝ === Aliases (referents must be defined previously)
 
-⍝ Constants
-
-    :Namespace EXIT
-       ⍝ Custom Windows exit codes
-        OK←0
-        APPLICATION_CRASHED←100
-        INVALID_SOURCE←101
-        SOURCE_NOT_FOUND←102
-        UNABLE_TO_READ_SOURCE←103
-        UNABLE_TO_WRITE_TARGET←104
-        INVALID_ALPHABET_NAME←105
-    :EndNamespace
+    F←##.FilesAndDirs ⋄ A←##.APLTreeUtils ⍝ from the APLTree lib
+    U←##.Utilities ⋄ C←##.Constants
 
 ⍝ === VARIABLES ===
 
-    ∆←'ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝάΆέΈήΉίϊΐΊόΌύϋΎώΏ'
-    ACCENTS←↑∆ 'AAAAAACDEEEEIIIINOOOOOOUUUUYΑΑΕΕΗΗΙΙΙΙΟΟΥΥΥΩΩ'
+    Accents←'ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝ' 'AAAAAACDEEEEIIIINOOOOOOUUUUY'
 
 ⍝ === End of variables definition ===
 
       CountLetters←{
-          accents←↓ACCENTS/⍨~ACCENTS[2;]∊⍺ ⍝ ignore accented chars in alphabet ⍺
-          (l c)←↓⍉{×≢⍵:{⍺(≢⍵)}⌸⍵ ⋄ 0 2⍴' ' 0}⍺{⍵⌿⍨⍵∊⍺}accents U.map U.toUppercase ⍵
-          ⍉↑ (⍺) ((c,0)[l⍳⍺])
+          {⍺(≢⍵)}⌸⎕A{⍵⌿⍨⍵∊⍺}Accents U.map A.Uppercase ⍵
       }
 
-      retry←{
-          ⍺←⊣
-          0::⍺ ⍺⍺ ⍵⊣⎕DL 0.5
-          0::⍺ ⍺⍺ ⍵⊣⎕DL 0.5
-          ⍺ ⍺⍺ ⍵
-      }
-
-    ∇ Start mode;exit
-    ⍝ Initialise workspace for session or application
-    ⍝ mode: ['Application' | 'Session']
-      :If mode≡'Application'
-          ⍝ trap problems in startup
-          ⎕TRAP←0 'E' '#.HandleError.Process '''''
-      :EndIf
-      ⎕WSID←'MyApp'
-      Params←GetParameters mode
-      :Select mode
-      :Case 'Session'
-          ⎕←'Alphabet is ',Params.alphabet
-          ⎕←'Defined alphabets: ',⍕U.m2n Params.ALPHABETS.⎕NL 2
-          ⎕LX←'#.MyApp.Start ''Application''' ⍝ ready to export
-      :Case 'Application'
-          exit←TxtToCsv Params.source
-          Off exit
-      :EndSelect
-    ∇
-
-    ∇ Off returncode
-      :If A.IsDevelopment
-          →
+    ∇ rc←TxtToCsv fullfilepath;files;tbl;lines;target
+   ⍝ Write a sibling CSV of the TXT located at fullfilepath,
+   ⍝ containing a frequency count of the letters in the file text 
+      MyLogger.Log'Started MyApp in ',F.PWD
+      MyLogger.Log'Source: ',fullfilepath
+      (target files)←GetFiles fullfilepath
+      :If 0∊⍴files
+          MyLogger.Log'No files found to process'
+          rc←1
       :Else
-          ⎕OFF returncode
+          tbl←⊃⍪/(CountLetters ProcessFiles)files
+          lines←{⍺,',',⍕⍵}/{⍵[⍒⍵[;2];]}⊃{⍺(+/⍵)}⌸/↓[1]tbl
+          A.WriteUtf8File target lines 
+          MyLogger.Log(⍕⍴files),' file',((1<⍴files)/'s'),' processed:'
+          MyLogger.Log' ',↑files
+          rc←0
       :EndIf
     ∇
 
-    ∇ p←GetParameters mode;args;fromexe;fromallusers;fromcmdline;fromuser;env;alp;path;paths;ini;parm;vars;a;∆;PARAMS;k;v
-     ⍝ Derive parameters from defaults and command-line args (if any)
-     
-     ⍝ Application defaults: in the absence of any other values
-      (p←⎕NS'').(accented alphabet source output)←0 'English' '' '' ⍝ defaults
-      p.ALPHABETS←⎕NS'' ⍝ container for new alphabet definitions
-      p.ALPHABETS.English←⎕A
-      p.ALPHABETS.French←'AÁÂÀBCÇDEÈÊÉFGHIÌÍÎJKLMNOÒÓÔPQRSTUÙÚÛVWXYZ'
-      p.ALPHABETS.German←'AÄBCDEFGHIJKLMNOÖPQRSßTUÜVWXYZ'
-      p.ALPHABETS.Greek←'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ'
-     
-      args←⌷2 ⎕NQ'.' 'GetCommandLineArgs'   ⍝ Command Line
-      env←U.GetEnv                          ⍝ Windows Environment
-     
-     ⍝ An INI for this app as a sibling of the EXE
-      fromexe←(⊃⎕NPARTS⊃args),⎕WSID,'.INI' ⍝ first arg is source of EXE
-     ⍝ First INI on the command line, if any
-      fromcmdline←{×≢⍵:⊃⍵ ⋄ ''}{⍵/⍨'.INI'∘≡¨¯4↑¨⍵}(1↓args)
-     ⍝ An INI for this app in the ALLUSERS profile
-      fromallusers←env.ALLUSERSPROFILE,'\',⎕WSID,'.INI'
-     ⍝ An INI for this app in the USER profile
-      fromuser←env.USERPROFILE,'\',⎕WSID,'.INI'
-     
-      :Select mode
-      :Case 'Application'
-          paths←fromexe fromallusers fromcmdline
-      :Case 'Session'
-          paths←fromexe fromallusers fromuser
+    ∇ (target files)←GetFiles fullfilepath;csv;target;path;stem
+      fullfilepath~←'"'
+      csv←'.csv'
+      :Select C.NINFO.TYPE ⎕NINFO fullfilepath
+      :Case C.TYPES.DIRECTORY
+          target←fullfilepath,'total',csv
+          files←⊃F.Dir fullfilepath,'\*.txt'
+      :Case C.TYPES.FILE
+          (path stem)←2↑⎕NPARTS fullfilepath
+          target←path,stem,csv
+          files←,⊂fullfilepath
       :EndSelect
-      paths←F.NormalizePath¨paths
-     
-      PARAMS←'accented' 'alphabet' 'source' 'output'
-     
-      :For path :In {⍵/⍨⎕NEXISTS¨⍵}{⍵/⍨×≢¨U.trim¨⍵}paths
-         ⍝ Allow INI entries to be case-insensitive
-          ini←⎕NEW #.IniFiles(,⊂path)
-          vars←U.m2n ini.⎕NL 2
-          :For parm :In {⍵/⍨ini.Exist¨'Config:'∘,¨⍵}PARAMS
-             ⍝ Alphabet names are title case, eg Greek
-              ∆←⊃ini.Get'Config:',parm
-              parm p.{⍎⍺,'←⍵'}U.toTitlecase⍣(parm≡'alphabet') ∆
-          :EndFor
-          :If ini.Exist'Alphabets:'
-              ∆←(ini.Convert ⎕NS'') ⍝ breaks if key names are not valid APL names
-              a←∆.⍎'ALPHABETS'U.ciFindin U.m2n ∆.⎕NL 9
-             ⍝ Alphabet names are title case, eg Russian
-              ∆←,' ',a.⎕NL 2 ⍝ alphabet names
-              (U.toTitlecase ∆)p.ALPHABETS.{⍎⍺,'←⍵'}a⍎∆
-          :EndIf
+      target←(~0∊⍴files)/target
+    ∇
+
+    ∇ data←(fns ProcessFiles)files;txt;file
+   ⍝ Reads all files and executes `fns` on the contents.
+      data←⍬
+      :For file :In files
+          txt←'flat' A.ReadUtf8File file
+          data,←⊂fns txt
       :EndFor
-     
-      :If mode≡'Application' ⍝ set params from the command line
-      :AndIf ×≢a←{⍵/⍨'='∊¨⍵}args
-          ∆←a⍳¨'=' ⋄ (k v)←((∆-1)↑¨a)((∆+1)↓¨a)
-          ∆←(≢PARAMS)≥i←⊃⍳/U.toUppercase¨¨PARAMS k
-          (⍕PARAMS[∆/i])p.{⍎⍺,'←⍵'}∆/v
-      :EndIf
     ∇
 
-    ∇ exit←TxtToCsv ffp;fullfilepath;∆;Log;LogError;files;alpha;out
-     ⍝ Write a sibling CSV of the TXT located at ffp (full file path),
-     ⍝ containing a frequency count of the letters in the file text
-      fullfilepath←F.NormalizePath ffp
-      'CREATE!'F.CheckPath'Logs' ⍝ ensure subfolder of current dir
-      ∆←L.CreateParms
-      ∆.path←'Logs',F.CurrentSep ⍝ subfolder of current directory
-      ∆.encoding←'UTF8'
-      ∆.filenamePrefix←'MyApp'
-      Log←⎕NEW L(,⊂∆)
-     
-      Log.Log'Started MyApp in ',F.PWD
-      Log.Log'Source: ',fullfilepath
-     
-     ⍝ Output defaults to CSV sibling of source
-      :If 0=×≢out←Params.output
-          :Select C.NINFO.TYPE ⎕NINFO fullfilepath
-          :Case C.NINFO.TYPES.DIRECTORY
-              out←fullfilepath F.{{⍵↓⍨-CurrentSep=⊃⌽⍵}NormalizePath ⍺}'.CSV'
-          :Case C.NINFO.TYPES.FILE
-              out←fullfilepath F.{(NormalizePath⊃,/2↑⎕NPARTS ⍺),⍵}'.CSV'
-          :EndSelect
-      :EndIf
-      out←F.NormalizePath out
-     
-      LogError←Log∘{code←EXIT⍎⍵ ⋄ code⊣⍺.LogError code ⍵}
-     
-      ⍝ Refine trap definition
-      #.ErrorParms←H.CreateParms
-      #.ErrorParms.errorFolder←F.PWD
-      #.ErrorParms.returnCode←EXIT.APPLICATION_CRASHED
-      #.ErrorParms.(logFunctionParent logFunction)←Log'Log'
-      #.ErrorParms.trapInternalErrors←~A.IsDevelopment
-      :If A.IsDevelopment
-          ⎕TRAP←0⍴⎕TRAP
-      :Else
-          ⎕TRAP←0 'E' '#.HandleError.Process ''#.ErrorParms'''
-      :EndIf
-     
-      :If EXIT.OK=⊃(exit files alpha)←Params CheckAgenda fullfilepath
-          exit←alpha CountLettersIn files out
-      :EndIf
-      Log.Log'All done'
+    ∇ {r}←SetLX dummy
+   ⍝ Set Latent Expression (needed in order to export workspace as EXE)
+      r←⍬
+      ⎕LX←'#.MyApp.StartFromCmdLine #.MyApp.GetCommandLineArg ⍬'
     ∇
 
-    ∇ (exit files alphabet)←params CheckAgenda ffp;fullfilepath;type
-      (files alphabet)←'' '' ⍝ error defaults
-      fullfilepath←F.NormalizePath ffp
-      type←C.NINFO.TYPE ⎕NINFO fullfilepath
-      :If 0=≢fullfilepath~' '
-      :OrIf ~⎕NEXISTS fullfilepath
-          exit←LogError'SOURCE_NOT_FOUND'
-      :ElseIf ~type∊C.NINFO.TYPES.(DIRECTORY FILE)
-          exit←LogError'INVALID_SOURCE'
-      :ElseIf 2≠params.(ALPHABETS.⎕NC alphabet)
-          exit←LogError'INVALID_ALPHABET_NAME'
-      :Else
-          exit←EXIT.OK
-          :Select type
-          :Case C.NINFO.TYPES.DIRECTORY
-              files←⊃(⎕NINFO⍠'Wildcard' 1)fullfilepath,'\*.txt'
-          :Case C.NINFO.TYPES.FILE
-              files←,⊂fullfilepath
-          :EndSelect
-          files←F.NormalizePath¨files
-          alphabet←params.{(ALPHABETS⍎alphabet)~(~accented)/⍵}ACCENTS[1;]
-      :EndIf
+    ∇ {r}←StartFromCmdLine arg;MyLogger
+   ⍝ Needs command line parameters, runs the application.
+      r←⍬
+      MyLogger←Initial ⍬
+      r←TxtToCsv arg
     ∇
 
-    ∇ exit←alphabet CountLettersIn(files tgt);i;txt;tbl;enc;nl;lines;bytes
-     ⍝ Exit code from writing a letter-frequency count for a list of files
-      tbl←0 2⍴'A' 0
-      exit←EXIT.OK ⋄ i←1
-      :While exit=EXIT.OK
-          :Trap 0
-              (txt enc nl)←⎕NGET retry i⊃files
-              tbl⍪←alphabet CountLetters txt
-          :Else
-              exit←LogError'UNABLE_TO_READ_SOURCE'
-          :EndTrap
-          ⍝ . ⍝ DEBUG
-      :Until (≢files)<i←i+1
-      :If exit=EXIT.OK
-          lines←{⍺,',',⍕⍵}/⊃{⍺(+/⍵)}⌸/↓[1]tbl
-          :Trap 0
-              bytes←(lines enc nl)⎕NPUT retry tgt C.NPUT.OVERWRITE
-          :Else
-              exit←LogError'UNABLE_TO_WRITE_TARGET'
-              bytes←0
-          :EndTrap
-          Log.Log(⍕bytes),' bytes written to ',tgt
-      :EndIf
+    ∇ r←GetCommandLineArg dummy;buff
+      r←⊃¯1↑1↓2 ⎕NQ'.' 'GetCommandLineArgs'
+    ∇
+
+    ∇ instance←OpenLogFile path;logParms
+      ⍝ Creates an instance of the "Logger" class.
+      ⍝ Provides methods `Log` and `LogError`.
+      ⍝ Make sure that `path` (that is where log files will end up) does exist.
+      ⍝ Returns the instance.
+      logParms←##.Logger.CreateParms
+      logParms.path←path
+      logParms.encoding←'UTF8'
+      logParms.filenamePrefix←'MyApp'
+      'CREATE!'F.CheckPath path
+      instance←⎕NEW ##.Logger(,⊂logParms)
+    ∇
+
+    ∇ {MyLogger}←Initial dummy
+    ⍝ Prepares the application.
+    ⍝ Side effect: creates `MyLogger`, an instance of the `Logger` class.
+      #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
+      MyLogger←OpenLogFile'Logs'
     ∇
 
 :EndNamespace

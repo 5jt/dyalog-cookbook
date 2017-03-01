@@ -1,0 +1,5 @@
+Target #
+Load Constants
+Load Utilities
+Load MyAppRideable
+Run #.MyAppRideable.SetLX #.MyAppRideable.GetCommandLineArg ⍬

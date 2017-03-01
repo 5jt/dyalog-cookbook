@@ -1,11 +1,12 @@
 ReadMe for MarkAPL
-=============
+=================
 
 By now you probably know that MarkAPL converts Markdown to HTML.
 
 All you need is the class `MarkAPL` and the namespace script `APLTreeUtils`.
 
-## Quick start
+Quick start
+----------
 
 Let's assume you have some Markdown:
 
@@ -25,7 +26,7 @@ All you need to do is to call the `Markdown2HTML` method:
 <a id="markapl" class="autoheaderlink"><h1>MarkAPLstrong></p>
 ~~~
 
-Note that not only the HTML but also a namespace `ns` is returned which, among other stuff, has a variable `report` that might carry warnings and report errors. Ideally `reports` is empty.
+Note that not only the HTML but also a namespace `ns` is returned which, among other stuff, has a variable `report` that might carry warnings and report errors. Ideally `report` is empty.
 
 This way of calling `Markdown2HTML` relies entirely on defaults. If you are not happy with those you must specify a parameter space via the left argument. The next topic explain how to do that.
 
@@ -44,30 +45,35 @@ In order to make **_MarkAPL_** create a complete HTML page you can either specif
  <meta charset="utf-8"> 
 ~~~
 
-## Full documentation
+Documentation
+------------
 
-Call `#.MarkAPL.Help 0` in order to put the documentation on display.
+Call `#.MarkAPL.Help 0` in order to view the cheat sheet.
 
-Note that this requires the file Markdown.html to be found either in the folder `Files\` within the current directory or, if the script MarkAPL.dyalog was loaded with Salt, in the folder `Files\` relative to where the script was loaded from. 
+Call `#.MarkAPL.Reference 0` in order to view the comprehensive documentation.
 
-If those assumptions don't work you must tell `Help` where to find the file:
+Note that this requires the files Markdown_CheatSheet.html and Markdown.html respectively to be found in the folder `Files\` within the current directory. 
+
+If those assumptions don't work you must tell `Help` (or `Reference`) where to find the file:
 
 ~~~
       parms←#.MarkAPL.CreateHelpParms
-      parms.homeFolder←'C:\WhereMarkdown.HTML_lives'
+      parms.homeFolder←'C:\WhereMarkdownHTML_lives'
       parms #.MarkAPL.Help 0
 ~~~
 
-## The workspace
+The workspace
+------------
 
 The workspace contains not only the two scripts but also the test suite. To run them execute `#.TestCases.Run`. 
 
 For further information consult the script `#.Tester` in the workspace.
 
-## Misc
+Misc
+----
 
 Please send comments, suggestions and bug reports to kai@aplteam.com.   
 
 Kai Jaeger ⋄ APL Team Ltd ⋄ 2016-02-17
 
-Latest update: 2016-06-02
+Latest update: 2016-11-17

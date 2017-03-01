@@ -1,0 +1,142 @@
+/* -------------------------------------------------- */
+/* This CSS file is part of the Markdown2Help project */
+/* Author: Kai Jaeger * APL Team Ltd                  */
+/* Project page: http://aplwiki.com/Markdown2Help     */
+/* Version 1.1 * 2017-01-04                           */
+/*                                                    */
+/* If you know what you are doing you may take a      */
+/* copy of this file, change it and use it with your  */
+/* own help project (set cssPrintFilename for this)   */
+/* -------------------------------------------------- */
+
+html {
+font-family: "Verdana";
+font-size: 9pt;
+}
+h1 {
+padding:0;
+font-family: "APL385 Unicode";
+font-size: 210%;
+margin-left: 0;
+border: 1pt #f0f0f0;
+font-weight: 900;
+}
+h2 {
+font-family: "Tahoma";
+font-size: 180%;
+margin: 1em 0 0 0;	
+}
+h3 {
+font-family: "Tahoma";
+font-size: 160%;
+margin: 1em 0 0 0;
+}
+h4 {
+font-family: "Tahoma";
+font-size: 140%;
+margin: 1em 0 0 0;
+}
+h5 {
+font-family: "Tahoma";
+font-size: 120%;
+margin: 1em 0 0 0;
+}
+p {
+margin: 0.5em 5pt 0.5em 0;
+}
+p.small {
+font-size: 75%;
+}
+p.center {
+text-align: center;
+}
+ul, ol p {
+margin-left:0;
+}
+a.also {
+font-family: "APL385 Unicode";
+font-size: 90%;
+font-weight: 600;
+}
+pre {
+padding: 5pt 2pt;
+margin: 5pt!important;
+white-space: pre;
+border: 1pt silver solid;
+font-family: "APL385 Unicode", monospace;
+font-weight: 800;
+display: block;
+}
+pre > code {
+line-height: 1.2;
+margin: 0;
+padding: 0 3pt;
+display: block;
+white-space: inherit;
+}
+ul, ol pre {
+margin: 10pt 0!important;
+}
+code {
+font-family: "APL385 Unicode", monospace;
+font-weight: 800;
+font-size: 110%;
+padding:0 2pt;
+}
+p.info {
+font-weight: normal;
+margin-top: 0;
+display: inline;
+padding-right: 30pt;
+}
+p.prefix {
+font-size: 75%;
+margin-bottom: 0;
+padding-right: 5pt;
+display: inline;
+}
+table {
+background-color: #ffe4c4;
+border: solid 1pt silver;
+border-collapse: collapse;
+page-break-inside:avoid;
+}
+td {
+padding: .5em 1em;
+border: solid 1pt silver;
+}
+ul {
+margin-top: 0;
+}
+body > a {margin-left: 1em;}
+a {text-decoration: none;}
+img {
+margin:10pt;
+display:block;
+}
+a{
+color: black
+}
+img.center {
+width=100%;
+margin-left:auto;
+margin-right:auto;
+}
+dl {
+margin: 1.5em 10pt;
+}
+dt {
+font-weight: bold;
+margin-top: 1em;
+margin-bottom: 0.5em;
+}
+ul#mainmenu {
+display: none;
+}
+table#table_index {
+page-break-inside: auto;
+font-size: 9pt;
+}
+table#table_index th, td {
+padding: 2pt 4pt;
+}

@@ -12,16 +12,16 @@
 ⍝ ~~~
 ⍝ ⎕NEW Logger ([path encoding filenameType debug timestamp refToUtils])
 ⍝ ⎕NEW Logger
-⍝ ⎕NEW Logger (,⊂commandSpace)
+⍝ ⎕NEW Logger (,⊂ParameterSpace)
 ⍝ ⎕NEW Logger
 ⍝ ~~~
-⍝ Only by creating a command space can one set **all** possible parameters.\\
+⍝ Only by creating a parameter space can one set **all** possible parameters.\\
 ⍝ Example:
 ⍝ ~~~
-⍝ myParms←#.Logger.CreatePropertySpace
+⍝ myParms←#.Logger.CreateParms
 ⍝ myParms.filenamePrefix←'MYAPP'
 ⍝ ⍝ ....
-⍝ ⍝ Note that the namespace returned by `CreatePropertySpace` offers a method
+⍝ ⍝ Note that the namespace returned by `CreateParms` offers a method
 ⍝ `List` which list both, the names and their current values.
 ⍝ ⎕NEW Logger (,⊂myParms)
 ⍝ ~~~
@@ -39,18 +39,24 @@
 
     ∇ r←Version
       :Access Public shared
-      ⍝ * 2.1.0:
+      ⍝ * 2.3.0
+      ⍝   * New method `CreateParms` introduced which brings `Logger` in line with all other members
+      ⍝     of the APLTree project. `CreateProperySpace` is deprecated now but is still available.
+      ⍝   * The internal function in the namepsace created by `CreateParms` is now named `∆List` rather
+      ⍝     then `List` for the same reason.
+      ⍝ * 2.2.0
+      ⍝   Compatibel now with `FilesAndDirs` version 1.3.
+      ⍝ * 2.1.0
       ⍝   * Requires at least Dyalog 15 Unicode
-      ⍝   * `refToUtils` removed: `FilesAndDirs (or a ref to it) must *just like
-      ⍝     `APLTreeUtils`) live in the same space as `Logger` itself.
       ⍝   * Because Logger now requires a Unicode interpreter the "ASCII" encoding has lost
       ⍝     its meanings. It's still accepted but internally changed to ANSI.
-      ⍝ * 2.0.0: Doc converted to Markdown (requires at least ADOC 5.0).
-      ⍝ * 1.9.0:
+      ⍝ * 2.0.0
+      ⍝   * Doc converted to Markdown (requires at least ADOC 5.0).
+      ⍝ * 1.9.0
       ⍝   * APL inline code is marked up now with ticks (`).
       ⍝   * The `Version` function returns just the name (no path).
       ⍝   * `History` method removed.
-      r←(Last⍕⎕THIS)'2.1.0' '2016-09-04'
+      r←(Last⍕⎕THIS)'2.3.0' '2017-01-08'
     ∇
 
 ⍝ --------------- Properties and Fields
@@ -202,7 +208,7 @@
     ⍝ usual, in particular the `Log` and the `LogError` methods return their explicit
     ⍝ results. That is the difference to `active` which switches off everything meaning
     ⍝ that the `Log` method as well as the `LogError` method return empty vectors.\\
-    ⍝ Note this can be set as part of a command space. If it is zero there is not even a
+    ⍝ Note this can be set as part of a parameter space. If it is zero there is not even a
     ⍝ log file opened. If `fileFlag` is set later to 1 (and `active` is 1 by then), the
     ⍝ log file will be opened then.\\
     ⍝ If an instance is created with `fileFlag←1` and it is set later to 0 the then
@@ -232,7 +238,7 @@
     ⍝ foo_20080601.log on the first of June 2008.\\
     ⍝ Setting this after having already created an instance is too late for this instance, of
     ⍝ course, although it will be taken into account when the log file is reopened. To specify
-    ⍝ it in time pass a command space to the constructor.
+    ⍝ it in time pass a parameter space to the constructor.
     :Access Public Instance
         ∇ r←get
           r←_filenamePrefix
@@ -249,7 +255,7 @@
     ⍝ 20080601_foo.log on the first of June 2008.\\
     ⍝ Setting this after having already created an instance is too late for this instance, of
     ⍝ course, although it will be taken into account when the log file is reopened. To specify
-    ⍝ it in time pass a command space to the constructor.
+    ⍝ it in time pass a parameter space to the constructor.
     :Access Public Instance
         ∇ r←get
           r←_filenamePostfix
@@ -263,7 +269,7 @@
     :Property errorPrefix
     ⍝ Adds a prefix to an error message to be logged by calling `LogError`. Defaults to `*** ERROR`.\\
     ⍝ Setting this after having already created an instance might be too late for this instance,
-    ⍝ although it will be taken into account from then. To specify it in time pass a command
+    ⍝ although it will be taken into account from then. To specify it in time pass a parameter
     ⍝ space to the constructor.
     :Access Public Instance
         ∇ r←get
@@ -325,51 +331,51 @@
       msg ⎕SIGNAL 11/⍨_errorCounter
     ∇
 
-    ∇ make1(pathOrCommandSpace);bool;list;this;constructorIsRunning;msg
-    ⍝ `pathOrCommandSpace` can be either a path or a command space:
+    ∇ make1(pathOrParameterSpace);bool;list;this;constructorIsRunning;msg
+    ⍝ `pathOrParameterSpace` can be either a path or a command space:
     ⍝ | path          | Directory the log file is going to.
     ⍝ | Command space | Useful to set all possible parameters.
     ⍝ Note that you can ask
-    ⍝ `Logger` to create a command space for you, see method `CreatePropertySpace`.
+    ⍝ `Logger` to create a command space for you, see method `CreateParms`.
     ⍝ Then simply set those where the defaults do not fit your needs.
       :Access Public Instance
       :Implements Constructor
       constructorIsRunning←1
       InitialyzeProperties
-      :If 9.1=⎕NC⊂,'pathOrCommandSpace'
-      :AndIf 0=≡pathOrCommandSpace
+      :If 9.1=⎕NC⊂,'pathOrParameterSpace'
+      :AndIf 0=≡pathOrParameterSpace
  ⍝ It is a command space
-          :If ∨/bool←2≠⎕NC⊃'_',¨list←pathOrCommandSpace.⎕NL-2
+          :If ∨/bool←2≠⎕NC⊃'_',¨list←pathOrParameterSpace.⎕NL-2
               11 ⎕SIGNAL⍨'Invalid keyword(s): ',↑{⍺,',',⍵}/bool/list
           :EndIf
           'Missing: "active"'⎕SIGNAL 1/⍨~(⊂'active')∊list
-          :If 9=pathOrCommandSpace.⎕NC'refToUtils'
-              _refToUtils←pathOrCommandSpace.refToUtils  ⍝ we need this in some setters/getters
+          :If 9=pathOrParameterSpace.⎕NC'refToUtils'
+              _refToUtils←pathOrParameterSpace.refToUtils  ⍝ we need this in some setters/getters
           :EndIf
           :If 0∊⍴⍕refToUtils
               'Missing: "refToUtils"'⎕SIGNAL 6
           :EndIf
-          :For this :In {⍵,'←',{' '=1↑0⍴⍵:'''',⍵,'''' ⋄ ⍵≡⍬:'⍬' ⋄ ⍕⍵}pathOrCommandSpace.⍎⍵}¨list~'filename' 'path' 'encoding' 'refToUtils'
+          :For this :In {⍵,'←',{' '=1↑0⍴⍵:'''',⍵,'''' ⋄ ⍵≡⍬:'⍬' ⋄ ⍕⍵}pathOrParameterSpace.⍎⍵}¨list~'filename' 'path' 'encoding' 'refToUtils'
               ⍎this ⍝ not eached for easier debugging
           :EndFor
           :If (⊂'filename')∊list
-              _filename←pathOrCommandSpace.filename
+              _filename←pathOrParameterSpace.filename
           :EndIf
           :If (⊂'path')∊list
-              _path←ProcessPath pathOrCommandSpace.path
+              _path←ProcessPath pathOrParameterSpace.path
           :EndIf
           :If (⊂'encoding')∊list
-              :If 0∊⍴_encoding←ProcessEncoding pathOrCommandSpace.encoding
+              :If 0∊⍴_encoding←ProcessEncoding pathOrParameterSpace.encoding
                   'Invalid value: "encoding"'⎕SIGNAL 11
               :EndIf
           :EndIf
           :If 0∊⍴_filename,_filenamePostfix,_filenamePrefix,_filenameType
               'No "filenameType" specified but no "filename", "filenamePostfix", "filenamePrefix" either'⎕SIGNAL 11
           :EndIf
-      :ElseIf ' '≠1↑0⍴∊pathOrCommandSpace
+      :ElseIf ' '≠1↑0⍴∊pathOrParameterSpace
           'Invalid parameters'⎕SIGNAL 11
       :Else
-          _path←ProcessPath pathOrCommandSpace
+          _path←ProcessPath pathOrParameterSpace
       :EndIf
       (_errorCounter msg)←Create ⍬
       SetDisplayFormat
@@ -464,7 +470,7 @@
 
     ∇ InitialyzeProperties
     ⍝ Guess what: initialyzes the properties.\\
-    ⍝ Called very early in the constructors but also by CreateCommandspace
+    ⍝ Called very early in the constructors but also by CreateParms
       _active←1
       _fileFlag←1
       _debug←0                  ⍝ Switch of error trapping
@@ -504,7 +510,7 @@
           :EndIf
       :EndIf
       (r msg)←Open ⍬
- ⍝Done
+    ⍝Done
     ∇
 
 ⍝ --------------- Public Shared Methods
@@ -512,9 +518,9 @@
 
 ⍝ --------------- Public Instance Methods
 
-    ∇ r←CreatePropertySpace
+    ∇ r←CreateParms
       :Access Public Shared
-      ⍝ Use this to create a command space which can then be modified and finally
+      ⍝ Use this to create a parameter space which can then be modified and finally
       ⍝ passed to the constructor.\\
       ⍝ Note that the resulting namespace contains a method `List` which prints
       ⍝ all names and their values to the session.
@@ -535,7 +541,15 @@
       r.printToSession←_printToSession
       r.refToUtils←_refToUtils
       r.timestamp←_timestamp
-      r.⎕FX'r←List' 'r←{⍵,[1.5]⍎¨⍵}⎕nl -2'
+      r.⎕FX'r←∆List;⎕IO' '⍝ List all variables and possible references in this namespace' '⎕IO←0' 'r←{⍵,[0.5]⍎¨⍵}'' ''~¨⍨↓⎕NL 2 9'
+    ∇
+
+    ∇ r←CreatePropertySpace
+      :Access Public Shared
+      ⍝ This method is now deprecated and exists only for compatability reasons.
+      ⍝ Use `CreateParms` instead.
+      ⍝ This brings `Logger` in line with all the other members of the APLTree project.
+      r←CreateParms
     ∇
 
     ∇ {r}←Log msg;rc;newFilename;flag;buffer;thisTimestamp;⎕TRAP
@@ -693,7 +707,7 @@
               ⎕RL←+/⎕TS
               fno←-?99999999 ⍝ See "Close" for details why we are doing this!
               :Trap 0
-                  _fileDescriptor←FullFilename ⎕NCREATE fno
+                  _fileDescriptor←FullFilename refToUtils.FilesAndDirs.NCREATE fno
               :Case 22
                   :Trap SetTrap 0
                       _fileDescriptor←FullFilename ⎕NTIE fno ⍝ 66 ⍝ grant all to all!
@@ -765,8 +779,7 @@
     ∇ r←FullFilename
       :Access Public Instance
     ⍝ Returns the fully qualified file name of the log file: path+filename.
-      r←_path,_filename
-      (('\'=r)/r)←'/'
+      r←refToUtils.FilesAndDirs.NormalizePath _path,_filename
     ∇
 
 ⍝ --------------- Private stuff
@@ -948,7 +961,7 @@
       :If 0<⎕NC'_fileDescriptor'
       :AndIf ⍬≢_fileDescriptor
       :AndIf _fileDescriptor∊⎕NNUMS
-      :AndIf (_path,_filename)≡⎕NNAMES[⎕NNUMS⍳_fileDescriptor;]
+      :AndIf (refToUtils.FilesAndDirs.NormalizePath _path,_filename)≡(⎕NNUMS⍳_fileDescriptor)⊃refToUtils.FilesAndDirs.NNAMES
           ⎕NUNTIE _fileDescriptor
           _fileDescriptor←⍬
           _filename←''

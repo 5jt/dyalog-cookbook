@@ -14,22 +14,24 @@
 ⍝
 ⍝ ## Characters to avoid in file names and paths
 ⍝ Windows file names cannot include any of these characters: `\/:*?"<>|`.
-⍝ If you want platform-independent code now or in the future, 
-⍝ avoid using them even in Mac OS or Linux file names. 
+⍝ If you want platform-independent code now or in the future,
+⍝ avoid using them even in Mac OS or Linux file names.
 ⍝
 ⍝ ## Separators in filepaths
-⍝ The notion of sticking always with the `/` as separator because it works everywhere is
-⍝ attractive but has important limits. When you call third-party software such as a .NET
+⍝ Dyalog tried to ease the pain by converting any `\` character under Windows to a `/`.
+⍝ The notion of sticking always with the `/` as separator because it works anyway is
+⍝ attractive but creates new poblems: when you call third-party software such as a .NET
 ⍝ assembly or an EXE such as 7zip.exe under Windows, then you **must** use `\` as a separator.
 ⍝ Even setting the `Directory` property of a `FileBox` object fails with `/` as a separator!
 ⍝
-⍝ For platform independence, it is essential file- and directory names be _normalized_. 
-⍝ That means using the correct separator for the current operating system. 
-⍝ Otherwise you might create a directory or file with a catastrophic backslash in its name.
+⍝ For platform independence it is essential that filenames and directory names are _normalized_.
+⍝ That means using the correct separator for the current operating system.
+⍝ Otherwise you might create a directory or file with a backslash in its name, something that
+⍝ turns easily catastrophic under Linux or Mac OS.
 ⍝
 ⍝ The methods of `FilesAndDirs` protect you from this problem by normalizing their filepaths.
-⍝ Use its cover functions, such as `MkDir`, `NNAMES` and `NCREATE` 
-⍝ in preference to the corresponding interpreter primitives. 
+⍝ Use its cover functions, such as `MkDir`, `NNAMES` and `NCREATE` in preference to the
+⍝ corresponding built-in system functions to overcome the problem.
 ⍝
 ⍝ The `CurrentSep` method returns the correct separator for the current operating system.
 ⍝
@@ -49,46 +51,24 @@
 
     ∇ r←Version
       :Access Public shared
-      ⍝ * 1.3.0
-      ⍝   * New method `EnforceSlash` introduced which does exactly what the name suggests
-      ⍝     except that any `\\` at the beginning remain unchanged.
-      ⍝   * Spelling error corrected: It's now `EnforceBackslash` rather than `EnforceBackSlash`.
-      ⍝   * Change of paradigm:
-      ⍝     * `NormalizePath` now uses either `\` or `/` as separator in paths depending on the
-      ⍝       current operating system.
-      ⍝     * `EnforceBackslash` does exactly what the names suggests, and it does not accept a
-      ⍝       left argument anymore.
-      ⍝     * All functions that return a path (`Dir`, `ListFiles`, `ListDirs` ...) will provide
-      ⍝       what is "the" separator on any given operating system.
-      ⍝ * 1.2.0
-      ⍝   * The method `EnforceBackSlash` now excepts a left argument "winOnly". The function
-      ⍝     now does what the name suggests: it changes all `/` to `\`, except when "winOnly"
-      ⍝     is passed as left argument and it does not run under Windows.
-      ⍝ * 1.1.6
-      ⍝   * `PolishCurrentDir` could have failed under Linux and Mac OS.
-      ⍝   * Telling parameters spaces from a vector of key/values pairs failed in `Dir`.
-      ⍝   * Documentation improved
-      ⍝ * 1.1.5
-      ⍝   `DeleteFile` should not crash on an empty filename but just report 0.
-      ⍝ * 1.1.4
-      ⍝   * Bug in `CheckPath` fixed.
-      ⍝ * 1.1.3
-      ⍝   * `DeleteFiles` did not trap 19 & 22 (typically access errors: hold by another process.
-      ⍝     In such cases it should just report that the attempt to delete the file was unsuccessful.
-      ⍝ * 1.1.2
-      ⍝   * `MoveTo` on the Mac did not work.
-      ⍝   * Loop implemented into `CheckPath` in order to overcome the timing issue in `CheckPath`.
-      ⍝ * 1.1.1
-      ⍝   * Documentation fixed (ADOC).
-      ⍝ * 1.1.0
-      ⍝   * `ListDirs` and `ListFiles` allow wildcard characters now.
-      ⍝   * `DeleteFiles` crashed on empty vectors.
-      ⍝   * Methods `IsFile`, `IsDir` and `IsSymbolicLink` except nested arguments now.
-      ⍝ * 1.0.0  - First version
-      r←(Last⍕⎕THIS)'1.3.0' '2016-09-15'
+      ⍝ * 1.5.0
+      ⍝   * `NormalizePath` now expands environment variables (Windows only).
+      ⍝ * 1.4.2
+      ⍝   * `NormalizePath` now treats two leading `//` as a UNC path. This is a necessary step
+      ⍝     in order to overcome that `⎕NPARTS` returns two leading slashes in case the current
+      ⍝     directory **is** actually a UNC path.
+      ⍝ * 1.4.1
+      ⍝   * `CopyTree` did not work as expected when the `source` parameters had a trailing
+      ⍝     separator.
+      ⍝ * 1.4.0
+      ⍝   * `Dir` now supports both wildcards and recursive mode at the same time.
+      ⍝   * `RmDir` had a problem when, say, a console window was "looking" into the folder to
+      ⍝     be deleted, or one of its sub folders. It cannot delete such folders but should
+      ⍝     report the problem rather than crash.
+      r←(Last⍕⎕THIS)'1.5.0' '2017-02-27'
     ∇
 
-    ∇ r←{parms_}Dir path;buff;list;more;parms;rc;extension;filename;folder
+    ∇ r←{parms_}Dir path;buff;list;more;parms;rc;extension;filename;folder;subFolders
       :Access Public Shared
     ⍝ List contents of `path`.\\
     ⍝ `path` may be one of:
@@ -108,7 +88,8 @@
     ⍝ defines the length of the result.
     ⍝ Examples:
     ⍝ ~~~
-    ⍝ ('recursive' 1) FilesAndDirs.Dir ''
+    ⍝ ('recursive' 1) FilesAndDirs.Dir ''      ⍝ returns list with all folders and files
+    ⍝ ('recursive' 1) FilesAndDirs.Dir '*.md'  ⍝ returns list with all files with extension "md"
     ⍝ ~~~
     ⍝
     ⍝ ~~~
@@ -124,7 +105,6 @@
     ⍝ | follow    | 0     | Shall symbolic links be followed |
     ⍝ | recursive | 0     | Shall `Dir` scan `path` recursively |
     ⍝ | type      | 0     | Use this to select the information to be returned<<br>>by `Dir`. 0 means names. For more information see<<br>>help on `⎕NINFO`. |
-    ⍝
       r←⍬
       path←NormalizePath path
       parms←⎕NS''
@@ -144,7 +124,8 @@
       :If 0∊⍴path
           path←PWD,CurrentSep
       :EndIf
-      :If CurrentSep=¯1↑path
+      path↓⍨←-(CurrentSep,'*')≡¯2↑path
+      :If CurrentSep=¯1↑{⍵↓⍨-'*'=¯1↑⍵}path
           'Directory does not exist'⎕SIGNAL 6/⍨0=⎕NEXISTS path
           :Trap 19 22
               'Not a directory'⎕SIGNAL 11/⍨1≠1 ⎕NINFO path
@@ -183,12 +164,23 @@
               :EndIf
           :Else
               'path does not exist'⎕SIGNAL 6/⍨0=⎕NEXISTS path
+              folder←path
           :EndIf
           r←(0 1,parms.type~0 1)⎕NINFO⍠('Follow'parms.follow)('Wildcard' 1)⊣path
           :If ~0∊0⊃r
               (0⊃r)←NormalizePath¨0⊃r
           :EndIf
           r←r[,(0 1,parms.type~0 1)⍳parms.type]
+          :If parms.recursive
+          :AndIf IsDir folder
+          :AndIf ~0∊⍴subFolders←ListDirs folder
+              subFolders←subFolders,¨⊂CurrentSep,filename,extension
+              buff←parms Dir¨subFolders
+              :If ~0∊⍴buff←↑{⍺,¨⍵}/buff
+              :AndIf ~0∊⍴buff←(0<↑∘⍴¨buff)/buff
+                  r←r,¨buff
+              :EndIf
+          :EndIf
       :EndIf
     ∇
 
@@ -242,7 +234,7 @@
                   more←GetMsgFromError rc
               :EndIf
           :CaseList 'Lin' 'Mac'
-              cmd←'cp "',source,'" "',target,'"'
+              cmd←'cp -- "',source,'" "',target,'"'
               (rc more buff)←##.OS.ShellExecute cmd
           :Else
               . ⍝Huuh?!
@@ -337,12 +329,14 @@
     ⍝   existing files will be overwritten.
       :Access Public Shared
       success←1 ⋄ more←'' ⋄ list←0 3⍴'' 0 0
+
       'Invalid left argument'⎕SIGNAL 11/⍨(~(≡source)∊0 1)∨80≠⎕DR source
       'Invalid right argument'⎕SIGNAL 11/⍨(~(≡target)∊0 1)∨80≠⎕DR target
       'Left argument is not a directory'⎕SIGNAL 11/⍨0=IsDir source
       'Right argument is a file'⎕SIGNAL 11/⍨IsFile target
       'Right argument has wildcard characters'⎕SIGNAL 11/⍨∨/'*?'∊target
       (source target)←NormalizePath¨source target
+      source←(-+/∧\CurrentSep=⌽source)↓source
       :If 0=⎕NEXISTS target
           :Trap 19 22
               MkDir target
@@ -427,7 +421,7 @@
 
     ∇ {(rc en more)}←{mustBeEmpty}RmDir path;list;bool
       :Access Public Shared
-      ⍝ Removes `path`.\\
+      ⍝ Tries to removes `path`.\\
       ⍝ The method attempts to remove `path` and, by default, **all its contents**.\\
       ⍝ If for some reason you want to make sure that `path` is only removed when empty you can
       ⍝ specify a 1 as left argument. In that case the method will not do anything if `path` is
@@ -436,12 +430,14 @@
       ⍝ at the moment of execution. However, the method may still be partly successful because
       ⍝ it might have deleted files in `path` before it actually fails to remove `path` itself.\\
       ⍝ The result is a three-element vector:
-      ⍝ 1. `rc`: return code with 0 for "okay" and 1 otherwise.
+      ⍝ 1. `rc`: return code with 0 for "okay" (=deleted) and 1 otherwise.
       ⍝ 1. `en`: event number (`⎕EN`) in case of an error.
       ⍝ 1. `more`: empty text vector in case `rc` is 0.
       ⍝
-      ⍝ Note that wildcard characters (`*` and `?`) are not allowed as part of `path`.
-      ⍝ If such characters are specified anyway then an error is signalled.
+      ⍝ Notes:
+      ⍝ * If `path` does not exist (0 0 'Directory does not exist') is returned.
+      ⍝ * Wildcard characters (`*` and `?`) are not allowed as part of `path`.
+      ⍝   If such characters are specified anyway then an error is signalled.
       rc←1 ⋄ en←0 ⋄ more←''
       mustBeEmpty←{0<⎕NC ⍵:⍎⍵ ⋄ 0}'mustBeEmpty'
       'Invalid left argument.'⎕SIGNAL 11/⍨~mustBeEmpty∊0 1
@@ -455,8 +451,13 @@
               :Return
           :EndIf
       :Else
-          more←{(≡⍵)∊0 1:⍵ ⋄ ↑{⍺,'; ',⍵}/⍵/⍨' '=↑¨1↑¨0⍴¨⍵}⎕DMX.OSError
-          en←⎕EN
+          :If Exists path
+              more←{(≡⍵)∊0 1:⍵ ⋄ ↑{⍺,'; ',⍵}/⍵/⍨' '=↑¨1↑¨0⍴¨⍵}⎕DMX.OSError
+              en←⎕EN
+          :Else
+              rc←0
+              more←'Directory does not exist'
+          :EndIf
           :Return
       :EndTrap
       :Trap 19 22
@@ -464,7 +465,13 @@
       :Else
           :If 0=mustBeEmpty
          ⍝ First we delete all files
-              list←⍉⊃('recursive' 1)('type'(0 1))Dir path,CurrentSep
+              :If 0∊⍴list←⍉⊃('recursive' 1)('type'(0 1))Dir path,CurrentSep
+              ⍝ This can happen if for example somebody "look" into the folder
+                  rc←1
+                  en←11
+                  more←'Could not delete all files/folders.'
+                  :Return
+              :EndIf
               :If 0<+/bool←1≠list[;1]
                   :Trap 0
                       {}{1 ⎕NDELETE ⍵}¨bool/list[;0]  ⍝ Return code might be 0 for links!
@@ -516,7 +523,7 @@
       r←NormalizePath r
     ∇
 
-    ∇ r←{expandFlag}NormalizePath path;UNCflag;sep
+    ∇ path←{expandFlag}NormalizePath path;UNCflag;sep;ExpandEnvironmentStrings;isScalar
       :Access Public Shared
       ⍝ `path` might be either a simple text vector or scalar representing a single filename or a
       ⍝ vector of text vectors with each item representing a text vector.
@@ -529,23 +536,31 @@
       ⍝ Notes:
       ⍝ * The left argument is not case sensitive.
       ⍝ * Any pair of `//` or `\\` is reduced to a single one except the first two.
-      expandFlag←'expand'≡{0<⎕NC ⍵:{0=1↑0 ⍵:⍵ ⋄ Lowercase ⍵}w←⍎⍵ ⋄ ''}'expandFlag'
-      :If 1<≡r←,path
-          r←expandFlag NormalizePath¨path
-      :Else
-          UNCflag←'\\'≡2⍴r
-          :If expandFlag
-              r←↑,/1 ⎕NPARTS r
+      ⍝ * Environment variables are expanded.
+      isScalar←⍬≡⍴path
+      :If ~0∊⍴path
+          :If '%'∊path
+              'ExpandEnvironmentStrings'⎕NA'I4 KERNEL32.C32|ExpandEnvironmentStrings* <0T >0T I4'
+              path←1⊃ExpandEnvironmentStrings path 2048 2048
           :EndIf
-          sep←('Win'≡GetOperatingSystem ⍬)⌽'\/'
-          ((r=0⊃sep)/r)←1⊃sep
-          r←(~(2⍴1⊃sep)⍷r)/r
-          :If UNCflag
-              r←'\\',1↓r
-          :EndIf
-          :If ⍬≡⍴path
-          :AndIf 1=⍴r
-              r←↑r
+          expandFlag←'expand'≡{0<⎕NC ⍵:{0=1↑0 ⍵:⍵ ⋄ Lowercase ⍵}w←⍎⍵ ⋄ ''}'expandFlag'
+          :If 1<≡path
+              path←expandFlag NormalizePath¨path
+          :Else
+              UNCflag←(⊂2⍴path)∊'\\' '//'
+              :If expandFlag
+                  path←↑,/1 ⎕NPARTS path
+              :EndIf
+              sep←('Win'≡GetOperatingSystem ⍬)⌽'\/'
+              ((path=0⊃sep)/path)←1⊃sep
+              path←(~(2⍴1⊃sep)⍷path)/path
+              :If UNCflag
+                  path←'\\',1↓path
+              :EndIf
+              :If isScalar
+              :AndIf 1=⍴path
+                  path←↑path
+              :EndIf
           :EndIf
       :EndIf
     ∇
@@ -845,12 +860,17 @@
       :Else
           :Trap 19 22
               counter←flag←0
-              :Repeat   ⍝ This loop tries to overcome Dyalog bug <01234>; Kai 2016-09-02 ⍝CHECK⍝
+              :Repeat
+              ⍝ This loop tries to overcome the problem that on some machines ⎕MKDIR does not work
+              ⍝ as expected. This cannot (!) be solved by a simple delay. Tracing as well as the
+              ⍝ loop however work.
                   :Trap 19 22
                       success←3 ⎕MKDIR path
+                  :Else
+                      :Leave ⍝ Something went wrong
                   :EndTrap
                   flag←⎕NEXISTS path
-                  ⎕DL flag×0.2
+                  ⎕DL flag×0.05×counter+1
               :Until flag∨10<counter←counter+1
           :EndTrap
       :EndIf
@@ -929,9 +949,9 @@
       rc←0 ⋄ more←''
       (source target)←EncodeBlanks¨source target
       :If IsDir target
-          (rc more)←2↑##.OS.ShellExecute'mv ',((('/'≠¯1↑target)/'/'),' -f '),source,' ',target
+          (rc more)←2↑##.OS.ShellExecute'mv ',((('/'≠¯1↑target)/'/'),' -f '),' -- "',source,'" "',target,'"'
       :Else
-          (rc more)←2↑##.OS.ShellExecute'mv -f ',source,' ',target
+          (rc more)←2↑##.OS.ShellExecute'mv -f -- "',source,'" "',target,'"'
       :EndIf
     ∇
 

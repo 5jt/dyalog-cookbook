@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta charset="utf-8">
+
+<title>MarkAPL CheatSheet</title>
+<style media="screen">
+html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;}article,aside,details,figcaption,figure,footer,header,hgroup,main,menu,nav,section,summary{display:block;}audio,canvas,progress,video{display:inline-block;vertical-align:baseline;}audio:not([controls]){display:none;height:0;}[hidden],template{display:none;}a{background-color:transparent;}a:active,a:hover{outline:0;}abbr[title]{border-bottom:1px dotted;}b,strong{font-weight:bold;}dfn{font-style:italic;}h1{font-size:2em;margin:0.67em 0;}mark{background:#ff0;color:#000;}small{font-size:80%;}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline;}sup{top:-0.5em;}sub{bottom:-0.25em;}img{border:0;}svg:not(:root){overflow:hidden;}figure{margin:1em 40px;}hr{-moz-box-sizing:content-box;box-sizing:content-box;height:0;}code,kbd,pre,samp{font-family:APLFont;font-size:1em;}button,input,optgroup,select,textarea{color:inherit;font:inherit;margin:0;}button{overflow:visible;}button,select{text-transform:none;}button,html input[type="button"], input[type="reset"],input[type="submit"]{-webkit-appearance:button;cursor:pointer;}button[disabled],html input[disabled]{cursor:default;}button::-moz-focus-inner,input::-moz-focus-inner{border:0;padding:0;}input{line-height:normal;}input[type="checkbox"],input[type="radio"]{box-sizing:border-box;padding:0;}input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{height:auto;}input[type="search"]{-webkit-appearance:textfield;-moz-box-sizing:content-box;-webkit-box-sizing:content-box;box-sizing:content-box;}input[type="search"]::-webkit-search-cancel-button,input[type="search"]::-webkit-search-decoration{-webkit-appearance:none;}fieldset{border:1px solid #c0c0c0;margin:0 2px;padding:0.35em 0.625em 0.75em;}legend{border:0;padding:0;}textarea{overflow:auto;}optgroup{font-weight:bold;}table{border-collapse:collapse;border-spacing:0;}td,th{padding:0;}body{margin:0;font-family:"Bookman Old Style", serif;background-color:#fdfdfd;font-size:18px;line-height:1.4;max-width:1000px;padding:15px;}h1, h2, h3, h4, h5, h6{color:#868686;font-weight:800;padding-left:0;}h1, h2, h3, h4, p{margin-bottom:16px;}h1{font-size:32px;margin:5px 0 20px 0;}h2{font-size:26px;margin:10px 0 10px 0;padding-top:10px;border-bottom:1px solid Silver;}h3{margin:0; margin-top:10px;font-size:22px;}h4{font-size:18px;margin:0;margin-top:10px;}h5, h6{font-size:16px;margin:0;margin-top:12px;padding:0;}a{color:#0099ff;margin:0;padding:0;vertical-align:baseline;}a:visited{color:purple;}a.autoheader_anchor{text-decoration:none;}ul, ol{padding:0;margin:0;}li > ul, ol{padding-bottom:0;}li{line-height:1.3;margin-left:1.5em;margin-bottom:10px;}li ul, li ul{margin-left:14px;}li p{padding:1px 0 0 0; margin:10px 0 5px 0;line-height:1.3;}p, ul, ol{line-height:1.3;padding:8px 8px 0 0;margin:0;color:#292929;}pre{overflow:auto;padding:10px 5px;margin:10px 0 10px 0 !important;white-space:pre-wrap;background-color:#faebd7;color:#3e3e3e;border:1px Silver dashed;display:block;font-family:APLFont, monospace;font-weight:400;}pre > code{line-height:1.2;border:0;padding:0;margin:0;background-color:inherit;color:inherit;font-weight:inherit;}nav code{background-color:inherit;}code{font-family:APLFont, monospace;background-color:#efefef;color:Black;font-weight:800;line-height:1.2;font-size:16px;margin:0;color:#950000;padding:0 3px;}tbody tr:nth-child(odd){background-color:#f5f5f5;}th, td{padding:3px 10px;}table{border-color:Black;background-color:#ebebeb;margin:20px 20px;border:2px black;border-collapse:collapse;font-family:APLFont;font-size:16px;line-height:1.2;border:1pt solid Gray;}tr{margin:20px;}blockquote{border-left:5px solid silver;padding-left:5px;}nav{background-color:#f5f5f5;border:1px solid Black;padding:10px;margin:10px;margin-right:0;box-shadow:5px 5px 5px Gray; float:right;width:auto;}nav code{font-size:80%;}nav#main_nav{position:fixed;top:0;right:10px;float:none;}nav ul{list-style-type:none; margin:0 0 2px 0;padding:0;}nav a:visited{ color:black;}nav ul li{margin-bottom:0px;}nav li p{margin:0;padding:0;line-height:1;margin:0;padding:0;}nav li{font-size:11px;line-height:1.3;padding:0;margin-top:0;margin-bottom:0;margin-left:15px;}nav p{font-weight:bold;font-size:75%;padding-top:0;}dt{font-weight:800;}label#hide_toc_label{font-size:80%;}.toc-container{position:relative;height:auto;}[type="checkbox"]{position:absolute;left:-9999px;}label{display:block;width:100%;height:1.1em;cursor:pointer;top:0;padding-left:10pt;}label:before{content:'Table of contents (Show)';font-weight:bold;font-size:90%;padding-bottom:0pt;}[type="checkbox"] ~ div{display:none;}[type="checkbox"]:checked ~ div{display:block;margin-top:10pt;}[type="checkbox"]:checked + label{top:100%;}[type="checkbox"]:checked + label:before{content:'Table of contents (Hide)';}.print_only{display:none;}div#footnotes_div p{line-height:1; padding-bottom:0;padding-top:0;}div#footnotes_div ol{padding-top:0;}@font-face{font-family:"APLFont";src:local("APL385 Unicode"), url("http://misc.aplteam.com/apl385.ttf") format("truetype");}
+</style>
+<style media="print">
+html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;}body{-webkit-print-color-adjust:exact;}article,aside,details,figcaption,figure,footer,header,hgroup,main,menu,nav,section,summary{display:block;}audio,canvas,progress,video{display:inline-block;vertical-align:baseline;}audio:not([controls]){display:none;height:0;}[hidden],template{display:none;}a{background-color:transparent;}a{color:black !important;text-decoration:none;}a:active,a:hover{color:black;outline:0;}b,strong{font-weight:bold;}dfn{font-style:italic;}h1{margin:0.67em 0;}mark{background:#ff0;color:#000;}small{font-size:80%;}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline;}sup{top:-0.5em;}sub{bottom:-0.25em;}img{border:0;}svg:not(:root){overflow:hidden;}figure{margin:1em 40pt;}hr{-moz-box-sizing:content-box;box-sizing:content-box;height:0;}code,kbd,pre,samp{font-family:monospace, monospace;font-size:1em;}button,input,optgroup,select,textarea{color:inherit;font:inherit;margin:0;}button{overflow:visible;}button,select{text-transform:none;}button,html input[type="button"], input[type="reset"],input[type="submit"]{-webkit-appearance:button;cursor:pointer;}button[disabled],html input[disabled]{cursor:default;}button::-moz-focus-inner,input::-moz-focus-inner{border:0;padding:0;}input{line-height:normal;}input[type="checkbox"],input[type="radio"]{box-sizing:border-box;padding:0;}input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{height:auto;}input[type="search"]{-webkit-appearance:textfield;-moz-box-sizing:content-box;-webkit-box-sizing:content-box;box-sizing:content-box;}input[type="search"]::-webkit-search-cancel-button,input[type="search"]::-webkit-search-decoration{-webkit-appearance:none;}fieldset{border:1pt solid #c0c0c0;margin:0 2pt;padding:0.35em 0.625em 0.75em;}legend{border:0;padding:0;}textarea{overflow:auto;}optgroup{font-weight:bold;}table{border-collapse:collapse;border-spacing:0px;}td, th{padding:2pt 8pt;}body{margin:30pt;0 0 15pt;font-family:"Bookman Old Style", serif;background-color:#fdfdfd;font-size:9pt;line-height:1.2;max-width:auto;padding:15pt;}h1, h2, h3, h4 h5 h6{color:black;font-weight:800;padding-left:0;margin:5pt 0 0 0;padding:0}h1, h2, h3, h4, p{margin-bottom:5pt;}h1{font-size:150%;margin-top:5pt;}h2{font-size:135%;margin:5pt;border-bottom:1pt solid Silver;}h3{font-size:125%;}h3, h4 > pre{margin-bottom:8pt;}h4{font-size:115%;}h5{font-size:105%;padding-bottom:0;margin-bottom:0;}h5{font-size:100%;}a{color:#0099ff;margin:0;padding:0;vertical-align:baseline;}a.autoheader_anchor{text-decoration:none;}ul, ol{padding:0;margin:0;}li{margin-left:20pt;margin-top:5px;}li ul, li ul{margin-left:10pt;}li p{padding:1pt 0 0 0;}p, ul, ol{line-height:1.3;padding:2pt 2pt 2pt 0;margin:0;color:#292929;}pre{padding:3pt;margin:5px 0;white-space:pre-wrap;background-color:#f8f8f8;border:1pt Silver solid;display:block;font-family:APLFont, monospace;font-weight:800;overflow:auto;}pre code{ background-color:#f0f0f0; color:Black; padding:0; margin:0 0 -6pt 0; line-height:1.1; border:0;}code{font-family:APLFont, monospace;font-weight:800;line-height:1.2;font-size:8pt;color:#950000;padding:2pt 1pt;}tbody tr:nth-child(odd){background-color:#fafafa;}th, td{padding:1pt 5pt;}table{background-color:#f1f1f1;margin:20pt;font-family:APLFont;font-size:8pt;padding:3pt 5pt;border:1pt solid silver;page-break-inside:avoid;}tr{margin:20pt;}blockquote{border-left:5pt solid silver;padding-left:5px;}nav{background-color:#f8f8f8;border:1pt solid Gray;width:auto; float:right;padding:5pt 5pt 5pt 0;margin:5pt 0 5pt 5pt;}nav *{font-size:75%;}nav ul{list-style-type:none; margin:0 0 2px 0;padding:0;}nav ul li{margin-bottom:0px;}nav li p{margin:0;padding:0;line-height:1;margin:0;padding:0;}nav li{font-size:8pt;line-height:1;padding:0;margin-top:0;margin-bottom:0;margin-left:15px;}dt{font-weight:800;}label#hide_toc_label{font-size:80%;}.toc-container{position:relative;height:auto;margin-top:10pt;}[type="checkbox"]{display:none;}label{display:block;width:100%;height:1.1em;top:0;padding-left:10pt;}label:before{content:'Table of contents (Show)';font-weight:bold;font-size:140%;padding-bottom:10pt;}a.external_link::before{content:" 🌎";}a.external_link{font-style:italic;}a.bookmark_link::before{content:" ➯";}a.bookmark_link{font-style:italic;}a.mailto_link::before{content:" ✉"}nav a.bookmark_link{font-style:normal;}nav p{margin-left:10pt;font-weight:bold;font-size:10pt;}nav a.bookmark_link::before{content:"";}div#footnotes_div a::before{content:"";}div#footnotes_div a{font-style:normal;}@font-face{font-family:"APLFont";src:local("APL385 Unicode"), url("http://misc.aplteam.com/apl385.ttf") format("truetype");}
+</style>
+</head>
+<body>
+<a href="#cheatsheet" id="cheatsheet" class="autoheader_anchor">
+<h1>Cheatsheet</h1>
+</a>
+<nav id="main_nav">
+<input type="checkbox" id="hide_toc">
+<label id="hide_toc_label" for="hide_toc"></label>
+<div class="toc-container">
+<ul>
+<li><a href="#headers">1. Headers</a></li>
+<li><a href="#apl-code">2. APL Code</a>
+<ul>
+<li><a href="#in-line-code">2.1. In-line code</a></li>
+<li><a href="#code-blocks">2.2. Code blocks</a></li>
+</ul></li>
+<li><a href="#tables">3. Tables</a></li>
+<li><a href="#lists">4. Lists</a>
+<ul>
+<li><a href="#ordered-lists">4.1. Ordered lists</a></li>
+<li><a href="#unordered-lists">4.2. Unordered lists</a></li>
+<li><a href="#nested-lists">4.3. Nested lists</a></li>
+</ul></li>
+<li><a href="#blockquotes">5. Blockquotes</a></li>
+<li><a href="#definition-list">6. Definition list</a></li>
+<li><a href="#horizontal-lines">7. Horizontal lines</a></li>
+<li><a href="#paragraphs">8. Paragraphs</a></li>
+<li><a href="#in-line-mark-up">9. In-line mark-up</a>
+<ul>
+<li><a href="#bold-and-italic">9.1. Bold and italic</a></li>
+<li><a href="#in-line-code-1">9.2. In-line code</a></li>
+<li><a href="#strike-through">9.3. Strike-through</a></li>
+<li><a href="#syntactical-sugar">9.4. Syntactical sugar</a></li>
+<li><a href="#double-quotes">9.5. Double quotes</a></li>
+<li><a href="#special-html-characters">9.6. Special HTML characters: &lt; &amp;amp; &gt;</a></li>
+<li><a href="#links">9.7. Links</a></li>
+</ul></li>
+<li><a href="#images">10. Images</a></li>
+<li><a href="#special-attributes">11. Special attributes</a></li>
+<li><a href="#helpers">12. Helpers</a>
+<ul>
+<li><a href="#matrix2markdownlist">12.1. Matrix2MarkdownList</a></li>
+<li><a href="#matrix2markdowntable">12.2. Matrix2MarkdownTable</a></li>
+</ul></li>
+<li><a href="#inject-data">13. Inject data</a></li>
+<li><a href="#inject-parameters">14. Inject parameters</a></li>
+<li><a href="#version">15. Version</a>
+</ul>
+</div>
+</nav>
+<p>This document comes with examples for most of the features offered by MarkAPL. The documentation is however <strong>not</strong> comprehensive: it's just enough information to get you going.</p>
+<p>For a comprehensive documentation refer to <a href="http://download.aplteam.com/MarkAPL.html" class="external_link">http://download.aplteam.com/MarkAPL.html</a> or call <code>MarkAPL.Reference 0</code>.</p>
+<a href="#headers" id="headers" class="autoheader_anchor">
+<h2>1. Headers</h2>
+</a>
+<p>These are the standard ways to mark-up headers:</p>
+<pre><code># Level 1
+## Level 2
+### Level 3
+#### Level 4
+##### Level 5
+###### Level 6</code></pre>
+<p>Note that headers may contain only text and code but nothing else.</p>
+<a href="#apl-code" id="apl-code" class="autoheader_anchor">
+<h2>2. APL Code</h2>
+</a>
+<p>First of all code can be either marked up as in-line code (within a paragraph, a list item, a block quote,a grid cell and a header) or as a code block standing on its own.</p>
+<a href="#in-line-code" id="in-line-code" class="autoheader_anchor">
+<h3>2.1. In-line code</h3>
+</a>
+<p>In-line can be marked up by enclosing the code with ticks.</p>
+<pre><code>This `{{⍵/⍨2=+⌿0=⍵∘.|⍵}⍳⍵}` is an example.</code></pre>
+<p>Result:</p>
+<p>This <code>{{⍵/⍨2=+⌿0=⍵∘.|⍵}⍳⍵}</code> is an example.</p>
+<a href="#code-blocks" id="code-blocks" class="autoheader_anchor">
+<h3>2.2. Code blocks</h3>
+</a>
+<p>Code blocks can be marked up in two different ways:</p>
+<a href="#git-style-fencing" id="git-style-fencing" class="autoheader_anchor">
+<h4>2.2.1. “Git” style fencing</h4>
+</a>
+<p>This requires 3 ticks as shown here:</p>
+<pre><code>```
+{{⍵/⍨2=+⌿0=⍵∘.|⍵}⍳⍵}
+```</code></pre>
+<p>Result:</p>
+<pre><code>{{⍵/⍨2=+⌿0=⍵∘.|⍵}⍳⍵}</code></pre>
+<a href="#extra-style-fencing" id="extra-style-fencing" class="autoheader_anchor">
+<h4>2.2.2. “Extra” style fencing</h4>
+</a>
+<p>This requires 3 <code>~</code> as shown here:</p>
+<pre><code>~~~
+{{⍵/⍨2=+⌿0=⍵∘.|⍵}⍳⍵}
+~~~</code></pre>
+<p>Result:</p>
+<pre><code>{{⍵/⍨2=+⌿0=⍵∘.|⍵}⍳⍵}</code></pre>
+<a href="#tables" id="tables" class="autoheader_anchor">
+<h2>3. Tables</h2>
+</a>
+<pre><code>|Name|Remark|No. of users|
+|:---| :-: |---:|
+|APL|Brilliant|800|
+|Cobol|Old|14000|
+|F#|Newer|3400|
+|Haskell|New|3400|
+|Java|Just|74|</code></pre>
+<p>Result:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Name</th>
+<th style="text-align: center;">Remark</th>
+<th style="text-align: right;">No. of users</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>APL</td>
+<td style="text-align: center;">Brilliant</td>
+<td style="text-align: right;">800</td>
+</tr>
+<tr>
+<td>Cobol</td>
+<td style="text-align: center;">Old</td>
+<td style="text-align: right;">14000</td>
+</tr>
+<tr>
+<td>F#</td>
+<td style="text-align: center;">Newer</td>
+<td style="text-align: right;">3400</td>
+</tr>
+<tr>
+<td>Haskell</td>
+<td style="text-align: center;">New</td>
+<td style="text-align: right;">3400</td>
+</tr>
+<tr>
+<td>Java</td>
+<td style="text-align: center;">Just</td>
+<td style="text-align: right;">74</td>
+</tr>
+</tbody>
+</table>
+<p>Simplest possible table: one column, no header, no alignment:</p>
+<pre><code>--|
+10|
+20|
+30|</code></pre>
+<p>Result:</p>
+<table>
+<tbody>
+<tr>
+<td style="text-align: right;">10</td>
+</tr>
+<tr>
+<td style="text-align: right;">20</td>
+</tr>
+<tr>
+<td style="text-align: right;">30</td>
+</tr>
+</tbody>
+</table>
+<p>Notes:</p>
+<ul>
+<li>Leading and closing <code>|</code> are optional except for a one-column table.</li>
+<li>A table without a header is possible.</li>
+<li>The (optional) <code>:</code> in the line after the header defines the column alignment.</li>
+</ul>
+<a href="#lists" id="lists" class="autoheader_anchor">
+<h2>4. Lists</h2>
+</a>
+<p>List may start right after a paragraph. They break at two empty lines.</p>
+<a href="#ordered-lists" id="ordered-lists" class="autoheader_anchor">
+<h3>4.1. Ordered lists</h3>
+</a>
+<pre><code>2. Second
+2. Third</code></pre>
+<p>Result:</p>
+<ol start="2">
+<li>Second</li>
+<li>Third</li>
+</ol>
+<a href="#unordered-lists" id="unordered-lists" class="autoheader_anchor">
+<h3>4.2. Unordered lists</h3>
+</a>
+<pre><code>* This
+* That</code></pre>
+<p>Result:</p>
+<ul>
+<li>This</li>
+<li>That</li>
+</ul>
+<a href="#nested-lists" id="nested-lists" class="autoheader_anchor">
+<h3>4.3. Nested lists</h3>
+</a>
+<p>Note that indentation defines what belongs to what.</p>
+<pre><code>* This
+* That
+  
+  A para belonging to &lt;That&gt;
+
+  10. Ten
+  1.  Eleven
+  
+      A para belonging to &lt;Eleven&gt;
+  
+  Another para belonging to &lt;That&gt;
+
+* More</code></pre>
+<p>Result:</p>
+<ul>
+<li>This</li>
+<li>That
+<p>A para belonging to &lt;That&gt;</p>
+<ol start="10">
+<li>Ten</li>
+<li>Eleven
+<p>A para belonging to &lt;Eleven&gt;</p></li>
+</ol>
+<p>Another para belonging to &lt;That&gt;</p></li>
+<li>More</li>
+</ul>
+<a href="#blockquotes" id="blockquotes" class="autoheader_anchor">
+<h2>5. Blockquotes</h2>
+</a>
+<pre><code>&gt; This is a blockquote. Note that a blockquote may contain anything: paragraphs, lists, code blocks, tables, headers, definition lists and even blockquotes.</code></pre>
+<p>Result:</p>
+<blockquote>
+<p>This is a blockquote. Note that a blockquote may contain anything: paragraphs, lists, code blocks, tables, headers, definition lists and even blockquotes.</p>
+</blockquote>
+<pre><code>&gt; &gt; Nested Blockquote.</code></pre>
+<p>Result:</p>
+<blockquote>
+<blockquote>
+<p>Nested Blockquote.</p>
+</blockquote>
+</blockquote>
+<a href="#definition-list" id="definition-list" class="autoheader_anchor">
+<h2>6. Definition list</h2>
+</a>
+<pre><code>APL
+: Best programming language ever
+
+COBOL
+: Oh dear</code></pre>
+<p>Result:</p>
+<dl>
+<dt>APL</dt>
+<dd>Best programming language ever</dd>
+<dt>COBOL</dt>
+<dd>Oh dear</dd>
+</dl>
+<a href="#horizontal-lines" id="horizontal-lines" class="autoheader_anchor">
+<h2>7. Horizontal lines</h2>
+</a>
+<pre><code>---</code></pre>
+<p>Result:</p>
+<hr>
+<a href="#paragraphs" id="paragraphs" class="autoheader_anchor">
+<h2>8. Paragraphs</h2>
+</a>
+<p>Everything that is not identified as something else is considered a paragraph.</p>
+<a href="#in-line-mark-up" id="in-line-mark-up" class="autoheader_anchor">
+<h2>9. In-line mark-up</h2>
+</a>
+<p>In-line mark-up can be used in paragraphs, lists, tables, blockquotes, definition lists and headers.</p>
+<a href="#bold-and-italic" id="bold-and-italic" class="autoheader_anchor">
+<h3>9.1. Bold and italic</h3>
+</a>
+<pre><code>A para can contain **bold**, *italic* and **_bold and italic_**.</code></pre>
+<p>Result:</p>
+<p>A para can contain <strong>bold</strong>, <em>italic</em> and <strong><em>bold and italic</em></strong>.</p>
+<a href="#in-line-code-1" id="in-line-code-1" class="autoheader_anchor">
+<h3>9.2. In-line code</h3>
+</a>
+<pre><code>A para can contain `inline code {+⌿⍴⍵}`.</code></pre>
+<p>Result:</p>
+<p>A para can contain <code>inline code {+⌿⍴⍵}</code>.</p>
+<a href="#strike-through" id="strike-through" class="autoheader_anchor">
+<h3>9.3. Strike-through</h3>
+</a>
+<p>This feature <del>is not implemented</del> was implemented in version 9.0</p>
+<a href="#syntactical-sugar" id="syntactical-sugar" class="autoheader_anchor">
+<h3>9.4. Syntactical sugar</h3>
+</a>
+<pre><code>Available options:
+* --- (m-dash)
+* -- (n-dash)
+* (c) (copyright)
+* (tm) (trade mark)
+* ... (ellipses)
+* &lt;&lt;Guillemets&gt;&gt;</code></pre>
+<p>Result:</p>
+<p>Available options:</p>
+<ul>
+<li>— (m-dash)</li>
+<li>– (n-dash)</li>
+<li>© (copyright)</li>
+<li>™ (trade mark)</li>
+<li>… (ellipses)</li>
+<li>«Guillemets»</li>
+</ul>
+<a href="#double-quotes" id="double-quotes" class="autoheader_anchor">
+<h3>9.5. Double quotes</h3>
+</a>
+<pre><code>Pairs of double-quotes (\") are exchanged against their typographically correct aquivalents "like here".</code></pre>
+<p>Result:</p>
+<p>Pairs of double-quotes (") are exchanged against their typographically correct aquivalents “like here”.</p>
+<p>Note that Germany, Austria and Switzerland use different characters. <strong><em>MarkAPL</em></strong> looks at the HTML parameter <code>lang</code> in order to decide which order to choose. See the MarkAPL reference for details.</p>
+<p>Note that a double-quote can like other characters be escaped by a <code>\</code> character. However, escaping is an issue more complex than you might think. Please refer to the reference for details.</p>
+<a href="#special-html-characters" id="special-html-characters" class="autoheader_anchor">
+<h3>9.6. Special HTML characters: &lt; &amp; &gt;</h3>
+</a>
+<pre><code>Since Markdown is a writing format it is easy to write about &lt;html&gt; &amp; use tags.</code></pre>
+<p>Result:</p>
+<p>Since Markdown is a writing format it is easy to write about &lt;html&gt; &amp; use tags.</p>
+<a href="#links" id="links" class="autoheader_anchor">
+<h3>9.7. Links</h3>
+</a>
+<a href="#external-links" id="external-links" class="autoheader_anchor">
+<h4>9.7.1. External links</h4>
+</a>
+<pre><code>External links with [APL wiki](http://aplwiki.com) and without link text: &lt;http://aplwiki.com&gt;</code></pre>
+<p>Result:</p>
+<p>External links with <a href="http://aplwiki.com" class="external_link">APL wiki</a> and without link text: <a href="http://aplwiki.com" class="external_link">http://aplwiki.com</a></p>
+<p>Note that you <strong>must</strong> specify a protocol (“http://”, “https://”, “ftp://” etc), otherwise it is not going to be converted. Don't use this for “mailto:” links.</p>
+<p>You can add a title as well as <a href="#special-attributes" class="bookmark_link">special attributes</a> to an external link:</p>
+<pre><code>[APL wiki](http://aplwiki.com"This link brings you to the APL wiki"{target="_blank"})</code></pre>
+<p>This is the result:</p>
+<p><a href="http://aplwiki.com" class="external_link" target="_blank" title="This link brings you to the APL wiki">APL wiki</a></p>
+<p>The title is shown when you hover with your mouse over the link.</p>
+<a href="#automated-links" id="automated-links" class="autoheader_anchor">
+<h4>9.7.2. Automated links</h4>
+</a>
+<p>A special version of an external link is the so-called automated link. Such a link is suitable only in case the url as such is going to be the link text:</p>
+<pre><code>&lt;http://aplwiki.com</code></pre>
+<p>Note that such a link <strong>must</strong> specify a protocol like “http://”, “https://”, “ftp://” etc. Do not use autolinks for “mailto:” links.</p>
+<a href="#internal-links" id="internal-links" class="autoheader_anchor">
+<h4>9.7.3. Internal links</h4>
+</a>
+<p>Since MarkAPL assigns anchors to all headers you can establish a link with</p>
+<pre><code>[{Link text}]({Caption})</code></pre>
+<p>You can link to such a header in the current document with a simplified syntax in case the link text <strong>is exactly</strong> the caption:</p>
+<pre><code>Link to the [headers](#) section.</code></pre>
+<p>Link to the <a href="#headers" class="bookmark_link">headers</a> section.</p>
+<p>Naturally it is important that every single header has a unique ID in order to make this work. Therefore <strong><em>MarkAPL</em></strong> converts any header to an ID. MarkAPL has quite a complex set of rules for how to do this. See <a href="http://download.aplteam.com/MarkAPL.html" class="external_link">MarkAPL's full documentation</a> for details.</p>
+<p>If MarkAPL encounters the same header again then it will add a number to it in order to tell them apart. It will report this on <a href="http://download.aplteam.com/MarkAPL.html#report" class="external_link" target="_blank"><code>ns.report</code></a></p>
+<p>In such cases — which should be rare, really — it is a better idea to assign a unique ID via <a href="#special-attributes" class="bookmark_link">special attributes</a>. Of course you must then use this ID when linking to that header, so the simplified syntax is not on option in such cases.</p>
+<p>Sometimes the header text does not really fit as link text. Overcome this by specifying:</p>
+<pre><code>Link to the [headers](# "Link text") section.</code></pre>
+<a href="#link-references" id="link-references" class="autoheader_anchor">
+<h4>9.7.4. Link references</h4>
+</a>
+<p>Link references consists of two parts:</p>
+<ol start="1">
+<li>The definition of a link ID together with its URL.</li>
+<li>References to the link ID.</li>
+</ol>
+<p>The definition of such a reference can go anywhere in the document but ususally they go to the bottom.</p>
+<p>Examples for definitions:</p>
+<pre><code>[1]:      http://aplwiki.com
+[git]:    http://github.com "Linus' brain child"{target="_blank"}
+[vector]: http://vector.co.uk "The well respected Journal of the British APL Association"</code></pre>
+<p>You can use the IDs then to inject the links into, say, a paragraph:</p>
+<pre><code>This paragraph links to [][1], [][git] and [the APL Journal][vector].</code></pre>
+<p>This paragraph links to <a href="http://aplwiki.com" class="external_link">http://aplwiki.com</a>, <a href="http://github.com" class="external_link" title="Linus' brain child" target="_blank">Linus' brain child</a> and <a href="https://sites.google.com/site/baavector/" class="external_link" title="The well respected Journal of the British APL Association">The APL Journal</a>.</p>
+<p>Note that <a href="#special-attributes" class="bookmark_link">special attributes</a> can be defined in the definition part but not the link part.</p>
+<a href="#images" id="images" class="autoheader_anchor">
+<h2>10. Images</h2>
+</a>
+<pre><code>![Dots](http://download.aplteam.com/APL_Team_Dots.png "APL Team's dots")</code></pre>
+<p><img src="http://download.aplteam.com/APL_Team_Dots.png" alt="Dots" title="APL Team's dots" /></p>
+<a href="#special-attributes" id="special-attributes" class="autoheader_anchor">
+<h2>11. Special attributes</h2>
+</a>
+<p>Often one wants to assign special attributes to a certain element. Typical candidates are images and tables.</p>
+<p>This can be achieved by specifing those attributes by putting them to the right of the object in question, enclosed by curly brackets.</p>
+<p>For example, in order to specify width and height for an image, add a description and center both, image and description:</p>
+<pre><code>![](http://download.aplteam.com/APL_Team_Dots.png){height="70" width="60" style="display:block;margin:auto;"}
+_The logo_ {style="text-align:center;font-size:70%;padding-top:0;margin-top:-10px;"}</code></pre>
+<p><img src="http://download.aplteam.com/APL_Team_Dots.png" height="70" width="70" style="display:block;margin:auto;" alt="" /></p>
+<p style="text-align:center;font-size:60%;padding-top:0;margin-top:-10px;"><em>The logo</em></p>
+<p>You can also assign class and ID to an object via this syntax:</p>
+<pre><code>The logo {#logo .center .red}</code></pre>
+<p>This is how the resulting HTML code would look like:</p>
+<pre><code>&lt;p id="logo" class="center red"&gt;The logo&lt;/p&gt;</code></pre>
+<a href="#helpers" id="helpers" class="autoheader_anchor">
+<h2>12. Helpers</h2>
+</a>
+<p>There are helper methods available that are designed to help an APL programmer to convert data in a workspace into Markdown.</p>
+<a href="#matrix2markdownlist" id="matrix2markdownlist" class="autoheader_anchor">
+<h3>12.1. Matrix2MarkdownList</h3>
+</a>
+<p>If you have a matrix in APL then you can easily convert this into Markdown by calling the method <code>Matrix2MarkdownList</code>.</p>
+<p>Note that the matrix must have three columns:</p>
+<ol start="1">
+<li>List type. A 0 defines a bulleted list. Any positive integer starts an ordered list, and defines at the same time the starting point.</li>
+<li>Nesting level. The first row must start with nesting level 0 or 1.</li>
+<li>Either a text vector or a vector of text vectors.</li>
+</ol>
+<p>This is an example:</p>
+<pre><code> m←''
+ m,←⊂0 1 'Level 1 a bull'
+ m,←⊂2 2 'Level 2 a num'
+ m,←⊂2 2('Level 2 b num' '' 'Another para' '' '~~~' '{+⌿⍵}' '~~~')</code></pre>
+<a href="#matrix2markdowntable" id="matrix2markdowntable" class="autoheader_anchor">
+<h3>12.2. Matrix2MarkdownTable</h3>
+</a>
+<p>If you have a matrix in APL then you can easily convert this into Markdown by calling the method <code>Matrix2MarkdownTable</code>.</p>
+<p>Defaults:</p>
+<ul>
+<li>There are no column headers.</li>
+<li>Purely numeric columns are right-aligned.</li>
+<li>All other columns are left-aligned.</li>
+</ul>
+<p>Note that via the left argument column headers can be specified. You can use leading and/or trailing colons to define column alignment.</p>
+<p>Examples:</p>
+<pre><code>      m←3 3⍴'Kai' 1000 'Remark' 'Thomas' 20 'Blah' 'Max' ¯1 'Foo'
+      ch←'Name' 'Points' ':Comments:'
+      ⎕←⍪ch #.MarkAPL.Matrix2MarkdownTable m
+Name|Points|Comments 
+:-|-:|:-:            
+Kai|1000|Remark      
+Thomas|20|Blah       
+Max|¯1|Foo           </code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Name</th>
+<th style="text-align: right;">Points</th>
+<th style="text-align: center;">Comments</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Kai</td>
+<td style="text-align: right;">1000</td>
+<td style="text-align: center;">Remark</td>
+</tr>
+<tr>
+<td>Thomas</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: center;">Blah</td>
+</tr>
+<tr>
+<td>Max</td>
+<td style="text-align: right;">¯1</td>
+<td style="text-align: center;">Foo</td>
+</tr>
+</tbody>
+</table>
+<a href="#inject-data" id="inject-data" class="autoheader_anchor">
+<h2>13. Inject data</h2>
+</a>
+<p>You can inject key/value pairs into a Markdown document with this syntax:</p>
+<pre><code>[data]:name='Kai Jaeger'
+[data]:dob=19310231</code></pre>
+<p><strong><em>MarkAPL</em></strong> itself does not take advantage of such data but you can by referring to it via <code>ns.data</code>.</p>
+<p>For details refer to the <a href="http://download.aplteam.com/MarkAPL.html#embedding-parameters-with" class="external_link">MarkAPL reference document</a>.</p>
+<a href="#inject-parameters" id="inject-parameters" class="autoheader_anchor">
+<h2>14. Inject parameters</h2>
+</a>
+<p>You can inject key/value pairs representing parameters into a Markdown document with this syntax:</p>
+<pre><code>[parm]:toc=1 2 3
+[parm]:title='My own title'</code></pre>
+<p>Such lines must be the first ones in any document.</p>
+<p><strong><em>MarkAPL</em></strong> will use these parameters to overwrite any defaults or settings via a parameter namespace.</p>
+<p>For details refer to the <a href="http://download.aplteam.com/MarkAPL.html#embedding-parameters-with" class="external_link">MarkAPL reference document</a>.</p>
+<a href="#version" id="version" class="autoheader_anchor">
+<h2>15. Version</h2>
+</a>
+<p>This document refers to version 2.8 of <strong><em>MarkAPL</em></strong>.<br/> Kai Jaeger ⋄ APL Team Ltd ⋄ 2017-02-10</p>
+<div id="external_link_report" class="print_only">
+<hr>
+<p><strong>Link report</strong></p>
+<ul>
+<li>http://download.aplteam.com/MarkAPL.html</li>
+<li>http://aplwiki.com:<br/>APL wiki</li>
+<li>http://download.aplteam.com/MarkAPL.html#report:<br/>&lt;code</li>
+<li>http://github.com:<br/>Linus' brain child</li>
+<li>https://sites.google.com/site/baavector/:<br/>The APL Journal</li>
+<li>http://download.aplteam.com/MarkAPL.html#embedding-parameters-with:<br/>MarkAPL reference document</li>
+</ul>
+</div>
+</body>
+</html>

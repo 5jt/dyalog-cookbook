@@ -1,11 +1,8 @@
 ﻿:Class SevenZip
-⍝ Use this class to zip files and directories with the Open Source software 7zip.
-⍝
-⍝ This class relies on an installed version of 7zip. The EXE is found via the
-⍝ Windows Registry.
-⍝
-⍝ Note that 7-zip suffers from a bug: that these two files cannot go into the
-⍝ same zip file:
+⍝ Use this class to zip/unzip files and directories with the Open Source software 7zip.\\
+⍝ This class relies on an installed version of 7zip. The EXE must be on the PATH environment variable.\\
+⍝ This class is supported under Linux and Windows but not Mac OS.
+⍝ Note that 7-zip suffers from a bug: that these two files cannot go into the same zip file:
 ⍝
 ⍝ ~~~
 ⍝ C:\My\folder2\foo
@@ -41,6 +38,17 @@
 
     ∇ r←Version
       :Access Public Shared
+    ⍝ * 2.0.2:
+    ⍝   * Finally I got to the bottom of the occasionally failure that disappeared
+    ⍝     by simply trying again, or trace through the code. Should be fine now.
+    ⍝ * 2.0.1:
+    ⍝   Uses the new version of FilesAndDirs` (syntax change).
+    ⍝ * 2.0.0:
+    ⍝   * Runs on Windows and Linux now. (There is no 7z on Mac OS)
+    ⍝   * `7z` must be on the PATH variable in order to be found. Does not require WinReg
+    ⍝     under Windows anymore as a side effect.
+    ⍝   * Bug fixes:
+    ⍝     * The were problems with filenames containing a space.
     ⍝ * 1.6.0:
     ⍝   * Requires at least Dyalog version 15.0 Unicode.
     ⍝   * SevenZip now uses `FilesAndDirs` rather than `WinFile`.
@@ -49,25 +57,24 @@
     ⍝   * Via the left argument additional flags can be passed to `Unzip`.
     ⍝   * Bug fixes:
     ⍝     * `Unzip` should really run in `x` mode rather than 'e' mode in order to preserve paths.
-      r←({⍵↓⍨1+⍵⍳'.'}⍕⎕THIS)'1.6.0' '2016-09-01'
+      r←(Last⍕⎕THIS)'2.0.2' '2016-12-31'
     ∇
 
     :Property zipFilename
     :Access Public Instance
     ⍝ The name of the archive the instance is dealing with
         ∇ r←get
-          r←zipFilename_
+          r←refToUtils.FilesAndDirs.(EnforceBackSlash NormalizePath)zipFilename_
         ∇
     :EndProperty
 
     :Property  refToUtils
-    ⍝ Ref that points to a namespace where we can find `APLTreeUtils` and `WinReg`
+    ⍝ Obsolete and therefore ignored
     :Access Public
         ∇ r←get
           r←refToUtils_
         ∇
         ∇ set arg
-          refToUtils_←arg.NewValue
         ∇
     :EndProperty
 
@@ -83,16 +90,15 @@
     ∇ make1(_zipFilename)
       :Access Public
       :Implements Constructor
-      refToUtils_←#
+      refToUtils_←FindUtils
       type_←''
       Init
-      ('cannot find ',pathToExe_)⎕SIGNAL 11/⍨~⎕NEXISTS pathToExe_
     ∇
 
     ∇ make2(_zipFilename _refToUtils)
       :Access Public
       :Implements Constructor
-      refToUtils_←_refToUtils
+      refToUtils_←FindUtils
       type_←''
       Init
     ∇
@@ -100,14 +106,14 @@
     ∇ make3(_zipFilename _refToUtils _type)
       :Access Public
       :Implements Constructor
-      refToUtils_←_refToUtils
+      refToUtils_←FindUtils
       type_←_type
       Init
     ∇
 
     ∇ Init;filepart;extension
     ⍝ Private but called by all constructors
-      zipFilename_←_zipFilename
+      zipFilename_←refToUtils_.FilesAndDirs.NormalizePath _zipFilename
       :If '.'∊filepart←1⊃refToUtils_.APLTreeUtils.SplitPath zipFilename_
           :If 0∊⍴type_←CheckExtension Last filepart
               'Invalid extension'⎕SIGNAL 11
@@ -123,63 +129,61 @@
               zipFilename_,←((~'.'∊type_)/'.'),extension
           :EndIf
       :EndIf
-      home_←FindPathTo7zipExe
-      pathToExe_←home_,'7z.exe'
       ⎕DF(¯1↓⍕⎕THIS),'@',zipFilename_,']'
     ∇
 
 ⍝⍝⍝ Public stuff
 
-    ∇ {r}←Add pattern;fno;cmd;b;counter
-    ⍝ Add zero, one or more files to the ZIP file.
-    ⍝
-    ⍝ `pattern` can use wildcards `*` and `?`.
-    ⍝
+    ∇ {(rc msg more)}←Add pattern;fno;cmd;b;counter;Until
+    ⍝ Add zero, one or more files to the ZIP file.\\
+    ⍝ `pattern` can use wildcards `*` and `?`.\\
     ⍝ **Note**: in order to get **all** files one **must** specify `*`;
-    ⍝ the expression `*.*` catches only all files with an extension.
-    ⍝
+    ⍝ the expression `*.*` catches only all files with an extension.\\
     ⍝ When `pattern` is something like "c:\directory\*" then all files
     ⍝ including all sub directories are zipped recursively.
+    ⍝ Note that `pattern` **can not** specify more than one file however
       :Access Public Instance
       :If 0∊⍴pattern
           r←⍬
       :Else
+          cmd←''
+          cmd,←'7z '
+          cmd,←' a '
+          cmd,←' -tzip '
+          cmd,←' -r- '
+          cmd,←' -- '
+          cmd,←'"""',(zipFilename_~'"'),'""" '
           :Select ≡pattern
           :CaseList 0 1
-              cmd←PathToExe,' a '
-              cmd,←' -tzip '
-              cmd,←' -r- '
-              cmd,←' -- '
-              cmd,←zipFilename_,' '
-              cmd,←'"',(pattern~'"'),'"'
+              pattern←refToUtils.FilesAndDirs.NormalizePath pattern~'"'
+              cmd,←'"""',pattern,'"""'
               counter←1
               :Repeat
-                  r←#.Execute.Process cmd
-                  ⎕DL 0.2+1<counter  ⍝ Otherwise we are very likely to see all sorts of problems
-              :Until (0=↑r)∨2<counter←counter+1
+                  (rc msg more)←Run_7zip cmd
+                  :If 0=rc
+                  :AndIf 'Everything is Ok'≡↑¯1↑msg
+                      :Leave
+                  :EndIf
+                  ⎕DL 0.1                               ⍝ Otherwise we are very likely to see all sorts of problems
+              :Until 40<counter←counter+1
           :Case 2
               b←~{∨/'?*'∊⍵}¨{0 1∊⍨≡⍵:⊂⍵ ⋄ ⍵}pattern     ⍝ Which ones do not contain any wildcards?
-              cmd←PathToExe,' a '
-              cmd,←' -tzip '
-              cmd,←' -r- '
-              cmd,←' -- '
-              cmd,←zipFilename_,' '
-              cmd,←↑,/{'"',(⍵~'"'),'" '}¨pattern
-              r←refToUtils_.Execute.Process cmd
+              pattern←{refToUtils.FilesAndDirs.NormalizePath ⍵~'"'}¨pattern
+              cmd,←↑,/{'"""',⍵,'""" '}¨pattern
+              (rc msg more)←Run_7zip cmd
+              ⎕DL 0.1
           :Else
               'Invalid right argument'⎕SIGNAL 11
           :EndSelect
-          :If 2=2⊃r
-              :If ∨/∨/¨'Duplicate filename'∘⍷¨1⊃r
-                  (1⊃r)←(1⊃r),⊂'Use relative path names rather than absolute ones to avoid the problem'
-              :EndIf
-              :If 0=↑r
-              :AndIf ∨/'ERROR'⍷∊1⊃r
-                  (↑r)←2⊃r
-              :EndIf
+          :If 0=rc
+          :AndIf ~0∊⍴msg
+              rc←'Everything is Ok'≢↑¯1↑msg
           :EndIf
-          :If 0=↑r
-              (↑r)←{0∊⍴⍵:0 ⋄ 'Everything is Ok'≢↑¯1↑⍵}1⊃r
+          refToUtils.FilesAndDirs.DeleteFile zipFilename_,'.tmp'
+          :If 0≠rc
+              :If ∨/'Duplicate filename'∘⍷∊msg
+                  msg,←⊂'Use relative path names rather than absolute ones to avoid the problem'
+              :EndIf
           :EndIf
       :EndIf
     ∇
@@ -191,10 +195,11 @@
     ⍝ sorts of pieces of information. If `verboseFlag` is 0 only a vector of file
     ⍝ namesis returned with the names of all files (and sub dirs) fond in this file.
       :Access Public Instance
-      cmd←PathToExe,' l '
-      cmd,←zipFilename_,' '
-      r←refToUtils_.Execute.Process cmd
-      (rc more exitCode)←refToUtils_.Execute.Process cmd
+      cmd←''
+      cmd,←'7z'
+      cmd,←' l '
+      cmd,←'"""',(zipFilename_~'"'),'""" '
+      (rc more exitCode)←Run_7zip cmd
       :If 0=exitCode
       :AndIf (,1)≢,verboseFlag
           more←(2+1⍳⍨'DateTimeAttrSizeCompressedName'∘≡¨more~¨' ')↓more  ⍝ Drop everything until first name
@@ -210,8 +215,10 @@
     ⍝ Use the left argument for adding more flags. You should know what you are doing then however.
       :Access Public Instance
       flags←{0<⎕NC ⍵:⍎⍵ ⋄ ''}'flags'
-      cmd←PathToExe,' x '
-      cmd,←zipFilename_,' '
+      cmd←''
+      cmd,←'7z'
+      cmd,←' x '
+      cmd,←'"""',(zipFilename_~'"'),'""" '
       :If ~0∊⍴outputFolder
           cmd,←' -o',outputFolder,' '
       :EndIf
@@ -219,7 +226,7 @@
           cmd,←' ',flags,' '
       :EndIf
       cmd,←' -aoa '         ⍝ Overwrite mode
-      (rc more exitCode)←refToUtils_.Execute.Process cmd
+      (rc more exitCode)←Run_7zip cmd
       r←exitCode more
     ∇
 
@@ -239,23 +246,25 @@
 
 ⍝⍝⍝ Private stuff
 
-    ∇ r←FindPathTo7zipExe
-      :If 0∊⍴r←refToUtils_.WinReg.GetString GetRegistryPathFor7zip,'\path'
-          'Cannot find reference to 7zip in the Windows Registry'⎕SIGNAL 6
-      :EndIf
-    ∇
-
-    ∇ r←GetRegistryPathFor7zip
-      r←'HKCU\Software\7-Zip'
-    ∇
-
-    ∇ r←PathToExe
-      r←'"',((FindPathTo7zipExe~'"'),'7z.exe'),'"'
-    ∇
-
       CheckExtension←{
      ⍝ Returns the extension if it's valid or an empty vector
           ((⊂Lowercase ⍵)∊types)/⍵
       }
+
+    ∇ r←Run_7zip cmd
+      :Select GetOperatingSystem ⍬
+      :Case 'Win'
+          r←refToUtils.Execute.Process cmd
+      :Case 'Lin'
+          r←refToUtils.OS.ShellExecute cmd
+          r←r[0 2],0
+      :Case 'Mac'
+          . ⍝ Not supported I am afraid
+      :EndSelect
+    ∇
+
+    ∇ r←FindUtils
+      r←FindPathTo↑⎕THIS
+    ∇
 
 :EndClass
