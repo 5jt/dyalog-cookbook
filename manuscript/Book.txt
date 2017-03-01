@@ -14,7 +14,7 @@ mainmatter.txt
 ;09_makeme.md
 ;10_documentation.md
 ;11_ui.md
-;12_help.md
+12_help.md
 ;part 1 chapters.md
 ;part 2.md
 ;part 2 chapters.md
