@@ -5,13 +5,16 @@ mainmatter.txt
 03_structure.md
 04_packaging.md
 05_logging.md
-06_handlingErrors.md
-07_configSettings.md
-08_testing.md
-09_makeme.md
-10_documentation.md
-11_ui.md
-12_help.md
-part 1 chapters.md
-part 2.md
-part 2 chapters.md
+06_configSettings.md
+07_DebuggingEXEs.md
+08_handlingErrors.md
+
+
+;08_testing.md
+;09_makeme.md
+;10_documentation.md
+;11_ui.md
+;12_help.md
+;part 1 chapters.md
+;part 2.md
+;part 2 chapters.md
