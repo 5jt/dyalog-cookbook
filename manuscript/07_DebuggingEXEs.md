@@ -44,9 +44,9 @@ We want to make the Ride configurable. That means we cannot do it earlier than a
 ⍝ Side effect: creates `MyLogger`, an instance of the `Logger` class.
   #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
   G←CreateGlobals ⍬
-markua-start-insert  
+leanpub-start-insert  
   CheckForRide G
-markua-end-insert  
+leanpub-end-insert  
   MyLogger←OpenLogFile G.LogFolder
   MyLogger.Log↓⎕FMT G.∆List
 ∇
