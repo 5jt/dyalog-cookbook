@@ -5,21 +5,21 @@
 
 Now we will make some adjustments in order to make `MyApp` ready for being packaged as an EXE. It will run from the command line and it will run 'headless' -- without a user interface (UI).
 
-Copy all files in `z:\code\v02\` to `z:\code\v03\`. Alternatively you can dowload version 3 from the book's website of course.
+Copy all files in `z:\code\v02\` to `z:\code\v03\`. Alternatively you can download version 3 from the book's website.
 
 
 ## Output to the session log
 
-What happens to values that would otherwise be written in the session log? They disappear. That’s not actually a problem for us, but it is tidy to catch anything that would otherwise be written to the UI, including empty arrays. Note that anything that is written to the session by accident can cause a major hiccup depending on the circumstances. Therefore you should _always_ use `⎕←` if you actually _intend_ to write to the session for the simple reason that you just have to search for `⎕←` in order to find any such statements.
+In a runtime interpreter or an EXE, there is no APL session, and output to the session which would have been visible in a development system will simply disappear. If we want the user to be able to view this output, we need to write it to a log file.
 
-But what if it happened by accident? You start an application with a double-click on a DYAPP, it works or a while and then all of a sudden the session appears, obviously because a function printed an empty vector to it. Because it's an empty vector you have nothing to search for. How to identify the culprit?
+But how do we find out where we need to make changes? We recommended that you think about this from the start, and make sure that all _intentional_ output is output through a "Log" function, or at least use an explicit `⎕←` so that output can be located in the source.
 
-The easiest way is to associate a callback function with the `SessionPrint` event as in
+What can you do if you have output appearing and you don't know where in your application it is being generated? The easiest way is to associate a callback function with the `SessionPrint` event as in:
 
 ~~~
-      '⎕se'⎕WS'Event' 'SessionPrint' '#.CatchSessionPrint'
-       #.⎕FX⊃'what CatchSessionPrint msg'  '⍎(0∊⍴what)/''. ⍝ Deliberate error''' '⎕←what'
-       ⎕fx 'test arg'  '⎕←arg'
+      '⎕se' ⎕WS 'Event' 'SessionPrint' '#.CatchSessionPrint'
+       #.⎕FX ↑'what CatchSessionPrint msg'  '⍎(0∊⍴what)/''. ⍝ Deliberate error''' '⎕←what'
+       ⎕FX 'test arg'  '⎕←arg'
        test 1 2 3
 1 2 3       
        test ''
@@ -28,9 +28,9 @@ CatchSessionPrint[1] .  ⍝ Deliberate error
                     ∧  
 ~~~
 
-You can even use this to investigate what is about to be written to the session (the left argument of `CatchSessionPrint`) and make the function crash only if it's what you are after. In the example we check for anything that's empty.
+You can even use this to investigate what is about to be written to the session (the left argument of `CatchSessionPrint`) and make the function stop when it reaches the output you are looking for.In the above example we check for anything that's empty.
 
-I> Don't try the `⎕se.onSessionPrint←'#.CatchSessionPrint'` syntax with `⎕SE`; just stick with `⎕WS` etc.
+I> Don't try the `⎕se.onSessionPrint←'#.CatchSessionPrint'` syntax with `⎕SE`; just stick with `⎕WS` as in the above example.
 
 I> Don't forget to clear the stack after `CatchSessionPrint` crashed because if you don't and instead call `test` again it would behave as if there was no handler associated with the `SessionPrint` event.
 
@@ -39,7 +39,7 @@ I> Don't forget to clear the stack after `CatchSessionPrint` crashed because if 
 
 ## Reading arguments from the command line 
 
-`TxtToCsv` needs an argument. The EXE must take it from the command line. We'll give `MyApp` a function `StartFromCmdLine`. We will also introduce `SetLX` in order to set `⎕LX`. The DYAPP will use it to start the program:
+`TxtToCsv` needs an argument. The EXE must take it from the command line. We'll give `MyApp` a function `StartFromCmdLine`. We will also introduce `SetLX` in order to set `⎕LX`. The last line of the DYAPP will run it to set the workspace up to start corectly:
 
 ~~~
 Target #
@@ -90,7 +90,7 @@ In `MyApp.dyalog`
     ...
 ~~~
 
-This is how MyApp will run when called from the Windows command line. 
+Now, MyApp is ready to be run from the Windows command line, with the name of the file to be processed following the command name. 
 
 Notes:
 
@@ -100,7 +100,7 @@ Notes:
 
   If there is nothing reasonable to return as a result, return `⍬` as a shy result as in `StartFromCmdLine`. Make this a habit. It makes life easier in the long run. One example is that you cannot call a "function" from a dfn that does not return a result. Another one is that you cannot provide it as an operand to the `⍣` (power) operator.
   
-* Make a function _always_ monadic rather than niladic even if it does not require an argument right now. 
+* _Always_ make a function monadic rather than niladic even if it does not require an argument right now. 
 
   It is way easier to change a monadic function that has ignored its argument so far to one that actually requires an argument than to change a niladic function to a monadic one later on, especially when the function is called in many places, and this is something you _will_ run into; it's just a matter of time.
   
@@ -110,6 +110,7 @@ Notes:
 
 * By introducing a function `Version` we start to keep track of changes.
 
+* This text seems orphaned somehow?
 
   ~~~
   ⍎⎕LX
@@ -135,11 +136,9 @@ You should see an alert message: _File Z:\\code\\v03\\MyApp.exe successfully cre
 
 I> Although you cannot replace a running exe what you _can_ do is to rename it; that's possible. You can then create a new EXE with the original name.
 
-In case you wonder what the check box "Console application" actually means: it _forces_ the resulting standalone EXE to have the Dyalog runtime EXE included and also sets the `IMAGE_SUBSYSTEM_WINDOWS_CUI` flag in the header of the EXE. The effect is that with the check box ticked when called on a command line (also known as the console) it waits for the program to return; it also catches the return code and assigns it to the environment variable "ERRORLEVEL". Also, when double-clicked a console window pops up. Finally you cannot really debug a console application with Ride; for details see the "Debugging a stand-alone EXE" chapter.
+In case you wonder what a "Console application" actually is: apart from including the Dyalog EXE included and also sets the `IMAGE_SUBSYSTEM_WINDOWS_CUI` flag in the header of the EXE. The effect is that, when called on a command line (also known as the console), it will wait for the program to return; it also catches the return code and assigns it to the environment variable "ERRORLEVEL". Also, when double-clicked a console window pops up. Finally you cannot really debug a console application with Ride; for details see the "Debugging a stand-alone EXE" chapter.
 
-Without it being ticked the program is started and left alone; in particular you cannot catch the return code.
-
-It is therefore recommended not to tick the "Console application" check box unless you have a good reason to do so.
+If you do not ticked "Console application", the program is started as a separate process and you cannot catch the return code. It is therefore recommended not to tick the "Console application" check box unless you have a good reason to do so.
 
 T> Use the *Version* button to bind to the EXE information about the application, author, version, copyright and so on. These pieces of information will show in the "Properties/Details" tab of the resulting EXE. Note that in order to use the cursor keys or "Home" or "End" _within_ a cell the "Version" dialog box requires you to enter "in-cell" mode by pressing F2.
 
