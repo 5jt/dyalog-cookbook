@@ -138,7 +138,7 @@ That amounts to five functions. Two of them are specific to the application: `Tx
 
 Note that we have some functions that start with lowercase characters while others start with uppercase characters. In a larger application you might want to be able to tell data from calls to functions and operators by introducing consistent naming conventions. Which one you settle for is less important then choosing something consistent. And don't forget to put it into a document any programmer joining the team is supposed to read first. 
 
-`toUppercase` uses the fast case-folding I-beam introduced in Dyalog 15.0. 
+`toUppercase` uses the fast case-folding I-beam introduced in Dyalog 15.0 (also available in 14.0 & 14.1 from revision 27141 onwards).
 
 `TxtToCsv` uses the file-system primitives `⎕NINFO`, `⎕NGET`, and `⎕NPUT` introduced in Dyalog 15.0.
 
@@ -326,7 +326,7 @@ A> If you would at this stage edit `Goo` and change `'world'` to `'Universe'` an
 
 If you experience this sort of confusion, it is a good idea to re-fix your classes (in this case `Foo`). Building a fresh WS from source files might be even better.
 
-#### Don't use diamonds
+#### Be careful with diamonds
 
 The `:If - :Then - :else` solution could have been written this way:
 
@@ -334,11 +334,11 @@ The `:If - :Then - :else` solution could have been written this way:
 :If bar>3 ⋄ status←'ok' ⋄ :Else ⋄ status←'error' ⋄ :EndIf
 ~~~
 
-This is actually a really bad idea. When executing the code in the Tracer the line will be executed as an atomic unit, meaning that you have no idea what the actual value of `status` is after executing that line. Therefore the control structure does not offer an advantage over the other solutions which are way shorter. So either you go for the shorter one (if you expect debugging that line won't be an issue) or you spread the control structure over 5 lines so that you can see what is actually going on.
+There is one major problem with this: when executing the code in the Tracer the line will be executed in one go. If you think you might want to follow the control flow and trace into the individual expressions, you should spread the control structure over 5 lines.
 
-Note: if you have a choice between a short and a long expression then your are advised to go for the short one unless the long one offers an incentive like improved readability, better debugging or faster execution speed; only a short program has a chance of being bug free. 
+In general: if you have a choice between a short and a long expression then your are advised to go for the short one unless the long one offers an incentive like improved readability, better debugging or faster execution speed; only a short program has a chance of being bug free. 
 
-Diamonds can be useful in some situation, but in general it's a good idea to avoid them.
+Diamonds can be useful in some situations, but in general it's a good idea to avoid them.
 
 A> ### Diamonds
 A> 
@@ -347,13 +347,12 @@ A>
 A> * To make sure that no thread switch takes place between two statements. Something like
 A> 
 A>   ~~~ 
-A>   tno←filename ⎕nTIE 0 ⋄ ⍴⎕nread tno 80 (⎕nsize tno) ⋄ ⎕nuntie tno
+A>   tno←filename ⎕nTIE 0 ⋄ data←⎕nread tno 80 (⎕nsize tno) ⋄ ⎕nuntie tno
 A>   ~~~
 A> 
 A>   is guaranteed to be executed as a unit. Depending on the circumstances this can be really important.
 A>
 A> * Make multiple assignments on a single line as in `⎕IO←1 ⋄ ⎕ML←3 ⋄ ⎕PP←20`. Not for variable settings, just system stuff. 
-A> * Assignments to `⎕LX` as in `⎕LX←#.FileAndDirs.PolishCurrentDir ⋄ ⎕←Info`.
 A> * To make dfns more readable as in `{w←⍵ ⋄ ((w='a')/w)←'b' ⋄ ⍵}`. There is really no reason to make this a multi-line dfn.
 A> * You _cannot_ trace into a one-line dfn. This can be quite useful. For example, this function:
 A>
@@ -373,14 +372,7 @@ A>    You don't want to have a multi-line dfn here because then you won't be abl
 status←(bar>3) means 'ok' else 'error'
 ~~~
 
-Trying to resolve the names `means` and `else`, the interpreter would consult `⎕PATH` and find them in `#.Utilities`. So far so good: this is what `⎕PATH` is designed for. It works fine in simple cases, but it will lead us into problems later:
-
-* As long as each name leads unambiguously to an object, shift-clicking on it will display it in the editor, a valuable feature 
-  of APL in development and debugging. The editor allows us to change code during execution, and save those changes back to the scripts. But `⎕PATH` can interfere with this and break that valuable connection. 
-* Understanding the scope of the space in which a GUI callback executes can be challenging enough; introducing `⎕PATH` makes it 
-  harder still. 
-* Using the same name in a different namespace for a function that does something similar but not exactly the same and then add 
-  that namespace to `⎕PATH` as well can lead to bugs that a very hard to detect.  
+Trying to resolve the names `means` and `else`, the interpreter would consult `⎕PATH` and find them in `#.Utilities`. So far so good: this is what `⎕PATH` is designed for. It works fine in simple cases, but in our experience its use quickly leads to confusion about which functions are called or edited, and where new names are created. We recommend that you avoid `⎕PATH` if reasonable alternatives are available.
 
 ### Convert the WS LetterCount into a single scripted namespace.
 
@@ -509,7 +501,7 @@ Here's how the object tree will look:
 \-⍟MyApp
 ~~~
 
-We've saved the very first version as `z:\code\v01\MyApp.dyalog`. Now we take a copy of that and save it as `z:\code\v02\MyApp.dyalog`. Alternatively you can dowload version 2 from the book's website of course.
+We've saved the very first version as `z:\code\v01\MyApp.dyalog`. Now we take a copy of that and save it as `z:\code\v02\MyApp.dyalog`. Alternatively you can download version 2 from the book's website of course.
 
 Note that compared with version 1 we improve in several ways:
 
@@ -580,8 +572,8 @@ This is the `Utilities.dyalog` script:
           nw←∪⍵
           (new,nw)[(old,nw)⍳⍵]
       }
-    toLowercase←0∘(819⌶)
-    toUppercase←1∘(819⌶)
+      toLowercase←0∘(819⌶)
+      toUppercase←1∘(819⌶)
 :EndNamespace
 ~~~ 
 
@@ -662,7 +654,7 @@ This version comes with a number of improvements. Let's discuss them in detail:
   
 * Because of `enc` and `nl` we have to have two lines anyway, but if we weren't interested in `enc` and `nl` a one-liner would do: `tbl⍪←CountLetters ⊃⎕NGET file`. Is this a good idea?
 
-  The answer is no. In case you have to inspect what comes from several files because one (or more) of them contain something unexpected you want to be able to check what you've got, one by one. By separating it on two lines you can open an edit window on `txt`, put a stop vector on line 5 and you can easily check on the contents of one file after the other. (This is why a function key executing `→⎕LC` is so useful)
+  The answer is no. In case you have to inspect what comes from several files because one (or more) of them contain something unexpected you want to be able to check what you've got, one by one. By separating it on two lines you can open an edit window on `txt`, put a stop vector on line 5 and you can easily check on the contents of one file after the other.
 
 * Although the system settings are done in `MyApp` that's not exactly ideal because these settings should be set for everything in the WS, in particular `#`.   
 
