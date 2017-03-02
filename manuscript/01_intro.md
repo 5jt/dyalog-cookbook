@@ -90,6 +90,6 @@ We will use this library extensively and discuss it in detail but if you are cur
 
   You will however find that whenever possible we keep the code platform independent. If we use platform dependent utilities we will mentioned it and explain why, and we might mention alternatives available on other platforms.
   
-[^classes]: These days seasoned programmer have usually strong believes in whether to use an object-oriented approach or a functional approach, or to mix the both. We have seen friendships going bust on discussing these issues.
+[^classes]: These days seasoned programmers often have strong opinions about whether to use an object-oriented approach or a functional approach, or to mix the both. We have seen friendships going bust on discussing these issues.
 
   In this book we take a mixed approach, and we will discuss the pros and cons of each of them.
