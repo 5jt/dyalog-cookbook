@@ -187,7 +187,7 @@ A> `:Trap 0` would trap all errors - easier to read and write than `:Trap 12 18 
 A> 
 A> Well, for a very good reason: trapping everything includes such basic things like a VALUE ERROR, which is most likely introduced by a typo or by removing a function or an operator in the false believe that it is not called anywhere. We don't want to trap those, really. The sooner they come to light the better. For that reason we restrict the errors to whatever might pop up when it comes to dealing with files and directories.
 A> 
-A> That being said, if you have to trap all errors (occasionally this makes sense) then make sure that you can switch it off with a global flag as in `:Trap ∆debug/0`: if `∆debug` is 1 then the trap is active, otherwise it is not.
+A> That being said, if you have to trap all errors (occasionally this makes sense) then make sure that you can switch it off with a global flag as in `:Trap trap/0`: if `trap` is 1 then the trap is active, otherwise it is not.
 
 In this context the `:Trap` structure has an advantage over `⎕TRAP`. When it fires, and control advances to its `:Else` fork, the trap is immediately cleared. So there is no need explicitly to reset the trap to avoid an open loop. 
 

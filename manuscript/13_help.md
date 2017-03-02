@@ -17,7 +17,7 @@ While CHM files are Windows specific, `Markdown2Help` allows you to export the h
 
 In order to use `Markdown2Help` you need to download it from <http://download.aplwiki.com/>. We suggest creating a folder "Markdown2Help" within the folder `Z:\code\APLTree`. Copy the contents of the zip file you've just downloaded into `Z:\code\APLTree\Markdown2Help`:
 
-![Download target](images\12_DownloadTarget.png)
+![Download target](images/13_DownloadTarget.png)
 
 Within that folder you will find a workspace `Markdown2Help` (from which we are going to copy the module) and a folder "help". This sub-folder contains in turn a sub-folder "files" (which contains `Markdown2Help`'s own help system) and the file `ViewHelp.exe`; that is the external viewer you need in case you want to view your help system independently from your application.
 
@@ -25,7 +25,7 @@ By default `ViewHelp.exe` expects to find a folder `files` as a sibling of itsel
 
 Double-click the EXE and you will see `Markdown2Help2`'s own help system:
 
-![Markdown2Help's Help](images\12_Viewer.png)
+![Markdown2Help's Help](images/13_Viewer.png)
 
 We also need the script `MarkAPL` which is used to convert the help pages -- which are written in Markdown [^markdown] -- to HTML. You know by now how to download scripts from the APLTree library.
 
@@ -61,7 +61,7 @@ Notes:
 
 In the workspace all nodes (in our case "MyHelp" and "Sub") are ordinary namespaces while the pages are variables. You can check with the Workspace Explorer:
 
-![The help system in the Workspace Explorer](images\12_Structure.png)
+![The help system in the Workspace Explorer](images/13_Structure.png)
 
 This is the reason why the names of all nodes and all pages must be valid APL names. By default those names are shown in the help system, but of course there is a way to specify something different that is displayed as the title if that's not good enough for you.
 
@@ -69,7 +69,7 @@ This is the reason why the names of all nodes and all pages must be valid APL na
 
 When you right-click on a page like "Foo" and then select "Edit help page" from the context menu (pressing <Ctrl+Enter> will do the same) the APL editor opens and shows something similar to this:
 
-![A help page in the editor](images\12_EditMarkdown.png)
+![A help page in the editor](images/13_EditMarkdown.png)
 
 This is the definition of the help page in Markdown. (If you don't know what Markdown is please read both the Markdown article on Wikipedia [^markdown] and `Markdown2Help`'s own help file. The time will be a good investment in any case because these days Markdown is used pretty much everywhere)
 
@@ -135,13 +135,13 @@ We have also changed the title of the "Overview" page to "Miller's overview". Be
 
 After fixing the function the help system is re-compiled automatically; therefore our changes become visible immediately:
 
-![The changed help system](images\12_MyHelp_2.png)
+![The changed help system](images/13_MyHelp_2.png)
 
 ## More commands
 
 The context menu offers plenty of commands. Note that the first three commands are always available. The other commands are useful for a developer (or shall we say help system author?) and are available only when the help system is running in a development version of Dyalog.
 
-![The context menu](images\12_ContextMenu.png)
+![The context menu](images/13_ContextMenu.png)
 
 As a developer you should have no problem to master these commands.
 
@@ -245,7 +245,7 @@ In case the help system is running under a development version of Dyalog you hav
 
 You can then start a word processor, say Microsoft Word, and open that document with it. This will show something like this:
 
-![The help system as a single HTML page](images\12_ProofRead.png)
+![The help system as a single HTML page](images/13_ProofRead.png)
 
 This is a great help when it comes to proofreading a document: one can use the "Review" features of the chosen word processor and also print the document. You are much more likely to spot any problems in a printed version of the document than on screen.
 
