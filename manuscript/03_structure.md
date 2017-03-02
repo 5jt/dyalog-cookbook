@@ -8,22 +8,22 @@ To follow this, we'll make a very simple program. It counts the frequency of let
 
 Let's assume you've done the convenient thing. Your code is in a workspace. Everything it needs to run is defined in the workspace. Maybe you set a latent expression, so the program starts when you load the workspace. 
 
-In this chapter, we shall convert a DWS (saved workspace) to some DYALOG scripts and a DYAPP script to assemble an active workspace from them. Starting from scripts and assembling the workspace from scratch has a big advantage: you know that your workspace won't be corrupted.
+In this chapter, we shall convert a DWS (saved workspace) to some DYALOG scripts and a DYAPP script to assemble an active workspace from them. Using scripts to store your source code has many advantages: You can use a traditional source code management system rather than having your code and data stored in a binary blob. Changes that you make to your source code are saved immediately, rather than relying on your remembering to save the workspace at some suitable point in your work process. Finally, you don't need to worry about crashes in your code or externally called modules which might prevent your from saving your work - or even corruption of the active workspace which might prevent you from saving it.
 
-A> The _workspace_ (WS) is where the APL interpreter manages all code and all data. After establishing the code the WS will be fine. However, once you start running the program the likelyhood of damaging the WS in one way or another increases. This es hardly ever a problem when a program is just loaded and executed but it is a different story when you actually develop. For example, when you use the Tracer and change the code while executing it then there is always the possibility of the WS getting corrupted. 
+A> The _workspace_ (WS) is where the APL interpreter manages all code and all data in memory. The Dyalog tracer / debugger has extensive edit-and-continue capabilities, the downside is that these have occasionally these have been known to corrupt the workspace.
 A> 
 A> 
-A>The interpreter checks the WS's integrity every now and then; how often can be influenced by setting certain debug flags; see "The APL Command Line" in the documentation for details.
+A>The interpreter checks WS integrity every now and then; how often can be influenced by setting certain debug flags; see "The APL Command Line" in the documentation for details.
 A>
-A>When it finds that the WS is damaged it will create a dump file called "aplcore" and quit. This measure is taken in order to make sure that you do not continue executing your code in a corrupted WS because that may well have unexpected results, or worse.
+A>When it finds that the WS is damaged it will create a dump file called "aplcore" and exit, in order to prevent you application from producing (or storing) incorrect results.
 A>
-A>That's why seasoned developers like the idea of compiling a WS freshly when they start working on it.
+A>Regularly rebuilding the workspace from source files removes the risk of accumulating damage to the binary workspace.
 A>
 A>Note that an aplcore is useful in two ways: 
 A>
-A>* You can copy from it. It's not a good idea to copy the whole thing though; something has been wrong with it after all. It's fine however to copy an particular object (or some objects) from it. Add a colon: `)copy aplcore. myObj`
+A>* You can copy from it. It's not a good idea to copy the whole thing though; something has been wrong with it after all. It may be fine to recover a particular object (or some objects) from it, although you would be advised to extract the source and rebuild recovered objects from the source, rather than using binary data recovered from an aplcore. Add a colon: `)copy aplcore. myObj`
 A>
-A>* Send the aplcore to Dyalog. It's kind of a dump, so they might be able to draw a conclusion as to what caused the problem. The chances for this are not great but significantly larger than zero. When you can reproduce the aplcore it is almost a certainty that Dyalog will be able to figure out what went wrong.
+A>* Send the aplcore to Dyalog. It's kind of a dump, so they might be able to determine the cause of your problem.
 
 ## How can you distribute your program?
 
@@ -61,7 +61,7 @@ We'll keep the program in manageable pieces – 'modules' – and keep those pie
 For this there are many _source-control management_ (SCM) systems and repositories available. Subversion, Git and Mercurial are presently popular. These SCMs support multiple programmers working on the same program, and have sophisticated features to help resolve conflicts between them. 
 
 A> ### Source code management with acre
-A> Some members of the APL community prefer to use a source code management system that is tailored to solve the needs of an APL programmer, or a team of APL programmers: acre. APL is very different from any other programming language around, so it is not exactly a surprise that it is also different in its demand towards a source code management system. acre is an excellent alternative to Git etc., and it is available as Open Source; we will discuss acre in its own appendix.
+A> Some members of the APL community prefer to use a source code management system that is tailored to solve the needs of an APL programmer, or a team of APL programmers: acre. APL code is very compact, teams are typically small, and work on APL applications tends to be very oriented towards functions rather than modules. Other aspects of working in APL impact the importance of features of the SCM that you use. acre is an excellent alternative to Git etc., and it is available as Open Source; we will discuss acre in its own appendix.
 
 Whichever SCM you use (we used GitHub for writing this book and the code in it) your source code will comprise class and namespace scripts (DYALOGs) for the application. Test cases and the help system will be ordinary (= non-scripted) namespaces. We us a _build script_ (DYAPP) to assemble the application as well as the development environment.
 
@@ -286,11 +286,11 @@ status←(bar>3) means 'ok' else 'error'
 
 yet Shift+Enter in the Tracer or the Editor still works, and any changes would go into `#.Utilities`.
 
-A> ### About :Include
+A> ### More about :Include
 A>
-A> Note that if the code of `means` or `else` is changed while tracing into it from the `MyApp` class those changes are reflected in `#.Utilities` immediately. That gives you kind of a feeling that the code in `MyApp` "jumps" into `#.Utilities` and then executes (and possibly also changes) the code over there, but that's not the case.
+A> When a namespace is :Included, the interpreter incorporates copies of the namespace into the current class as if they had been defined there. However, it keeps a reference to the original namespace, which means that ifthe code of `means` or `else` is changed while tracing into it from the `MyApp` class those changes are reflected in `#.Utilities` immediately.
 A>
-A> For example, lets assume that you save the workspace and then copy `#.Utilities` into #. It's the same version as before, absolutely nothing has changed, right?! Not quite!
+A> This generally works well, but can lead to confusion if. For example, if you were now to `)COPY #.Utilities` from another workspace, the class has a reference to functions in the old copy of #.Utilities, and will not update them until the class is fixed again.
 A>
 A> Let's assume that in a WS `C:\Test_Include` we have just this code:
 A> 
@@ -324,7 +324,7 @@ A> copied...
 A> ~~~
 A> If you would at this stage edit `Goo` and change `'world'` to `'Universe'` and then call again `Foo.Hello` it would still print `world` to the session.
 
-In such cases it's best to re-fix `Foo` - that would solve the problem. Assembling a fresh WS from text files might be even better.
+If you experience this sort of confusion, it is a good idea to re-fix your classes (in this case `Foo`). Building a fresh WS from source files might be even better.
 
 #### Don't use diamonds
 
