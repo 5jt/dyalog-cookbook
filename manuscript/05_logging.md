@@ -1,7 +1,6 @@
 {:: encoding="utf-8" /}
 
-Logging what happens 
-====================
+# Logging what happens 
 
 MyApp 1.0 is now working, but handles errors poorly. See what happens when we try to work on a non-existent file/folder:
 
@@ -79,8 +78,8 @@ Therefore we remove the two functions from `Utilities` and change `CountLettersâ
 
 That works because the alias `A` we've just introduced points to `APLTreeUtils`.
 
-Where to keep the logfiles? 
-----------------------------
+
+## Where to keep the logfiles? 
 
 Where is `MyApp` to write the logfile? We need a filepath we know exists. That rules out `fullfilepath`. We need a logfile even if that isn't a valid path.  
 

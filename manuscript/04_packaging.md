@@ -1,14 +1,14 @@
 {:: encoding="utf-8" /}
 
-Package MyApp as an executable
-==============================
+
+# Package MyApp as an executable
 
 Now we will make some adjustments in order to make `MyApp` ready for being packaged as an EXE. It will run from the command line and it will run 'headless' -- without a user interface (UI).
 
 Copy all files in `z:\code\v02\` to `z:\code\v03\`. Alternatively you can dowload version 3 from the book's website of course.
 
-Output to the session log
--------------------------
+
+## Output to the session log
 
 What happens to values that would otherwise be written in the session log? They disappear. That’s not actually a problem for us, but it is tidy to catch anything that would otherwise be written to the UI, including empty arrays. Note that anything that is written to the session by accident can cause a major hiccup depending on the circumstances. Therefore you should _always_ use `⎕←` if you actually _intend_ to write to the session for the simple reason that you just have to search for `⎕←` in order to find any such statements.
 
@@ -36,8 +36,8 @@ I> Don't forget to clear the stack after `CatchSessionPrint` crashed because if 
 
 `TxtToCsv` however has a shy result, so it won't write its result to the session. That’s fine. 
 
-Reading arguments from the command line 
----------------------------------------
+
+## Reading arguments from the command line 
 
 `TxtToCsv` needs an argument. The EXE must take it from the command line. We'll give `MyApp` a function `StartFromCmdLine`. We will also introduce `SetLX` in order to set `⎕LX`. The DYAPP will use it to start the program:
 

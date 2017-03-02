@@ -1,7 +1,6 @@
 {:: encoding="utf-8" /}
 
-Handling errors
-===============
+# Handling errors
 
 `MyApp` already anticipates, tests for and reports certain foreseeable problems with the parameters. We'll now move on to handle errors more comprehensively.
 

@@ -1,14 +1,11 @@
 {:: encoding="utf-8" /}
 
-Debugging a stand-alone EXE
-===========================
-
+# Debugging a stand-alone EXE
 
 Imagine the following situation: when MyApp is started with a double-click on the DYAPP and then tested everything works just fine. When you create a stand-alone EXE from the DYAPP and execute it with some appropriate parameter it does not create the CSV files. In this situation obviously you need to debug the EXE. In this chapter we'll discuss how to achieve that.
 
 
-Configuration settings
-----------------------
+## Configuration settings
 
 In the INI file we have already a `[Ride]` section. By setting `Active` to 1 and defining a `Port` number for the communication between Ride and the EXE (4502 is Ride's default port) you can tell MyApp that you want "to give it a ride".
 
@@ -19,16 +16,14 @@ In MyApp we keep things simple and allow the INI file to rule whether the user m
 Copy v05 to v06.
 
 
-The "Console application" flag
-------------------------------
+## The "Console application" flag
 
 In case you've exported the EXE with the "console application" check box ticked there is a problem: although you will be able to connect to the EXE with Ride, all output goes into the console window. That means that you can enter statements in Ride but any response from the interpreter goes to the console window rather than Ride.
 
 For debugging purposes it is therefore recommended to recreate the EXE with the check box unticked. As mentioned in the 
 
 
-INI file changes
-----------------
+## INI file changes
 
 Don't forget to change the Ride parameters:
 
@@ -38,8 +33,8 @@ Active      = 1
 Port        = 4502
 ~~~
 
-Code changes
-------------
+
+## Code changes
 
 We want to make the Ride configurable. That means we cannot do it earlier than after having instantiated the INI file. But not long after either, so we change `Initial`:
 
@@ -49,9 +44,9 @@ We want to make the Ride configurable. That means we cannot do it earlier than a
 ⍝ Side effect: creates `MyLogger`, an instance of the `Logger` class.
   #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
   G←CreateGlobals ⍬
-leanpub-start-insert  
+markua-start-insert  
   CheckForRide G
-leanpub-end-insert  
+markua-end-insert  
   MyLogger←OpenLogFile G.LogFolder
   MyLogger.Log↓⎕FMT G.∆List
 ∇

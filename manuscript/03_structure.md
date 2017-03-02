@@ -1,7 +1,6 @@
 {:: encoding="utf-8" /}
 
-Structure
-=========
+# Structure
 
 In this chapter we consider your choices for making your program available to others, and for taking care of the source code, including tracking the changes through successive versions. 
 
@@ -26,8 +25,7 @@ A>* You can copy from it. It's not a good idea to copy the whole thing though; s
 A>
 A>* Send the aplcore to Dyalog. It's kind of a dump, so they might be able to draw a conclusion as to what caused the problem. The chances for this are not great but significantly larger than zero. When you can reproduce the aplcore it is almost a certainty that Dyalog will be able to figure out what went wrong.
 
-How can you distribute your program?
---------------------------------
+## How can you distribute your program?
 
 
 ### Send a workspace file (DWS)
