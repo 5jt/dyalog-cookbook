@@ -245,7 +245,7 @@ In case the help system is running under a development version of Dyalog you hav
 
 You can then start a word processor, say Microsoft Word, and open that document with it. This will show something like this:
 
-![The help system as a single HTML page](images\13_ProofRead.png)
+![The help system as a single HTML page](images/13_ProofRead.png)
 
 This is a great help when it comes to proofreading a document: one can use the "Review" features of the chosen word processor and also print the document. You are much more likely to spot any problems in a printed version of the document than on screen.
 
