@@ -14,9 +14,15 @@ We see an alert message: _This Dyalog APL runtime application has attempted to u
 
 T> As soon as you close the message box a CONTINUE workspace will be created as a sibling of the EXE. Such a CONTINUE WS can be loaded and investigated, making it easy to figure out what the problem is. However, this is only true as long as there is only a single thread running in the EXE. 
 T> 
-T> Note that for analyzing purposes a CONTINUE workspace must be loaded in an already running instance of Dyalog. In other words: don't double-click a CONTINUE! The reason is that `⎕DM` and `⎕DMX` are overwritten in the process of booting SALT, meaning that you loose the error message. That might be a problem or not: if you can simply re-execute the failing line it will produce the same error again but if it is, say, reading from a previously tied file then that cannot work because that file is of course not tied anymore when you load the CONTINUE.
+T> Note that for analyzing purposes a CONTINUE workspace must be loaded in an already running instance of Dyalog. In other words: don't double-click a CONTINUE! The reason is that `⎕DM` and `⎕DMX` are overwritten in the process of booting SALT, meaning that you loose the error message. That might be a problem or not: if you can simply re-execute the failing line it will produce the same error again but if it is, say, reading from a previously tied file then that cannot work -- or rather fail with the original error because that file is of course not tied anymore when you load the CONTINUE.
 
-The next version of `MyApp` could do better by having the program write a log file recording what happens.
+The next version of `MyApp` could do better by...
+
+* having the program write a log file recording what happens.
+* adding an entry to the Windows Event Log.
+
+
+## Writing a log file
 
 Save a copy of `Z:\code\v03` as `Z:\code\v04`.
 
@@ -79,7 +85,7 @@ Therefore we remove the two functions from `Utilities` and change `CountLetters�
 That works because the alias `A` we've just introduced points to `APLTreeUtils`.
 
 
-## Where to keep the logfiles? 
+### Where to keep the logfiles? 
 
 Where is `MyApp` to write the logfile? We need a filepath we know exists. That rules out `fullfilepath`. We need a logfile even if that isn't a valid path.  
 
@@ -323,8 +329,8 @@ No warning message -- the program made an orderly finish. And the log?
 2017-02-26 10:54:01 (0) Source: G:\Does_not_exist
 2017-02-26 10:54:01 (0) No files found to process
 2017-02-26 10:54:26 *** Log File opened
-2017-02-26 10:54:26 (0) Started MyApp in Z:\code\v04
 2017-02-26 10:54:26 (0) Source: "Z:\texts\en\ageofinnocence.txt"
+2017-02-26 10:54:26 (0) Started MyApp in Z:\code\v04
 2017-02-26 10:54:26 (0) 1 file processed.
 2017-02-26 10:58:07 (0) Z:/texts/en/ageofinnocence.txt 
 2017-02-26 10:54:35 *** Log File opened
@@ -361,5 +367,156 @@ A> When you trace through `TxtToCsv` the moment you leave the function the Trace
 A>
 A> In case you wonder why that is: a destructor (if any) is called when the instance of a class is destroyed. Not necessarily immediately but eventually. Now we have created an instance of the `Logger` class which we have called `MyLogger`. This name is localyzed in the header of `TxtToCsv`, meaning that when `TxtToCsv` finishes the instance is implicitly deleted. That makes the interpreter executing the destructor, and because the Tracer was up and running this destructor makes an appearance in the Tracer.
 
-[^apltree]: You can download the complete APLTree library from the [APL Wiki](http://download.aplwiki.com/).
-[^bom]: https://en.wikipedia.org/wiki/Byte_order_mark
+
+## The Windows Event Log
+
+## Overview
+
+Apart from application specific log files we also have to consider whether we should write to the Window Event Log.
+
+
+### What exactly is the Windows Event Log?
+
+In case you've never heard of it, or you are not sure what exactly the purpose of it is, this is for you; otherwise jump to "Why is the Windows Event Log important?".
+
+The Windows Event Log is by no means an alternative to application specific log files. Some applications do not write to the Windows Event Log at all, some only when things go wrong and some always. In short the Windows Event Log is a kind of central repository for log entries.
+
+For example, any application that runs as a Windows Service is expected to write to the Windows Event Log when it starts, when it quits and when it encounters problems, and it also might add even more information. You will find it hard to find an exception.
+
+Similarly any Schduled Tasks are excpected to do the same, although some don't, or report just errors.
+
+### Why is the Windows Event Log important?
+
+On a server all applications run either as Windows Services (most likely all of them) or as Windows Scheduled Tasks. Since no human is sitting in front of a server we need a way to detect problems on a server automatically. That can be achieved by using software that automaticallt scans the Windows Event Logs of any given computer. It can email or text admins when an application that's supposed to run doesn't, or when an application goes astray, and draw attention to that server.
+
+
+### How to investigate the Windows Event Log
+
+In modern versions of Windows you just press the Win key and then type "Event". That brings up a list which contains at least "Event Viewer".
+
+By default the Event Viewer displayes all Event Logs on the current (local) machine. However, you can connect to another computer and investigate its Event Log, rights permitted. We keep it simple and focus just on the local Windows Event Log.
+
+
+### Terms used
+
+From the Microsoft documentation: "Each log in the Eventlog key contains subkeys called event sources. The event source is the name of the software that logs the event. It is often the name of the application or the name of a subcomponent of the application if the application is large. You can add a maximum of 16,384 event sources to the registry. The Security log is for system use only. Device drivers should add their names to the System log. Applications and services should add their names to the Application log or create a custom log." [^winlog]
+
+
+### Application log versus custom log
+
+The vast majority of applications writes into "Windows Logs\Application" but if you wish you can create your own log "Applications and services logs".
+
+
+### Let's do it
+
+Copy `Z:\code\v04` to `Z:\code\v04a`. We are naming this one 4a because we not carrying the changes we are going to make any further.
+
+First we need to load the module `WindowsEventLog` from within `MyApp.dyapp`:
+
+~~~
+...
+Load ..\AplTree\OS
+Load ..\AplTree\WindowsEventLog
+Load ..\AplTree\Logger
+...
+~~~
+
+Now we change `Initial` so that it creates an instance of `WindowsEventLog` and returns it as part of the result. We also tell the Windows Event Log that the application has started:
+
+~~~
+leanpub-start-insert  
+∇ {(MyLogger MyWinEventLog)}←Initial dummy
+leanpub-end-insert  
+⍝ Prepares the application.
+⍝ Side effect: creates `MyLogger`, an instance of the `Logger` class.
+  #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
+  MyLogger←OpenLogFile'Logs'      
+  MyLogger.Log'Started MyApp in ',F.PWD
+leanpub-start-insert  
+  MyWinEventLog←⎕NEW ##.WindowsEventLog(,⊂'Myapp')
+  MyWinEventLog.WriteInfo'Application started'
+leanpub-end-insert  
+∇
+~~~
+
+`Initial` is called by `StartFromCmdLine`, so that functions needs to be amended as well. We localize `MyWinEventLog`, the name of the instance, and change the call to `Initial` since it now returns two rather than one instance. Finally we write we tell the Windows Event Log that we are shutting down when `TxtToCsv` was called:
+
+~~~
+leanpub-start-insert  
+∇ {r}←StartFromCmdLine arg;MyLogger;MyWinEventLog
+leanpub-end-insert  
+⍝ Needs command line parameters, runs the application.
+  r←⍬
+leanpub-start-insert  
+  (MyLogger MyWinEventLog)←Initial ⍬
+leanpub-end-insert    
+  r←TxtToCsv arg
+leanpub-start-insert    
+  MyWinEventLog.WriteInfo'Application shuts down'
+leanpub-end-insert      
+∇
+~~~
+
+So far we have used the method `WriteInfo`. For demonsttration purposes we use the two other methods available , `WriteWarning` and `WriteError`:
+
+~~~
+∇ rc←TxtToCsv fullfilepath;files;tbl;lines;target
+  ...
+leanpub-start-insert        
+  MyWinEventLog.WriteWarning'MyApp warning'
+  MyWinEventLog.WriteError'MyApp Error'
+leanpub-end-insert        
+  (target files)←GetFiles fullfilepath
+  ...
+∇
+~~~
+
+Having made all these changes we are ready to compile the WS from scratch: 
+
+1. Double-click the DYAPP in `v04a`.
+1. Change the WSID to "MyApp"
+1. Execute the command `)save` in order to save the WS.
+1. Execute `)off`
+
+Why do we need to do this? Because the source "MyApp" is very unlikely to exist yet on your computer. Although we assume that you are using a user ID with admin rights, that's not enough the create a new Windows Event Log source. You have to select "Run as admin" from the context menu, and that is not available for workspaces and DYAPPs.
+
+But it is available for the EXE that starts your version of Dyalog. Find it, right-click on it and select "Run as admin". Windows will most likely ask whether you are sure about this and then start an instance of Dyalog with elevated rights. Now you can `)load` the workspace we have just created and run `⎕LX`.
+
+Now start the Event Viewer; As a result of running the program with admin rights you should see something like this:
+
+![The Windows Event Log](images/WindowsEventLog.jpg)
+
+You might need to scroll down a bit.
+
+You can execute `)off` now in the admin-dyalog session: when you run the program again the source already exists, so from now on you don't need admin rights anymore. In a real-life scenario this business of creating the Windows Event Log source is done by an installer, one of the several reasons why a user who wants to install a program needs admin rights.
+
+
+### Tricks, tips and traps
+
+No doubt you feel now confident with the Windows Event Log, right? Well, keep reading:
+
+* When you create a new source in a (new) custom log then in the Registry the new log is listed as expected but it has _two_ keys, one carrying the name of the source you intended to create and a second one with the same name as the log itself. In the Event Viewer however only the intended source is listed.
+
+* The names of sources must be _unqiue across _all_ logs_.
+
+* Only the first 8 characters of the name of a source are really taken into account; everything else is ignored. That means that when you have a source `S1234567_1` and you want to register `S1234567_2` you will get an error "Source already exists".
+
+* When the Event Viewer is up and running and you either create or delete a log or a source and then press F5 then the Event Viewer GUI flickers, and you might expect that to be an indicator for the GUI having updated itself but that's not the case, at least not at the time of writing (2017-03). You have to close the Event Viewer and re-open it to actually see your changes.
+
+* Even when your user ID has admin rights and you've started Dyalog in elevated mode ("Run as administrator" in the context menu) you _cannot_ delete a custom log with calls to `WinReg` (The APLTree member that deal with the Windows Registry). The only way to delete custom logs is with the Registry Editor: go to the key
+
+  `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\EventLog\`
+  
+  and delete the key(s) (=children) you want to get rid of. It's not a bad idea to create a system restore point [^restore] before you do that. (If you never payed attention to System Restore Points you really need to follow the link!)
+  
+* Once you have written events to a source and then deleted the log the source pretends to belong to, the events remain saved anyway. They are just not vsisible anymore. That can be proven by re-creating the log: all the events make a come-back and show up again as they did before. 
+
+  If you really want to get rid of the logs then you have to select the "Clear log" command from the context menu in the Event Viewer (tree only|!) before you delete the log.
+ 
+
+
+
+[^apltree]: You can download the complete APLTree library from the APL Wiki: <http://download.aplwiki.com/>
+[^bom]: Details regarding the BOM: <https://en.wikipedia.org/wiki/Byte_order_mark>
+[^winlog]: Microsoft on the Windows Event Log: <https://msdn.microsoft.com/en-us/library/windows/desktop/aa363648(v=vs.85).aspx>
+[^restore]: Details about System Restore Point: <https://en.wikipedia.org/wiki/System_Restore>
