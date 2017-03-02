@@ -41,7 +41,6 @@
    ⍝ Write a sibling CSV of the TXT located at fullfilepath,
    ⍝ containing a frequency count of the letters in the file text.
    ⍝ Returns one of the values defined in `EXIT`.
-      MyLogger.Log'Started MyApp in ',F.PWD
       MyLogger.Log'Source: ',fullfilepath
       (rc target files)←GetFiles fullfilepath
       :If rc=EXIT.OK
@@ -139,11 +138,11 @@
 
     ∇ (G MyLogger)←Initial dummy
     ⍝ Prepares the application.
-    ⍝ Side effect: creates `MyLogger`, an instance of the `Logger` class.
       #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
       G←CreateGlobals ⍬
       CheckForRide G
       MyLogger←OpenLogFile G.LogFolder
+      MyLogger.Log'Started MyApp in ',F.PWD   
       MyLogger.Log↓⎕FMT G.∆List
     ∇
 
@@ -192,9 +191,9 @@
     ∇ Off exitCode
       :If 0<⎕NC'MyLogger'
           :If exitCode=EXIT.OK
-              MyLogger.Log'MyApp is closing down gracefully'
+              MyLogger.Log'Shutting down MyApp'
           :Else
-              MyLogger.LogError'MyApp is closing down, return code is ',EXIT.GetName exitCode
+              MyLogger.LogError'MyApp is unexpectedly shutting down, return code is ',EXIT.GetName exitCode
           :EndIf
       :EndIf
       :If A.IsDevelopment

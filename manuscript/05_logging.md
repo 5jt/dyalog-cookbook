@@ -10,19 +10,13 @@ Z:\code\v02\MyApp.exe Z:\texts\Does_not_exist
 
 We see an alert message: _This Dyalog APL runtime application has attempted to use the APL session and will therefore be closed._ 
 
-`MyApp` failed, because there is no file or folder `Z:\texts\Does_not_exist`. That triggered an error in the APL code. The interpreter tried to signal the error to the session. But a runtime task has no session, so at that point the interpreter popped the alert message and `MyApp` died.   
+`MyApp` failed because there is no file or folder `Z:\texts\Does_not_exist`. That triggered an error in the APL code. The interpreter tried to display an error message and looked for input from a developer from the session. But a runtime task has no session, so at that point the interpreter popped the alert message and `MyApp` died.   
 
 T> As soon as you close the message box a CONTINUE workspace will be created as a sibling of the EXE. Such a CONTINUE WS can be loaded and investigated, making it easy to figure out what the problem is. However, this is only true as long as there is only a single thread running in the EXE. 
 T> 
-T> Note that for analyzing purposes a CONTINUE workspace must be loaded in an already running instance of Dyalog. In other words: don't double-click a CONTINUE! The reason is that `⎕DM` and `⎕DMX` are overwritten in the process of booting SALT, meaning that you loose the error message. That might be a problem or not: if you can simply re-execute the failing line it will produce the same error again but if it is, say, reading from a previously tied file then that cannot work -- or rather fail with the original error because that file is of course not tied anymore when you load the CONTINUE.
+T> Note that for analyzing purposes a CONTINUE workspace must be loaded in an already running instance of Dyalog. In other words: don't double-click a CONTINUE! The reason is that `⎕DM` and `⎕DMX` are overwritten in the process of booting SALT, meaning that you loose the error message. You _may_ be able to recreate them by re-executing the failing line but that might be dangerous, or fail in a different way when executed without the application having been initialised.
 
-The next version of `MyApp` could do better by...
-
-* having the program write a log file recording what happens.
-* adding an entry to the Windows Event Log.
-
-
-## Writing a log file
+The next version of `MyApp` could do better by having the program write a log file recording what happens.
 
 Save a copy of `Z:\code\v03` as `Z:\code\v04`.
 
@@ -87,7 +81,7 @@ That works because the alias `A` we've just introduced points to `APLTreeUtils`.
 
 ### Where to keep the logfiles? 
 
-Where is `MyApp` to write the logfile? We need a filepath we know exists. That rules out `fullfilepath`. We need a logfile even if that isn't a valid path.  
+Where is `MyApp` to write the logfile? We need a folder we know exists. That rules out `fullfilepath`. We need a logfile even if that isn't a valid path.  
 
 We'll write logfiles into a subfolder of the current directory. Where will that be? When the EXE launches, the current directory is set:
 
@@ -149,10 +143,11 @@ Notes:
 
 * We change the default encoding -- that's "ANSI" -- to "UTF-8". Note that this has pros and cons: it allows us to write APL characters to
   the log file but it will also cause potential problems with any third-party tools dealing with log files, because many of them 
-  insist on any log file to carry just ANSI characters.
+  only support ANSI characters.
 
   Although we've changed it here for demonstration purposes we recommend sticking with ANSI unless you have a _very_ good reason 
-  not to. When we introduce proper error handling in chapter 6 there won't be a need for having APL characters in the log file anyway.
+  not to. When we introduce proper error handling in chapter 6, we will do away
+  with the need for having APL characters in the log file.
   
 * Since we have not changed either `autoReOpen` (1) or `filenameType` ("DATE") it tells the `Logger` class that it should automatically 
   close a log file and re-open a new one each day at 24:00. It also defines (together with `filenamePrefix`) the name of the log file.
@@ -163,9 +158,9 @@ Notes:
    [Logger:Logs\MyApp_20170211.log(¯87200436)]
    ~~~
    
-   * "Logger" just tells us the name of the class the object was instantiated from.
+   * "Logger" is the name of the class the object was instantiated from.
    
-   * The path between `:` and `(` tell us the actual filename of the log file. Because the `filenameType` is "DATE" the name carries 
+   * The path between `:` and `(` tell us the actual name of the log file. Because the `filenameType` is "DATE" the name carries 
      the year, month and day the log file was opened. 
      
    * The negative number is the tie number of the log file.  
@@ -218,10 +213,7 @@ We make one change in `ProcessFile`:
     ∇
 ~~~
 
-We use `APLTreeUtils.ReadUtf8File` rather than `⎕NGET` for several reasons:
-
-  1. It simplifies matters because the function deals with end-of-line characters automatically, no matter what the current operating system is. 
-  1. The function takes care of a BOM [^bom] by removing it.
+We use `APLTreeUtils.ReadUtf8File` rather than `⎕NGET` because it retries several times in case of a failure, something that is quite common when dealing with files on a network.
   
 `ReadUtf8File` returns a vtv by default: one item per record. We need a simple text vector. Although it is easy enough to flatten `ReadUtf8File`'s result (`⊃,/`) it is more efficient to tell `ReadUtf8File` not to split the stream into records in the first place.
 
@@ -236,7 +228,7 @@ Now we have to make sure that `Initial` is called from `StartFromCmdLine`:
     ∇
 ~~~
 
-We also have to make sure that `GetFiles` is called from `TxtToCsv`. In addition we add logging functionality:
+We also have to make sure that `GetFiles` is called from `TxtToCsv`. In addition we have added calls to MyLogger.Log in appropriate places:
 
 ~~~
 ∇ rc←TxtToCsv fullfilepath;files;tbl;lines;target
@@ -270,7 +262,7 @@ Notes:
   
 * We could have written `A.WriteUtf8File target ({⍺,',',⍕⍵}/⊃{⍺(+/⍵)}⌸/↓[1]tbl)`, avoiding the local variable `lines`. We didn't because this variable might be very helpful in case something goes wrong and we need to trace through the `TxtToCsv` function.
 
-* Note that we do not pass `MyLogger` as an argument to `TxtToCsv`. We could, and some would say we should. We will discuss this issue in detail in the "Configuration settings" chapter.
+* Note that `MyLogger` is a global variable, rather than being passed as an argument to `TxtToCsv`. We will discuss this issue in detail in the "Configuration settings" chapter.
 
 Finally we change `Version`:
 
@@ -285,9 +277,11 @@ Finally we change `Version`:
 ∇
 ~~~    
 
-The foreseeable error that aborted the runtime task -- on an invalid filepath -- has now been replaced by a message saying no files were found. We have also changed the explicit result. So far it has returned the number of bytes written. In case something goes wrong ("file not found" etc.) it will return `¯1` now.
+The foreseeable error that aborted the runtime task -- an invalid filepath -- has now been replaced by a message saying no files were found. 
 
-As the logging starts and ends in `TxtToCsv`, we can run this in the workspace now to test it. (Later we will see that this approach has its disadvantages, and that there are better ways of doing this)
+We have also changed the explicit result. So far it has returned the number of bytes written. In case something goes wrong ("file not found" etc.) it will now return `¯1`.
+
+As the logging starts and ends in `TxtToCsv` we can run this in the workspace to test it. (Later we will see that this approach has its disadvantages, and that there are better ways of doing this)
 
 ~~~
       #.MyApp.TxtToCsv 'Z:\texts\en'
@@ -304,7 +298,7 @@ As the logging starts and ends in `TxtToCsv`, we can run this in the workspace n
 
 I> Alternatively you could set the parameter `printToSession` -- which defaults to 0 -- to 1. That would let the Logger class write all the messages not only to the log file but also to the session. That can be quite useful for test cases or during development. You could even prevent the Logger class to write to the disk at all by setting `fileFlag` to 0.
 
-I> The Logger class is designed to never break your application -- for obvious reasons. The drawback of this is that if something goes wrong like the path becoming invalid because the drive got removed you would only notice by trying to look at the log files. You can however tell the Logger class that it should **not** trap all errors by setting the parameter `debug` to 1. Then Logger would crash if something goes wrong.
+I> The Logger class is designed to never break your application -- for obvious reasons. The drawback of this is that if something goes wrong like the path becoming invalid because the drive got removed you would only notice by trying to look at the log files. You can tell the Logger class that it should **not** trap all errors by setting the parameter `debug` to 1. Then Logger would crash if something goes wrong.
 
 Let's see if logging works also for the exported EXE. Run the DYAPP to rebuild the workspace. Export as before and then run the new `MyApp.exe` in a Windows console.
 
@@ -349,7 +343,7 @@ One more improvement in `MyApp`: we change the setting of the system variables f
 (⎕IO ⎕ML ⎕WX ⎕PP ⎕DIV)←1 1 3 15 1
 ~~~
 
-to
+to the more readable:
 
 ~~~
 ⎕IO←1 ⋄ ⎕ML←1 ⋄ ⎕WX←3 ⋄ ⎕PP←15 ⋄ ⎕DIV←1
@@ -365,7 +359,7 @@ A> ### Destructors and the Tracer
 A>
 A> When you trace through `TxtToCsv` the moment you leave the function the Tracer shows the function `Cleanup` of the `Logger` class. The function is declared as a destructor.
 A>
-A> In case you wonder why that is: a destructor (if any) is called when the instance of a class is destroyed. Not necessarily immediately but eventually. Now we have created an instance of the `Logger` class which we have called `MyLogger`. This name is localyzed in the header of `TxtToCsv`, meaning that when `TxtToCsv` finishes the instance is implicitly deleted. That makes the interpreter executing the destructor, and because the Tracer was up and running this destructor makes an appearance in the Tracer.
+A> In case you wonder why that is: a destructor (if any) is called when the instance of a class is destroyed (or very shortly thereafter). `MyLogger` is localized in the header of `TxtToCsv`, meaning that when `TxtToCsv` ends, this instance of the `Logger` class is destroyed and the destructor is invoked. Since the Tracer was up and running, the destructor makes an appearance in the Tracer.
 
 
 ## The Windows Event Log

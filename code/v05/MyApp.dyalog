@@ -25,7 +25,6 @@
     ∇ rc←TxtToCsv fullfilepath;files;tbl;lines;target
    ⍝ Write a sibling CSV of the TXT located at fullfilepath,
    ⍝ containing a frequency count of the letters in the file text
-      MyLogger.Log'Started MyApp in ',F.PWD
       MyLogger.Log'Source: ',fullfilepath
       (target files)←GetFiles fullfilepath
       :If 0∊⍴files
@@ -75,7 +74,7 @@
    ⍝ Needs command line parameters, runs the application.
       r←⍬
       (G MyLogger)←Initial ⍬
-      r←TxtToCsv arg
+      r←TxtToCsv arg      
     ∇
 
     ∇ r←GetCommandLineArg dummy;buff
@@ -97,10 +96,10 @@
 
     ∇ (G MyLogger)←Initial dummy
     ⍝ Prepares the application.
-    ⍝ Side effect: creates `MyLogger`, an instance of the `Logger` class.
       #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
       G←CreateGlobals ⍬
       MyLogger←OpenLogFile G.LogFolder
+      MyLogger.Log'Started MyApp in ',F.PWD
       MyLogger.Log↓⎕FMT G.∆List
     ∇
 

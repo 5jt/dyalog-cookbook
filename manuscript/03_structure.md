@@ -8,22 +8,22 @@ To follow this, we'll make a very simple program. It counts the frequency of let
 
 Let's assume you've done the convenient thing. Your code is in a workspace. Everything it needs to run is defined in the workspace. Maybe you set a latent expression, so the program starts when you load the workspace. 
 
-In this chapter, we shall convert a DWS (saved workspace) to some DYALOG scripts and a DYAPP script to assemble an active workspace from them. Starting from scripts and assembling the workspace from scratch has a big advantage: you know that your workspace won't be corrupted.
+In this chapter, we shall convert a DWS (saved workspace) to some DYALOG scripts and a DYAPP script to assemble an active workspace from them. Using scripts to store your source code has many advantages: You can use a traditional source code management system rather than having your code and data stored in a binary blob. Changes that you make to your source code are saved immediately, rather than relying on your remembering to save the workspace at some suitable point in your work process. Finally, you don't need to worry about crashes in your code or externally called modules which might prevent your from saving your work - or even corruption of the active workspace which might prevent you from saving it.
 
-A> The _workspace_ (WS) is where the APL interpreter manages all code and all data. After establishing the code the WS will be fine. However, once you start running the program the likelyhood of damaging the WS in one way or another increases. This es hardly ever a problem when a program is just loaded and executed but it is a different story when you actually develop. For example, when you use the Tracer and change the code while executing it then there is always the possibility of the WS getting corrupted. 
+A> The _workspace_ (WS) is where the APL interpreter manages all code and all data in memory. The Dyalog tracer / debugger has extensive edit-and-continue capabilities, the downside is that these have occasionally these have been known to corrupt the workspace.
 A> 
 A> 
-A>The interpreter checks the WS's integrity every now and then; how often can be influenced by setting certain debug flags; see "The APL Command Line" in the documentation for details.
+A>The interpreter checks WS integrity every now and then; how often can be influenced by setting certain debug flags; see "The APL Command Line" in the documentation for details.
 A>
-A>When it finds that the WS is damaged it will create a dump file called "aplcore" and quit. This measure is taken in order to make sure that you do not continue executing your code in a corrupted WS because that may well have unexpected results, or worse.
+A>When it finds that the WS is damaged it will create a dump file called "aplcore" and exit, in order to prevent your application from producing (or storing) incorrect results.
 A>
-A>That's why seasoned developers like the idea of compiling a WS freshly when they start working on it.
+A>Regularly rebuilding the workspace from source files removes the risk of accumulating damage to the binary workspace.
 A>
 A>Note that an aplcore is useful in two ways: 
 A>
-A>* You can copy from it. It's not a good idea to copy the whole thing though; something has been wrong with it after all. It's fine however to copy an particular object (or some objects) from it. Add a colon: `)copy aplcore. myObj`
+A>* You can copy from it. It's not a good idea to copy the whole thing though; something has been wrong with it after all. It may be fine to recover a particular object (or some objects) from it, although you would be advised to extract the source and rebuild recovered objects from the source, rather than using binary data recovered from an aplcore. Add a colon: `)copy aplcore. myObj`
 A>
-A>* Send the aplcore to Dyalog. It's kind of a dump, so they might be able to draw a conclusion as to what caused the problem. The chances for this are not great but significantly larger than zero. When you can reproduce the aplcore it is almost a certainty that Dyalog will be able to figure out what went wrong.
+A>* Send the aplcore to Dyalog. It's kind of a dump, so they might be able to determine the cause of your problem.
 
 ## How can you distribute your program?
 
@@ -61,7 +61,7 @@ We'll keep the program in manageable pieces – 'modules' – and keep those pie
 For this there are many _source-control management_ (SCM) systems and repositories available. Subversion, Git and Mercurial are presently popular. These SCMs support multiple programmers working on the same program, and have sophisticated features to help resolve conflicts between them. 
 
 A> ### Source code management with acre
-A> Some members of the APL community prefer to use a source code management system that is tailored to solve the needs of an APL programmer, or a team of APL programmers: acre. APL is very different from any other programming language around, so it is not exactly a surprise that it is also different in its demand towards a source code management system. acre is an excellent alternative to Git etc., and it is available as Open Source; we will discuss acre in its own appendix.
+A> Some members of the APL community prefer to use a source code management system that is tailored to solve the needs of an APL programmer, or a team of APL programmers: acre. APL code is very compact, teams are typically small, and work on APL applications tends to be very oriented towards functions rather than modules. Other aspects of working in APL impact the importance of features of the SCM that you use. acre is an excellent alternative to Git etc., and it is available as Open Source; we will discuss acre in its own appendix.
 
 Whichever SCM you use (we used GitHub for writing this book and the code in it) your source code will comprise class and namespace scripts (DYALOGs) for the application. Test cases and the help system will be ordinary (= non-scripted) namespaces. We us a _build script_ (DYAPP) to assemble the application as well as the development environment.
 
@@ -138,7 +138,7 @@ That amounts to five functions. Two of them are specific to the application: `Tx
 
 Note that we have some functions that start with lowercase characters while others start with uppercase characters. In a larger application you might want to be able to tell data from calls to functions and operators by introducing consistent naming conventions. Which one you settle for is less important then choosing something consistent. And don't forget to put it into a document any programmer joining the team is supposed to read first. 
 
-`toUppercase` uses the fast case-folding I-beam introduced in Dyalog 15.0. 
+`toUppercase` uses the fast case-folding I-beam introduced in Dyalog 15.0 (also available in 14.0 & 14.1 from revision 27141 onwards).
 
 `TxtToCsv` uses the file-system primitives `⎕NINFO`, `⎕NGET`, and `⎕NPUT` introduced in Dyalog 15.0.
 
@@ -286,11 +286,11 @@ status←(bar>3) means 'ok' else 'error'
 
 yet Shift+Enter in the Tracer or the Editor still works, and any changes would go into `#.Utilities`.
 
-A> ### About :Include
+A> ### More about :Include
 A>
 A> Note that if the code of `means` or `else` is changed while tracing into it from the `MyApp` class those changes are reflected in `#.Utilities` immediately. That gives you kind of a feeling that the code in `MyApp` "jumps" into `#.Utilities` and then executes (and possibly also changes) the code over there, but that's not the case.
 A>
-A> For example, lets assume that you save the workspace and then copy `#.Utilities` into #. It's the same version as before, absolutely nothing has changed, right?! Not quite!
+A> This generally works well, but can lead to confusion. For example, if you were now to `)COPY #.Utilities` from another workspace, the class has a reference to functions in the old copy of #.Utilities, and will not update them until the class is fixed again.
 A>
 A> Let's assume that in a WS `C:\Test_Include` we have just this code:
 A> 
@@ -324,9 +324,9 @@ A> copied...
 A> ~~~
 A> If you would at this stage edit `Goo` and change `'world'` to `'Universe'` and then call again `Foo.Hello` it would still print `world` to the session.
 
-In such cases it's best to re-fix `Foo` - that would solve the problem. Assembling a fresh WS from text files might be even better.
+If you experience this sort of confusion, it is a good idea to re-fix your classes (in this case `Foo`). Building a fresh WS from source files might be even better.
 
-#### Don't use diamonds
+#### Be careful with diamonds
 
 The `:If - :Then - :else` solution could have been written this way:
 
@@ -334,11 +334,11 @@ The `:If - :Then - :else` solution could have been written this way:
 :If bar>3 ⋄ status←'ok' ⋄ :Else ⋄ status←'error' ⋄ :EndIf
 ~~~
 
-This is actually a really bad idea. When executing the code in the Tracer the line will be executed as an atomic unit, meaning that you have no idea what the actual value of `status` is after executing that line. Therefore the control structure does not offer an advantage over the other solutions which are way shorter. So either you go for the shorter one (if you expect debugging that line won't be an issue) or you spread the control structure over 5 lines so that you can see what is actually going on.
+There is one major problem with this: when executing the code in the Tracer the line will be executed in one go. If you think you might want to follow the control flow and trace into the individual expressions, you should spread the control structure over 5 lines.
 
-Note: if you have a choice between a short and a long expression then your are advised to go for the short one unless the long one offers an incentive like improved readability, better debugging or faster execution speed; only a short program has a chance of being bug free. 
+In general: if you have a choice between a short and a long expression then your are advised to go for the short one unless the long one offers an incentive like improved readability, better debugging or faster execution speed; only a short program has a chance of being bug free. 
 
-Diamonds can be useful in some situation, but in general it's a good idea to avoid them.
+Diamonds can be useful in some situations, but in general it's a good idea to avoid them.
 
 A> ### Diamonds
 A> 
@@ -347,7 +347,7 @@ A>
 A> * To make sure that no thread switch takes place between two statements. Something like
 A> 
 A>   ~~~ 
-A>   tno←filename ⎕nTIE 0 ⋄ ⍴⎕nread tno 80 (⎕nsize tno) ⋄ ⎕nuntie tno
+A>   tno←filename ⎕nTIE 0 ⋄ l←⍴⎕nread tno 80 (⎕nsize tno) ⋄ ⎕nuntie tno
 A>   ~~~
 A> 
 A>   is guaranteed to be executed as a unit. Depending on the circumstances this can be really important.
@@ -373,14 +373,7 @@ A>    You don't want to have a multi-line dfn here because then you won't be abl
 status←(bar>3) means 'ok' else 'error'
 ~~~
 
-Trying to resolve the names `means` and `else`, the interpreter would consult `⎕PATH` and find them in `#.Utilities`. So far so good: this is what `⎕PATH` is designed for. It works fine in simple cases, but it will lead us into problems later:
-
-* As long as each name leads unambiguously to an object, shift-clicking on it will display it in the editor, a valuable feature 
-  of APL in development and debugging. The editor allows us to change code during execution, and save those changes back to the scripts. But `⎕PATH` can interfere with this and break that valuable connection. 
-* Understanding the scope of the space in which a GUI callback executes can be challenging enough; introducing `⎕PATH` makes it 
-  harder still. 
-* Using the same name in a different namespace for a function that does something similar but not exactly the same and then add 
-  that namespace to `⎕PATH` as well can lead to bugs that a very hard to detect.  
+Trying to resolve the names `means` and `else`, the interpreter would consult `⎕PATH` and find them in `#.Utilities`. So far so good: this is what `⎕PATH` is designed for. It works fine in simple cases, but in our experience its use quickly leads to confusion about which functions are called or edited, and where new names are created. We recommend that you avoid `⎕PATH` if reasonable alternatives are available.
 
 ### Convert the WS LetterCount into a single scripted namespace.
 
@@ -509,7 +502,7 @@ Here's how the object tree will look:
 \-⍟MyApp
 ~~~
 
-We've saved the very first version as `z:\code\v01\MyApp.dyalog`. Now we take a copy of that and save it as `z:\code\v02\MyApp.dyalog`. Alternatively you can dowload version 2 from the book's website of course.
+We've saved the very first version as `z:\code\v01\MyApp.dyalog`. Now we take a copy of that and save it as `z:\code\v02\MyApp.dyalog`. Alternatively you can download version 2 from the book's website of course.
 
 Note that compared with version 1 we improve in several ways:
 
@@ -551,14 +544,14 @@ This is the `Constants.dyalog` script:
         HIDDEN←6
         TARGET←7        
         :Namespace TYPES
-			NOT_KNOWN←0
+            NOT_KNOWN←0
             DIRECTORY←1
             FILE←2
             CHARACTER_DEVICE←3
             SYMBOLIC_LINK←4
             BLOCK_DEVICE←5
             FIFO←6
-            SOCKET←7			
+            SOCKET←7            
         :EndNamespace
     :EndNamespace
     :Namespace NPUT
@@ -662,7 +655,7 @@ This version comes with a number of improvements. Let's discuss them in detail:
   
 * Because of `enc` and `nl` we have to have two lines anyway, but if we weren't interested in `enc` and `nl` a one-liner would do: `tbl⍪←CountLetters ⊃⎕NGET file`. Is this a good idea?
 
-  The answer is no. In case you have to inspect what comes from several files because one (or more) of them contain something unexpected you want to be able to check what you've got, one by one. By separating it on two lines you can open an edit window on `txt`, put a stop vector on line 5 and you can easily check on the contents of one file after the other. (This is why a function key executing `→⎕LC` is so useful)
+  The answer is no. In case you have to inspect what comes from several files because one (or more) of them contain something unexpected you want to be able to check what you've got, one by one. By separating it on two lines you can open an edit window on `txt`, put a stop vector on line 5 and you can easily check on the contents of one file after the other.
 
 * Although the system settings are done in `MyApp` that's not exactly ideal because these settings should be set for everything in the WS, in particular `#`.   
 

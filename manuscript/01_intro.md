@@ -45,7 +45,7 @@ Finally in Part 2 we'll introduce some professional writing techniques that migh
 * To know how to use namespaces, classes and instances. The utility code in the Cookbook is packaged as namespaces and classes. 
   This is the form in which it is easiest for you to slide the code into your app without name conflicts. 
 
-  We recommend you use classes to organise your own code [^classes]. But even if you don't, you need to know at least how to use classes. This is a deep subject, but all you need to know is the basics: how to call the static methods of a class (sufficient in most cases) or how to create an instance of a class and using its methods and properties. 
+  We recommend you use classes to organise your own code [^classes]. But even if you don't, you need to know at least how to use classes. This is a deep subject, but all you need to know is the basics: how to call the static methods of a class (sufficient in most cases) or how to create an instance of a class and use its methods and properties. 
   
   See _Dyalog Programmer's Reference Guide_ for an introduction. 
   
@@ -61,7 +61,7 @@ In case you still need help the [Dyalog Forum](http://forum.dyalog.com) provides
 
 ## Conventions
 
-I> Note that we assume `⎕IO←1` and `⎕ML←1`, not because it's the best (there is no such thing) but because that's the Dyalog default. That keeps the Cookbook in sync with the Dyalog documentation.
+I> Note that we assume `⎕IO←1` and `⎕ML←1`, not because  we are making a statement, but because that's the Dyalog default. That keeps the Cookbook in sync with the Dyalog documentation.
 
 A> ## Getting deeper
 A>
