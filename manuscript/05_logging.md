@@ -46,7 +46,7 @@ A> ~~~
 A> 
 A> I> If the user command `]ADOC_browse` is not available you should issue the `]uupdate` command. That would bring all Dyalog user commands up to date. `ADOC_Browse`, `ADOC_List` and `ADOC_Help` should then all be available.
 
-The `Logger` class is now part of `MyApp` together with some dependencies: 
+The `Logger` class and its dependencies will now be included when we build `MyApp`: 
 
 * `APLTreeUtils` is a namespace that contains some functions needed by most applications. All members of the APLTree library depend on it.
 * `FilesAndDirs` is a class that offers method for handling files and directories.
@@ -79,7 +79,7 @@ Therefore we remove the two functions from `Utilities` and change `CountLetters�
 That works because the alias `A` we've just introduced points to `APLTreeUtils`.
 
 
-### Where to keep the logfiles? 
+## Where to keep the logfiles? 
 
 Where is `MyApp` to write the logfile? We need a folder we know exists. That rules out `fullfilepath`. We need a logfile even if that isn't a valid path.  
 
@@ -213,9 +213,7 @@ We make one change in `ProcessFile`:
     ∇
 ~~~
 
-We use `APLTreeUtils.ReadUtf8File` rather than `⎕NGET` because it retries several times in case of a failure, something that is quite common when dealing with files on a network.
-  
-`ReadUtf8File` returns a vtv by default: one item per record. We need a simple text vector. Although it is easy enough to flatten `ReadUtf8File`'s result (`⊃,/`) it is more efficient to tell `ReadUtf8File` not to split the stream into records in the first place.
+We use `APLTreeUtils.ReadUtf8File` rather than `⎕NGET` because it optionally returns a flat string without a performance penalty, although that is only an issue with really large file. This is achieved by passing "flat" as the (optional) left argument to `ReadUtf8File`. 
 
 Now we have to make sure that `Initial` is called from `StartFromCmdLine`:
 
@@ -256,9 +254,9 @@ Notes:
 * We are now using `FilesAndDirs.Dir` rather than the Dyalog primitive `⎕NINFO`. Apart from offering recursive searches (a feature we don't need here) the `Dir` function also normalizes the separator character. Under Windows it will always be a backslash while under Linux it is always a slash character.
 
 * We use `APLTreeUtils.WriteUtf8File` rather than `⎕NPUT` for several reasons:
-
-  1. It simplifies matters because these functions deal with end-of-line characters automatically, no matter what the current operating system is.
-  1. It will either overwrite an existing file or create a new one for us. It will also try several times in case something goes wrong. This is often helpful when a slippery network is involved.
+  
+  1. It will either overwrite an existing file or create a new one for us no questions asked.
+  1. It will try several times in case something goes wrong. This is often helpful when a slippery network is involved.
   
 * We could have written `A.WriteUtf8File target ({⍺,',',⍕⍵}/⊃{⍺(+/⍵)}⌸/↓[1]tbl)`, avoiding the local variable `lines`. We didn't because this variable might be very helpful in case something goes wrong and we need to trace through the `TxtToCsv` function.
 
@@ -281,7 +279,7 @@ The foreseeable error that aborted the runtime task -- an invalid filepath -- ha
 
 We have also changed the explicit result. So far it has returned the number of bytes written. In case something goes wrong ("file not found" etc.) it will now return `¯1`.
 
-As the logging starts and ends in `TxtToCsv` we can run this in the workspace to test it. (Later we will see that this approach has its disadvantages, and that there are better ways of doing this)
+We can now test `TxtToCsv`:
 
 ~~~
       #.MyApp.TxtToCsv 'Z:\texts\en'
@@ -296,9 +294,9 @@ As the logging starts and ends in `TxtToCsv` we can run this in the workspace to
 2016-04-06 13:42:43 (0) All done
 ~~~
 
-I> Alternatively you could set the parameter `printToSession` -- which defaults to 0 -- to 1. That would let the Logger class write all the messages not only to the log file but also to the session. That can be quite useful for test cases or during development. You could even prevent the Logger class to write to the disk at all by setting `fileFlag` to 0.
+I> Alternatively you could set the parameter `printToSession` -- which defaults to 0 -- to 1. That would let the `Logger` class write all the messages not only to the log file but also to the session. That can be quite useful for test cases or during development. You could even prevent the `Logger` class to write to the disk at all by setting `fileFlag` to 0.
 
-I> The Logger class is designed to never break your application -- for obvious reasons. The drawback of this is that if something goes wrong like the path becoming invalid because the drive got removed you would only notice by trying to look at the log files. You can tell the Logger class that it should **not** trap all errors by setting the parameter `debug` to 1. Then Logger would crash if something goes wrong.
+I> The `Logger` class is designed to never break your application -- for obvious reasons. The drawback of this is that if something goes wrong like the path becoming invalid because the drive got removed you would only notice by trying to look at the log files. You can tell the `Logger` class that it should **not** trap all errors by setting the parameter `debug` to 1. Then `Logger` would crash if something goes wrong.
 
 Let's see if logging works also for the exported EXE. Run the DYAPP to rebuild the workspace. Export as before and then run the new `MyApp.exe` in a Windows console.
 
@@ -348,8 +346,6 @@ to the more readable:
 ~~~
 ⎕IO←1 ⋄ ⎕ML←1 ⋄ ⎕WX←3 ⋄ ⎕PP←15 ⋄ ⎕DIV←1
 ~~~
-
-This is more readable and therefore better.
 
 We now have `MyApp` logging its work in a subfolder of the application folder and reporting problems which it has anticipated.
 
