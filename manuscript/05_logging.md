@@ -381,7 +381,7 @@ Similarly any Schduled Tasks are excpected to do the same, although some don't, 
 
 ### Why is the Windows Event Log important?
 
-On a server all applications run either as Windows Services (most likely all of them) or as Windows Scheduled Tasks. Since no human is sitting in front of a server we need a way to detect problems on a server automatically. That can be achieved by using software that automaticallt scans the Windows Event Logs of any given computer. It can email or text admins when an application that's supposed to run doesn't, or when an application goes astray, and draw attention to that server.
+On a server all applications run either as Windows Services (most likely all of them) or as Windows Scheduled Tasks. Since no human is sitting in front of a server we need a way to detect problems on a server automatically. That can be achieved by using software that automaticallt scans the Windows Event Logs of any given computer. It can email or text admins when an application that's supposed to run doesn't, or when an application goes astray, drawing attention to that server.
 
 
 ### How to investigate the Windows Event Log
@@ -398,12 +398,12 @@ From the Microsoft documentation: "Each log in the Eventlog key contains subkeys
 
 ### Application log versus custom log
 
-The vast majority of applications writes into "Windows Logs\Application" but if you wish you can create your own log "Applications and services logs".
+Only few applications write to the Windows Event Log. The vast majority of those which do write into "Windows Logs\Application" but if you wish you can create your own log under "Applications and services logs".
 
 
 ### Let's do it
 
-Copy `Z:\code\v04` to `Z:\code\v04a`. We are naming this one 4a because we not carrying the changes we are going to make any further.
+Copy `Z:\code\v04` to `Z:\code\v04a`. We are naming this one `4a` because we are not going to carry the changes we we will make any further. We will however revisit this issue when transforming MyApp into a Windows Service.
 
 First we need to load the module `WindowsEventLog` from within `MyApp.dyapp`:
 
@@ -433,7 +433,7 @@ leanpub-end-insert
 ∇
 ~~~
 
-`Initial` is called by `StartFromCmdLine`, so that functions needs to be amended as well. We localize `MyWinEventLog`, the name of the instance, and change the call to `Initial` since it now returns two rather than one instance. Finally we write we tell the Windows Event Log that we are shutting down when `TxtToCsv` was called:
+`Initial` is called by `StartFromCmdLine`, so that functions needs to be amended as well. We localize `MyWinEventLog`, the name of the instance, and change the call to `Initial` since it now returns two rather than one instance. Finally we tell the Windows Event Log that we are shutting down after `TxtToCsv` was called:
 
 ~~~
 leanpub-start-insert  
@@ -482,7 +482,7 @@ Now start the Event Viewer; As a result of running the program with admin rights
 
 You might need to scroll down a bit.
 
-You can execute `)off` now in the admin-dyalog session: when you run the program again the source already exists, so from now on you don't need admin rights anymore. In a real-life scenario this business of creating the Windows Event Log source is done by an installer, one of the several reasons why a user who wants to install a program needs admin rights.
+You can execute `)off` now in the admin-dyalog session: when you run the program again the source already exists, so from now on you don't need admin rights anymore. In a real-life scenario this business of creating the Windows Event Log source is done by an installer, one of the several reasons why a user who wants to install a program needs admin rights. We will come back to this when we discuss installers.
 
 
 ### Tricks, tips and traps
@@ -491,7 +491,7 @@ No doubt you feel now confident with the Windows Event Log, right? Well, keep re
 
 * When you create a new source in a (new) custom log then in the Registry the new log is listed as expected but it has _two_ keys, one carrying the name of the source you intended to create and a second one with the same name as the log itself. In the Event Viewer however only the intended source is listed.
 
-* The names of sources must be _unqiue across _all_ logs_.
+* The names of sources must be _unqiue_ across _all_ logs.
 
 * Only the first 8 characters of the name of a source are really taken into account; everything else is ignored. That means that when you have a source `S1234567_1` and you want to register `S1234567_2` you will get an error "Source already exists".
 
@@ -501,11 +501,11 @@ No doubt you feel now confident with the Windows Event Log, right? Well, keep re
 
   `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\EventLog\`
   
-  and delete the key(s) (=children) you want to get rid of. It's not a bad idea to create a system restore point [^restore] before you do that. (If you never payed attention to System Restore Points you really need to follow the link!)
+  and delete the key(s) (=children) you want to get rid of. It's not a bad idea to create a system restore point [^restore] before you do that. By yhe way, if you never payed attention to System Restore Points you really need to follow the link because under Windows 10 System Restore Points are not generated automaticelly by default anymore; you have to switch them on explicitly.
   
 * Once you have written events to a source and then deleted the log the source pretends to belong to, the events remain saved anyway. They are just not vsisible anymore. That can be proven by re-creating the log: all the events make a come-back and show up again as they did before. 
 
-  If you really want to get rid of the logs then you have to select the "Clear log" command from the context menu in the Event Viewer (tree only|!) before you delete the log.
+  If you really want to get rid of the logs then you have to select the "Clear log" command from the context menu in the Event Viewer (tree only!) before you delete the log.
  
 
 
