@@ -14,11 +14,13 @@ In a runtime interpreter or an EXE, there is no APL session, and output to the s
 
 But how do we find out where we need to make changes? We recommended that you think about this from the start, and make sure that all _intentional_ output is output through a "Log" function, or at least use an explicit `⎕←` so that output can be located in the source.
 
-A> What can you do if you have output appearing and you don't know where in your application it is being generated? The easiest way is to associate a callback function with the `SessionPrint` event as in:
+A> ### Unwanted output to the session
+A>
+A> What can you do if you have output appearing in the session and you don't know where in your application it is being generated? The easiest way is to associate a callback function with the `SessionPrint` event as in:
 A> 
 A> ~~~
 A>     '⎕se' ⎕WS 'Event' 'SessionPrint' '#.CatchSessionPrint'
-A>      #.⎕FX ↑'what CatchSessionPrint msg'  '⍎(0∊⍴what)/''. ⍝ Deliberate error''' '⎕←what'
+A>      #.⎕FX ↑'what CatchSessionPrint msg'  '.'
 A>      ⎕FX 'test arg'  '⎕←arg'
 A>      test 1 2 3
 A>1 2 3       
@@ -28,7 +30,7 @@ A>CatchSessionPrint[1] .  ⍝ Deliberate error
 A>                    ∧  
 A>~~~
 A>
-You can even use this to investigate what is about to be written to the session (the left argument of `CatchSessionPrint`) and make the function stop when it A> reaches the output you are looking for. In the above example we check for anything that's empty.
+A> You can even use this to investigate what is about to be written to the session (the left argument of `CatchSessionPrint`) and make the function stop when it reaches the output you are looking for. In the above example we check for anything that's empty.
 
 I> Don't try the `⎕se.onSessionPrint←'#.CatchSessionPrint'` syntax with `⎕SE`; just stick with `⎕WS` as in the above example.
 
@@ -108,7 +110,7 @@ Notes:
   
 * `GetCommandLineArgs` ignores its right argument. It makes that very clear by using the name "dummy". "ignored" would be fine as well. When you change this at one stage or another then of course you have to change that name to something meaningful.
   
-* Make sure that a `⎕LX` statement can be executed from anywhere. That requires the path to be fully qualified, therefore `#.MyApp` rather than `MyApp`. Make that a habit too. You won't regret it when later on you want to execute the statement.
+* Make sure that a `⎕LX` statement can be executed from anywhere. That requires the path to be fully qualified, therefore `#.MyApp` rather than `MyApp`. Make that a habit too. You won't regret it when later on you want to execute the statement:
 
 * By introducing a function `Version` we start to keep track of changes.
 
