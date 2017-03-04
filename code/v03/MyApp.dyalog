@@ -29,7 +29,7 @@
       csv←'.csv'
       :Select C.NINFO.TYPE ⎕NINFO fullfilepath
       :Case C.TYPES.DIRECTORY
-          tgt←fullfilepath,'total',csv
+          tgt←fullfilepath,'\total',csv
           files←⊃(⎕NINFO⍠'Wildcard' 1)fullfilepath,'\*.txt'
       :Case C.TYPES.FILE
           (path stem)←2↑⎕NPARTS fullfilepath
@@ -61,7 +61,7 @@
       :Access Public Shared
    ⍝ Read command parameters, run the application
       r←⍬
-      r←TxtToCsv arg
+      r←TxtToCsv arg~''''
     ∇
 
     ∇ r←GetCommandLineArg dummy

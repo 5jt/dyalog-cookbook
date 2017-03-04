@@ -103,7 +103,6 @@
           :Case
               MyLogger.LogError'Unable to read source: ',file
               Off EXIT.UNABLE_TO_READ_SOURCE
-
           :EndTrap
           data,←⊂fns txt
       :EndFor
@@ -115,11 +114,12 @@
       ⎕LX←'#.MyApp.StartFromCmdLine #.MyApp.GetCommandLineArg ⍬'
     ∇
 
-    ∇ {r}←StartFromCmdLine arg;MyLogger;G
+    ∇ {r}←StartFromCmdLine arg;MyLogger;G;rc
    ⍝ Needs command line parameters, runs the application.
       r←⍬
       (G MyLogger)←Initial ⍬
-      Off TxtToCsv arg
+      rc←TxtToCsv arg
+      Off rc
     ∇
 
     ∇ r←GetCommandLineArg dummy;buff

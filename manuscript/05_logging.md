@@ -5,7 +5,7 @@
 MyApp 1.0 is now working, but handles errors poorly. See what happens when we try to work on a non-existent file/folder:
 
 ~~~
-Z:\code\v02\MyApp.exe Z:\texts\Does_not_exist
+Z:\code\v03\MyApp.exe Z:\texts\Does_not_exist
 ~~~
 
 We see an alert message: _This Dyalog APL runtime application has attempted to use the APL session and will therefore be closed._ 
@@ -68,7 +68,7 @@ The two different versions both use the Dyalog `⌶` function, so comparing func
 
 However, `APLTreeUtils` is in use for more than 10 years now, it comes with a comprehensive set of test cases and it is documented in detail. That makes the choice rather easy.
 
-Therefore we remove the two functions from `Utilities` and change `CountLetters←`:
+Therefore we remove the two functions from `Utilities` and change `CountLetters`:
 
 ~~~
       CountLetters←{
@@ -123,18 +123,18 @@ Now we set up the parameters needed to instantiate the Logger class. First we us
 We then modify those where the defaults don't match our needs and use the parameter space to create the Logger object. For this we create a function `OpenLogFile`:
 
 ~~~
-    ∇ instance←OpenLogFile path;logParms
-      ⍝ Creates an instance of the "Logger" class.
-      ⍝ Provides methods `Log` and `LogError`.
-      ⍝ Make sure that `path` (that is where log files will end up) does exist.
-      ⍝ Returns the instance.
-      logParms←##.Logger.CreateParms
-      logParms.path←path
-      logParms.encoding←'UTF8'
-      logParms.filenamePrefix←'MyApp'
-      'CREATE!'F.CheckPath path
-      instance←⎕NEW ##.Logger(,⊂logParms)
-    ∇
+∇ instance←OpenLogFile path;logParms
+  ⍝ Creates an instance of the "Logger" class.
+  ⍝ Provides methods `Log` and `LogError`.
+  ⍝ Make sure that `path` (that is where log files will end up) does exist.
+  ⍝ Returns the instance.
+  logParms←##.Logger.CreateParms
+  logParms.path←path
+  logParms.encoding←'UTF8'
+  logParms.filenamePrefix←'MyApp'
+  'CREATE!'F.CheckPath path
+  instance←⎕NEW ##.Logger(,⊂logParms)
+∇
 ~~~
 
 Notes:
@@ -169,70 +169,73 @@ Notes:
 We create a function `Initial` (short for "Initialize") which calls `OpenLogFile` and returns the `Logger` instance:
 
 ~~~
-    ∇ {MyLogger}←Initial dummy
-    ⍝ Prepares the application.
-    ⍝ Side effect: creates `MyLogger`, an instance of the `Logger` class.
-      #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
-      MyLogger←OpenLogFile'Logs'
-    ∇
+∇ {MyLogger}←Initial dummy
+⍝ Prepares the application.   
+   #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
+⍝   
 ~~~
 
 At the moment `Initial` is not doing too much, but that will change. Note that we took the opportunity to make sure that all the system settings in `#` are set according to our needs.
 
-Next we need to change `TxtToCsv`, and while we are at it we are going to improve it: we move the code that processes `fullfilepath` into a function `GetFiles`:
+We also change in `ProcessFile`:
 
 ~~~
-    ∇ (target files)←GetFiles fullfilepath;csv;target;path;stem
-      fullfilepath~←'"'
-      csv←'.csv'
-      :Select C.NINFO.TYPE ⎕NINFO fullfilepath
-      :Case C.TYPES.DIRECTORY
-          target←F.NormalizePath fullfilepath,'\total',csv
-          files←⊃F.Dir fullfilepath,'\*.txt'
-      :Case C.TYPES.FILE
-          (path stem)←2↑⎕NPARTS fullfilepath
-          target←path,stem,csv
-          files←,⊂fullfilepath
-      :EndSelect
-       target←(~0∊⍴files)/target
-    ∇
+∇ data←(fns ProcessFiles)files;txt;file
+⍝ Reads all files and executes `fns` on the contents.
+   data←⍬
+   :For file :In files
+       txt←'flat' A.ReadUtf8File file
+       data,←⊂fns txt
+   :EndFor
+∇
 ~~~
 
-That allows us to keep `TxtToCsv` nice and tidy and the list of local variables short.
-
-We make one change in `ProcessFile`:
-
-~~~
-    ∇ data←(fns ProcessFiles)files;txt;file
-   ⍝ Reads all files and executes `fns` on the contents.
-      data←⍬
-      :For file :In files
-          txt←'flat' A.ReadUtf8File file
-          data,←⊂fns txt
-      :EndFor
-    ∇
-~~~
-
-We use `APLTreeUtils.ReadUtf8File` rather than `⎕NGET` because it optionally returns a flat string without a performance penalty, although that is only an issue with really large file. This is achieved by passing "flat" as the (optional) left argument to `ReadUtf8File`. 
+We use `APLTreeUtils.ReadUtf8File` rather than `⎕NGET` because it optionally returns a flat string without a performance penalty, although that is only an issue with really large file. This is achieved by passing "flat" as the (optional) left argument to `ReadUtf8File`. We ignore encoding and new line character and allow it to default to the current operating system. As a side effect `ProcessFiles` won't crash anymore when `files` is empty.
 
 Now we have to make sure that `Initial` is called from `StartFromCmdLine`:
 
 ~~~
-    ∇ {r}←StartFromCmdLine arg;MyLogger
-   ⍝ Needs command line parameters, runs the application.
-      r←⍬
-      MyLogger←Initial ⍬
-      r←TxtToCsv arg
-    ∇
+∇ {r}←StartFromCmdLine arg;MyLogger
+⍝ Needs command line parameters, runs the application.
+   r←⍬
+   MyLogger←Initial ⍬
+   MyLogger.Log'Started MyApp in ',F.PWD      
+   r←TxtToCsv arg~''''
+   MyLogger.Log'Shutting down MyApp'
+∇
 ~~~
 
-We also have to make sure that `GetFiles` is called from `TxtToCsv`. In addition we have added calls to MyLogger.Log in appropriate places:
+We take the opportunity to moce code from `TxtToCsv` to a new function `GetFiles`. This new function will take the command line argument and return a list of files which may contain zero, one or many filenames:
+
+~~~
+ ∇ (target files)←GetFiles fullfilepath;csv;target;path;stem
+ ⍝ Investigates `fullfilepath` and returns a list with files
+ ⍝ may contain zero, one or many filenames.
+   fullfilepath~←'"'
+   csv←'.csv'
+   :If F.Exists fullfilepath
+       :Select C.NINFO.TYPE ⎕NINFO fullfilepath
+       :Case C.TYPES.DIRECTORY
+           target←F.NormalizePath fullfilepath,'\total',csv
+           files←⊃F.Dir fullfilepath,'\*.txt'
+       :Case C.TYPES.FILE
+           (path stem)←2↑⎕NPARTS fullfilepath
+           target←path,stem,csv
+           files←,⊂fullfilepath
+       :EndSelect
+       target←(~0∊⍴files)/target
+   :Else
+       files←target←''
+   :EndIf
+ ∇
+~~~
+
+We have to make sure that `GetFiles` is called from `TxtToCsv`. Note that moving code from `TxtToCsv` to `GetFiles` allows us to keep `TxtToCsv` nice and tidy and the list of local variables short. In addition we have added calls to `MyLogger.Log` in appropriate places:
 
 ~~~
 ∇ rc←TxtToCsv fullfilepath;files;tbl;lines;target
 ⍝ Write a sibling CSV of the TXT located at fullfilepath,
-⍝ containing a frequency count of the letters in the file text      
-   MyLogger.Log'Started MyApp in ',F.PWD
+⍝ containing a frequency count of the letters in the file text 
    MyLogger.Log'Source: ',fullfilepath
    (target files)←GetFiles fullfilepath
    :If 0∊⍴files
@@ -240,7 +243,7 @@ We also have to make sure that `GetFiles` is called from `TxtToCsv`. In addition
        rc←1
    :Else
        tbl←⊃⍪/(CountLetters ProcessFiles)files
-       lines←{⍺,',',⍕⍵}/⊃{⍺(+/⍵)}⌸/↓[1]tbl
+       lines←{⍺,',',⍕⍵}/{⍵[⍒⍵[;2];]}⊃{⍺(+/⍵)}⌸/↓[1]tbl
        A.WriteUtf8File target lines 
        MyLogger.Log(⍕⍴files),' file',((1<⍴files)/'s'),' processed:'
        MyLogger.Log' ',↑files
@@ -253,12 +256,14 @@ Notes:
 
 * We are now using `FilesAndDirs.Dir` rather than the Dyalog primitive `⎕NINFO`. Apart from offering recursive searches (a feature we don't need here) the `Dir` function also normalizes the separator character. Under Windows it will always be a backslash while under Linux it is always a slash character.
 
+  Although Windows itself is quite relaxed about the separator and accepts a slash as well as a backslash, as soon as you call something else in one way or another you will find that slashes are not accepted. An example as any setting to `⎕USING`.
+
 * We use `APLTreeUtils.WriteUtf8File` rather than `⎕NPUT` for several reasons:
   
   1. It will either overwrite an existing file or create a new one for us no questions asked.
   1. It will try several times in case something goes wrong. This is often helpful when a slippery network is involved.
   
-* We could have written `A.WriteUtf8File target ({⍺,',',⍕⍵}/⊃{⍺(+/⍵)}⌸/↓[1]tbl)`, avoiding the local variable `lines`. We didn't because this variable might be very helpful in case something goes wrong and we need to trace through the `TxtToCsv` function.
+* We could have written `A.WriteUtf8File target ({⍺,',',⍕⍵}/⊃{⍺(+/⍵)}⌸/↓[1]tbl)`, avoiding the local variable `lines`. We didn't because this variable might be helpful in case something goes wrong and we need to trace through the `TxtToCsv` function.
 
 * Note that `MyLogger` is a global variable, rather than being passed as an argument to `TxtToCsv`. We will discuss this issue in detail in the "Configuration settings" chapter.
 
@@ -266,12 +271,12 @@ Finally we change `Version`:
 
 ~~~
 ∇r←Version
-  ⍝ * 1.0.0
-  ⍝   * Runs as a stand-alone EXE and takes parameters from the command line.
-  ⍝ * 1.1.0:
-  ⍝   * Can now deal with non-existent files.
-  ⍝   * Logging implemented.
-    r←(⍕⎕THIS) '1.1.0' '2017-02-26'             
+⍝ * 1.1.0:
+⍝   * Can now deal with non-existent files.
+⍝   * Logging implemented.    
+⍝ * 1.0.0
+⍝   * Runs as a stand-alone EXE and takes parameters from the command line.
+  r←(⍕⎕THIS) '1.1.0' '2017-02-26'             
 ∇
 ~~~    
 
@@ -357,156 +362,5 @@ A> When you trace through `TxtToCsv` the moment you leave the function the Trace
 A>
 A> In case you wonder why that is: a destructor (if any) is called when the instance of a class is destroyed (or very shortly thereafter). `MyLogger` is localized in the header of `TxtToCsv`, meaning that when `TxtToCsv` ends, this instance of the `Logger` class is destroyed and the destructor is invoked. Since the Tracer was up and running, the destructor makes an appearance in the Tracer.
 
-
-## The Windows Event Log
-
-## Overview
-
-Apart from application specific log files we also have to consider whether we should write to the Window Event Log.
-
-
-### What exactly is the Windows Event Log?
-
-In case you've never heard of it, or you are not sure what exactly the purpose of it is, this is for you; otherwise jump to "Why is the Windows Event Log important?".
-
-The Windows Event Log is by no means an alternative to application specific log files. Some applications do not write to the Windows Event Log at all, some only when things go wrong and some always. In short the Windows Event Log is a kind of central repository for log entries.
-
-For example, any application that runs as a Windows Service is expected to write to the Windows Event Log when it starts, when it quits and when it encounters problems, and it also might add even more information. You will find it hard to find an exception.
-
-Similarly any Schduled Tasks are excpected to do the same, although some don't, or report just errors.
-
-### Why is the Windows Event Log important?
-
-On a server all applications run either as Windows Services (most likely all of them) or as Windows Scheduled Tasks. Since no human is sitting in front of a server we need a way to detect problems on a server automatically. That can be achieved by using software that automaticallt scans the Windows Event Logs of any given computer. It can email or text admins when an application that's supposed to run doesn't, or when an application goes astray, drawing attention to that server.
-
-
-### How to investigate the Windows Event Log
-
-In modern versions of Windows you just press the Win key and then type "Event". That brings up a list which contains at least "Event Viewer".
-
-By default the Event Viewer displayes all Event Logs on the current (local) machine. However, you can connect to another computer and investigate its Event Log, rights permitted. We keep it simple and focus just on the local Windows Event Log.
-
-
-### Terms used
-
-From the Microsoft documentation: "Each log in the Eventlog key contains subkeys called event sources. The event source is the name of the software that logs the event. It is often the name of the application or the name of a subcomponent of the application if the application is large. You can add a maximum of 16,384 event sources to the registry. The Security log is for system use only. Device drivers should add their names to the System log. Applications and services should add their names to the Application log or create a custom log." [^winlog]
-
-
-### Application log versus custom log
-
-Only few applications write to the Windows Event Log. The vast majority of those which do write into "Windows Logs\Application" but if you wish you can create your own log under "Applications and services logs".
-
-
-### Let's do it
-
-Copy `Z:\code\v04` to `Z:\code\v04a`. We are naming this one `4a` because we are not going to carry the changes we we will make any further. We will however revisit this issue when transforming MyApp into a Windows Service.
-
-First we need to load the module `WindowsEventLog` from within `MyApp.dyapp`:
-
-~~~
-...
-Load ..\AplTree\OS
-Load ..\AplTree\WindowsEventLog
-Load ..\AplTree\Logger
-...
-~~~
-
-Now we change `Initial` so that it creates an instance of `WindowsEventLog` and returns it as part of the result. We also tell the Windows Event Log that the application has started:
-
-~~~
-leanpub-start-insert  
-∇ {(MyLogger MyWinEventLog)}←Initial dummy
-leanpub-end-insert  
-⍝ Prepares the application.
-⍝ Side effect: creates `MyLogger`, an instance of the `Logger` class.
-  #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
-  MyLogger←OpenLogFile'Logs'      
-  MyLogger.Log'Started MyApp in ',F.PWD
-leanpub-start-insert  
-  MyWinEventLog←⎕NEW ##.WindowsEventLog(,⊂'Myapp')
-  MyWinEventLog.WriteInfo'Application started'
-leanpub-end-insert  
-∇
-~~~
-
-`Initial` is called by `StartFromCmdLine`, so that functions needs to be amended as well. We localize `MyWinEventLog`, the name of the instance, and change the call to `Initial` since it now returns two rather than one instance. Finally we tell the Windows Event Log that we are shutting down after `TxtToCsv` was called:
-
-~~~
-leanpub-start-insert  
-∇ {r}←StartFromCmdLine arg;MyLogger;MyWinEventLog
-leanpub-end-insert  
-⍝ Needs command line parameters, runs the application.
-  r←⍬
-leanpub-start-insert  
-  (MyLogger MyWinEventLog)←Initial ⍬
-leanpub-end-insert    
-  r←TxtToCsv arg
-leanpub-start-insert    
-  MyWinEventLog.WriteInfo'Application shuts down'
-leanpub-end-insert      
-∇
-~~~
-
-So far we have used the method `WriteInfo`. For demonsttration purposes we use the two other methods available , `WriteWarning` and `WriteError`:
-
-~~~
-∇ rc←TxtToCsv fullfilepath;files;tbl;lines;target
-  ...
-leanpub-start-insert        
-  MyWinEventLog.WriteWarning'MyApp warning'
-  MyWinEventLog.WriteError'MyApp Error'
-leanpub-end-insert        
-  (target files)←GetFiles fullfilepath
-  ...
-∇
-~~~
-
-Having made all these changes we are ready to compile the WS from scratch: 
-
-1. Double-click the DYAPP in `v04a`.
-1. Change the WSID to "MyApp"
-1. Execute the command `)save` in order to save the WS.
-1. Execute `)off`
-
-Why do we need to do this? Because the source "MyApp" is very unlikely to exist yet on your computer. Although we assume that you are using a user ID with admin rights, that's not enough the create a new Windows Event Log source. You have to select "Run as admin" from the context menu, and that is not available for workspaces and DYAPPs.
-
-But it is available for the EXE that starts your version of Dyalog. Find it, right-click on it and select "Run as admin". Windows will most likely ask whether you are sure about this and then start an instance of Dyalog with elevated rights. Now you can `)load` the workspace we have just created and run `⎕LX`.
-
-Now start the Event Viewer; As a result of running the program with admin rights you should see something like this:
-
-![The Windows Event Log](images/WindowsEventLog.jpg)
-
-You might need to scroll down a bit.
-
-You can execute `)off` now in the admin-dyalog session: when you run the program again the source already exists, so from now on you don't need admin rights anymore. In a real-life scenario this business of creating the Windows Event Log source is done by an installer, one of the several reasons why a user who wants to install a program needs admin rights. We will come back to this when we discuss installers.
-
-
-### Tricks, tips and traps
-
-No doubt you feel now confident with the Windows Event Log, right? Well, keep reading:
-
-* When you create a new source in a (new) custom log then in the Registry the new log is listed as expected but it has _two_ keys, one carrying the name of the source you intended to create and a second one with the same name as the log itself. In the Event Viewer however only the intended source is listed.
-
-* The names of sources must be _unqiue_ across _all_ logs.
-
-* Only the first 8 characters of the name of a source are really taken into account; everything else is ignored. That means that when you have a source `S1234567_1` and you want to register `S1234567_2` you will get an error "Source already exists".
-
-* When the Event Viewer is up and running and you either create or delete a log or a source and then press F5 then the Event Viewer GUI flickers, and you might expect that to be an indicator for the GUI having updated itself but that's not the case, at least not at the time of writing (2017-03). You have to close the Event Viewer and re-open it to actually see your changes.
-
-* Even when your user ID has admin rights and you've started Dyalog in elevated mode ("Run as administrator" in the context menu) you _cannot_ delete a custom log with calls to `WinReg` (The APLTree member that deal with the Windows Registry). The only way to delete custom logs is with the Registry Editor: go to the key
-
-  `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\EventLog\`
-  
-  and delete the key(s) (=children) you want to get rid of. It's not a bad idea to create a system restore point [^restore] before you do that. By yhe way, if you never payed attention to System Restore Points you really need to follow the link because under Windows 10 System Restore Points are not generated automaticelly by default anymore; you have to switch them on explicitly.
-  
-* Once you have written events to a source and then deleted the log the source pretends to belong to, the events remain saved anyway. They are just not vsisible anymore. That can be proven by re-creating the log: all the events make a come-back and show up again as they did before. 
-
-  If you really want to get rid of the logs then you have to select the "Clear log" command from the context menu in the Event Viewer (tree only!) before you delete the log.
- 
-
-
-
 [^apltree]: You can download the complete APLTree library from the APL Wiki: <http://download.aplwiki.com/>
 [^bom]: Details regarding the BOM: <https://en.wikipedia.org/wiki/Byte_order_mark>
-[^winlog]: Microsoft on the Windows Event Log: <https://msdn.microsoft.com/en-us/library/windows/desktop/aa363648(v=vs.85).aspx>
-[^restore]: Details about System Restore Point: <https://en.wikipedia.org/wiki/System_Restore>

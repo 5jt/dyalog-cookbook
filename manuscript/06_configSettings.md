@@ -2,9 +2,9 @@
 
 # Configuration settings
 
-Before we start establishing error handling on a general level we first need to establish a way to configure the application. That's why we now introduce configuration settings.
+Before we start establishing error handling on a general level we first need to establish a way to configure the application. That will allow us to control whether error trapping should be active or not, where to save dumps etc. That's why we now introduce configuration settings.
 
-Thinking more widely, an application's configuration includes all kinds of state: e.g., folders for log files and crashes, debug flag, flag for switching off error trapping, email address to report to in case of an error, window positions, recent filepaths, and GUI themes...
+Thinking more widely, an application's configuration includes all kinds of state: e.g., folders for log files and crashes, debug flag, a flag for switching off error trapping, email address to report to in case of an error, window positions, recent filepaths, GUI themes...
 
 
 ## Using the Windows Registry
@@ -16,6 +16,8 @@ Settings needed by Windows itself _have_ to be stored in the Registry. For examp
 The APLTree class [WinReg](http://aplwiki.com/WinReg) provides methods for handling the Windows Registry. 
 
 MyApp doesn't need the Windows Registry at this point. We'll store its configurations in configuration files.
+
+I> Note that the Windows Registry is still an excellent choice for saving user-specific stuff like preferences, themes, recent files etc.
 
 
 ## INI, JSON, or XML configuration files? 
@@ -64,12 +66,14 @@ However, for the Cookbook we keep things simple: we look for an INI file that is
 
 ## Let's start
 
-Save a copy of `Z:\code\v05` as `Z:\code\v06` or copy `v06` from the Cookbook's website. We add one line to `MyApp.dyapp`:
+Save a copy of `Z:\code\v04` as `Z:\code\v05` or copy `v05` from the Cookbook's website. We add one line to `MyApp.dyapp`:
 
 ~~~
 ...
 Load ..\AplTree\FilesAndDirs
+leanpub-insert-start
 Load ..\AplTree\IniFiles
+leanpub-insert-end
 Load ..\AplTree\OS
 ...
 ~~~
@@ -84,16 +88,16 @@ This is the contents of `code\v04\MyApp.ini`:
 localhome = '%LOCALAPPDATA%\MyApp'
 
 [Config]
-debug       = ¯1
+Debug       = ¯1
 Trap        = 1
+
+Accents     = ''
+Accents     ,='ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝ' 
+Accents     ,='AAAAAACDEEEEIIIINOOOOOOUUUUY'
 
 [Folders]
 Logs        = '{localhome}\Log'
 Errors      = '{localhome}\Log'
-
-Watch       = ''
-Watch       ,='D:\MyAppInput1'
-Watch       ,='D:\MyAppInput2'
 
 [Ride]
 Active      = 0
@@ -104,11 +108,15 @@ If you have not copied `v05` from the website make sure you create an INI file w
 
 Notes:
 
+* The `IniFiles` class offers some features that are uncommon. Those are discussed below. This is however by no means a violation of the standard because there is no such thing for INI files.
+
 * Assignments above the first section -- which is `[Config]` -- are variables local to the INI file. We can refer to them by putting curlies (`{}`) around their names as with `{localhome}` but they have no other purpose. You can see that `localhome` is referred to twice in the `[Folders]` section, and why that is useful.
+
+* `IniFiles` supports two data types: character and number. Everything between `'` is character, everything that is not is expected to be a number.
 
 * `Debug` is set to ¯1 -- it is indeed going to be a numeric value because there are no quotes involved. `debug` defines whether the application runs in debug mode or not. Most importantly `debug←1` will switch off global error trapping, something we will soon introduce. `¯1` means that the INI file does not set the flag. Therefore it will default to 1 in a development environment and to 0 in a runtime evenvironment. By setting this to either 1 or 0 in the INI file you can overwrite this.
 
-* `Trap` can be used to switch off error trapping globally. It will be used in statements like `:Trap G.Traps/0`. What the `G` stands for we will discuss in a minute.
+* `Trap` can be used to switch off error trapping globally. It will be used in statements like `:Trap Config.Traps/0`. What `Config` is we will discuss in a minute.
 
 * `Accents` is set as an empty vector but then values are added with `,=`. That means that `Accents` will be a vtv: a vector of text vectors. Same as before: it has always been a global variable, but now it is more clearly defined as such. Since we define the default to be the same as what the INI file contains anyway it makes not too much sense but it illustrates a second -- better?! -- way of dealing with global variables.
 
@@ -116,7 +124,7 @@ Notes:
 
 * `Errors` defines the folder were MyApp will save crash information later on when we establish global error handling.
 
-* The `[Ride]` section is useful when a stand-alone EXE does not do what it's expected to do but everything works fine in the development version of Dyalog. In that case you have to debug your EXE, and Ride will help you in doing this. We will discuss this topic in the next chapter.
+* The `[Ride]` section is useful when a stand-alone EXE does not do what it's expected to do but everything works fine in the development version of Dyalog. In that case you have only one option: to debug your EXE, and Ride will help you in doing this. We will discuss this topic in the next chapter.
 
 
 ## Initialising the workspace
@@ -124,35 +132,36 @@ Notes:
 We create a new function `CreateGlobals` for that:
 
 ~~~
-∇ G←CreateGlobals dummy;myIni;iniFilename
-  G←⎕NS''
-  G.⎕FX'r←∆List' 'r←{0∊⍴⍵:0 2⍴'''' ⋄ ⍵,[1.5]⍎¨⍵}'' ''~¨⍨↓⎕NL 2'
-  G.Debug←A.IsDevelopment
-  G.Trap←1
-  G.Accents←'ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝ' 'AAAAAACDEEEEIIIINOOOOOOUUUUY'
-  G.LogFolder←'./Logs'
-  G.DumpFolder←'./Errors'
-  G.Watch←''  ⍝ not used yet
+∇ Config←CreateConfig dummy;myIni;iniFilename
+⍝ Instantiate the INI file and copy values over to a namespace `Config`.   
+  Config←⎕NS''
+  Config.⎕FX'r←∆List' 'r←{0∊⍴⍵:0 2⍴'''' ⋄ ⍵,[1.5]⍎¨⍵}'' ''~¨⍨↓⎕NL 2'
+  Config.Debug←A.IsDevelopment
+  Config.Trap←1
+  Config.Accents←'ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝ' 'AAAAAACDEEEEIIIINOOOOOOUUUUY'
+  Config.LogFolder←'./Logs'
+  Config.DumpFolder←'./Errors'
   iniFilename←'expand'F.NormalizePath'MyApp.ini'
   :If F.Exists iniFilename
       myIni←⎕NEW ##.IniFiles(,⊂iniFilename)
-      G.Debug{¯1≡⍵:⍺ ⋄ ⍵}←myIni.Get'Config:debug'
-      G.Trap←⊃G.Trap myIni.Get'Config:trap'
-      G.Accents←⊃G.Accents myIni.Get'Config:Accents'
-      G.LogFolder←⊃G.LogFolder myIni.Get'Folders:Logs'
-      G.DumpFolder←⊃G.DumpFolder myIni.Get'Folders:Errors'
-      G.Watch←⊃G.Watch myIni.Get'Folders:Watch'
+      Config.Debug{¯1≡⍵:⍺ ⋄ ⍵}←myIni.Get'Config:debug'
+      Config.Trap←⊃Config.Trap myIni.Get'Config:trap'
+      Config.Accents←⊃Config.Accents myIni.Get'Config:Accents'
+      Config.LogFolder←'expand'F.NormalizePath⊃Config.LogFolder myIni.Get'Folders:Logs'
+      Config.DumpFolder←'expand'F.NormalizePath⊃Config.DumpFolder myIni.Get'Folders:Errors'
   :EndIf
+  Config.LogFolder←'expand'F.NormalizePath Config.LogFolder
+  Config.DumpFolder←'expand'F.NormalizePath Config.DumpFolder
 ∇
 ~~~
 
 What the function does:
 
-* First it creates an unnamed namespace and assigns it to `G` (for "Globals").
-* It then fixes a function `∆List` inside `G`.
-* It then populates `G` with the defaults for all the globals we are going to use.
-* It then creates a name for the INI file and checks whether such an INI file exists
-* If that is the case then it instatiates the INI file and then copies all values it can find from the INI file to `G`.
+* First it creates an unnamed namespace and assigns it to `Config`.
+* It then fixes a function `∆List` inside `Config`.
+* It then populates `Config` with the defaults for all the settings we are going to use. Remember, we might not find an INI file.
+* It then creates a name for the INI file and checks whether such an INI file exists.
+* If that is the case then it instatiates the INI file and then copies all values it can find from the INI file to `Config`, overwriting the defaults.
 
 Notes 
 
@@ -162,16 +171,15 @@ Notes
 
 * In case you cannot be sure whether a section/key combination exists (a typical problem when after an update a newer version of an application hits an old INI file) you can check with the `Exist` method.
   
-The built-in function `∆List` comes handy when you want to check the contents of `G`:
+The built-in function `∆List` comes handy when you want to check the contents of `Config`:
 
 ~~~
-      G.∆List
+      Config.∆List
  Accents      ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝ  AAAAAACDEEEEIIIINOOOOOOUUUUY  
  Debug                                                                  0 
  DumpFolder                          C:\Users\kai\AppData\Local\MyApp\Log 
  LogFolder                           C:\Users\kai\AppData\Local\MyApp\Log 
  Trap                                                                   1 
- Watch                                                                    
 ~~~
   
 Now that we have moved `Accents` to the INI file we can get rid of these lines in the `MyApp` script:
@@ -184,43 +192,43 @@ Now that we have moved `Accents` to the INI file we can get rid of these lines i
 ⍝ === End of variables definition ===
 ~~~
 
-Where should we call `CreateGlobals` from? Surely that has to be `Initial`:
+Where should we call `CreateConfig` from? Surely that has to be `Initial`:
 
 ~~~
-∇ (G MyLogger)←Initial dummy
+∇ (Config MyLogger)←Initial dummy
 ⍝ Prepares the application.
-⍝ Side effect: creates `MyLogger`, an instance of the `Logger` class.
   #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
-  G←CreateGlobals ⍬
-  MyLogger←OpenLogFile G.LogFolder
-  MyLogger.Log↓⎕FMT G.∆List
+  Config←CreateConfig ⍬
+  MyLogger←OpenLogFile Config.LogFolder
+  MyLogger.Log'Started MyApp in ',F.PWD
+  MyLogger.Log↓⎕FMT Config.∆List
 ∇
 ~~~
 
-Note that we also changed what `Initial` returns: a vector of length two, the globals namespace `G` but also the instance of the MyLogger class.
+Note that we also changed what `Initial` returns: a vector of length two, the namespace `Config` but also the instance of the MyLogger class.
 
 `Initial` was called within `StartFromCmdLine`, and we are not going to change this but we must change the call as such because now it returns something useful:
 
 ~~~
-∇ {r}←StartFromCmdLine arg;MyLogger;G
+∇ {r}←StartFromCmdLine arg;MyLogger;Config
 ⍝ Needs command line parameters, runs the application.
-    r←⍬
-    (G MyLogger)←Initial ⍬
-    r←TxtToCsv arg
+  r←⍬
+  (Config MyLogger)←Initial ⍬
+  r←TxtToCsv arg~''''
 ∇
 ~~~
 
-Although both `MyLogger` as well as `G` are kind of global and not passed as arguments it helps to assign them this way rather then hide the statement that creates them somewhere down the stack. This way it's easy to see where they are coming from. 
+Although both `MyLogger` as well as `Config` are kind of global and not passed as arguments it helps to assign them this way rather then hide the statement that creates them somewhere down the stack. This way it's easy to see where they are coming from. 
 
-We now need to think about how to access `G` from within `TxtToCsv`.
+We now need to think about how to access `Config` from within `TxtToCsv`.
 
 ## What we think about when we think about encapsulating state
 
-The globals, including `Accents`, are now collected in the namespace `G`.  That namespace is not passed explicitly to `TxtToCsv` but is needed by `CountLetters` which is called by `TxtToCsv`. We have two options here: we can pass a reference to `G` to `TxtToCsv`, for example as left argument, and `TxtToCsv` in turn can pass it to `CountLetters`. The other option is that `CountLetters` just assumes the `G` is around and has a variable `Accents` in it:
+The configuration parameters, including `Accents`, are now collected in the namespace `Config`.  That namespace is not passed explicitly to `TxtToCsv` but is needed by `CountLetters` which is called by `TxtToCsv`. We have two options here: we can pass a reference to `Config` to `TxtToCsv`, for example as left argument, and `TxtToCsv` in turn can pass it to `CountLetters`. The other option is that `CountLetters` just assumes the `Config` is around and has a variable `Accents` in it:
 
 ~~~
 CountLetters←{
-    {⍺(≢⍵)}⌸⎕A{⍵⌿⍨⍵∊⍺}G.Accents U.map A.Uppercase ⍵
+    {⍺(≢⍵)}⌸⎕A{⍵⌿⍨⍵∊⍺}Config.Accents U.map A.Uppercase ⍵
 }
 ~~~
 
@@ -245,7 +253,7 @@ We share these musings here so you can see what we think about when we think abo
 
 We have used the most important features of the `IniFiles` class, but it has more to offer. We just want to mention some major topics here.
 
-* The `Get` method can be used to list sections of even everything:
+* The `Get` method can be used to list sections of even all sections with all key-value pairs:
 
   ~~~
         myIni.Get 'Config' ⍬

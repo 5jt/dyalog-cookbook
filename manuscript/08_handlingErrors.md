@@ -4,7 +4,7 @@
 
 `MyApp` already anticipates, tests for and reports certain foreseeable problems with the parameters. We'll now move on to handle errors more comprehensively.
 
-Copy `Z:\code\05` to `Z:\code\06`.
+Copy `Z:\code\06` to `Z:\code\07`.
 
 
 ## What are we missing? 
@@ -35,9 +35,10 @@ Exit Code is 101
 
 but only if you ticked the check box "Console application" in the "Export" dialog box.
 
+
 ## Foreseen errors
 
-For those we check in the code and quit when something is wrong but pass an error code to the calling environment..
+For those we check in the code and quit when something is wrong but pass an error code to the calling environment.
 
 First we define in `#.MyApp` a child namespace of exit codes: 
 
@@ -72,17 +73,21 @@ I> We could have defined `EXIT` in `#.Constants`, but we reserve that script for
 Now the result of `TxtToCsv` gets passed to `⎕OFF` to be returned to the operating system as an exit code. 
 
 ~~~
-∇ StartFromCmdLine;exit;args
+∇ StartFromCmdLine;exit;args;rc
  ⍝ Read command parameters, run the application      
   args←⌷2 ⎕NQ'.' 'GetCommandLineArgs'
 leanpub-start-insert
   ⎕WSID←'MyApp'
-  Off TxtToCsv 2⊃2↑args
+  rc←TxtToCsv 2⊃2↑args  ⍝TODO⍝  ⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹
+  r←TxtToCsv arg~''''
+  Off rc
 leanpub-end-insert           
 ∇
 ~~~
 
-That means we have to introduce a function `Off`:
+Note that in this particular case we invent a variable `rc` although strictly speaking this is not necessary. We learned from experience that you should not call several functions on a single line with the left-most being `Off`. If you do you will regret it one day, it's just a matter of time.
+
+Now we have to introduce a function `Off`:
 
 ~~~    
 ∇ Off exitCode
@@ -324,7 +329,7 @@ Note that the right argument of `HandleError.SetTrap` is passed as right argumen
      ⍝ Read command parameters, run the application
       ⎕TRAP←#.HandleError.SetTrap ⍬
       args←⌷2 ⎕NQ'.' 'GetCommandLineArgs'
-      Off TxtToCsv 2⊃2↑args
+      Off TxtToCsv 2⊃2↑args   ⍝TODO⍝ ⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹
     ∇
 ~~~
 

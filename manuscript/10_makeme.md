@@ -15,6 +15,7 @@ We resume, as usual, by saving a copy of `Z:\code\v05` as `Z:\code\v06`.
 
 Our makefile, `MyApp.dyapp`, includes scripts we have no reason to include in the exported EXE:
 
+~~~
     Target #
     Load ..\AplTree\APLTreeUtils
     Load ..\AplTree\FilesAndDirs
@@ -27,13 +28,15 @@ Our makefile, `MyApp.dyapp`, includes scripts we have no reason to include in th
     Load Tests
     Load MyApp
     Run MyApp.Start 'Session'
+~~~    
 
 `Tester` and `Tests` have no place in the finished application. 
 
-We could expunge them before exporting the active workspace as an EXE. Or -- have _two_ makefiles, one for the development environment, one for export. 
+We could expunge them before exporting the active workspace as an EXE. Or -- have _two_ makefiles, one for the development environment, one for export. We go for the second approach.
 
 Duplicate `MyApp.dyapp` and name the files `Develop.dyapp` and `Export.dyapp`. Edit `Export.dyapp` as follows: 
 
+~~~
     Target #
     Load ..\AplTree\APLTreeUtils
     Load ..\AplTree\FilesAndDirs
@@ -44,9 +47,11 @@ Duplicate `MyApp.dyapp` and name the files `Develop.dyapp` and `Export.dyapp`. E
     Load Utilities
     Load MyApp
     Run MyApp.Start 'Export'
+~~~    
 
 Now, `#.MyApp.Start` doesn't yet have an Export mode, so we'd better give it one: 
 
+~~~
       ...
       :Select mode
       :Case 'Export'
@@ -58,6 +63,7 @@ Now, `#.MyApp.Start` doesn't yet have an Export mode, so we'd better give it one
           exit←TxtToCsv Params.source
           Off exit
       :EndSelect
+~~~      
 
 Notice that Session mode no longer needs to set the Latent Expression. 
 
@@ -70,6 +76,7 @@ We also notice now that the contents of `#.MyApp` divide into two groups. One is
 
 First, all the default parameter values for `MyApp` -- the values it has to have in case they are set nowhere else -- can go into a simple, static namespace:
 
+~~~
     :Namespace PARAMETERS
         :Namespace ALPHABETS
             English←⎕A
@@ -82,22 +89,28 @@ First, all the default parameter values for `MyApp` -- the values it has to have
         source←''
         output←''
     :EndNamespace
+~~~    
 
 We'll leave to `Environment` the definition of `MyApp.Params` and `MyApp.Log` and just make a note of that in `MyApp`:
 
+~~~
     ⍝ Objects Log and Params are defined by #.Environment.Start
+~~~    
 
 That lets us cut `MyApp` down to size:
 
+~~~
           )CS MyApp
     #.MyApp
           )FNS
     CheckAgenda     CountLetters    CountLettersIn  TxtToCsv
           )VARS
     ACCENTS ∆
+~~~    
 
 `Environment` will get the `Start` function. For extra clarity we'll rename the start modes to `Develop`, `Export` and `Run`. 
 
+~~~
     ∇ Start mode;∆
     ⍝ Initialise workspace for development, export or use
     ⍝ mode: ['Develop' | 'Export' | 'Run']
@@ -106,9 +119,11 @@ That lets us cut `MyApp` down to size:
           #.⎕TRAP←0 'E' '#.HandleError.Process '''''
       :EndIf
       ⎕WSID←'MyApp'
+~~~      
 
 It must now create the `Log` object 'over there' -- within `#.MyApp`. 
 
+~~~
       'CREATE!'#.FilesAndDirs.CheckPath'Logs' ⍝ ensure subfolder of current dir
       ∆←{
           ⍵.path←'Logs',F.CurrentSep ⍝ subfolder of current directory
@@ -118,20 +133,26 @@ It must now create the `Log` object 'over there' -- within `#.MyApp`.
           ⍵
       }#.Logger.CreatePropertySpace
       #.MyApp.Log←⎕NEW #.Logger(,⊂∆)
+~~~      
 
 Read the arguments from the command line:
 
+~~~
       args←⌷2 ⎕NQ'.' 'GetCommandLineArgs'   ⍝ command line
       #.MyApp.Log.Log¨('Command line arg ['∘,¨(⍕¨⍳≢args),¨⊂']: '),¨args
+~~~      
 
 Set the `PARAMETERS` namespace in `#.MyApp`:
 
+~~~
       #.MyApp.PARAMETERS GetParameters mode args env
+~~~      
 
 While we're at this, we've switched the arguments in `GetParameters` to follow an ancient APL convention for functions, that the right argument represents data and any left argument, some modifier for the function.[^circle] 
 
 What happens next depends upon the mode. If we're getting ready to develop, we want tools and tests. We'll ensure global error trapping is off, so we can investigate any errors. And we might as well start by running the tests:
 
+~~~
       :Select mode
      
       :Case 'Develop'
@@ -140,18 +161,22 @@ What happens next depends upon the mode. If we're getting ready to develop, we w
           ⎕←'Defined alphabets: ',⍕U.m2n #.MyApp.PARAMETERS.ALPHABETS.⎕NL 2
           #.Tester.EstablishHelpersIn #.Tests
           #.Tests.Run
+~~~          
 
 If we're starting in Export mode, everything is ready to export as an EXE. We'll just display the expression that does that.
 
+~~~
       :Case 'Export'
           ⎕←U.ScriptFollowing
           ⍝ Exporting to an EXE can fail unpredictably.
           ⍝ Retry the following expression if it fails,
           ⍝ or use the File>Export dialogue from the menus.
           ⍝      #.Environment.Export '.\MyApp.exe'
+~~~          
 
 We'll define that `Export` function in a moment. Right now, we'll set out what the EXE is to do when it runs:
 
+~~~
       :Case 'Run'
           #.ErrorParms←{
               ⍵.errorFolder←#.FilesAndDirs.PWD
@@ -161,9 +186,11 @@ We'll define that `Export` function in a moment. Right now, we'll set out what t
           }#.HandleError.CreateParms
           #.⎕TRAP←0 'E' '#.HandleError.Process ''#.ErrorParms'''
           Off #.MyApp.TxtToCsv #.MyApp.Params.source
+~~~          
 
 Now that `Export` function. You'll have noticed exporting an EXE can fail from time to time, and you've performed this from the _File_ menu enough times to have tired of it. So we'll automate it. Automating it doesn't make it any more reliable, but it certainly makes retries easier. 
 
+~~~
     ∇ msg←Export filename;type;flags;resource;icon;cmdline;nl;success;try
       #.⎕LX←'#.Environment.Start ''Run'''
      
@@ -186,12 +213,13 @@ Now that `Export` function. You'll have noticed exporting an EXE can fail from t
       msg,←(try>1)/' after ',(⍕try),' tries'
       #.MyApp.Log.Log msg
     ∇
-
+~~~
 
 Basically, the choices you have been making from the _File > Export_ dialogue, now wrapped as a function. 
 
 One last tweak to the setup for development. Let's have some handy tools defined in `#.MyApp` just for when we're working in there. 
 
+~~~
     :Namespace DevTools
     ⍝ Developer tools 
     ⍝ Vern: sjt25jul16
@@ -202,9 +230,11 @@ One last tweak to the setup for development. Let's have some handy tools defined
         wi←{(≡⍵)(type ⍵)(⍴⍵)} ⍝ what is this array?
            
     :EndNamespace
+~~~
 
 A few tweaks now to the makefiles. `Develop.dyapp`:
 
+~~~
     Target #
     Load ..\AplTree\APLTreeUtils
     Load ..\AplTree\FilesAndDirs
@@ -220,11 +250,13 @@ A few tweaks now to the makefiles. `Develop.dyapp`:
     Target #.MyApp
     Load DevTools -disperse
     Run #.Environment.Start 'Develop'
+~~~    
 
 Note the `Target #.MyApp` followed by `Load DevTools -disperse`. That disperses the contents of the `DevTools` namespace into `#.MyApp`. (Watch out for name conflicts if you do this.) Now when we're working in `MyApp` we'll have some tools to hand. 
 
 Running the DYAPP creates our working environment and runs the tests:
 
+~~~
     clear ws
     Booting Z:\code\v06\Develop.dyapp
     Loaded: #.APLTreeUtils
@@ -258,11 +290,13 @@ Running the DYAPP creates our working environment and runs the tests:
        12 test cases executed
        0 test cases failed
        0 test cases broken
+~~~       
 
 The foregoing is a good example of how having automated tests allows us to refactor code with confidence that we'll notice and fix anything we break. 
 
 Slight tweaks to the export makefile and we can export an EXE. `Export.dyapp`: 
 
+~~~
     Target #
     Load ..\AplTree\APLTreeUtils
     Load ..\AplTree\FilesAndDirs
@@ -274,9 +308,11 @@ Slight tweaks to the export makefile and we can export an EXE. `Export.dyapp`:
     Load MyApp
     Load Environment
     Run #.Environment.Start 'Export'
+~~~    
 
 Run this new export makefile and we get a new session: 
 
+~~~
     clear ws
     Booting Z:\code\v06\Export.dyapp
     Loaded: #.APLTreeUtils
@@ -292,11 +328,14 @@ Run this new export makefile and we get a new session:
      Retry the following expression if it fails,                        
      or use the File>Export dialogue from the menus.                    
           #.Environment.Export '.\MyApp.exe'                            
+~~~          
 
 And if we execute the suggested expression...[^export]
 
+~~~
           #.Environment.Export '.\MyApp.exe'                            
     Exported .\MyApp.exe
+~~~
 
 
 ## Testing the EXE
@@ -307,6 +346,7 @@ It's not enough to examine the exit code that MyApp.exe returns to Windows. We a
 
 We start by refactoring out of `Test_Count_LettersIn` the code to be shared with `Test_Exe_001`:
 
+~~~
     ∇ failed←Test_CountLettersIn_001(debugFlag batchFlag)
      ⍝ across multiple files
       failed←testOnFiles'APL' 5 'English'
@@ -341,6 +381,8 @@ We start by refactoring out of `Test_Count_LettersIn` the code to be shared with
           ⎕NDELETE file
       :EndFor
     ∇
+    
+~~~
 
 As we can see, `testOnFiles` sets up the test files and results, then according to its argument, either runs `CountLettersIn` or launches the EXE.
 

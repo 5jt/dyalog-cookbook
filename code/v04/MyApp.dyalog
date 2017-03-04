@@ -1,14 +1,14 @@
 ﻿:Namespace MyApp
 
     ⎕IO←1 ⋄ ⎕ML←1 ⋄ ⎕WX←3 ⋄ ⎕PP←15 ⋄ ⎕DIV←1
-    
-    ∇r←Version
+
+    ∇ r←Version
    ⍝ * 1.1.0:
    ⍝   * Can now deal with non-existent files.
-   ⍝   * Logging implemented.    
+   ⍝   * Logging implemented.
    ⍝ * 1.0.0
    ⍝   * Runs as a stand-alone EXE and takes parameters from the command line.
-      r←(⍕⎕THIS) '1.1.0' '2017-02-26'             
+      r←(⍕⎕THIS)'1.1.0' '2017-02-26'
     ∇
 
 ⍝ === Aliases (referents must be defined previously)
@@ -28,7 +28,7 @@
 
     ∇ rc←TxtToCsv fullfilepath;files;tbl;lines;target
    ⍝ Write a sibling CSV of the TXT located at fullfilepath,
-   ⍝ containing a frequency count of the letters in the file text 
+   ⍝ containing a frequency count of the letters in the file text
       MyLogger.Log'Source: ',fullfilepath
       (target files)←GetFiles fullfilepath
       :If 0∊⍴files
@@ -37,7 +37,7 @@
       :Else
           tbl←⊃⍪/(CountLetters ProcessFiles)files
           lines←{⍺,',',⍕⍵}/{⍵[⍒⍵[;2];]}⊃{⍺(+/⍵)}⌸/↓[1]tbl
-          A.WriteUtf8File target lines 
+          A.WriteUtf8File target lines
           MyLogger.Log(⍕⍴files),' file',((1<⍴files)/'s'),' processed:'
           MyLogger.Log' ',↑files
           rc←0
@@ -45,25 +45,31 @@
     ∇
 
     ∇ (target files)←GetFiles fullfilepath;csv;target;path;stem
+    ⍝ Investigates `fullfilepath` and returns a list with files
+    ⍝ may contain zero, one or many filenames.
       fullfilepath~←'"'
       csv←'.csv'
-      :Select C.NINFO.TYPE ⎕NINFO fullfilepath
-      :Case C.TYPES.DIRECTORY
-          target←F.NormalizePath fullfilepath,'\total',csv
-          files←⊃F.Dir fullfilepath,'\*.txt'
-      :Case C.TYPES.FILE
-          (path stem)←2↑⎕NPARTS fullfilepath
-          target←path,stem,csv
-          files←,⊂fullfilepath
-      :EndSelect
-      target←(~0∊⍴files)/target
+      :If F.Exists fullfilepath
+          :Select C.NINFO.TYPE ⎕NINFO fullfilepath
+          :Case C.TYPES.DIRECTORY
+              target←F.NormalizePath fullfilepath,'\total',csv
+              files←⊃F.Dir fullfilepath,'\*.txt'
+          :Case C.TYPES.FILE
+              (path stem)←2↑⎕NPARTS fullfilepath
+              target←path,stem,csv
+              files←,⊂fullfilepath
+          :EndSelect
+          target←(~0∊⍴files)/target
+      :Else
+          files←target←''
+      :EndIf
     ∇
 
     ∇ data←(fns ProcessFiles)files;txt;file
    ⍝ Reads all files and executes `fns` on the contents.
       data←⍬
       :For file :In files
-          txt←'flat' A.ReadUtf8File file
+          txt←'flat'A.ReadUtf8File file
           data,←⊂fns txt
       :EndFor
     ∇
@@ -78,7 +84,8 @@
    ⍝ Needs command line parameters, runs the application.
       r←⍬
       MyLogger←Initial ⍬
-      r←TxtToCsv arg
+      MyLogger.Log'Started MyApp in ',F.PWD
+      r←TxtToCsv arg~''''
       MyLogger.Log'Shutting down MyApp'
     ∇
 
@@ -100,10 +107,9 @@
     ∇
 
     ∇ {MyLogger}←Initial dummy
-    ⍝ Prepares the application.   
+    ⍝ Prepares the application.
       #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
       MyLogger←OpenLogFile'Logs'
-      MyLogger.Log'Started MyApp in ',F.PWD
     ∇
 
 :EndNamespace

@@ -420,7 +420,7 @@ Accents←2 28⍴'ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝAAAAAA
  csv←'.csv'
  :Select 1 ⎕NINFO fullfilepath
  :Case 1 ⍝ folder
-     tgt←fullfilepath,'total',csv
+     tgt←fullfilepath,'\total',csv
      files←⊃(⎕NINFO⍠NINFO_WILDCARD)fullfilepath,'\*.txt'
  :Case 2 ⍝ file
      (path stem)←2↑⎕NPARTS fullfilepath

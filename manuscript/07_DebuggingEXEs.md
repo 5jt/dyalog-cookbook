@@ -59,32 +59,86 @@ We have to make sure that `Ride` makes it into `G`, so we establish a default 0 
 ⍝ Create a namepsace `G` and populate it with defaults.
   G←⎕NS''
   ...  
+leanpub-start-insert    
   G.Ride←0  ⍝ If this is not 0 the app accepts a Ride & treats G.Ride as port number
+leanpub-start-end
   ...
+leanpub-start-insert  
       :If myIni.Exist'Ride'
       :AndIf myIni.Get'Ride:Active'
           G.Ride←⊃G.Ride myIni.Get'Ride:Port'
       :EndIf
   :EndIf
+leanpub-start-end
   ...
 ∇
 ~~~
+
+We change `ProcessFiles` accordingly:
+
+~~~
+ ∇ data←(fns ProcessFiles)files;txt;file
+   ⍝ Reads all files and executes `fns` on the contents.
+      data←⍬
+      :For file :In files
+leanpub-start-insert          
+          :Trap G.Trap/FileRelatedErrorCodes
+leanpub-start-end          
+              txt←'flat'A.ReadUtf8File file
+leanpub-start-insert                  
+          :Case
+              MyLogger.LogError'Unable to read source: ',file
+              Off EXIT.UNABLE_TO_READ_SOURCE     
+          :EndTrap
+leanpub-start-end          
+          data,←⊂fns txt
+      :EndFor
+    ∇
+~~~
+
+This calls a function `Off` for obvious reasons, so we need to invent it:
+
+~~~
+∇ Off exitCode
+      :If 0<⎕NC'MyLogger'
+          :If exitCode=EXIT.OK
+              MyLogger.Log'Shutting down MyApp'
+          :Else
+              MyLogger.LogError'MyApp is unexpectedly shutting down, return code is ',EXIT.GetName exitCode
+          :EndIf
+      :EndIf
+      :If A.IsDevelopment
+          →
+      :Else
+          ⎕OFF exitCode
+      :EndIf
+∇
+~~~
+
+`ProcessFiles` also calls `FileRelatedErrorCodes` so that one needs to be created as well:
+
+~~~
+∇ r←FileRelatedErrorCodes
+⍝ Useful to trap all file (and directory) related errors.
+      r←12 18 20 21 22 23 24 25 26 28 30 31 32 34 35
+∇
+~~~    
 
 Finally we add a function `CheckForRide`:
 
 ~~~
 ∇ {r}←CheckForRide G
 ⍝ Checks whether the user wants to have a Ride and if so make it possible.
-  r←⍬
-  :If 0≠G.Ride
-      rc←3502⌶0
-      {0=⍵:r←1 ⋄ ⎕←'Problem! rc=',⍕⍵ ⋄ .}rc
-      rc←3502⌶'SERVE::',⍕G.Ride
-      {0=⍵:r←1 ⋄ ⎕←'Problem! rc=',⍕⍵ ⋄ .}rc
-      rc←3502⌶1
-      {0=⍵:r←1 ⋄ ⎕←'Problem! rc=',⍕⍵ ⋄ .}rc
-      {_←⎕DL ⍵ ⋄ ∇ ⍵}1
-  :EndIf
+      r←⍬
+      :If 0≠G.Ride
+          rc←3502⌶0
+          {0=⍵:r←1 ⋄ ⎕←'Problem! rc=',⍕⍵ ⋄ .}rc
+          rc←3502⌶'SERVE::',⍕G.Ride
+          {0=⍵:r←1 ⋄ ⎕←'Problem! rc=',⍕⍵ ⋄ .}rc
+          rc←3502⌶1
+          {0=⍵:r←1 ⋄ ⎕←'Problem! rc=',⍕⍵ ⋄ .}rc
+          {_←⎕DL ⍵ ⋄ ∇ ⍵}1
+      :EndIf
 ∇
 ~~~
 

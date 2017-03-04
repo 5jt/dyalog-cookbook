@@ -3,14 +3,14 @@
     ⎕IO←1 ⋄ ⎕ML←1 ⋄ ⎕WX←3 ⋄ ⎕PP←15 ⋄ ⎕DIV←1
 
     ∇ r←Version
-   ⍝ * 1.2.0:
-   ⍝   * The application now honours INI files.
+   ⍝ * 1.1.1: ⍝TODO⍝  ⍝TODO⍝
+   ⍝   * Writing to the Windows Event Log
    ⍝ * 1.1.0:
    ⍝   * Can now deal with non-existent files.
    ⍝   * Logging implemented.
    ⍝ * 1.0.0
    ⍝   * Runs as a stand-alone EXE and takes parameters from the command line.
-      r←(⍕⎕THIS)'1.2.0' '2017-02-26'
+      r←(⍕⎕THIS)'1.1.1' '2017-02-26'
     ∇
 
 ⍝ === Aliases (referents must be defined previously)
@@ -18,14 +18,22 @@
     F←##.FilesAndDirs ⋄ A←##.APLTreeUtils ⍝ from the APLTree lib
     U←##.Utilities ⋄ C←##.Constants
 
+⍝ === VARIABLES ===
+
+    Accents←'ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝ' 'AAAAAACDEEEEIIIINOOOOOOUUUUY'
+
+⍝ === End of variables definition ===
+
       CountLetters←{
-          {⍺(≢⍵)}⌸⎕A{⍵⌿⍨⍵∊⍺}Config.Accents U.map A.Uppercase ⍵
+          {⍺(≢⍵)}⌸⎕A{⍵⌿⍨⍵∊⍺}Accents U.map A.Uppercase ⍵
       }
 
     ∇ rc←TxtToCsv fullfilepath;files;tbl;lines;target
    ⍝ Write a sibling CSV of the TXT located at fullfilepath,
    ⍝ containing a frequency count of the letters in the file text
       MyLogger.Log'Source: ',fullfilepath
+      'warn'Log2WindowsEventLog'MyApp warning'
+      'error'Log2WindowsEventLog'MyApp Error'
       (target files)←GetFiles fullfilepath
       :If 0∊⍴files
           MyLogger.Log'No files found to process'
@@ -41,24 +49,18 @@
     ∇
 
     ∇ (target files)←GetFiles fullfilepath;csv;target;path;stem
-    ⍝ Investigates `fullfilepath` and returns a list with files
-    ⍝ may contain zero, one or many filenames.
       fullfilepath~←'"'
       csv←'.csv'
-      :If F.Exists fullfilepath
-          :Select C.NINFO.TYPE ⎕NINFO fullfilepath
-          :Case C.TYPES.DIRECTORY
-              target←F.NormalizePath fullfilepath,'\total',csv
-              files←⊃F.Dir fullfilepath,'\*.txt'
-          :Case C.TYPES.FILE
-              (path stem)←2↑⎕NPARTS fullfilepath
-              target←path,stem,csv
-              files←,⊂fullfilepath
-          :EndSelect
-          target←(~0∊⍴files)/target
-      :Else
-          files←target←''
-      :EndIf
+      :Select C.NINFO.TYPE ⎕NINFO fullfilepath
+      :Case C.TYPES.DIRECTORY
+          target←F.NormalizePath fullfilepath,'\total',csv
+          files←⊃F.Dir fullfilepath,'\*.txt'
+      :Case C.TYPES.FILE
+          (path stem)←2↑⎕NPARTS fullfilepath
+          target←path,stem,csv
+          files←,⊂fullfilepath
+      :EndSelect
+      target←(~0∊⍴files)/target
     ∇
 
     ∇ data←(fns ProcessFiles)files;txt;file
@@ -76,11 +78,12 @@
       ⎕LX←'#.MyApp.StartFromCmdLine #.MyApp.GetCommandLineArg ⍬'
     ∇
 
-    ∇ {r}←StartFromCmdLine arg;MyLogger;Config
-    ⍝ Needs command line parameters, runs the application.
+    ∇ {r}←StartFromCmdLine arg;MyLogger;MyWinEventLog
+   ⍝ Needs command line parameters, runs the application.
       r←⍬
-      (Config MyLogger)←Initial ⍬
-      r←TxtToCsv arg~''''
+      (MyLogger MyWinEventLog)←Initial ⍬
+      r←TxtToCsv arg
+      MyWinEventLog.WriteInfo'Application shuts down'
     ∇
 
     ∇ r←GetCommandLineArg dummy;buff
@@ -100,35 +103,31 @@
       instance←⎕NEW ##.Logger(,⊂logParms)
     ∇
 
-    ∇ (Config MyLogger)←Initial dummy
+    ∇ {(MyLogger MyWinEventLog)}←Initial dummy
     ⍝ Prepares the application.
+    ⍝ Side effect: creates `MyLogger`, an instance of the `Logger` class.
       #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
-      Config←CreateConfig ⍬
-      MyLogger←OpenLogFile Config.LogFolder
+      MyLogger←OpenLogFile'Logs'
       MyLogger.Log'Started MyApp in ',F.PWD
-      MyLogger.Log↓⎕FMT Config.∆List
+      MyWinEventLog←⎕NEW ##.WindowsEventLog(,⊂'Myapp')
+      Log2WindowsEventLog'Application started'
     ∇
 
-    ∇ Config←CreateConfig dummy;myIni;iniFilename
-    ⍝ Instantiate the INI file and copy values over to a namespace `Config`.
-      Config←⎕NS''
-      Config.⎕FX'r←∆List' 'r←{0∊⍴⍵:0 2⍴'''' ⋄ ⍵,[1.5]⍎¨⍵}'' ''~¨⍨↓⎕NL 2'
-      Config.Debug←A.IsDevelopment
-      Config.Trap←1
-      Config.Accents←'ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝ' 'AAAAAACDEEEEIIIINOOOOOOUUUUY'
-      Config.LogFolder←'./Logs'
-      Config.DumpFolder←'./Errors'
-      iniFilename←'expand'F.NormalizePath'MyApp.ini'
-      :If F.Exists iniFilename
-          myIni←⎕NEW ##.IniFiles(,⊂iniFilename)
-          Config.Debug{¯1≡⍵:⍺ ⋄ ⍵}←myIni.Get'Config:debug'
-          Config.Trap←⊃Config.Trap myIni.Get'Config:trap'
-          Config.Accents←⊃Config.Accents myIni.Get'Config:Accents'
-          Config.LogFolder←'expand'F.NormalizePath⊃Config.LogFolder myIni.Get'Folders:Logs'
-          Config.DumpFolder←'expand'F.NormalizePath⊃Config.DumpFolder myIni.Get'Folders:Errors'
+    ∇ {r}←{type}Log2WindowsEventLog msg
+      r←⍬
+      :If G.WindowEventLag
+          type←{0<⎕NC ⍵:⍵ ⋄ 'info'}'type'
+          :Select type
+          :Case 'info'
+              MyWinEventLog.WriteInfo msg
+          :Case 'warn'
+              MyWinEventLog.WriteWarning msg
+          :Case 'error'
+              MyWinEventLog.WriteError msg
+          :Else
+              'Invalid left argument; must be one of: "warn", "info", "error"'⎕SIGNAL 11
+          :EndSelect
       :EndIf
-      Config.LogFolder←'expand'F.NormalizePath Config.LogFolder
-      Config.DumpFolder←'expand'F.NormalizePath Config.DumpFolder
     ∇
 
 :EndNamespace

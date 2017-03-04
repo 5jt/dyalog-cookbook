@@ -99,8 +99,7 @@
               txt←'flat'A.ReadUtf8File file
           :Case
               MyLogger.LogError'Unable to read source: ',file
-              Off EXIT.UNABLE_TO_READ_SOURCE
-     
+              Off EXIT.UNABLE_TO_READ_SOURCE     
           :EndTrap
           data,←⊂fns txt
       :EndFor

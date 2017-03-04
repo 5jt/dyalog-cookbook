@@ -51,7 +51,7 @@ Load MyApp
 Run #.MyApp.SetLX ⍬
 ~~~
 
-In `MyApp.dyalog` 
+In `MyApp.dyalog`:
 
 ~~~
 :Namespace MyApp
@@ -83,7 +83,7 @@ In `MyApp.dyalog`
     :Access Public Shared
     ⍝ Run the application; arg = usually command line parameters .
        r←⍬
-       {}TxtToCsv arg
+       r←TxtToCsv arg~''''
     ∇
     
     ∇ r←GetCommandLineArgs dummy
