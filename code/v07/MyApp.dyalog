@@ -7,7 +7,7 @@
    ⍝   * Handles errors with a global trap.
    ⍝   * Returns an exit code to calling environment.
    ⍝ * 1.3.0:
-   ⍝   * Allows to Ride into the application, INI settings permitted.
+   ⍝   * MyApp gives a Ride now, INI settings permitted.
    ⍝ * 1.2.0:
    ⍝   * The application now honours INI files.
    ⍝ * 1.1.0:
@@ -25,10 +25,11 @@
 
     :Namespace EXIT
         OK←0
-        INVALID_SOURCE←101
-        SOURCE_NOT_FOUND←102
-        UNABLE_TO_READ_SOURCE←103
-        UNABLE_TO_WRITE_TARGET←104
+        APPLICATION_CRASHED←104
+        INVALID_SOURCE←111
+        SOURCE_NOT_FOUND←112
+        UNABLE_TO_READ_SOURCE←113
+        UNABLE_TO_WRITE_TARGET←114
           GetName←{
               l←' '~¨⍨↓⎕NL 2
               ind←({⍎¨l}l)⍳⍵
@@ -46,6 +47,7 @@
    ⍝ Returns one of the values defined in `EXIT`.
       MyLogger.Log'Source: ',fullfilepath
       (rc target files)←GetFiles fullfilepath
+      {⍵:⍎'. ⍝ Deliberate error (INI flag "ForceError")'}Config.ForceError
       :If rc=EXIT.OK
           :If 0∊⍴files
               MyLogger.Log'No files found to process'
@@ -114,10 +116,12 @@
       ⎕LX←'#.MyApp.StartFromCmdLine #.MyApp.GetCommandLineArg ⍬'
     ∇
 
-    ∇ {r}←StartFromCmdLine arg;MyLogger;Config;rc
+    ∇ {r}←StartFromCmdLine arg;MyLogger;Config;rc;⎕TRAP
    ⍝ Needs command line parameters, runs the application.
       r←⍬
+      ⎕WSID←'MyApp'
       (Config MyLogger)←Initial ⍬
+      ⎕TRAP←(Config.Debug=0)SetTrap Config
       rc←TxtToCsv arg~''''
       Off rc
     ∇
@@ -145,7 +149,7 @@
       Config←CreateConfig ⍬
       CheckForRide Config
       MyLogger←OpenLogFile Config.LogFolder
-      MyLogger.Log'Started MyApp in ',F.PWD   
+      MyLogger.Log'Started MyApp in ',F.PWD
       MyLogger.Log↓⎕FMT Config.∆List
     ∇
 
@@ -158,9 +162,11 @@
       Config.LogFolder←'./Logs'
       Config.DumpFolder←'./Errors'
       Config.Ride←0      ⍝ If this is not 0 the app accepts a Ride & treats Config.Ride as port number
+      Config.ForceError←0
       iniFilename←'expand'F.NormalizePath'MyApp.ini'
       :If F.Exists iniFilename
           myIni←⎕NEW ##.IniFiles(,⊂iniFilename)
+          Config.ForceError←myIni.Get'Config:ForceError'
           Config.Debug{¯1≡⍵:⍺ ⋄ ⍵}←myIni.Get'Config:debug'
           Config.Trap←⊃Config.Trap myIni.Get'Config:trap'
           Config.Accents←⊃Config.Accents myIni.Get'Config:Accents'
@@ -173,7 +179,7 @@
       :EndIf
       Config.LogFolder←'expand'F.NormalizePath Config.LogFolder
       Config.DumpFolder←'expand'F.NormalizePath Config.DumpFolder
-    ∇   
+    ∇
 
     ∇ {r}←CheckForRide Config;rc
     ⍝ Checks whether the user wants to have a Ride and if so make it possible.
@@ -207,6 +213,18 @@
     ∇ r←FileRelatedErrorCodes
     ⍝ Useful to trap all file (and directory) related errors.
       r←12 18 20 21 22 23 24 25 26 28 30 31 32 34 35
+    ∇
+
+    ∇ trap←{force}SetTrap Config
+    ⍝ Returns a nested array that can be assigned to `⎕TRAP`.
+      force←{0<⎕NC ⍵:⍎⍵ ⋄ 0}'force'
+      #.ErrorParms←##.HandleError.CreateParms
+      #.ErrorParms.errorFolder←Config.DumpFolder
+      #.ErrorParms.returnCode←EXIT.APPLICATION_CRASHED
+      #.ErrorParms.(logFunctionParent logFunction)←MyLogger'Log'
+      #.ErrorParms.windowsEventSource←'MyApp'
+      #.ErrorParms.addToMsg←' --- Something went terribly wrong'
+      trap←force ##.HandleError.SetTrap'#.ErrorParms'
     ∇
 
 :EndNamespace

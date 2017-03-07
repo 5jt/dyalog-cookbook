@@ -290,8 +290,7 @@ A> ### More about :Include
 A>
 A>  When a namespace is :Included, the interpreter will execute functions from that namespace as if they had been defined in the current class. However, the actual _code_ is shared with the original namespace. For example, this means that if the code of `means` or `else` is changed while tracing into it from the `MyApp` class those changes are reflected in `#.Utilities` immediately (and any other classes that might have :Included it.
 A>
-
-+A> Most of the time, this works as you expect it to, but it can lead to confusion, in particular if you were to `)COPY #.Utilities` from another workspace. This will change the definition of the namespace, but the class has pointers to functions in the old copy of `#.Utilities`, and will not pick up the new definitions until the class is fixed again. If you were to edit these functions while tracing into the `MyApp` class, the changes will not be visible in the namespace. Likewise, if you were to `)ERASE #.Utilities`, the class will continue to work until the class itself is edited, at which point it will complain that the namespace does not exist.
+A> Most of the time, this works as you expect it to, but it can lead to confusion, in particular if you were to `)COPY #.Utilities` from another workspace. This will change the definition of the namespace, but the class has pointers to functions in the old copy of `#.Utilities`, and will not pick up the new definitions until the class is fixed again. If you were to edit these functions while tracing into the `MyApp` class, the changes will not be visible in the namespace. Likewise, if you were to `)ERASE #.Utilities`, the class will continue to work until the class itself is edited, at which point it will complain that the namespace does not exist.
 A>
 A> Let's assume that in a WS `C:\Test_Include` we have just this code:
 A> 

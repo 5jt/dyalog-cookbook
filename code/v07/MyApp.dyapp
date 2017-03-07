@@ -1,6 +1,8 @@
 Target #
 Load ..\AplTree\APLTreeUtils
 Load ..\AplTree\FilesAndDirs
+Load ..\AplTree\HandleError
+Load ..\AplTree\Execute
 Load ..\AplTree\IniFiles
 Load ..\AplTree\OS
 Load ..\AplTree\Logger
