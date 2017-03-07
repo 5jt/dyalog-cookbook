@@ -4,6 +4,8 @@
 
 Imagine the following situation: when MyApp is started with a double-click on the DYAPP and then tested everything works just fine. When you create a stand-alone EXE from the DYAPP and execute it with some appropriate parameter it does not create the CSV files. In this situation obviously you need to debug the EXE. In this chapter we'll discuss how to achieve that.
 
+In addition we will make `MyApp.exe` return an exit code. 
+
 
 ## Configuration settings
 
@@ -13,7 +15,7 @@ That's not always appropriate of course, because it allows anybody to jump into 
 
 In MyApp we keep things simple and allow the INI file to rule whether the user may Ride into the application or not.
 
-Copy v05 to v06.
+Copy `Z:\code\v05` to `Z:\code\v06` and then run the DYAPP to recreate the `MyApp` workspace. 
 
 
 ## The "Console application" flag
@@ -39,101 +41,61 @@ Port        = 4502
 We want to make the Ride configurable. That means we cannot do it earlier than after having instantiated the INI file. But not long after either, so we change `Initial`:
 
 ~~~
-∇ (G MyLogger)←Initial dummy
+∇ (Config MyLogger)←Initial dummy
 ⍝ Prepares the application.
-⍝ Side effect: creates `MyLogger`, an instance of the `Logger` class.
   #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
-  G←CreateGlobals ⍬
-leanpub-start-insert  
-  CheckForRide G
-leanpub-end-insert  
-  MyLogger←OpenLogFile G.LogFolder
-  MyLogger.Log↓⎕FMT G.∆List
+  Config←CreateConfig ⍬
+  CheckForRide Config
+  MyLogger←OpenLogFile Config.LogFolder
+  MyLogger.Log'Started MyApp in ',F.PWD   
+  MyLogger.Log↓⎕FMT Config.∆List
 ∇
 ~~~    
 
-We have to make sure that `Ride` makes it into `G`, so we establish a default 0 (no Ride) and overwrite with INI settings.
+We have to make sure that `Ride` makes it into `Config`, so we establish a default 0 (no Ride) and overwrite with INI settings.
 
 ~~~
-∇ G←CreateGlobals dummy;myIni;iniFilename
-⍝ Create a namepsace `G` and populate it with defaults.
-  G←⎕NS''
-  ...  
-leanpub-start-insert    
-  G.Ride←0  ⍝ If this is not 0 the app accepts a Ride & treats G.Ride as port number
-leanpub-start-end
-  ...
-leanpub-start-insert  
+∇ Config←CreateConfig dummy;myIni;iniFilename
+  Config←⎕NS''
+  Config.⎕FX'r←∆List' 'r←{0∊⍴⍵:0 2⍴'''' ⋄ ⍵,[1.5]⍎¨⍵}'' ''~¨⍨↓⎕NL 2'
+  Config.Debug←A.IsDevelopment
+  Config.Trap←1
+  Config.Accents←'ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝ' 'AAAAAACDEEEEIIIINOOOOOOUUUUY'
+  Config.LogFolder←'./Logs'
+  Config.DumpFolder←'./Errors'
+leanpub-start-insert
+  Config.Ride←0      ⍝ If not 0 the app accepts a Ride (Config.Ride = port number)
+leanpub-end-end
+  iniFilename←'expand'F.NormalizePath'MyApp.ini'
+  :If F.Exists iniFilename
+      myIni←⎕NEW ##.IniFiles(,⊂iniFilename)
+      Config.Debug{¯1≡⍵:⍺ ⋄ ⍵}←myIni.Get'Config:debug'
+      Config.Trap←⊃Config.Trap myIni.Get'Config:trap'
+      Config.Accents←⊃Config.Accents myIni.Get'Config:Accents'
+      Config.LogFolder←'expand'F.NormalizePath⊃Config.LogFolder myIni.Get'Folders:Logs'
+      Config.DumpFolder←'expand'F.NormalizePath⊃Config.DumpFolder myIni.Get'Folders:Errors'
+leanpub-start-insert
       :If myIni.Exist'Ride'
       :AndIf myIni.Get'Ride:Active'
-          G.Ride←⊃G.Ride myIni.Get'Ride:Port'
+          Config.Ride←⊃Config.Ride myIni.Get'Ride:Port'
       :EndIf
+leanpub-end-end      
   :EndIf
-leanpub-start-end
-  ...
+  Config.LogFolder←'expand'F.NormalizePath Config.LogFolder
+  Config.DumpFolder←'expand'F.NormalizePath Config.DumpFolder
 ∇
 ~~~
 
-We change `ProcessFiles` accordingly:
+We add a function `CheckForRide`:
 
 ~~~
- ∇ data←(fns ProcessFiles)files;txt;file
-   ⍝ Reads all files and executes `fns` on the contents.
-      data←⍬
-      :For file :In files
-leanpub-start-insert          
-          :Trap G.Trap/FileRelatedErrorCodes
-leanpub-start-end          
-              txt←'flat'A.ReadUtf8File file
-leanpub-start-insert                  
-          :Case
-              MyLogger.LogError'Unable to read source: ',file
-              Off EXIT.UNABLE_TO_READ_SOURCE     
-          :EndTrap
-leanpub-start-end          
-          data,←⊂fns txt
-      :EndFor
-    ∇
-~~~
-
-This calls a function `Off` for obvious reasons, so we need to invent it:
-
-~~~
-∇ Off exitCode
-      :If 0<⎕NC'MyLogger'
-          :If exitCode=EXIT.OK
-              MyLogger.Log'Shutting down MyApp'
-          :Else
-              MyLogger.LogError'MyApp is unexpectedly shutting down, return code is ',EXIT.GetName exitCode
-          :EndIf
-      :EndIf
-      :If A.IsDevelopment
-          →
-      :Else
-          ⎕OFF exitCode
-      :EndIf
-∇
-~~~
-
-`ProcessFiles` also calls `FileRelatedErrorCodes` so that one needs to be created as well:
-
-~~~
-∇ r←FileRelatedErrorCodes
-⍝ Useful to trap all file (and directory) related errors.
-      r←12 18 20 21 22 23 24 25 26 28 30 31 32 34 35
-∇
-~~~    
-
-Finally we add a function `CheckForRide`:
-
-~~~
-∇ {r}←CheckForRide G
+∇ {r}←CheckForRide Config
 ⍝ Checks whether the user wants to have a Ride and if so make it possible.
       r←⍬
-      :If 0≠G.Ride
+      :If 0≠Config.Ride
           rc←3502⌶0
           {0=⍵:r←1 ⋄ ⎕←'Problem! rc=',⍕⍵ ⋄ .}rc
-          rc←3502⌶'SERVE::',⍕G.Ride
+          rc←3502⌶'SERVE::',⍕Config.Ride
           {0=⍵:r←1 ⋄ ⎕←'Problem! rc=',⍕⍵ ⋄ .}rc
           rc←3502⌶1
           {0=⍵:r←1 ⋄ ⎕←'Problem! rc=',⍕⍵ ⋄ .}rc
@@ -142,24 +104,48 @@ Finally we add a function `CheckForRide`:
 ∇
 ~~~
 
+Finally we amend the `Version` function:
+
+~~~
+∇r←Version
+   ⍝ * 1.3.0:
+   ⍝   * MyApp gives a Ride now, INI settings permitted.
+   ...
+∇   
+~~~
+
 Notes:
 
-* In this case we pass a reference to `G` as argument. There are two reasons for that:
-  * `CheckForRide` really needs `G`.
-  * We have nothing else to pass but we don't want to have niladic functions around (except very special circumstances).
+* In this case we pass a reference to `Config` as argument to `CheckForRide`. There are two reasons for that:
+  * `CheckForRide` really needs `Config`.
+  * We have nothing else to pass but we don't want to have niladic functions around (except in very special circumstances).
   
-* If `Ride` is 0 we don't give a ride but if it's not then it's treated as a port number.
+* If `Ride` is 0 we don't give a ride, but if it's not, then it's treated as a port number.
 
 * We catch the return codes from the calls to `3502⌶` and check them on the next line. This is important because the calls may fail for several reasons; see below for an example.
 
-* With `3502⌶0` we switch Ride off, just in case. (That way we make sure that we can execute `→1` at any point if we wish to)
+* With `3502⌶0` we switch Ride off, just in case. That way we make sure that we can execute `→1` while tracing `CheckForRide` at any point if we wish to; see "Restartable functions" underneath this list.
 
-* With `3502⌶'SERVE::',⍕G.Ride` we establish Ride parameters: host (nothing between the two colons, so it defaults to localhost) and port number.
+* With `3502⌶'SERVE::',⍕Config.Ride` we establish Ride parameters: host (nothing between the two colons, so it defaults to "localhost") and port number.
 
 * With `3502⌶1` we enable Ride.
 
-* With `{_←⎕DL ⍵ ⋄ ∇ ⍵}1` we start an endless loop: delay for a second, then call the function again. Its a dfn, so there is no stack growing on recursive calls.
+* With `{_←⎕DL ⍵ ⋄ ∇ ⍵}1` we start an endless loop: wait for a second, then call the function again recursively. Its a dfn, so there is no stack growing on recursive calls.
 
-Now you can start Ride, enter "localhost" and the port number as parameters, connect to the interpreter or stand-alone EXE etc. and then select "Strong interrupt" from the "Actions" menu in order to interrupt the endless loop; you can then start debugging the application.
+Now you can start Ride, enter "localhost" and the port number as parameters, connect to the interpreter or stand-alone EXE etc. and then select "Strong interrupt" from the "Actions" menu in order to interrupt the endless loop; you can then start debugging the application. Note that this does not require the development EXE to be involved: it may well be a runtime EXE.
 
-T> Prior to version 16.0 one had to copy the files "ride27_64.dll" (or "ride27_32.dll") and "ride27ssl64.dll" (or "ride27ssl32.dll") so that they are siblings of the EXE. From 16.0 onwards you must copy the Conga DLLs instead. Failure in doing that will make `3502⌶1` fail. Note that "2.7" refers to the version of Conga, not Ride. Prior to version 3.0 of Conga every application (interpreter, Ride, etc.) needed to have their own copy of the Conga DLLs. Since 3.0 Conga can serve several applications in parallel.
+T> Prior to version 16.0 one had to copy the files "ride27_64.dll" (or "ride27_32.dll") and "ride27ssl64.dll" (or "ride27ssl32.dll") so that they are siblings of the EXE. From 16.0 onwards you must copy the Conga DLLs instead. Failure in doing that will make `3502⌶1` fail. Note that "2.7" refers to the version of Conga, not Ride. Prior to version 3.0 of Conga every application (interpreter, Ride, etc.) needed to have their own copy of the Conga DLLs, with a different name. Since 3.0 Conga can serve several applications in parallel.
+
+A> ### Restartable functions
+A> 
+A> Note only do we try to exit functions at the bottom, we also like them to be "restartable". What we mean by that is that we want a function -- and its variables -- to survive `→1`. This is not always possible, for example when a function starts a thread and must not start a second one for the same task, or a file was tied etc. but most of the time it is possible to achieve that. That means that something like this must be avoided:
+A>
+A>~~~
+A> ∇r←MyFns arg
+A> r←⍬
+A> :Repeat
+A>     r,← DoSomethingSensible ⊃arg
+A> :Until 0∊⍴arg←1↓arg
+A>~~~
+A> 
+A> This function does not make much sense but the point is that the right argument is mutilated; one cannot restart this function with `→1`. Don't do something like that!

@@ -2,9 +2,11 @@
 
 # Configuration settings
 
-Before we start establishing error handling on a general level we first need to establish a way to configure the application. That will allow us to control whether error trapping should be active or not, where to save dumps etc. That's why we now introduce configuration settings.
-
+We are going to want our logging and error handling to be configurable. In fact, we will soon have lots of state settings: folders for log files and crashes, debug flag, flag for switching off error trapping, email address to report to in case of an error. The time has come to discuss configuration settings.
+ 
 Thinking more widely, an application's configuration includes all kinds of state: e.g., folders for log files and crashes, debug flag, a flag for switching off error trapping, email address to report to in case of an error, window positions, recent filepaths, GUI themes...
+
+A variety of mechanisms for permanently storing configuration settings exists: Under Microsoft Windows we have the Windows Registry, and there are a number of cross-platform file formats to consider: XML, JSON - and good old INI files. We will discuss these in detail.
 
 
 ## Using the Windows Registry
@@ -30,10 +32,12 @@ Generally, we prefer simplicity and recommend the INI format where it will serve
 
 By using the APLTree class `IniFiles` we get as a bonus additional features:
 
-* Data types (char and number)
-* Nested vectors
-* Embedded INI files
-* Local variables (place holders)
+* Data types: a key can carry either a text vector or a number.
+* Nested vectors: a key can carry a vector of text vectors.
+* Merge INI files: specify more than one INI file.
+* Local variables (place holders).
+
+We will discuss all these features as we go along.
 
 
 ## Where to save an INI file
@@ -78,6 +82,8 @@ Load ..\AplTree\OS
 ...
 ~~~
 
+and run the DYAPP to recreate the `MyApp` workspace. 
+
 You can read `IniFiles`'s documentation in a browser with `]adoc_browse #.IniFiles`.
 
 ## The INI file
@@ -88,8 +94,8 @@ This is the contents of `code\v04\MyApp.ini`:
 localhome = '%LOCALAPPDATA%\MyApp'
 
 [Config]
-Debug       = ¯1
-Trap        = 1
+Debug       = ¯1    ; 0=enfore error trapping; 1=prevent error trapping;
+Trap        = 1     ; 0 disables any :Trap statements (local traps) 
 
 Accents     = ''
 Accents     ,='ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝ' 
@@ -97,7 +103,7 @@ Accents     ,='AAAAAACDEEEEIIIINOOOOOOUUUUY'
 
 [Folders]
 Logs        = '{localhome}\Log'
-Errors      = '{localhome}\Log'
+Errors      = '{localhome}\Errors'
 
 [Ride]
 Active      = 0
@@ -108,17 +114,17 @@ If you have not copied `v05` from the website make sure you create an INI file w
 
 Notes:
 
-* The `IniFiles` class offers some features that are uncommon. Those are discussed below. This is however by no means a violation of the standard because there is no such thing for INI files.
+* The `IniFiles` class offers some features that are uncommon. Those are discussed below. This is however by no means a violation of the standard because for INI files there is no such thing.
 
 * Assignments above the first section -- which is `[Config]` -- are variables local to the INI file. We can refer to them by putting curlies (`{}`) around their names as with `{localhome}` but they have no other purpose. You can see that `localhome` is referred to twice in the `[Folders]` section, and why that is useful.
 
-* `IniFiles` supports two data types: character and number. Everything between `'` is character, everything that is not is expected to be a number.
+* `IniFiles` supports two data types: character and number. Everything between two quotes is character, everything that is not is expected to be a number.
 
 * `Debug` is set to ¯1 -- it is indeed going to be a numeric value because there are no quotes involved. `debug` defines whether the application runs in debug mode or not. Most importantly `debug←1` will switch off global error trapping, something we will soon introduce. `¯1` means that the INI file does not set the flag. Therefore it will default to 1 in a development environment and to 0 in a runtime evenvironment. By setting this to either 1 or 0 in the INI file you can overwrite this.
 
 * `Trap` can be used to switch off error trapping globally. It will be used in statements like `:Trap Config.Traps/0`. What `Config` is we will discuss in a minute.
 
-* `Accents` is set as an empty vector but then values are added with `,=`. That means that `Accents` will be a vtv: a vector of text vectors. Same as before: it has always been a global variable, but now it is more clearly defined as such. Since we define the default to be the same as what the INI file contains anyway it makes not too much sense but it illustrates a second -- better?! -- way of dealing with global variables.
+* `Accents` is initialized as an empty vector but then values are added with `,=`. That means that `Accents` will be a vtv: a vector of text vectors. Since we define the default to be the same as what the INI file contains anyway it makes not too much sense but it illustrates a second -- better?! -- way of defining it.
 
 * `Logs` defines the folder were MyApp will save its log files.
 
@@ -129,7 +135,7 @@ Notes:
 
 ## Initialising the workspace
 
-We create a new function `CreateGlobals` for that:
+We create a new function `CreateConfig` for that:
 
 ~~~
 ∇ Config←CreateConfig dummy;myIni;iniFilename
@@ -205,7 +211,7 @@ Where should we call `CreateConfig` from? Surely that has to be `Initial`:
 ∇
 ~~~
 
-Note that we also changed what `Initial` returns: a vector of length two, the namespace `Config` but also the instance of the MyLogger class.
+Note that we also changed what `Initial` returns: a vector of length two, the namespace `Config` but also the instance of the `MyLogger` class.
 
 `Initial` was called within `StartFromCmdLine`, and we are not going to change this but we must change the call as such because now it returns something useful:
 
@@ -239,11 +245,11 @@ Yes, that's it. Bit of a compromise here. Let's pause to look at some other ways
 
 The matter of _encapsulating state_ -- which functions have access to state information, and how it is shared between them -- is very important. Poor choices can lead to tangled and obscure code. 
 
-From time to time you will be offered (not by us) rules that attempt to make the choices simple. For example: _never communicate through globals_. (Or semi-globals.[^semi]) There is some wisdom in these rules, but they masquerade as satisfactory substitutes for thought, which they are not. Just as in a natural language, any rule about writing style meets occasions when it can and should be broken. Following style 'rules' without considering the alternatives will from time to time have horrible results, such as functions that accept complex arguments only to pass them on unexamined to other functions. 
+From time to time you will be offered (not by us) rules that attempt to make the choices simple. For example: _never communicate through global variables_. (Or semi-global variables. [^semi]) There is some wisdom in these rules, but they masquerade as satisfactory substitutes for thought, which they are not. Just as in a natural language, any rule about writing style meets occasions when it can and should be broken. Following style 'rules' without considering the alternatives will from time to time have horrible results, such as functions that accept complex arguments only to pass them on unexamined to other functions. 
 
 Think about the value of style 'rules' and learn when to apply them. 
 
-One of the main reasons why globals should be used with great care is that they can easily be confused with local variables with similar or -- worse --  the same name. By encapsulating all globals in `G` we get around this, and with a proper search tool like Fire [^fire] it is easy to get a report on all lines to refer to anything in `G`, or set it.
+One of the main reasons why globals should be used with great care is that they can easily be confused with local variables with similar or -- worse --  the same name. If you need to have global variables then we suggest to encapsulating them in a dedicated namespace `Globals`. With a proper search tool like Fire [^fire] it is easy to get a report on all lines to refer to anything in `Globals`, or set it.
 
 Sometimes it's only after writing many lines of code that it becomes apparent that a different choice would have been better. And sometimes it becomes apparent that the other choice would be so much better that it's worth unwinding and rewriting a good deal of what you've done. (Then be glad you're writing in  a terse language.) 
 
@@ -253,18 +259,55 @@ We share these musings here so you can see what we think about when we think abo
 
 We have used the most important features of the `IniFiles` class, but it has more to offer. We just want to mention some major topics here.
 
-* The `Get` method can be used to list sections of even all sections with all key-value pairs:
+* The `Get` method can be used to list sections of even all sections with all key-value pairs. The following can be done when you trace into the `Initial` function to the point where the instance of the `Logger` class got instantiated:
 
   ~~~
         myIni.Get 'Config' ⍬
    Debug                                                               0 
    Trap                                                                1 
    Accents   ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝ  AAAAAACDEEEEIIIINOOOOOOUUUUY        
-        ⍴myIni.Get ⍬ ⍬
-   7 3
+        Display myIni.Get_ ⍬ ⍬
+┌→──────────────────────────────────────────────────────────────────────────────────────┐
+↓ ┌→─────┐  ┌⊖┐       ┌⊖┐                                                               │
+│ │CONFIG│  │ │       │ │                                                               │
+│ └──────┘  └─┘       └─┘                                                               │
+│ ┌⊖┐       ┌→────┐                                                                     │
+│ │ │       │Debug│   ¯1                                                                │
+│ └─┘       └─────┘                                                                     │
+│ ┌⊖┐       ┌→───┐                                                                      │
+│ │ │       │Trap│    1                                                                 │
+│ └─┘       └────┘                                                                      │
+│ ┌⊖┐       ┌→──────┐ ┌→──────────────────────────────────────────────────────────────┐ │
+│ │ │       │Accents│ │ ┌→───────────────────────────┐ ┌→───────────────────────────┐ │ │
+│ └─┘       └───────┘ │ │ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝ│ │AAAAAACDEEEEIIIINOOOOOOUUUUY│ │ │
+│                     │ └────────────────────────────┘ └────────────────────────────┘ │ │
+│                     └∊──────────────────────────────────────────────────────────────┘ │
+│ ┌→──────┐ ┌⊖┐       ┌⊖┐                                                               │
+│ │FOLDERS│ │ │       │ │                                                               │
+│ └───────┘ └─┘       └─┘                                                               │
+│ ┌⊖┐       ┌→───┐    ┌→───────────────────────┐                                        │
+│ │ │       │Logs│    │%LOCALAPPDATA%\MyApp\Log│                                        │
+│ └─┘       └────┘    └────────────────────────┘                                        │
+│ ┌⊖┐       ┌→─────┐  ┌→───────────────────────┐                                        │
+│ │ │       │Errors│  │%LOCALAPPDATA%\MyApp\Log│                                        │
+│ └─┘       └──────┘  └────────────────────────┘                                        │
+│ ┌→───┐    ┌⊖┐       ┌⊖┐                                                               │
+│ │RIDE│    │ │       │ │                                                               │
+│ └────┘    └─┘       └─┘                                                               │
+│ ┌⊖┐       ┌→─────┐                                                                    │
+│ │ │       │Active│  0                                                                 │
+│ └─┘       └──────┘                                                                    │
+│ ┌⊖┐       ┌→───┐                                                                      │
+│ │ │       │Port│    4502                                                              │
+│ └─┘       └────┘                                                                      │
+└∊──────────────────────────────────────────────────────────────────────────────────────┘
   ~~~
   
-  The first column contains per row a section name or an empty vector, the second one a key or an empty vector and the third one a value or an empty vector.
+  `Get` returns a matrix with three columns:
+  
+   1. Contains per row a section name or an empty vector
+   1. Contains a key or an empty vector 
+   1. Contains either a value or an empty vector.
 
 * Instead of using the `Get` method you can also use indexing:
 
@@ -283,9 +326,25 @@ We have used the most important features of the `IniFiles` class, but it has mor
   myIni←⎕NEW ##.IniFiles('MyApp.ini' 'Foo.ini')
   ~~~
  
-  would create a new instance which contains all definitions. In case of a name conflict the last one wins. In this case this would mean that machine specific definitions would overwrite more general ones.
+  would create a new instance which contains all the definitions of _both_ INI files. In case of a name conflict the last one wins. Here this would mean that machine specific definitions would overwrite more general ones.
   
 * Sometimes it is more appropriate to have a namespace representing the INI file as such, with sub namespaces representing the sections and variables within them representing the keys and values. This can be achieved by using the instance method `Convert`. See `]ADOC_Browse #.IniFiles` for details.
+
+  Here we give a simple example:
+  
+  ~~~
+        q←myIni.Convert ⎕ns''
+        q.List ''
+  CONFIG   Accents   ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝ  AAAAAACDEEEEIIIINOOOOOOUUUUY  
+  CONFIG   Debug                                                              ¯1 
+  CONFIG   Trap                                                                1 
+  FOLDERS  Errors                                       %LOCALAPPDATA%\MyApp\Log 
+  FOLDERS  Logs                                         %LOCALAPPDATA%\MyApp\Log 
+  RIDE     Active                                                              0 
+  RIDE     Port                     
+         q.RIDE.Port
+  4502       
+  ~~~
 
 ## Final steps for version 5
 

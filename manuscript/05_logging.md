@@ -175,7 +175,7 @@ We create a function `Initial` (short for "Initialize") which calls `OpenLogFile
 ⍝   
 ~~~
 
-At the moment `Initial` is not doing too much, but that will change. Note that we took the opportunity to make sure that all the system settings in `#` are set according to our needs.
+At the moment `Initial` is not doing too much, but that will change. Note that we took the opportunity to make sure that all the system settings in `#` are set according to our needs. `MyApp` sets these variables for itself but within `Initial` we now make sure that `#` uses the same values as well, no matter what the session defaults are.
 
 We also change in `ProcessFile`:
 
@@ -210,7 +210,7 @@ We take the opportunity to moce code from `TxtToCsv` to a new function `GetFiles
 ~~~
  ∇ (target files)←GetFiles fullfilepath;csv;target;path;stem
  ⍝ Investigates `fullfilepath` and returns a list with files
- ⍝ may contain zero, one or many filenames.
+ ⍝ May return zero, one or many filenames.
    fullfilepath~←'"'
    csv←'.csv'
    :If F.Exists fullfilepath
@@ -343,20 +343,48 @@ I> In case you wonder what the `(0)` in the log file stands for: this reports th
 One more improvement in `MyApp`: we change the setting of the system variables from
 
 ~~~
-(⎕IO ⎕ML ⎕WX ⎕PP ⎕DIV)←1 1 3 15 1
+:Namespace MyApp
+
+    (⎕IO ⎕ML ⎕WX ⎕PP ⎕DIV)←1 1 3 15 1
+    ....
 ~~~
 
 to the more readable:
 
 ~~~
-⎕IO←1 ⋄ ⎕ML←1 ⋄ ⎕WX←3 ⋄ ⎕PP←15 ⋄ ⎕DIV←1
+:Namespace MyApp
+
+    ⎕IO←1 ⋄ ⎕ML←1 ⋄ ⎕WX←3 ⋄ ⎕PP←15 ⋄ ⎕DIV←1
+    ....
 ~~~
+
+## Watching the log file with LogDog
+
+So far we have used modules from the APLTree project: classes and namespace scripts that might be usefull when implementing an application.
+
+APLTree also offers applications that support the programmer during her work without becoming part of the application. One of those applications is the LogDog. It purpose is simply to watch a log file and make sure that any changes are immediately reflected by the GUI. This is useful for us since now the log file is the major source of information about how the application is doing. 
+
+In order to use LogDog you first need to download it from <http://download.aplwiki.com>. We assume that you download it into the default download location. For a user "JohnDoe" that would be `C:\Users\JohnDoe\Downloads`.
+
+LogDog does not come with an installer. All you have to do is to install it into a folder where you have the right to add, delete and change files. That means `C:\Proram Files` and `C:\Proram Files (x86)` are not an option. If you want to install the application just for your own user ID then `"C:\Users\JohnDoe\AppData\Local\Programs\LogDog` is the right place. If you want to install it for all users on your PC than we suggest that you create a folder like `C:\Programs_others`. Just make sure that the name of the folder starts with `Program` so that autocomplete displays all folders that have programs installed in them once you start typing `Progr`.
+
+You start LogDog by double-clicking the EXE. You can then consult LogDog's help for how to open a log file. We recommend to go for the "Investigate folder" option. The reason is that every night at 24:00 a new log file with a new name is created. To put any new(er) log file on display you can issue the "Investigate folder" menu command again.
+
+Once you have started LogDog on the `MyApp` log file you will see something like this:
+
+![LogDog GUI](images/LogDog.jpg)
+
+Note that LogDog comes with an auto-scroll features, meaning that the latest entries at the bottom of the file are always visible. If you don't want this for any reason just tick the "Freeze" check box.
+
+From now on we will assume that you have LogDog always up and running, so that you will get immediate feedback on what is going on when `MyApp.exe` runs.
+
+## Where are we
 
 We now have `MyApp` logging its work in a subfolder of the application folder and reporting problems which it has anticipated.
 
 Next we need to consider how to handle and report errors we have _not_ anticipated. We should also return some kind of error code to Windows. If `MyApp` encounters an error, any process calling it needs to know. 
 
-A> ### Destructors and the Tracer
+A> ### Destructors versus the Tracer
 A>
 A> When you trace through `TxtToCsv` the moment you leave the function the Tracer shows the function `Cleanup` of the `Logger` class. The function is declared as a destructor.
 A>

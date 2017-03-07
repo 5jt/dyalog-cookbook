@@ -132,14 +132,17 @@ We're now nearly ready to export the first version of our EXE.
 3. Pick `Z:\code\v03` as the destination folder. 
 4. From the list "Save as type" pick "Standalone Executable". 
 5. Set the "File name" as `MyApp`.
-6. Check the "Runtime application" and "Console application" boxes.
-7. Click "Save". 
+6. Check the "Runtime application" check box 
+7. Make sure that the "Console application" check box is not ticked.
+8. Click "Save". 
 
 You should see an alert message: _File Z:\\code\\v03\\MyApp.exe successfully created._ This occasionally fails for no obvious reason. If it does fail just try again and you should be fine. If it keeps failing then the by far most common reason is that the EXE is running - you cannot replace an EXE while it is running. 
 
 I> Although you cannot replace a running exe what you _can_ do is to rename it; that's possible. You can then create a new EXE with the original name.
 
-In case you wonder what a "Console application" actually is: apart from including the Dyalog runtimEXE included and also sets the `IMAGE_SUBSYSTEM_WINDOWS_CUI` flag in the header of the EXE. The effect is that, when called on a command line (also known as the console), it will wait for the program to return; it also catches the return code and assigns it to the environment variable "ERRORLEVEL". Also, when double-clicked a console window pops up. Finally you cannot really debug a console application with Ride; for details see the "Debugging a stand-alone EXE" chapter.
+In case you wonder what a "Console application" actually is: apart from including the Dyalog runtime EXE included it also sets the `IMAGE_SUBSYSTEM_WINDOWS_CUI` flag in the header of the EXE. The effect is that, when called _on a command line_ (also known as the console), it will wait for the program to return; it also catches the return code and assigns it to the environment variable "ERRORLEVEL". Also, when double-clicked a console window pops up. When called in any other way you _can_ catch the return code
+
+Note that you cannot really debug a console application with Ride; for details see the "Debugging a stand-alone EXE" chapter.
 
 If you do not tick "Console application", the program is started as a separate process and you cannot catch the return code.
 

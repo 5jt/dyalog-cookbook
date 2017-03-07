@@ -288,9 +288,10 @@ yet Shift+Enter in the Tracer or the Editor still works, and any changes would g
 
 A> ### More about :Include
 A>
-A> Note that if the code of `means` or `else` is changed while tracing into it from the `MyApp` class those changes are reflected in `#.Utilities` immediately. That gives you kind of a feeling that the code in `MyApp` "jumps" into `#.Utilities` and then executes (and possibly also changes) the code over there, but that's not the case.
+A>  When a namespace is :Included, the interpreter will execute functions from that namespace as if they had been defined in the current class. However, the actual _code_ is shared with the original namespace. For example, this means that if the code of `means` or `else` is changed while tracing into it from the `MyApp` class those changes are reflected in `#.Utilities` immediately (and any other classes that might have :Included it.
 A>
-A> This generally works well, but can lead to confusion. For example, if you were now to `)COPY #.Utilities` from another workspace, the class has a reference to functions in the old copy of #.Utilities, and will not update them until the class is fixed again.
+
++A> Most of the time, this works as you expect it to, but it can lead to confusion, in particular if you were to `)COPY #.Utilities` from another workspace. This will change the definition of the namespace, but the class has pointers to functions in the old copy of `#.Utilities`, and will not pick up the new definitions until the class is fixed again. If you were to edit these functions while tracing into the `MyApp` class, the changes will not be visible in the namespace. Likewise, if you were to `)ERASE #.Utilities`, the class will continue to work until the class itself is edited, at which point it will complain that the namespace does not exist.
 A>
 A> Let's assume that in a WS `C:\Test_Include` we have just this code:
 A> 
