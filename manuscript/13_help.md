@@ -35,7 +35,7 @@ Finally we need to modify the DYAPP so that our boot function loads the module i
 ... ⍝TODO⍝
 leanpub-start-insert
 Load 'MarkAPL'
-'Markdown2Help' #.⎕CY 'code\Markdown2Help'  ⍝TODO⍝  Check!
+'Markdown2Help' #.⎕CY '..\apltree\Markdown2Help\Markdown2Help.dws'
 leanpub-end-insert
 ~~~
 
@@ -80,9 +80,7 @@ Notes:
   Note that this is not a Markdown feature but a `Markdown2Help` feature.
 * `# Foo` defines a header of level one. Every help page must have such a header.
 * `This is the "Foo" page` is a simple paragraph.
-* `Go to [Overview](#)` is also a paragraph, but this paragraph carries a link. While "Overview" is the link text the `#` between the two parentheses defines this as a bookmark link. Since the bookmark link has no name (there is nothing on the right side of the `#` symbol) it is assumed that the link text identifies the page.
-
-  This works because all headers get an anchor assigned by default.
+* `Go to →[Overview]` is also a paragraph, but this paragraph carries a link. "Overview" must be the name of a page. If the title of the page is different from the name, the title is going to be shown in the help page.
 
 Make some changes, for example add another paragraph, and then press <escape>. `Markdown2Help` takes your changes, converts the Markdown to HTML and shows the changed page straight away. This gives you an idea of how easy it actually is to change help pages. Adding and deleting help pages can be achieved via the context menu.
 
@@ -161,7 +159,7 @@ Unless somebody implements drag-and-drop for the TreeView of the help system one
 
 ## How to view the  help system
 
-We want to make sure that we can call the help system from within our application. For that we need a new function, and the obvious name for this function is `ShowHelp`. The function accepts a right argument which might be an empty vector but can be a page name instead. If a page name is provided that of course `Markdown2Help` does not show the first page of the help system but the page specified.
+We want to make sure that we can call the help system from within our application. For that we need a new function, and the obvious name for this function is `ShowHelp`. The function accepts a right argument which might be an empty vector but can be a page name instead. If a page name is provided then of course `Markdown2Help` does not show the first page of the help system but the page specified.
 
 ~~~
    ∇{r}←ShowHelp pagename
@@ -226,7 +224,7 @@ Also, for converting the Markdown to HTML `Markdown2Help` needs the `MarkAPL` cl
 ## What is the right strategy
 
 * Specify `noClose←1`. This means that when the user attempts to close the help system with a click into the close box or by selecting the "Quit" command from the "File" menu or by pressing Alt+F4 or Ctrl+W then the help system is not really closed down, it just makes itself invisible.
-* Start the help system by calling the `New` function as soon as the user presses F1 or select "Help" from the menubar or requests a particular help page by any other means. Catch the result and assign it to a meaningful name: this represents your help system. We use the name `MyHelpInstance`.
+* Start the help system by calling the `New` function as soon as the user presses F1 or select "Help" from the menubar or requests a particular help page by other means. Catch the result and assign it to a meaningful name: this represents your help system. We use the name `MyHelpInstance`.
 * When the user later requests again a help page use this:
 
   ~~~
