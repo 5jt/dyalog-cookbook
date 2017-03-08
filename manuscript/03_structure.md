@@ -10,7 +10,7 @@ Let's assume you've done the convenient thing. Your code is in a workspace. Ever
 
 In this chapter, we shall convert a DWS (saved workspace) to some DYALOG scripts and a DYAPP script to assemble an active workspace from them. Using scripts to store your source code has many advantages: You can use a traditional source code management system rather than having your code and data stored in a binary blob. Changes that you make to your source code are saved immediately, rather than relying on your remembering to save the workspace at some suitable point in your work process. Finally, you don't need to worry about crashes in your code or externally called modules which might prevent your from saving your work - or even corruption of the active workspace which might prevent you from saving it.
 
-A> The _workspace_ (WS) is where the APL interpreter manages all code and all data in memory. The Dyalog tracer / debugger has extensive edit-and-continue capabilities, the downside is that these have occasionally these have been known to corrupt the workspace.
+A> The _workspace_ (WS) is where the APL interpreter manages all code and all data in memory. The Dyalog tracer / debugger has extensive edit-and-continue capabilities, the downside is that these have occasionally been known to corrupt the workspace.
 A> 
 A> 
 A>The interpreter checks WS integrity every now and then; how often can be influenced by setting certain debug flags; see "The APL Command Line" in the documentation for details.
@@ -632,7 +632,7 @@ Finally the `MyApp.dyalog` script:
 
 This version comes with a number of improvements. Let's discuss them in detail:
 
-* We address `Utilities` as well as `Constants` with "`##.`": that works as long as they are siblings of `MyApp`. "`#.`" would of course work as well but is inferior. For example, one day you might want to convert this application into a user command; then `##.` will continue to work while `#.` would not. Same for making it an ASP.NET application: those have no concept of a "root" at all.
+* We address `Utilities` as well as `Constants` with "`##.`": that works as long as they are siblings of `MyApp`. "`#.`" would of course work as well but is inferior. For example, one day you might want to convert this application into a user command; then `##.` will continue to work while `#.` might or might not work, depending on what happens to be in the workspace at the time of execution. Same for making it an ASP.NET application: those have no concept of a "root" at all.
 
 * We have changed the assignment of the `Accents` variable so that we don't need to know the length of it any more.     
 

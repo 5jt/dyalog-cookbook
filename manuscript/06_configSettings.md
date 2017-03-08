@@ -88,7 +88,7 @@ You can read `IniFiles`'s documentation in a browser with `]adoc_browse #.IniFil
 
 ## The INI file
 
-This is the contents of `code\v04\MyApp.ini`:
+This is the contents of `code\v05\MyApp.ini`:
 
 ~~~
 localhome = '%LOCALAPPDATA%\MyApp'
@@ -120,7 +120,7 @@ Notes:
 
 * `IniFiles` supports two data types: character and number. Everything between two quotes is character, everything that is not is expected to be a number.
 
-* `Debug` is set to ¯1 -- it is indeed going to be a numeric value because there are no quotes involved. `debug` defines whether the application runs in debug mode or not. Most importantly `debug←1` will switch off global error trapping, something we will soon introduce. `¯1` means that the INI file does not set the flag. Therefore it will default to 1 in a development environment and to 0 in a runtime evenvironment. By setting this to either 1 or 0 in the INI file you can overwrite this.
+* `Debug` is set to ¯1 -- it is indeed going to be a numeric value because there are no quotes involved. `debug` defines whether the application runs in debug mode or not. Most importantly `debug←1` will switch off global error trapping, something we will soon introduce. `¯1` means that the INI file does not set the flag. Therefore it will latter in the application default to 1 in a development environment and to 0 in a runtime evenvironment. By setting this to either 1 or 0 in the INI file you can overwrite this.
 
 * `Trap` can be used to switch off error trapping globally. It will be used in statements like `:Trap Config.Traps/0`. What `Config` is we will discuss in a minute.
 
@@ -201,10 +201,14 @@ Now that we have moved `Accents` to the INI file we can get rid of these lines i
 Where should we call `CreateConfig` from? Surely that has to be `Initial`:
 
 ~~~
+leanpub-start-insert
 ∇ (Config MyLogger)←Initial dummy
+leanpub-end-insert
 ⍝ Prepares the application.
   #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
+leanpub-start-insert  
   Config←CreateConfig ⍬
+leanpub-end-insert  
   MyLogger←OpenLogFile Config.LogFolder
   MyLogger.Log'Started MyApp in ',F.PWD
   MyLogger.Log↓⎕FMT Config.∆List
@@ -216,10 +220,14 @@ Note that we also changed what `Initial` returns: a vector of length two, the na
 `Initial` was called within `StartFromCmdLine`, and we are not going to change this but we must change the call as such because now it returns something useful:
 
 ~~~
+leanpub-start-insert
 ∇ {r}←StartFromCmdLine arg;MyLogger;Config
+leanpub-end-insert
 ⍝ Needs command line parameters, runs the application.
   r←⍬
+leanpub-start-insert
   (Config MyLogger)←Initial ⍬
+leanpub-end-insert  
   r←TxtToCsv arg~''''
 ∇
 ~~~
@@ -240,8 +248,9 @@ CountLetters←{
 
 Yes, that's it. Bit of a compromise here. Let's pause to look at some other ways to write this:
 
-* Passing everything through function arguments does not come with a performance penalty. The interpreter doesn't make 'deep copies' of the arguments unless and until they are modified in the called function (which we hardly ever do) -- instead the interpreter just passes around references to the original variables. 
-* So we could pass `G` as a left argument of `TxtToCsv`, which then simply gets passed to `CountLetters`. No performance penalty for this, as just explained, but now we've loaded the syntax of `TxtToCsv` with a namespace it makes no direct use of, an unnecessary complication of the writing. And we've set a left argument we (mostly) don't want to specify when working in Session mode.
+Passing everything through function arguments does not come with a performance penalty. The interpreter doesn't make 'deep copies' of the arguments unless and until they are modified in the called function (which we hardly ever do) -- instead the interpreter just passes around references to the original variables. 
+
+So we could pass `G` as a left argument of `TxtToCsv`, which then simply gets passed to `CountLetters`. No performance penalty for this, as just explained, but now we've loaded the syntax of `TxtToCsv` with a namespace it makes no direct use of, an unnecessary complication of the writing. And we've set a left argument we (mostly) don't want to specify when working in session mode.
 
 The matter of _encapsulating state_ -- which functions have access to state information, and how it is shared between them -- is very important. Poor choices can lead to tangled and obscure code. 
 
@@ -249,7 +258,7 @@ From time to time you will be offered (not by us) rules that attempt to make the
 
 Think about the value of style 'rules' and learn when to apply them. 
 
-One of the main reasons why globals should be used with great care is that they can easily be confused with local variables with similar or -- worse --  the same name. If you need to have global variables then we suggest to encapsulating them in a dedicated namespace `Globals`. With a proper search tool like Fire [^fire] it is easy to get a report on all lines to refer to anything in `Globals`, or set it.
+One of the main reasons why globals should be used with great care is that they can easily be confused with local variables with similar or -- worse --  the same name. If you need to have global variables then we suggest to encapsulating them in a dedicated namespace `Globals`. With a proper search tool like Fire [^fire] it is easy to get a report on all lines referring to anything in `Globals`, or set it.
 
 Sometimes it's only after writing many lines of code that it becomes apparent that a different choice would have been better. And sometimes it becomes apparent that the other choice would be so much better that it's worth unwinding and rewriting a good deal of what you've done. (Then be glad you're writing in  a terse language.) 
 
@@ -267,40 +276,16 @@ We have used the most important features of the `IniFiles` class, but it has mor
    Trap                                                                1 
    Accents   ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝ  AAAAAACDEEEEIIIINOOOOOOUUUUY        
         Display myIni.Get_ ⍬ ⍬
-┌→──────────────────────────────────────────────────────────────────────────────────────┐
-↓ ┌→─────┐  ┌⊖┐       ┌⊖┐                                                               │
-│ │CONFIG│  │ │       │ │                                                               │
-│ └──────┘  └─┘       └─┘                                                               │
-│ ┌⊖┐       ┌→────┐                                                                     │
-│ │ │       │Debug│   ¯1                                                                │
-│ └─┘       └─────┘                                                                     │
-│ ┌⊖┐       ┌→───┐                                                                      │
-│ │ │       │Trap│    1                                                                 │
-│ └─┘       └────┘                                                                      │
-│ ┌⊖┐       ┌→──────┐ ┌→──────────────────────────────────────────────────────────────┐ │
-│ │ │       │Accents│ │ ┌→───────────────────────────┐ ┌→───────────────────────────┐ │ │
-│ └─┘       └───────┘ │ │ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝ│ │AAAAAACDEEEEIIIINOOOOOOUUUUY│ │ │
-│                     │ └────────────────────────────┘ └────────────────────────────┘ │ │
-│                     └∊──────────────────────────────────────────────────────────────┘ │
-│ ┌→──────┐ ┌⊖┐       ┌⊖┐                                                               │
-│ │FOLDERS│ │ │       │ │                                                               │
-│ └───────┘ └─┘       └─┘                                                               │
-│ ┌⊖┐       ┌→───┐    ┌→───────────────────────┐                                        │
-│ │ │       │Logs│    │%LOCALAPPDATA%\MyApp\Log│                                        │
-│ └─┘       └────┘    └────────────────────────┘                                        │
-│ ┌⊖┐       ┌→─────┐  ┌→───────────────────────┐                                        │
-│ │ │       │Errors│  │%LOCALAPPDATA%\MyApp\Log│                                        │
-│ └─┘       └──────┘  └────────────────────────┘                                        │
-│ ┌→───┐    ┌⊖┐       ┌⊖┐                                                               │
-│ │RIDE│    │ │       │ │                                                               │
-│ └────┘    └─┘       └─┘                                                               │
-│ ┌⊖┐       ┌→─────┐                                                                    │
-│ │ │       │Active│  0                                                                 │
-│ └─┘       └──────┘                                                                    │
-│ ┌⊖┐       ┌→───┐                                                                      │
-│ │ │       │Port│    4502                                                              │
-│ └─┘       └────┘                                                                      │
-└∊──────────────────────────────────────────────────────────────────────────────────────┘
+ CONFIG                                                                         
+          Debug                                                              ¯1 
+          Trap                                                                1 
+          Accents   ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝ  AAAAAACDEEEEIIIINOOOOOOUUUUY  
+ FOLDERS                                                                        
+          Logs                                         %LOCALAPPDATA%\MyApp\Log 
+          Errors                                       %LOCALAPPDATA%\MyApp\Log 
+ RIDE                                                                           
+          Active                                                              1 
+          Port                                                             4502 
   ~~~
   
   `Get` returns a matrix with three columns:

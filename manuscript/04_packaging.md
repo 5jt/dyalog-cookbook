@@ -19,22 +19,19 @@ A>
 A> What can you do if you have output appearing in the session and you don't know where in your application it is being generated? The easiest way is to associate a callback function with the `SessionPrint` event as in:
 A> 
 A> ~~~
-A>     '⎕se' ⎕WS 'Event' 'SessionPrint' '#.CatchSessionPrint'
-A>      #.⎕FX ↑'what CatchSessionPrint msg'  '.'
-A>      ⎕FX 'test arg'  '⎕←arg'
-A>      test 1 2 3
-A>1 2 3       
-A>       test ''
+A>   '⎕se' ⎕WS 'Event' 'SessionPrint' '#.Catch'
+A>   #.⎕FX ↑'what Catch m'  ':If 0∊⍴what' '. ⍝ !' ':Else' '⎕←what' ':Endif'
+A>   ⎕FX 'test arg'  '⎕←arg'
+A>   test 1 2 3
 A>⍎SYNTAX ERROR
-A>CatchSessionPrint[1] .  ⍝ Deliberate error
-A>                    ∧  
+A>Catch[2] . ⍝ !
 A>~~~
 A>
-A> You can even use this to investigate what is about to be written to the session (the left argument of `CatchSessionPrint`) and make the function stop when it reaches the output you are looking for. In the above example we check for anything that's empty.
+A> You can even use this to investigate what is about to be written to the session (the left argument of `Catch`) and make the function stop when it reaches the output you are looking for. In the above example we check for anything that’s empty.
 
-I> Don't try the `⎕se.onSessionPrint←'#.CatchSessionPrint'` syntax with `⎕SE`; just stick with `⎕WS` as in the above example.
+I> Don't try the `⎕se.onSessionPrint←'#.Catch'` syntax with `⎕SE`; just stick with `⎕WS` as in the above example.
 
-I> Don't forget to clear the stack after `CatchSessionPrint` crashed because if you don't and instead call `test` again it would behave as if there was no handler associated with the `SessionPrint` event.
+I> Don't forget to clear the stack after `Catch` crashed because if you don't and instead call `test` again it would behave as if there was no handler associated with the `SessionPrint` event.
 
 `TxtToCsv` however has a shy result, so it won't write its result to the session. That’s fine. 
 

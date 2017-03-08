@@ -65,7 +65,7 @@ We have to make sure that `Ride` makes it into `Config`, so we establish a defau
   Config.DumpFolder←'./Errors'
 leanpub-start-insert
   Config.Ride←0      ⍝ If not 0 the app accepts a Ride (Config.Ride = port number)
-leanpub-end-end
+leanpub-end-insert
   iniFilename←'expand'F.NormalizePath'MyApp.ini'
   :If F.Exists iniFilename
       myIni←⎕NEW ##.IniFiles(,⊂iniFilename)
@@ -79,7 +79,7 @@ leanpub-start-insert
       :AndIf myIni.Get'Ride:Active'
           Config.Ride←⊃Config.Ride myIni.Get'Ride:Port'
       :EndIf
-leanpub-end-end      
+leanpub-start-insert
   :EndIf
   Config.LogFolder←'expand'F.NormalizePath Config.LogFolder
   Config.DumpFolder←'expand'F.NormalizePath Config.DumpFolder
@@ -132,7 +132,7 @@ Notes:
 
 * With `{_←⎕DL ⍵ ⋄ ∇ ⍵}1` we start an endless loop: wait for a second, then call the function again recursively. Its a dfn, so there is no stack growing on recursive calls.
 
-Now you can start Ride, enter "localhost" and the port number as parameters, connect to the interpreter or stand-alone EXE etc. and then select "Strong interrupt" from the "Actions" menu in order to interrupt the endless loop; you can then start debugging the application. Note that this does not require the development EXE to be involved: it may well be a runtime EXE.
+Now you can start Ride, enter "localhost" and the port number as parameters, connect to the interpreter or stand-alone EXE etc. and then select "Strong interrupt" from the "Actions" menu in order to interrupt the endless loop; you can then start debugging the application. Note that this does not require the development EXE to be involved: it may well be a runtime EXE. However, you need a development license in order to be legally entitled to do this.
 
 T> Prior to version 16.0 one had to copy the files "ride27_64.dll" (or "ride27_32.dll") and "ride27ssl64.dll" (or "ride27ssl32.dll") so that they are siblings of the EXE. From 16.0 onwards you must copy the Conga DLLs instead. Failure in doing that will make `3502⌶1` fail. Note that "2.7" refers to the version of Conga, not Ride. Prior to version 3.0 of Conga every application (interpreter, Ride, etc.) needed to have their own copy of the Conga DLLs, with a different name. Since 3.0 Conga can serve several applications in parallel.
 

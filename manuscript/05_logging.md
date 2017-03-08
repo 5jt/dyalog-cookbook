@@ -18,7 +18,7 @@ T> Note that for analyzing purposes a CONTINUE workspace must be loaded in an al
 
 The next version of `MyApp` could do better by having the program write a log file recording what happens.
 
-Save a copy of `Z:\code\v03` as `Z:\code\v04`.
+Save a copy of `Z:\code\v03` as `Z:\code\v04` or copy `v04` from the Cookbook's website.
 
 We'll use the APLTree `Logger` class, which we'll now install in the workspace root. If you've not already done so, copy the APLTree library folder into `Z:\code`.[^apltree] Now edit `Z:\code\v04\MyApp.dyapp` to include some library code:
 
@@ -256,7 +256,7 @@ Notes:
 
 * We are now using `FilesAndDirs.Dir` rather than the Dyalog primitive `⎕NINFO`. Apart from offering recursive searches (a feature we don't need here) the `Dir` function also normalizes the separator character. Under Windows it will always be a backslash while under Linux it is always a slash character.
 
-  Although Windows itself is quite relaxed about the separator and accepts a slash as well as a backslash, as soon as you call something else in one way or another you will find that slashes are not accepted. An example as any setting to `⎕USING`.
+  Although Windows itself is quite relaxed about the separator and accepts a slash as well as a backslash, as soon as you call something else in one way or another you will find that slashes are not accepted. An example is any setting to `⎕USING`.
 
 * We use `APLTreeUtils.WriteUtf8File` rather than `⎕NPUT` for several reasons:
   
@@ -366,7 +366,7 @@ APLTree also offers applications that support the programmer during her work wit
 
 In order to use LogDog you first need to download it from <http://download.aplwiki.com>. We assume that you download it into the default download location. For a user "JohnDoe" that would be `C:\Users\JohnDoe\Downloads`.
 
-LogDog does not come with an installer. All you have to do is to install it into a folder where you have the right to add, delete and change files. That means `C:\Proram Files` and `C:\Proram Files (x86)` are not an option. If you want to install the application just for your own user ID then `"C:\Users\JohnDoe\AppData\Local\Programs\LogDog` is the right place. If you want to install it for all users on your PC than we suggest that you create a folder like `C:\Programs_others`. Just make sure that the name of the folder starts with `Program` so that autocomplete displays all folders that have programs installed in them once you start typing `Progr`.
+LogDog does not come with an installer. All you have to do is to install it into a folder where you have the right to add, delete and change files. That means `C:\Proram Files` and `C:\Proram Files (x86)` are not an option. If you want to install the application just for your own user ID then   `"C:\Users\JohnDoe\AppData\Local\Programs\LogDog` is the right place. If you want to install it for all users on your PC than we suggest that you create a folder like `C:\Programs_others`. Just make sure that the name of the folder starts with `Program` so that autocomplete displays all folders that have programs installed in them once you start typing `Progr`.
 
 You start LogDog by double-clicking the EXE. You can then consult LogDog's help for how to open a log file. We recommend to go for the "Investigate folder" option. The reason is that every night at 24:00 a new log file with a new name is created. To put any new(er) log file on display you can issue the "Investigate folder" menu command again.
 
@@ -382,7 +382,7 @@ From now on we will assume that you have LogDog always up and running, so that y
 
 We now have `MyApp` logging its work in a subfolder of the application folder and reporting problems which it has anticipated.
 
-Next we need to consider how to handle and report errors we have _not_ anticipated. We should also return some kind of error code to Windows. If `MyApp` encounters an error, any process calling it needs to know. 
+Next we need to consider how to handle and report errors we have _not_ anticipated. We should also return some kind of error code to Windows. If `MyApp` encounters an error, any process calling it needs to know. But before we are doing this we will disuss how to configure `MyApp`.
 
 A> ### Destructors versus the Tracer
 A>
