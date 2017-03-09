@@ -621,13 +621,14 @@ Note that we've put `#.` in front of `⎕SHADOW`; that is effectlively the same 
 
 At the moment there is a possibility that `MyApp` will crash and the global trap is not catching it. This is because we establish the global trap only after having instantiated the INI file: only then do we know where to write the crash files, how to log the error etc. But an error may well occur before that!
 
-Naturally there is no perfect solution here but we can at least try to catch such errors. For this we establish a `⎕TRAP` with default settings very early:
+Naturally there is no perfect solution here but we can at least try to catch such errors. For this we establish a `⎕TRAP` with default settings very early, and we make sure that `⎕WSID` even earlier, otherwise any attempt to save the crash WS will fail.
 
 ~~~
 ∇ {r}←StartFromCmdLine arg;MyLogger;Config;rc;⎕TRAP
 ⍝ Needs command line parameters, runs the application.
   r←⍬
 leanpub-start-insert    
+  ⎕WSID←'MyApp'
   ⎕TRAP←1 #.HandleError.SetTrap ⍬
   .
 leanpub-end-insert    
@@ -642,6 +643,8 @@ For testing purposes we have provided a `1` as left argument, which enforces err
 When you now call `#.MyApp.StartFromCmdLine ''` then the error is caught. Of course no logging will take place but it will still try to save the crash files. Since no better place is known it will try to create the folder `Errors` as a sibling of the DYAPP (or the stand-alone EXE). Whether that will be successful depends on where the program was installed. In `%CommonProgramFiles(x86)%` and `%CommonProgramFiles%` it won't work due to the lack of rights.
 
 In short: whether it makes sense to catch errors that early depends on your environment.
+
+Make sure you remove the line with the full stop from `MyApp.StartFromCmdLine` and also remove the `1` provided as left argument to `HandleError.SetTrap`.
 
 
 ## HandleError in detail
