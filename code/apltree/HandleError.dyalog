@@ -71,6 +71,8 @@
 
     ∇ r←Version
       :Access Public Shared
+      ⍝ * 2.1.2
+      ⍝   For a relative `⎕WSID` without a path `⎕WSID` was reported wrongly in the HTML report.
       ⍝ * 2.1.1
       ⍝   * Writing to the Windows Event Log did not work.
       ⍝   * `⎕LX` got mutilated.
@@ -85,7 +87,7 @@
       ⍝ * 1.9.1:
       ⍝   * `⎕WA` was reported as `⎕ML`.
       ⍝   * Documentation improved
-      r←(Last⍕⎕THIS)'2.1.1' '2017-01-23'
+      r←(Last⍕⎕THIS)'2.1.2' '2017-03-08'
     ∇
 
     ∇ {filename}←{signal}Process parms;crash;TRAP;⎕IO;⎕ML;⎕TRAP
@@ -259,7 +261,7 @@
           html,←'<h1>',('/'Last filename),'</h1>',CR
           html,←'<table id="apl">'
           html,←'Version'MarkupAsTableRow⍕'#'⎕WG'APLVersion'
-          html,←'⎕WSID'MarkupAsTableRow⍕'/'Last 1↓' ',crash.WSID  ⍝ Enforce ⎕DR 80/82 with 1↓' ',
+          html,←'⎕WSID'MarkupAsTableRow⍕{'/'Last ⍵ ⋄⍵ }⍣('/'∊crash.WSID)⊣1↓' ',crash.WSID  ⍝ Enforce ⎕DR 80/82 with 1↓' ',
           html,←'⎕IO'MarkupAsTableRow⍕⎕IO
           html,←'⎕ML'MarkupAsTableRow⍕⎕ML
           html,←'⎕WA'MarkupAsTableRow⍕⎕WA

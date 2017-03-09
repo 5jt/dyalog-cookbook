@@ -119,6 +119,8 @@
     ∇ {r}←StartFromCmdLine arg;MyLogger;Config;rc;⎕TRAP
    ⍝ Needs command line parameters, runs the application.
       r←⍬
+      ⎕TRAP←#.HandleError.SetTrap ⍬
+      #.⎕SHADOW'ErrorParms'
       ⎕WSID←'MyApp'
       (Config MyLogger)←Initial ⍬
       ⎕TRAP←(Config.Debug=0)SetTrap Config

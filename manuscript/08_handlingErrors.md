@@ -208,11 +208,11 @@ A> ### Why don't we just :Trap all errors?
 A> 
 A> `:Trap 0` would trap all errors - easier to read and write than `:Trap 12 18 20 21 22 23 24 25 26 28 30 31 32 34 35`, so why don't we do this?
 A> 
-A> Well, for a very good reason: trapping everything includes such basic things like a VALUE ERROR, which is most likely introduced by a typo or by removing a function or an operator in the false believe that it is not called anywhere. We don't want to trap those, really. The sooner they come to light the better. For that reason we restrict the errors to whatever might pop up when it comes to dealing with files and directories.
+A> Well, for a very good reason: trapping everything includes such basic things like a VALUE ERROR, which is most likely introduced by a typo or by removing a function or an operator in the false believe that it is not called anywhere. We don't want to trap those, really. The sooner they come to light the better. For that reason we restrict the errors to be trapped to whatever might pop up when it comes to dealing with files and directories.
 A> 
 A> That being said, if you really have to trap _all_ errors (occasionally this makes sense) then make sure that you can switch it off with a global flag as in `:Trap trap/0`: if `trap` is 1 then the trap is active, otherwise it is not.
 
-In this context the `:Trap` structure has an advantage over `⎕TRAP`. When it fires, and control advances to its `:Else` fork, the trap is immediately cleared. So there is no need explicitly to reset the trap to avoid an open loop. 
+In this context the `:Trap` structure has an advantage over `⎕TRAP`. When it fires, and control advances to its `:Else` fork, the trap is immediately cleared. So there is no need explicitly to reset the trap to avoid an open loop.  But be careful when you call other functions: in case they crash the `:Trap` would catch the error!
 
 The handling of error codes and messages can easily obscure the rest of the logic. Clarity is not always easy to find, but is well worth working for. This is particularly true where there is no convenient test for an error, only a trap for when it is encountered. 
 
@@ -279,7 +279,7 @@ leanpub-end-insert
     ...
 ~~~
 
-A> 104? Why not 4, the standard Windows code for a crashed application? The distinction is useful. An exit code of 100 will tell us  MyApp's trap caught and reported the crash. An exit code of 4 tells you even the trap failed!
+A> 104? Why not 4, the standard Windows code for a crashed application? The distinction is useful. An exit code of 104 will tell us  MyApp's trap caught and reported the crash. An exit code of 4 tells you even the trap failed!
 
 We want to establish general error trapping as soon as possible, but we also need to know where to save crash files etc. That means we start right after having instantiated the INI file, because that's where we get this kind of information from. For establishing error trapping we need to set `⎕TRAP`. Because we want to make sure that any function down the stack can pass a certain error up to the next definition of `⎕TRAP` (see the `⎕TRAP` help options "C" and "N") it is vitally important not only set to set but also to _localyze_ `⎕TRAP` in `StartFromCmdLine`
 
@@ -373,7 +373,7 @@ leanpub-end-insert
 ...
 ~~~
 
-That requires a minor change in `CreateConfig`:
+That requires two minor changes in `CreateConfig`:
 
 ~~~
 ∇ Config←CreateConfig dummy;myIni;iniFilename
@@ -423,15 +423,17 @@ To actually test error trapping we need to set the `Debug` flag in the INI file 
 HandleError.Process caught SYNTAX ERROR      
 ~~~
 
-That's all what we see in the session, but when you check the folder `#.ErrorParms.errorFolder` you will find that indeed there were three new files created in that folder for this crash. (Note that in case you traced through the code would be just two files: the workspace is missing. The reason is that with the Tracer active the current workspace cannot be saved; same when an edit window is open for some reason.)
+Note that `HandleError` has not executed `⎕OFF` because we executed this in a development environment.
+
+That's all we see in the session, but when you check the folder `#.ErrorParms.errorFolder` you will find that indeed there were three new files created in that folder for this crash. (Note that in case you traced through the code there would be just two files: the workspace is missing. The reason is that with the Tracer active the current workspace cannot be saved; same when an edit window is open for some reason or more than one thread is used)
 
 Because we've defined a source for the Windows Event Log `HandleError` has reported the error accordingly:
 
-![Windows Event Log]("C:\TheDyalogCookbook\manuscript\images\MyAppEventViewer.jpg")
+![Windows Event Log]("images\MyAppEventViewer.jpg")
 
 We also find evidence in the log file that something broke; see LogDog:
 
-![The log file]("C:\TheDyalogCookbook\manuscript\images\LogDog2.jpg")
+![The log file]("images\LogDog2.jpg")
 
 This is done automatically by the `HandleError` class for us because we provided the name of a logging function and a ref pointing to the instance where that log function lives.
 
@@ -457,22 +459,22 @@ The HTML contains a report of the crash and some key system variables:
 ~~~
 MyApp_20170307111141
 
-Version:	Windows-64 15.0.29007.0 W Development
-⎕WSID:	
-⎕IO:	1
-⎕ML:	1
-⎕WA:	62722168
-⎕TNUMS:	0
+Version:   Windows-64 15.0.29007.0 W Development
+⎕WSID:	   MyApp
+⎕IO:	   1
+⎕ML:	   1
+⎕WA:	   62722168
+⎕TNUMS:	   0
 Category:	
-EM:	SYNTAX ERROR
+EM:	       SYNTAX ERROR
 HelpURL:	
-EN:	2
-ENX:	0
+EN:	       2
+ENX:	   0
 InternalLocation:	parse.c 1739
 Message:	
-OSError:	0 0
-Current Dir:	c:\TheDyalogCookbook\code\v07
-Command line:	"C:\Program Files\Dyalog\Dyalog APL-64 15.0 Unicode\dyalog.exe" DYAPP="C:\TheDyalogCookbook\code\v07\MyApp.dyapp"
+OSError:   0 0
+Current Dir:	...code\v07
+Command line:	"...\Dyalog\Dyalog APL-64 15.0 Unicode\dyalog.exe" DYAPP="...code\v07\MyApp.dyapp"
 Stack:
 
 #.HandleError.Process[22]
@@ -527,14 +529,14 @@ tbl
 tgt         
 ~~~
 
-The DWS is the crash workspace. Load it. The Latent Expression has been disabled, to ensure MyApp does not attempt to start up again. 
+The DWS is the crash workspace. Load it. The Latent Expression has been disabled, to ensure `MyApp` does not attempt to start up again. 
 
 ~~~
       ⎕LX
 ⎕TRAP←0 'S' ⍝#.MyApp.StartFromCmdLine
 ~~~
 
-The State Indicator shows the workspace captured at the moment the HandleError object saved the workspace. Your real problem -- the full stop in `MyApp.TxtToCsv` -- is two levels down in the stack. 
+The State Indicator shows the workspace captured at the moment the HandleError object saved the workspace. Your real problem -- the full stop in `MyApp.TxtToCsv` -- is some levels down in the stack. 
 
 ~~~
       )SI
@@ -553,11 +555,11 @@ You can clear `HandleError` off the stack with a naked branch arrow. When you do
 #.MyApp.StartFromCmdLine[6]
       ⎕TRAP
   0 E #.HandleError.Process '#.ErrorParms'  
-      ⎕←⎕TRAP←0/⎕TRAP
+      ⎕TRAP←0/⎕TRAP
 
 ~~~
 
-We also want to check whether the correct return code is returned. For that we have to call the EXE, but we don't do this in a console window because we want to catch the exit code. Instead we use the `Execute` class with provides two main methods:
+We also want to check whether the correct return code is returned. For that we have to call the EXE, but we don't do this in a console window for reasons we have discussed earlier. Instead we use the `Execute` class which provides two main methods:
 
 * `Process` allows use to catch a program's standard output.
 * `Application` allows us to catch a program's exit code.
@@ -569,10 +571,82 @@ We also want to check whether the correct return code is returned. For that we h
  
 In development you'll discover and fix most errors while working from the APL session. Unforeseen errors encountered by the EXE will be much rarer. Now you're all set to investigate them! 
 
+## About #.ErrorParms
+
+We've established `#.ErrorParms` as a namespace, and we have explained why: `HandleError.Process` needs to see `ErrorParms` not matter the circumstances, otherwise it cannot work. Since we construct the workspace from scratch when we start developing it cannot do any harm because we quit as soon as the work is done.
+
+Or can it? Let's check. First change the INI file so that it reads:
+
+~~~
+...
+leanpub-end-insert
+Trap        = 1    ; 0 disables any :Trap statements (local traps)
+leanpub-start-insert
+ForceError  = 0    ; 1=let TxtToCsv crash (for testing global trap handling)
+leanpub-end-insert
+...
+~~~
+
+Now double-click the DYAPP, call `#.MyApp.StartFromCmdLine ''` and then execute:
+
+~~~
+      ⎕nnames
+C:\Users\kai\AppData\Local\MyApp\Log\MyApp_20170309.log
+~~~
+
+The log file is still open! Now that's what we expect to see as long as `MyLogger` lives, but that is kept local in `#.MyApp.StartFromCmdLine`, so why is this? The culprit is `ErrorParms`! In order to allow `HandleError` to write to our log file we've provided not only the name of the log file but also a reference pointing to the instance the log function is living in:
+
+~~~
+      #.ErrorParms.logFunctionParent
+[Logger:C:\Users\kai\AppData\Local\MyApp\Log/MyApp_20170309.log(¯76546889)]      
+~~~
+
+In short: we have indeed a good reason to get rid of `ErrorParms` once the program has finished. But how? `⎕SHADOW` to the rescue! With `⎕SHADOW` we can declare a variable to be local from within a function. Mainly useful for "localyzing" names that are constructed in one way or another we can use it to make `ErrorParms` local within `StartFromCmdLine`. For that we add a single line:
+
+~~~
+∇ {r}←StartFromCmdLine arg;MyLogger;Config;rc;⎕TRAP
+⍝ Needs command line parameters, runs the application.
+  r←⍬
+leanpub-start-insert  
+  #.⎕SHADOW'ErrorParms'
+leanpub-end-insert  
+  ⎕WSID←'MyApp'
+....
+~~~
+
+Note that we've put `#.` in front of `⎕SHADOW`; that is effectlively the same as having a header `StartFromCmdLine;#.ErrorParms` only that this is syntactically impossible to do. With `#.⎕SHADOW` it works. When you now try again a double-click on the DYAPP and then call `#.MyApp.StartFromCmdLine` you will find that no file is tied any more, and that `#.ErrorParms` is not hanging around either.
+
+
+## Very early errors
+
+At the moment there is a possibility that `MyApp` will crash and the global trap is not catching it. This is because we establish the global trap only after having instantiated the INI file: only then do we know where to write the crash files, how to log the error etc. But an error may well occur before that!
+
+Naturally there is no perfect solution here but we can at least try to catch such errors. For this we establish a `⎕TRAP` with default settings very early:
+
+~~~
+∇ {r}←StartFromCmdLine arg;MyLogger;Config;rc;⎕TRAP
+⍝ Needs command line parameters, runs the application.
+  r←⍬
+leanpub-start-insert    
+  ⎕TRAP←1 #.HandleError.SetTrap ⍬
+  .
+leanpub-end-insert    
+  #.⎕SHADOW'ErrorParms'
+  ....
+~~~
+
+Note that we use the `SetTrap` function `HandleError` comes with. It accepts a parameter space as right argument, but it also accepts an empty vector. In the latter case it falls back to the defaults.
+
+For testing purposes we have provided a `1` as left argument, which enforces error trapping even in a development environment. In the following line we break the program with a full stop.
+
+When you now call `#.MyApp.StartFromCmdLine ''` then the error is caught. Of course no logging will take place but it will still try to save the crash files. Since no better place is known it will try to create the folder `Errors` as a sibling of the DYAPP (or the stand-alone EXE). Whether that will be successful depends on where the program was installed. In `%CommonProgramFiles(x86)%` and `%CommonProgramFiles%` it won't work due to the lack of rights.
+
+In short: whether it makes sense to catch errors that early depends on your environment.
+
 
 ## HandleError in detail
 
-`HandleError` can be configured in many ways by changing the defaults provided by the `CreateParms` method. There is a tbale with documentation available; execute `]ADOC_Browse #.HandleError` for this and then scroll to `CreateParms`. Most of the parameters are self-explaining but some
+`HandleError` can be configured in many ways by changing the defaults provided by the `CreateParms` method. There is a table with documentation available; execute `]ADOC_Browse #.HandleError` and then scroll to `CreateParms`. Most of the parameters are self-explaining but some need background information.
 
 ~~~
       #.HandleError.CreateParms.∆List
@@ -596,11 +670,16 @@ In development you'll discover and fix most errors while working from the APL se
  windowsEventSource          
  ~~~
 
- signal
+`signal`
+: By default `HandleError` executes `⎕OFF` in a runtime environment. That's not always the best way to deal with an error. In a complex application it might be the case that just one command fails, but the rest of the application is doing fine. In that case we would be better off by setting `off` to 0 and signal an numeric code that can be caught by yet another `⎕TRAP` that simply allows the user to explore other commands in the application.
  
- trapInternalErrors
+`trapInternalErrors`
+: This flag allows you to switch off any error trapping _within_ `HandleError`. This can be useful in case something goes wrong. It's can be useful when working on or debugging `HandleError` itself.
  
- trapSaveWsid
- 
+`saveCrash`, `saveErrorWS` and `saveVars`
+: While `saveCrash` and `saveVars` are probably always 1 setting `saveErrorWS` to 0 is perfectly reasonable in case you know upfront that any attempt to save the error WS will fail, for example because your application is multi-threaded.
+
+`customFns` and `customFnsParent`
+: This allows you to make sure that `HandleError` will call a function of your choice. For example, you can use this to send an email or a text to a certain address.
 
 [^stop]: The English poets among us love that the tersest way to bring a function to a full stop is to type one. (American poets will of course have typed a period and will think of it as calling time out.)

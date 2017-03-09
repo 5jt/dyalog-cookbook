@@ -947,7 +947,6 @@
 
     ∇ Cleanup;List
       :Implements Destructor
-      .
       Close2
     ∇
 
