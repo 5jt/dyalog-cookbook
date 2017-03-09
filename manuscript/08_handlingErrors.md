@@ -429,11 +429,11 @@ That's all we see in the session, but when you check the folder `#.ErrorParms.er
 
 Because we've defined a source for the Windows Event Log `HandleError` has reported the error accordingly:
 
-![Windows Event Log]("images\MyAppEventViewer.jpg")
+![Windows Event Log](images\MyAppEventViewer.jpg)
 
 We also find evidence in the log file that something broke; see LogDog:
 
-![The log file]("images\LogDog2.jpg")
+![The log file](images\LogDog2.jpg)
 
 This is done automatically by the `HandleError` class for us because we provided the name of a logging function and a ref pointing to the instance where that log function lives.
 
