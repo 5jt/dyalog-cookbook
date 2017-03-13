@@ -8,7 +8,7 @@ It's time to take a closer look at the process of building the application works
 * automate the export process;
 * write tests for the EXE.
 
-We resume, as usual, by saving a copy of `Z:\code\v05` as `Z:\code\v06`.
+We resume, as usual, by saving a copy of `Z:\code\v07` as `Z:\code\v08`.
 
 
 ## Make me whole, make me lean 
@@ -21,6 +21,7 @@ Our makefile, `MyApp.dyapp`, includes scripts we have no reason to include in th
     Load ..\AplTree\FilesAndDirs
     Load ..\AplTree\HandleError
     Load ..\AplTree\IniFiles
+    Load ..\AplTree\Execute
     Load ..\AplTree\Logger
     Load ..\AplTree\Tester
     Load Constants

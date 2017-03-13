@@ -2,7 +2,7 @@
 
 # Documentation -- the Doc is in
 
-Documentation is the bad mother of software. Programmers learn early that we depend on it but must not trust it. On the one hand we need it for the software we use. On the other we learn a great wariness of it for the software we develop. Understanding why this is so will help us see what to do about documenting MyApp.
+Documentation is the bad mother of software. Programmers learn early that we depend on it but must not trust it. On the one hand we need it for the software we use. On the other we learn a great wariness of it for the software we develop. Understanding why this is so will help us see what to do about documenting `MyApp`.
 
 It helps to distinguish three quite different things people refer to as _documentation_.
 
@@ -58,7 +58,7 @@ Heading comments
 
 Trailing comments
 
-:Comments at the ends of lines act as margin notes. Do not use them as a running translation of the code. Instead aim to for expository style and code that needs no translation. on lines where you're not satisfied you've achieved expository style, then do write an explanatory comment. Better to reserve trailing comments for other notes, such as `⍝ FIXME slow for >1E7 elements`. (Using a tag such as `FIXME` makes it easy to bookmark lines for review.) Aligning trailing comments to begin at the same column makes them easier to scan, and is considered [_OCD compliant_](^ocd).
+: Comments at the ends of lines act as margin notes. Do not use them as a running translation of the code. Instead aim to for expository style and code that needs no translation. On lines where you're not satisfied you've achieved expository style, do write an explanatory comment. Better to reserve trailing comments for other notes, such as `⍝ FIXME slow for >1E7 elements`. (Using a tag such as `FIXME` makes it easy to bookmark lines for review.) Aligning trailing comments to begin at the same column makes them easier to scan, and is considered OCD compliant [^ocd].
 
 The above conventions are simple enough and have long been in wide use.
 
@@ -71,7 +71,7 @@ _Automatic documentation generation_ will extract documentation from your script
 
 ADOC is an acronym for _automatic documentation_ generation. It works on classes, and on namespaces where certain conventions are observed.
 
-In its most basic function, it lists methods, properties and fields and requires no comments in the code. In its more powerful function, it composes from header comments an HTML page. Honouring [Markdown](https://en.wikipedia.org/wiki/Markdown) conventions, it provides all the typographical conventions you need for documentation.
+In its most basic function, it lists methods, properties and fields and requires no comments in the code. In its more powerful function, it composes from header comments an HTML page. Honouring Markdown conventions, it provides all the typographical conventions you need for documentation.
 
 Previously only found as a class in the APLTree library, it is now shipped in Dyalog Version 15.0 as three user commands.
 
@@ -79,6 +79,7 @@ Previously only found as a class in the APLTree library, it is now shipped in Dy
 
 Lists the methods and fields of a class. (Requires no comments.)
 
+~~~
           ]adoc_list #.HandleError
     *** HandleError (Class) ***
 
@@ -88,10 +89,13 @@ Lists the methods and fields of a class. (Requires no comments.)
       ReportErrorToWindowsLog
       SetTrap
       Version
+~~~      
 
 ### Browse
 
+~~~
     ]adoc_browse #.HandleError
+~~~
 
 ![Using ADOC to browse the HandleError class](images/adoc_handleerror.jpg)
 
@@ -99,7 +103,9 @@ Composes in HTML a documentation page and displays it in your default browser.
 
 ### Help 
 
+~~~
     ]adoc_help
+~~~    
 
 Browses the ADOC class itself, displaying all the instructions you need to use it. 
 
@@ -108,14 +114,17 @@ Browses the ADOC class itself, displaying all the instructions you need to use i
 
 ## ADOC for MyApp
 
-How might ADOC help us? Start by seeing what ADOC has to say about MyApp as it is now:
+How might ADOC help us? Start by seeing what ADOC has to say about `MyApp` as it is now:
 
+~~~
     ]adoc_browse #.MyApp
+~~~    
 
 ![Using ADOC to browse the MyApp namespace](images/adoc_myapp_01.jpg)
 
 We see that ADOC has found and displayed the script’s header comments. We can improve this a little by editing the top of the script to follow ADOC's conventions.
 
+~~~
     :Namespace MyApp
     ⍝ Counting letter frequencies in text
         
@@ -128,13 +137,13 @@ We see that ADOC has found and displayed the script’s header comments. We can 
           :Access Public Shared
           Z←(⍕⎕THIS)'07' '2016-10-03'
         ∇
+~~~        
 
 This gives us more prominent copyright and version notices. 
 
 ![Browsing the revised MyApp namespace](images/adoc_myapp_02.jpg)
 
-It's not much but then we're not exporting MyApp as a class for others to use. We'll revisit ADOC when we do that. 
-
+It's not much but then we're not exporting `MyApp` as a class for others to use. We'll revisit ADOC when we do that. 
 
 
 [^ocd]: Thanks to Roger Hui for this term.
