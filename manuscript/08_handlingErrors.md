@@ -43,10 +43,10 @@ Edit `Z:\code\v07\MyApp.dyapp`:
 Target #
 Load ..\AplTree\APLTreeUtils
 Load ..\AplTree\FilesAndDirs
-markua-start-insert
+leanpub-start-insert
 Load ..\AplTree\HandleError
 Load ..\AplTree\Execute
-markua-end-insert
+leanpub-end-insert
 Load ..\AplTree\Logger
 Load Constants
 Load Utilities
@@ -95,10 +95,10 @@ Now the result of `TxtToCsv` gets passed to `⎕OFF` to be returned to the opera
 ∇ StartFromCmdLine;exit;args;rc
  ⍝ Read command parameters, run the application      
   args←⌷2 ⎕NQ'.' 'GetCommandLineArgs'
-markua-start-insert
+leanpub-start-insert
   rc←TxtToCsv 2⊃2↑args
   Off rc
-markua-end-insert           
+leanpub-end-insert           
 ∇
 ~~~
 
@@ -128,20 +128,20 @@ Note that `⎕OFF` is actually only executed when the program detects a runtime 
 We modify `GetFiles` so that it checks its arguments and the intermediary results:
 
 ~~~
-markua-start-insert
+leanpub-start-insert
 ∇ (rc target files)←GetFiles fullfilepath;csv;target;path;stem;isDir
 ⍝ Checks argument and returns liast of files (or single file).
-markua-end-insert
+leanpub-end-insert
    fullfilepath~←'"'
-markua-start-insert   
+leanpub-start-insert   
    files←target←''
    :If 0∊⍴fullfilepath
        rc←EXIT.INVALID_SOURCE
        :Return
    :EndIf
-markua-end-insert   
+leanpub-end-insert   
    csv←'.csv'
-markua-start-insert   
+leanpub-start-insert   
    :If 0=F.Exists fullfilepath
        rc←EXIT.SOURCE_NOT_FOUND
    :ElseIf ~isDir←F.IsDir fullfilepath
@@ -149,22 +149,22 @@ markua-start-insert
        rc←EXIT.INVALID_SOURCE
    :Else
        :If isDir
-markua-end-insert       
+leanpub-end-insert       
            target←F.NormalizePath fullfilepath,'\total',csv
-markua-start-insert           
+leanpub-start-insert           
            files←⊃F.Dir fullfilepath,'/*.txt'
        :Else
-markua-end-insert       
+leanpub-end-insert       
            (path stem)←2↑⎕NPARTS fullfilepath
            target←path,stem,csv
            files←,⊂fullfilepath
-markua-start-insert           
+leanpub-start-insert           
        :EndIf
-markua-end-insert       
+leanpub-end-insert       
        target←(~0∊⍴files)/target
-markua-start-insert       
+leanpub-start-insert       
        rc←(1+0∊⍴files)⊃EXIT.(OK SOURCE_NOT_FOUND)
-markua-end-insert       
+leanpub-end-insert       
    :EndIf
 ∇
 ~~~
@@ -180,16 +180,16 @@ In general, we like functions to _start at the top and exit at the bottom_. Retu
  Reads all files and executes `fns` on the contents.
   data←⍬
   :For file :In files
-markua-start-insert           
+leanpub-start-insert           
       :Trap Config.Trap/FileRelatedErrorCodes
-markua-end-insert               
+leanpub-end-insert               
           txt←'flat'A.ReadUtf8File file
-markua-start-insert  
+leanpub-start-insert  
       :Case
           MyLogger.LogError'Unable to read source: ',file
           Off EXIT.UNABLE_TO_READ_SOURCE
       :EndTrap
-markua-end-insert               
+leanpub-end-insert               
       data,←⊂fns txt
   :EndFor
 ∇
@@ -224,20 +224,20 @@ Finally we need to amend `TxtToCsv`:
     ∇ exit←TxtToCsv fullfilepath;∆;isDev;Log;LogError;files;target
      ⍝ Write a sibling CSV of the TXT located at fullfilepath,
      ⍝ containing a frequency count of the letters in the file text
-markua-start-insert          
+leanpub-start-insert          
      ⍝ Returns one of the values defined in `EXIT`.     
-markua-end-insert          
+leanpub-end-insert          
       MyLogger.Log'Started MyApp in ',F.PWD
       MyLogger.Log'Source: ',fullfilepath
-markua-start-insert           
+leanpub-start-insert           
       (rc target files)←GetFiles fullfilepath
       :If rc=EXIT.OK
-markua-end-insert                 
+leanpub-end-insert                 
           :If 0∊⍴files
               MyLogger.Log'No files found to process'
-markua-start-insert                         
+leanpub-start-insert                         
               rc←EXIT.SOURCE_NOT_FOUND
-markua-end-insert                         
+leanpub-end-insert                         
           :Else
               tbl←⊃⍪/(CountLetters ProcessFiles)files
               lines←{⍺,',',⍕⍵}/{⍵[⍒⍵[;2];]}⊃{⍺(+/⍵)}⌸/↓[1]tbl
@@ -250,9 +250,9 @@ markua-end-insert
               :EndTrap
               MyLogger.Log(⍕⍴files),' file',((1<⍴files)/'s'),' processed:'
               MyLogger.Log' ',↑files
-markua-start-insert                                       
+leanpub-start-insert                                       
           :EndIf
-markua-end-insert                                   
+leanpub-end-insert                                   
       :EndIf
     ∇
 ~~~
@@ -272,9 +272,9 @@ Define a new `EXIT` code constant:
 ~~~
     ....
     OK←0
-markua-start-insert
+leanpub-start-insert
     APPLICATION_CRASHED←104
-markua-end-insert
+leanpub-end-insert
     INVALID_SOURCE←111
     ...
 ~~~
@@ -284,16 +284,16 @@ A> 104? Why not 4, the standard Windows code for a crashed application? The dist
 We want to establish general error trapping as soon as possible, but we also need to know where to save crash files etc. That means we start right after having instantiated the INI file, because that's where we get this kind of information from. For establishing error trapping we need to set `⎕TRAP`. Because we want to make sure that any function down the stack can pass a certain error up to the next definition of `⎕TRAP` (see the `⎕TRAP` help options "C" and "N") it is vitally important not only set to set but also to _localyze_ `⎕TRAP` in `StartFromCmdLine`
 
 ~~~
-markua-start-insert  
+leanpub-start-insert  
 ∇ {r}←StartFromCmdLine arg;MyLogger;Config;rc;⎕TRAP
-markua-end-insert  
+leanpub-end-insert  
 ⍝ Needs command line parameters, runs the application.
    r←⍬
    (Config MyLogger)←Initial ⍬
-markua-start-insert     
+leanpub-start-insert     
    ⎕WSID←'MyApp'
    ⎕TRAP←(Config.Debug=0) SetTrap Config
-markua-end-insert     
+leanpub-end-insert     
    rc←TxtToCsv arg~''''
    Off rc
 ∇
@@ -367,9 +367,9 @@ We can test this: we could insert a line with a full stop[^stop] into, say, `Cou
 [Config]
 Debug       = ¯1    ; 0=enfore error trapping; 1=prevent error trapping;
 Trap        = 1     ; 0 disables any :Trap statements (local traps)
-markua-start-insert  
+leanpub-start-insert  
 ForceError  = 1     ; 1=let TxtToCsv crash (for testing global trap handling)
-markua-end-insert  
+leanpub-end-insert  
 ...
 ~~~
 
@@ -378,15 +378,15 @@ That requires two minor changes in `CreateConfig`:
 ~~~
 ∇ Config←CreateConfig dummy;myIni;iniFilename
 ...
-markua-start-insert           
+leanpub-start-insert           
 Config.ForceError←0
-markua-end-insert           
+leanpub-end-insert           
       iniFilename←'expand'F.NormalizePath'MyApp.ini'
       :If F.Exists iniFilename
           myIni←⎕NEW ##.IniFiles(,⊂iniFilename)
-markua-start-insert                     
+leanpub-start-insert                     
           Config.ForceError←myIni.Get'Config:ForceError'  
-markua-end-insert                     
+leanpub-end-insert                     
 ~~~
 
 We change `TxtToCsv` so that is crashes in case `Config.ForceError` equals 1:
@@ -398,9 +398,9 @@ We change `TxtToCsv` so that is crashes in case `Config.ForceError` equals 1:
 ⍝ Returns one of the values defined in `EXIT`.
    MyLogger.Log'Source: ',fullfilepath
    (rc target files)←GetFiles fullfilepath
-markua-start-insert     
+leanpub-start-insert     
    {⍵:⍎'. ⍝ Deliberate error (INI flag "ForceError")'}Config.ForceError
-markua-end-insert  
+leanpub-end-insert  
 ...   
 ~~~
 
@@ -579,11 +579,11 @@ Or can it? Let's check. First change the INI file so that it reads:
 
 ~~~
 ...
-markua-end-insert
+leanpub-end-insert
 Trap        = 1    ; 0 disables any :Trap statements (local traps)
-markua-start-insert
+leanpub-start-insert
 ForceError  = 0    ; 1=let TxtToCsv crash (for testing global trap handling)
-markua-end-insert
+leanpub-end-insert
 ...
 ~~~
 
@@ -607,9 +607,9 @@ In short: we have indeed a good reason to get rid of `ErrorParms` once the progr
 ∇ {r}←StartFromCmdLine arg;MyLogger;Config;rc;⎕TRAP
 ⍝ Needs command line parameters, runs the application.
   r←⍬
-markua-start-insert  
+leanpub-start-insert  
   #.⎕SHADOW'ErrorParms'
-markua-end-insert  
+leanpub-end-insert  
   ⎕WSID←'MyApp'
 ....
 ~~~
@@ -627,11 +627,11 @@ Naturally there is no perfect solution here but we can at least try to catch suc
 ∇ {r}←StartFromCmdLine arg;MyLogger;Config;rc;⎕TRAP
 ⍝ Needs command line parameters, runs the application.
   r←⍬
-markua-start-insert    
+leanpub-start-insert    
   ⎕WSID←'MyApp'
   ⎕TRAP←1 #.HandleError.SetTrap ⍬
   .
-markua-end-insert    
+leanpub-end-insert    
   #.⎕SHADOW'ErrorParms'
   ....
 ~~~
