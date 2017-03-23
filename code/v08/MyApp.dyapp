@@ -1,0 +1,15 @@
+Target #
+Load ..\AplTree\APLTreeUtils
+Load ..\AplTree\FilesAndDirs
+Load ..\AplTree\HandleError
+Load ..\AplTree\Execute
+Load ..\AplTree\IniFiles
+Load ..\AplTree\OS
+Load ..\AplTree\Logger
+Load ..\AplTree\Tester
+Load Constants
+Load Tests
+Load Utilities
+Load MyApp
+Run #.MyApp.SetLX #.MyApp.GetCommandLineArg ⍬
+Run #.Tester.EstablishHelpersIn #.Tests

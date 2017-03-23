@@ -51,6 +51,8 @@
 
     ∇ r←Version
       :Access Public shared
+      ⍝ * 1.5.1
+      ⍝   * Bug fix: "Windows only" for `NormalizePath` wasn't actually implemented.
       ⍝ * 1.5.0
       ⍝   * `NormalizePath` now expands environment variables (Windows only).
       ⍝ * 1.4.2
@@ -65,7 +67,7 @@
       ⍝   * `RmDir` had a problem when, say, a console window was "looking" into the folder to
       ⍝     be deleted, or one of its sub folders. It cannot delete such folders but should
       ⍝     report the problem rather than crash.
-      r←(Last⍕⎕THIS)'1.5.0' '2017-02-27'
+      r←(Last⍕⎕THIS)'1.5.1' '2017-03-21'
     ∇
 
     ∇ r←{parms_}Dir path;buff;list;more;parms;rc;extension;filename;folder;subFolders
@@ -540,6 +542,7 @@
       isScalar←⍬≡⍴path
       :If ~0∊⍴path
           :If '%'∊path
+          :AndIf 'Win'≡GetOperatingSystem ⍬
               'ExpandEnvironmentStrings'⎕NA'I4 KERNEL32.C32|ExpandEnvironmentStrings* <0T >0T I4'
               path←1⊃ExpandEnvironmentStrings path 2048 2048
           :EndIf

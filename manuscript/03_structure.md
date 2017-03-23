@@ -138,9 +138,9 @@ That amounts to five functions. Two of them are specific to the application: `Tx
 
 Note that we have some functions that start with lowercase characters while others start with uppercase characters. In a larger application you might want to be able to tell data from calls to functions and operators by introducing consistent naming conventions. Which one you settle for is less important then choosing something consistent. And don't forget to put it into a document any programmer joining the team is supposed to read first. 
 
-`toUppercase` uses the fast case-folding I-beam introduced in Dyalog 15.0 (also available in 14.0 & 14.1 from revision 27141 onwards).
+`toUppercase` uses the fast case-folding I-beam introduced in Dyalog 16.0 (also available in 14.0 & 14.1 from revision 27141 onwards).
 
-`TxtToCsv` uses the file-system primitives `⎕NINFO`, `⎕NGET`, and `⎕NPUT` introduced in Dyalog 15.0.
+`TxtToCsv` uses the file-system primitives `⎕NINFO`, `⎕NGET`, and `⎕NPUT` introduced in Dyalog 16.0.
 
 ### How to organise the code     
 

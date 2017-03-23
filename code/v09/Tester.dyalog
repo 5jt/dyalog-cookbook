@@ -766,13 +766,15 @@
 ⍝ These are all established by calling the `EstablishHelpers' method.
 ⍝ The lists includes helpers that won't be established in case the namespace hosting the test cases is scripted!
           ⎕IO←1 ⋄ ⎕ML←1
-          force←⎕THIS≡⊃⎕RSI
+          force←⎕THIS≡⊃(1↓⎕RSI),⊂''
           r←0 2⍴' '
           list←'Run' 'RunDebug' 'RunThese' 'RunBatchTests' 'RunBatchTestsInDebugMode' 'E' 'L' 'G' 'FailsIf' 'PassesIf'
           list,←'GoToTidyUp' 'RenameTestFnsTo' 'ListHelpers' '∆OK' '∆Failed' '∆NoBatchTest' '∆Inactive' '∆NoAcreTests'
           list,←'∆WindowsOnly' '∆LinuxOnly' '∆MacOnly' '∆LinuxOrMacOnly' '∆LinuxOrWindowsOnly' '∆MacOrWindowsOnly'
           list←,¨list
-          list/⍨←force∨0<⊃∘⎕NC¨list
+          :If '#.Tester.Helpers'≢⍕⊃⎕RSI
+              list/⍨←force∨0<⊃∘⎕NC¨list
+          :EndIf
           r←↑{⍵(#.APLTreeUtils.dlb{⍺⍺{⍵↓⍨¯1+⍵⍳'⍝'}⍺⍺ ⍵}1⊃(1↓⎕NR ⍵),⊂'')}¨list
         ∇
 

@@ -1,8 +1,13 @@
 {:: encoding="utf-8" /}
 
+> This chapter cannot be finished before the problems (several!) I found in the `]snap` command are fixed.
+>
+> (Neither can the software)
+
+
 # Providing help
 
-There is little doubt that providing help is a must for pretty much any application. Under Windows, CHM files are the standard way to provide help. There are powerful applications available that can assist you in providing help; HelpAndManual [^ham] is just an example.
+Users expect applications to provide help in one way or another. One option is to provide the help as a hyper text system. Under Windows, CHM files are the standard way to provide such help. There are powerful applications available that can assist you in providing help; HelpAndManual [^ham] is just an example.
 
 However, we take a different approach here: rather than using any third-party software we use `Markdown2Help` from the APLTree library. That allows us to create a help system that...
 
@@ -12,6 +17,7 @@ However, we take a different approach here: rather than using any third-party so
 This is the simplest way to create a help system, and it allows you to start the help system from within your application (either the start page or a particular page) as well as viewing the help system without running your application.
 
 While CHM files are Windows specific, `Markdown2Help` allows you to export the help system as a web page that can be displayed with any modern browser. Naturally that includes Linux and Mac OS. Though the functionality of such a website is quite limited it still gives a user full access to all the information provided by the help system.
+
 
 ## Getting ready
 
@@ -41,6 +47,7 @@ leanpub-end-insert
 
 Double-click the DYAPP to get started.
 
+
 ## Creating a new help system
 
 `Markdown2Help` comes with a function `CreateStub` that will create a new help system for us. All we need is to find a good name which is not in use. The obvious candidate is "MyHelp", so we execute this statement:
@@ -53,9 +60,13 @@ Notes:
 
 * The right argument must be a valid and unused APL name. `CreateStub` will create a namespace with that name for us. 
 * By default that namespace will be created in the root (`#`) but via the optional left argument you can specify a different parent.
+* After having checked whether a SALT function is the callback currently associated with the "Fix" event of the APL editor `CreateStub` will ask whether the new help project should be managed by SALT. 
+
+  If the user confirms this she is given the opportunity to select a drive or a folder where the help project will be saved. SALT will also keep track of the insertion or deletion of nodes and help pages.
 * `CreateStub` will return a ref pointing to the help system but normally you don't need to assign that.
 
 `CreateStub` will create some pages and a node (or folder) for us.
+
 
 ## Behind the scenes
 
@@ -63,7 +74,8 @@ In the workspace all nodes (in our case "MyHelp" and "Sub") are ordinary namespa
 
 ![The help system in the Workspace Explorer](images/13_Structure.jpg)
 
-This is the reason why the names of all nodes and all pages must be valid APL names. By default those names are shown in the help system, but of course there is a way to specify something different that is displayed as the title if that's not good enough for you.
+This is the reason why the names of all nodes and all pages must be valid APL names. By default those names are shown in the help system as title in the tree, but if that is not good enough for you then there is of course a way to specify something different.
+
 
 ## Editing a page
 
@@ -71,7 +83,7 @@ When you right-click on a page like "Foo" and then select "Edit help page" from 
 
 ![A help page in the editor](images/13_EditMarkdown.jpg)
 
-This is the definition of the help page in Markdown. (If you don't know what Markdown is please read both the Markdown article on Wikipedia [^markdown] and `Markdown2Help`'s own help file. The time will be a good investment in any case because these days Markdown is used pretty much everywhere)
+This is the definition of the help page in Markdown. If you don't know what Markdown is please read both the Markdown article on Wikipedia [^markdown] and `Markdown2Help`'s own help file. The time will be a good investment in any case because these days Markdown is used pretty much everywhere.
 
 Notes:
 
@@ -80,9 +92,10 @@ Notes:
   Note that this is not a Markdown feature but a `Markdown2Help` feature.
 * `# Foo` defines a header of level one. Every help page must have such a header.
 * `This is the "Foo" page` is a simple paragraph.
-* `Go to →[Overview]` is also a paragraph, but this paragraph carries a link. "Overview" must be the name of a page. If the title of the page is different from the name, the title is going to be shown in the help page.
+* `Go to →[Overview]` is also a paragraph, but this paragraph carries a link. "Overview" must be the name of a page. If the title of the page is different from the name, the title is going to be shown as link text in the help page.
 
-Make some changes, for example add another paragraph, and then press <escape>. `Markdown2Help` takes your changes, converts the Markdown to HTML and shows the changed page straight away. This gives you an idea of how easy it actually is to change help pages. Adding and deleting help pages can be achieved via the context menu.
+Make some changes, for example add another paragraph, and then press <escape>. `Markdown2Help` takes your changes, converts the Markdown to HTML and shows the changed page straight away. This gives you an idea of how easy it actually is to change help pages. Adding and deleting help pages -- and nodes -- can be achieved via the context menu.
+
 
 ## Changing title and sequence
 
@@ -129,11 +142,12 @@ You can specify a non-alphabetic sequence of the pages by simply changing the se
  }
  ~~~
  
-We have also changed the title of the "Overview" page to "Miller's overview". Because the name of a page **must** be a valid APL name there needs to be a way in case that's not sufficient for your title.
+We have also changed the title of the "Overview" page to "Miller's overview". That's how you can specify a specific title to be shown instead of the name of the page.
 
 After fixing the function the help system is re-compiled automatically; therefore our changes become visible immediately:
 
 ![The changed help system](images/13_MyHelp_2.jpg)
+
 
 ## More commands
 
@@ -142,6 +156,7 @@ The context menu offers plenty of commands. Note that the first three commands a
 ![The context menu](images/13_ContextMenu.jpg)
 
 As a developer you should have no problem to master these commands.
+
 
 ## Manipulating the help system directly
 
@@ -153,9 +168,10 @@ The reason is simple: when you change a help system via the context menu then an
 
 That's the reason why you are advised to perform all changes via the context menu rather than manipulating the help system directly.
 
-The only exception is when you change your mind about the structure of a help system. If that involves moving around namespaces or plenty of pages between namespaces then it is indeed better to do it in the Workspace Explorer and, when you are done, to check all the `∆TopicProperties` functions within your help system and finally recompile the help system.
+The only exception is when you change your mind about the structure of a help system. If that involves moving around namespaces or plenty of pages between namespaces then it is indeed better to do it in the Workspace Explorer and, when you are done, to check all the `∆TopicProperties` functions within your help system and finally recompile the help system; unless somebody implements drag-and-drop for the TreeView of the help system one day...
 
-Unless somebody implements drag-and-drop for the TreeView of the help system one day...
+However, in that case you must make sure that the help system is saved properly. The best way to do this is ... `⍝TODO⍝`
+
 
 ## How to view the  help system
 
@@ -211,6 +227,7 @@ Therefore we could re-write the function `ShowHelp`:
 
 It would have exactly the same result.
 
+
 ## Compiling the help system
 
  I>### What means "compiling", really?
@@ -220,6 +237,7 @@ It would have exactly the same result.
  Without specifying a folder `Markdown2Help` would create a temporary folder and compile into that folder. It is better to define a permanent location because it means that the help system does not need to compile the Markdown into HTML over and over again whenever it is called. Such a permanent location is also the pre-condition for being able to put the help system on display with the external viewer, something you must do in particular when your help system is supposed to offer help on how to install your application.
 
 Also, for converting the Markdown to HTML `Markdown2Help` needs the `MarkAPL` class. Once the help system is compiled this class is not needed any more. Therefore the final version of your application would not need `MarkAPL`, and because `MarkAPL` comprises roughly 3,000 lines of code this is something to keep in mind.
+
 
 ## What is the right strategy
 
@@ -231,21 +249,38 @@ Also, for converting the Markdown to HTML `Markdown2Help` needs the `MarkAPL` cl
   1 #.Markdown2Help.Display MyHelpInstance 'Misc'
   ~~~
   
-  * The `1` provided as left argument forces the GUI to make itself visible again.
+  * The `1` provided as left argument forces the GUI to make itself visible, no matter whether it is visible right now or not: the user might have "closed" the help system since she requested a help page.
   * `MyHelpInstance` represents the help system. 
   * "Misc" is the name of the page to be displayed. Can also be empty (`⍬`) in which case the first page is shown.
   
-  Note that the overhead of bringing the help system back this way is pretty close to zero. If you want to get rid of the help system just delete the reference.
+  Note that the overhead of bringing the help system back this way is pretty close to zero. If you _really_ want to get rid of the help system just delete the reference.
 
+  
 ## The "Developers" menu
 
-In case the help system is running under a development version of Dyalog you have a "Developers" menu on the right side of the menubar. This offers a couple of powerful commands that support you in keeping your help system healthy. In particular we want to draw your attention to the "Create proofread document" command. This creates an HTML document from all the help pages and writes the HTML to a temporary file. The filename is printed to the session.
+In case the help system is running under a development version of Dyalog you have a "Developers" menu on the right side of the menubar. This offers a couple of powerful commands that support you in keeping your help system healthy. We discuss just the most important ones:
 
-You can then start a word processor, say Microsoft Word, and open that document with it. This will show something like this:
+
+### Show topic in browser
+
+This is particularly useful when you use non-default CSS and there is a problem with it: all modern browsers offer excellent tools for investigating CSS, making the hunt for bugs or unexpected behaviour way easier.
+
+
+### "Create proofread document"
+
+This command creates an HTML document from all the help pages and writes the HTML to a temporary file. The filename is printed to the session.
+
+You can then open that document with your favourite word processor, say Microsoft Word. This will show something like this:
 
 ![The help system as a single HTML page](images/13_ProofRead.jpg)
 
 This is a great help when it comes to proofreading a document: one can use the "Review" features of the chosen word processor and also print the document. You are much more likely to spot any problems in a printed version of the document than on screen.
+
+
+### "Reports"
+
+There are several reports available reporting broken and ambiguous links, `∆TopicProperties` functions and help pages that do not carry any index entries.
+
 
 ## Export to HTML
 

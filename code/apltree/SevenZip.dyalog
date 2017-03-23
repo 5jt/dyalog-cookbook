@@ -1,8 +1,10 @@
 ﻿:Class SevenZip
 ⍝ Use this class to zip/unzip files and directories with the Open Source software 7zip.\\
 ⍝ This class relies on an installed version of 7zip. The EXE must be on the PATH environment variable.\\
-⍝ This class is supported under Linux and Windows but not Mac OS.
-⍝ Note that 7-zip suffers from a bug: that these two files cannot go into the same zip file:
+⍝ This class is supported under Linux and Windows but not Mac OS.\\
+⍝ Note that the file extension **must** be lowercase!\\
+⍝ If `type` is not specified then the extension of the filename rules the day.
+⍝ Note also that 7-zip suffers from a bug: that these two files cannot go into the same zip file:
 ⍝
 ⍝ ~~~
 ⍝ C:\My\folder2\foo
@@ -38,6 +40,7 @@
 
     ∇ r←Version
       :Access Public Shared
+    ⍝ * 2.0.3: `type`...
     ⍝ * 2.0.2:
     ⍝   * Finally I got to the bottom of the occasionally failure that disappeared
     ⍝     by simply trying again, or trace through the code. Should be fine now.
@@ -49,15 +52,7 @@
     ⍝     under Windows anymore as a side effect.
     ⍝   * Bug fixes:
     ⍝     * The were problems with filenames containing a space.
-    ⍝ * 1.6.0:
-    ⍝   * Requires at least Dyalog version 15.0 Unicode.
-    ⍝   * SevenZip now uses `FilesAndDirs` rather than `WinFile`.
-    ⍝     Note however that SevenZip is **not** platform independent yet.
-    ⍝ * 1.5.0:
-    ⍝   * Via the left argument additional flags can be passed to `Unzip`.
-    ⍝   * Bug fixes:
-    ⍝     * `Unzip` should really run in `x` mode rather than 'e' mode in order to preserve paths.
-      r←(Last⍕⎕THIS)'2.0.2' '2016-12-31'
+      r←(Last⍕⎕THIS)'2.0.3' '2017-03-06'
     ∇
 
     :Property zipFilename
@@ -149,7 +144,6 @@
           cmd←''
           cmd,←'7z '
           cmd,←' a '
-          cmd,←' -tzip '
           cmd,←' -r- '
           cmd,←' -- '
           cmd,←'"""',(zipFilename_~'"'),'""" '
@@ -248,7 +242,7 @@
 
       CheckExtension←{
      ⍝ Returns the extension if it's valid or an empty vector
-          ((⊂Lowercase ⍵)∊types)/⍵
+          ((⊂⍵)∊types)/⍵
       }
 
     ∇ r←Run_7zip cmd

@@ -29,6 +29,8 @@
 
     ∇ r←Version
       :Access Public Shared
+      ⍝ * 1.5.1
+      ⍝   * Test cases improved.
       ⍝ * 1.5.0
       ⍝   * The two-item constructor now accepts an empty text vector as "Log". This defaults to
       ⍝     "Application" then.
@@ -36,7 +38,7 @@
       ⍝   * This version needs at least Dyalog 15.0 Unicode
       ⍝ * 1.3.0
       ⍝   * Doc converted to Markdown (requires at least ADOC 5.0).
-      r←(Last⍕⎕THIS)'1.5.0' '2017-01-14'
+      r←(Last⍕⎕THIS)'1.5.1' '2017-03-16'
     ∇
 
     :Property Log

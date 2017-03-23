@@ -38,7 +38,7 @@ Finally in Part 2 we'll introduce some professional writing techniques that migh
 
 ## What you need to use the Dyalog Cookbook
 
-* The Dyalog Version 15.0 Unicode interpreter or later.
+* The Dyalog Version 16.0 Unicode interpreter or later.
 
 * Good knowledge of APL - the Cookbook is by no means an introduction.
   

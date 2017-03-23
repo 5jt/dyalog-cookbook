@@ -4,15 +4,22 @@
 ⍝ the method `SetTrap` in order to set `⎕TRAP` properly.
 ⍝
 ⍝ ## Goals
+⍝ * Create an HTML page with essential information regarding the error, for example:
+⍝   * Error message
+⍝   * Stack
+⍝   * System vars like `⎕WSID`, `⎕IO`, `⎕ML`, `⎕TNUMS`, `⎕WA`
+⍝   * Current directory
+⍝   * Command line
+⍝
 ⍝ * Create a namespace `crash` and populate it with variables providing all
 ⍝   sorts of information potentially important for analyzing the error.
-⍝   The namespace "crash" is saved in a component file by default. By default
-⍝   all variables visible at the time of the crash are saved in a sub namespace
-⍝    of "crash" called "Vars".
+⍝   The namespace `crash` is saved in a component file. By default all variables
+⍝   visible at the time of the crash are saved in a sub namespace of `crash` called
+⍝   `Vars`.
 ⍝
-⍝   In case os a threaded application this might all you get (together with the
-⍝   HTML page, see belwo) for analysing the problem.
-⍝ * Create an HTML page with essential information regarding the error.
+⍝   In case of a threaded application this and the HTML page might all you get
+⍝   for analysing the problem.
+⍝
 ⍝ * Attempt to save an error workspace. In order to achieve that, all
 ⍝   running threads are killed except the main thread and, if different, the
 ⍝   thread running `Process`.
@@ -27,7 +34,8 @@
 ⍝ and / or a custom function for other purposes:
 ⍝ * `logFunction` is supposed to be the name of a monadic function that
 ⍝   returns a shy result. That function must be able to deal with a simple
-⍝   string as well as vectors of strings.
+⍝   string as well as vectors of strings. As the name suggest it will be called by
+⍝   `Process` when something needs to be logged.
 ⍝ * `customFns` can be used to do anything you like. A typical application for this
 ⍝   is sending an email to notify certain people about the crash.
 ⍝
@@ -37,7 +45,7 @@
 ⍝   * `LastErrorNumber` holds `⎕EN` at the moment of the crash.
 ⍝
 ⍝   This is necessary because something might go wrong inside `HandleError` and, as a
-⍝   result, overwrite the `⎕DM` and `⎕EN`.
+⍝   side effect, overwrite both `⎕DM` and `⎕EN`.
 ⍝
 ⍝   The `customFns` shall not return a result. If it does it must be of type "shy";
 ⍝   the result will be ignored.
@@ -54,14 +62,27 @@
 ⍝   parameter space in the root within your `⎕LX` function and then assiging
 ⍝   it to something like `#.MyParms`.
 ⍝
-⍝   `Process` is then able to see this when you specify\\
+⍝   `Process` is then able to see this from everywhere when you specify\\
 ⍝   `⎕TRAP←0 'E' '#.HandleError.Process' '#.MyParms'`
 ⍝
 ⍝ ## Notes
-⍝ The attempt to save an error WS will fail if there are any open acre
-⍝ projects. In a production environment that should not be the case normally.
-⍝ If you do not share this opinion then use your own function (see the
-⍝ `customFns` parameter) to close all open acre projects.
+⍝ * The attempt to save an error WS will fail if there are any open acre
+⍝   projects. In a production environment that will hardly ever be the case.
+⍝   If you do not share this opinion then use your own function (see the
+⍝   `customFns` parameter) to close all open acre projects.
+⍝ * Prior to version 2.2.0 `HandleError` saved crash files in a folder `Errors`
+⍝   that was created as a sibling of either the workspace or the stabnd-alone
+⍝   EXE. While this policy still holds true under Linux and Mac OS, under Windows
+⍝   a folder with the name of either the EXE or the WS is created
+⍝   within %LOCALAPPDATA%, with a sub-folder "Errors" inside it.
+⍝ * If the crashing application is multi-threaded then saving an error WS is
+⍝   not possible. However, `HandleError` tries to overcome this by deleting
+⍝   all threads but the main thead (0) and the thread `HandleError` is
+⍝   actually running in. If that leaves just the main thread then you might
+⍝   be lucky and an error WS can be saved anyway. Or unlucky because although
+⍝   the application crashed in the main thread it might have been caused by
+⍝   something that happened in another thread, and you won't be able to
+⍝   figure that out.
 ⍝
 ⍝ Kai Jaeger ⋄ APL Team Ltd
 ⍝
@@ -71,6 +92,15 @@
 
     ∇ r←Version
       :Access Public Shared
+      ⍝ * 2.2.1
+      ⍝   * Bug fix: the change in 2.2.0 should have been Windows-only but wasn't.
+      ⍝ * 2.2.0
+      ⍝   * Prior to 2.2.0 all crash information was saved as a sibling of the application, be
+      ⍝     it a workspace or a stand-alone exe. Under Windows now `HandleError` saves the crash
+      ⍝     files in %LOCALAPPDATA/{name}% with either the name being `⎕WSID` or the name of the
+      ⍝     EXE file. Under Linux and Mac OS no change takes place.
+      ⍝ * 2.1.3
+      ⍝   * Test cases improved.
       ⍝ * 2.1.2
       ⍝   For a relative `⎕WSID` without a path `⎕WSID` was reported wrongly in the HTML report.
       ⍝ * 2.1.1
@@ -84,10 +114,7 @@
       ⍝ * 2.0.0
       ⍝   * Supports Windows, Linux, Mac OS.
       ⍝   * Needs at least Dyalog 15.0 Unicode
-      ⍝ * 1.9.1:
-      ⍝   * `⎕WA` was reported as `⎕ML`.
-      ⍝   * Documentation improved
-      r←(Last⍕⎕THIS)'2.1.2' '2017-03-08'
+      r←(Last⍕⎕THIS)'2.2.1' '2017-03-21'
     ∇
 
     ∇ {filename}←{signal}Process parms;crash;TRAP;⎕IO;⎕ML;⎕TRAP
@@ -174,24 +201,31 @@
     ⍝ Returns a namespace with default values for the `HandleError` method
     ⍝ | Parameter    | Description|
     ⍝ | - | - |
-    ⍝ | `checkErrorFolder` | Boolean that defaults to 1. If this is 1 and the folder `errorFolder` is pointing to does not exist it will be created. Needs `FilsAndDirs`! |
+    ⍝ | `checkErrorFolder` | Boolean that defaults to 1. If this is 1 and the folder `errorFolder` is pointing to does<<br>>**not** exist it will be created. Needs `FilsAndDirs`! |
     ⍝ | `createHTML` | Boolean that defaults to 1. A 0 suppresses the creation of the HTML file.|
     ⍝ | `customFns`  | Fully qualified name of a monadic function to be executed by `Process`.<<br>>Useful to send an email, for example. See also `customFnsParent`.|
     ⍝ | `customFnsParent` | No default. May be a reference pointing to the parent of the `customFns`.<<br>>Needed only in case that the parent is a class instance since `logFunction` may use dottet syntax.|
     ⍝ | `enforceOff` | 1: `⎕OFF` no matter whether is's a runtime EXE or not. Mainly for test cases.|
-    ⍝ | `errorFolder`| Folder that keeps the component file (`crash`), the HTML page and the error WS.<<br>>If this is relative then the current directory is added.|
+    ⍝ | `errorFolder`| Folder that keeps the component file (`crash`), the HTML page and the error WS. See below for rules.|
     ⍝ | `logFunction`| Name of the logging function to be used. See also `logFnsParent`.|
     ⍝ | `logFnsParent` | No default. May be a reference pointing to the parent of `logFunction`.<<br>>Needed only in case that the parent is a class instance since `logFunction` may use dottet syntax.|
     ⍝ | `off`        | By default this function executes `⎕OFF` with `returnCode` when in Runtime. A 0 suppresses this.|
     ⍝ | `returnCode` | The return code passed on to `⎕OFF`.|
     ⍝ | `saveCrash`  | Boolean that defaults to 1.<<br>>A 0 suppresses the creation of `crash` & a component file in which `crash` is saved.|
-    ⍝ | `saveErrorWS`| Boolean that defaults to 1.<<br>>A 0 suppresses the creation of a crash workspace.|
-    ⍝ | `saveVars`   | Boolean that defaults to 1.<<br>>Is ignored when `saveCrash` is 0. If 1 all visible variables are saved in a sub namepsace `Vars` within `crash`.|
+    ⍝ | `saveErrorWS`| Boolean that defaults to 1.<<br>>A 0 suppresses the creation of a crash workspace. There is no point in attempting<<br>>to save a WS in a multi-threaded application for example.|
+    ⍝ | `saveVars`   | Boolean that defaults to 1.<<br>>Is ignored when `saveCrash` is 0. If 1 all visible variables are saved in a<<br>>sub namespace `Vars` within `crash`.|
     ⍝ | `signal`     | When `off` is 0 and `signal` is not 0 then `signal` is signalled by `Process`.<<br>>This can be used for a restart attempt.|
     ⍝ | `trapInternalErrors` | By default all internal errors are trapped:<<br>>`Process` should never crash an application.|
     ⍝ | `trapSaveWSID`       | Boolean that defaults to 1. Makes sure that the `⎕SAVE` statement is guarded.<<br>>Useful to trace through it without a problem in versions prior to 14.1.|
     ⍝ | `windowsEventSource` | Name of the Windows Event Log to write to. Ignored when empty.|
     ⍝ | `addToMsg`           | Will be added to the log file as well as the Windows Event Log messages.<<br>>Mainly for test cases.|
+    ⍝
+    ⍝ Since version 2.2.0 `errorFolder` defaults to an e,pty vector. Assuming that the WS or the stand-alone EXE have the name "Foo" the the following rules hold true:
+    ⍝ * If `errorFolder` is empty then it defaults to "%LOCALAPPDATA%/Foo/Errors" under Windows and "Errors/" in the current
+    ⍝   directory otherwise.
+    ⍝ * If `errorFolder` is "Errors/" then this folder will be expected in the current directory.
+    ⍝ * If `errorFolder` is an absolute path it is assumed that the last part is the folder that shall hold the crash files.\\
+    ⍝ In all three instances if the folder in question does not exist but `checkErrorFolder` is 1 then it will be created.
       :Access Public Shared
       ⎕IO←0 ⋄ ⎕ML←3
       r←⎕NS''
@@ -201,7 +235,7 @@
       r.customFns←''
       r.customFnsParent←⍬
       r.enforceOff←0
-      r.errorFolder←'Errors/'
+      r.errorFolder←''
       r.logFunction←''
       r.logFunctionParent←⍬
       r.off←1
@@ -240,56 +274,7 @@
 
     ∇ {html}←WriteHtmlFile(parms crash filename);If
       :If parms.createHTML
-          html←'<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"> ',CR
-          html,←'<html>',CR
-          html,←'<head>',CR
-          html,←'<meta http-equiv="Content-Type" content="text/html;charset=utf-8">',CR
-          html,←'<title>',('/'Last filename),'</title>',CR
-          html,←'<style media="screen" type="text/css">',CR
-          html,←'pre {',CR
-          html,←'font-family: "APL385 Unicode"; font-size: 14px;',CR
-          html,←'}',CR
-          html,←'h1 {',CR
-          html,←'font-family: "Courier New";',CR
-          html,←'}',CR
-          html,←'table#apl {',CR
-          html,←'font-family: "APL385 Unicode"; font-size: 14px;',CR
-          html,←'}',CR
-          html,←'</style>',CR
-          html,←'</head>',CR
-          html,←'<body>',CR
-          html,←'<h1>',('/'Last filename),'</h1>',CR
-          html,←'<table id="apl">'
-          html,←'Version'MarkupAsTableRow⍕'#'⎕WG'APLVersion'
-          html,←'⎕WSID'MarkupAsTableRow⍕{'/'Last ⍵ ⋄⍵ }⍣('/'∊crash.WSID)⊣1↓' ',crash.WSID  ⍝ Enforce ⎕DR 80/82 with 1↓' ',
-          html,←'⎕IO'MarkupAsTableRow⍕⎕IO
-          html,←'⎕ML'MarkupAsTableRow⍕⎕ML
-          html,←'⎕WA'MarkupAsTableRow⍕⎕WA
-          html,←'⎕TNUMS'MarkupAsTableRow⍕⎕TNUMS
-          html,←'Category'MarkupAsTableRow crash.Category
-          html,←'EM'MarkupAsTableRow crash.EM
-          html,←'HelpURL'MarkupAsTableRow crash.HelpURL
-          html,←'EN'MarkupAsTableRow⍕crash.EN
-          html,←'ENX'MarkupAsTableRow⍕crash.ENX
-          html,←'InternalLocation'MarkupAsTableRow⍕crash.InternalLocation
-          html,←'Message'MarkupAsTableRow crash.Message
-          html,←'OSError'MarkupAsTableRow⍕crash.OSError
-          html,←'Current Dir'MarkupAsTableRow⍕crash.CurrentDir
-          html,←'Command line'MarkupAsTableRow⍕crash.CommandLine
-          :If ~0∊⍴parms.addToMsg
-              html,←'Added Msg'MarkupAsTableRow parms.addToMsg
-          :EndIf
-          html,←'</table>'
-          html,←'<p><b>Stack:</b></p>',CR
-          :If ~0∊⍴crash.XSI
-              html,←'<pre>',(⊃,/CR,¨crash.XSI,¨{'[',(⍕⍵),']'}¨crash.LC),CR,'</pre>',CR
-          :EndIf
-          html,←'<p><b>Error Message:</b></p>',CR
-          :If ~0∊⍴crash.DM
-              html,←'<pre>',(ExchangeHtmlChars⊃,/CR,¨crash.DM),CR,'</pre>',CR
-          :EndIf
-          html,←'</body>',CR
-          html,←'</html>',CR
+          html←AssembleHTML parms crash
           :Trap (parms.trapInternalErrors)/0
               WriteUtf8File(filename,'.html')html
           :Else
@@ -302,6 +287,59 @@
       :Else
           html←''
       :EndIf
+    ∇
+
+    ∇ html←AssembleHTML(parms crash)
+      html←'<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"> ',CR
+      html,←'<html>',CR
+      html,←'<head>',CR
+      html,←'<meta http-equiv="Content-Type" content="text/html;charset=utf-8">',CR
+      html,←'<title>',('/'Last filename),'</title>',CR
+      html,←'<style media="screen" type="text/css">',CR
+      html,←'pre {',CR
+      html,←'font-family: "APL385 Unicode"; font-size: 14px;',CR
+      html,←'}',CR
+      html,←'h1 {',CR
+      html,←'font-family: "Courier New";',CR
+      html,←'}',CR
+      html,←'table#apl {',CR
+      html,←'font-family: "APL385 Unicode"; font-size: 14px;',CR
+      html,←'}',CR
+      html,←'</style>',CR
+      html,←'</head>',CR
+      html,←'<body>',CR
+      html,←'<h1>',('/'Last filename),'</h1>',CR
+      html,←'<table id="apl">'
+      html,←'Version'MarkupAsTableRow⍕'#'⎕WG'APLVersion'
+      html,←'⎕WSID'MarkupAsTableRow⍕{'/'Last ⍵ ⋄ ⍵}⍣('/'∊crash.WSID)⊣1↓' ',crash.WSID  ⍝ Enforce ⎕DR 80/82 with 1↓' ',
+      html,←'⎕IO'MarkupAsTableRow⍕⎕IO
+      html,←'⎕ML'MarkupAsTableRow⍕⎕ML
+      html,←'⎕WA'MarkupAsTableRow⍕⎕WA
+      html,←'⎕TNUMS'MarkupAsTableRow⍕⎕TNUMS
+      html,←'Category'MarkupAsTableRow crash.Category
+      html,←'EM'MarkupAsTableRow crash.EM
+      html,←'HelpURL'MarkupAsTableRow crash.HelpURL
+      html,←'EN'MarkupAsTableRow⍕crash.EN
+      html,←'ENX'MarkupAsTableRow⍕crash.ENX
+      html,←'InternalLocation'MarkupAsTableRow⍕crash.InternalLocation
+      html,←'Message'MarkupAsTableRow crash.Message
+      html,←'OSError'MarkupAsTableRow⍕crash.OSError
+      html,←'Current Dir'MarkupAsTableRow⍕crash.CurrentDir
+      html,←'Command line'MarkupAsTableRow⍕crash.CommandLine
+      :If ~0∊⍴parms.addToMsg
+          html,←'Added Msg'MarkupAsTableRow parms.addToMsg
+      :EndIf
+      html,←'</table>'
+      html,←'<p><b>Stack:</b></p>',CR
+      :If ~0∊⍴crash.XSI
+          html,←'<pre>',(⊃,/CR,¨crash.XSI,¨{'[',(⍕⍵),']'}¨crash.LC),CR,'</pre>',CR
+      :EndIf
+      html,←'<p><b>Error Message:</b></p>',CR
+      :If ~0∊⍴crash.DM
+          html,←'<pre>',(ExchangeHtmlChars⊃,/CR,¨crash.DM),CR,'</pre>',CR
+      :EndIf
+      html,←'</body>',CR
+      html,←'</html>',CR
     ∇
 
     ∇ {r}←WriteWindowsLog_(source type message);eventLog;sep;⎕USING;buffer;⎕ML
@@ -431,7 +469,8 @@
 
     ∇ {r}←WriteToWindowsEvents parms;msg
       r←⍬
-      :If ~0∊⍴parms.windowsEventSource
+      :If 'Win'≡GetOperatingSystem ⍬
+      :AndIf ~0∊⍴parms.windowsEventSource
           :Trap (parms.trapInternalErrors)/0
               msg←('Application has crashed, RC=',⍕crash.EN,'; MSG=',1⊃crash.DM)
               :If ~0∊⍴parms.addToMsg
@@ -456,17 +495,28 @@
       :EndFor
     ∇
 
-    ∇ {r}←CheckErrorFolder parms
+    ∇ {r}←CheckErrorFolder parms;buff
       r←⍬
-      :If ~0∊⍴parms.errorFolder
-          parms.errorFolder←{(-(¯1↑⍵)∊'/\')↓⍵}parms.errorFolder
-          :If 0=⎕NEXISTS parms.errorFolder
-          :AndIf parms.checkErrorFolder
-              :If 'Win'≡GetOperatingSystem ⍬
-                  ⎕CMD'MkDir "',parms.errorFolder,'"'
-              :Else
-                  ⎕CMD'MkDir -p ',parms.errorFolder,'"'
-              :EndIf
+      :If 0∊⍴parms.errorFolder
+          :If 0∊⍴buff←2⊃⎕NPARTS ⎕WSID
+              buff←2⊃⎕NPARTS'"'~⍨{⍵↑⍨¯1+⍵⍳' '}2 ⎕NQ'#' 'GetCommandLine' ⍝ Probably a stanmd-alone EXE
+          :EndIf
+          :If 'Win'≡GetOperatingSystem ⍬
+              parms.errorFolder←'%LOCALAPPDATA%','/',buff,'\Errors'
+          :Else
+              parms.errorFolder←##.FilesAndDirs.PWD,'/Errors'
+          :EndIf
+      :EndIf
+      parms.errorFolder←{(-(¯1↑⍵)∊'/\')↓⍵}##.FilesAndDirs.NormalizePath parms.errorFolder
+      :If 0=+/'/\'∊parms.errorFolder
+          parms.errorFolder←##.FilesAndDirs.NormalizePath ##.FilesAndDirs.PWD,'/',parms.errorFolder
+      :EndIf
+      :If 0=⎕NEXISTS parms.errorFolder
+      :AndIf parms.checkErrorFolder
+          :If 'Win'≡GetOperatingSystem ⍬
+              ⎕CMD'MkDir "',parms.errorFolder,'"'
+          :Else
+              ⎕SH'mkdir -p "',parms.errorFolder,'"'
           :EndIf
       :EndIf
     ∇
