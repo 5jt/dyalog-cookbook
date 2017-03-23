@@ -8,4 +8,5 @@ mainmatter.txt
 06_configSettings.md
 07_DebuggingEXEs.md
 08_handlingErrors.md
+09_testing.md
 13_help.md
