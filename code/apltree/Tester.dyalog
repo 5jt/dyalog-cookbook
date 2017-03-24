@@ -155,6 +155,12 @@
 
     ∇ r←Version
       :Access Public shared
+      ⍝ * 3.2.0
+      ⍝   * `Tester` is now reporting:
+      ⍝     * It's version and date
+      ⍝     * Whether it found (and instantiated) any INI file or not.
+      ⍝     * Whether it found (and executed) a function `Initial` or not.
+      ⍝     * Whether it found (and executed) a function `Cleanup` or not.
       ⍝ * 3.1.1
       ⍝   * Bug fix in `ListHelpers` caused by changes in 3.1
       ⍝ * 3.1.0
@@ -169,7 +175,7 @@
       ⍝       just the report.
       ⍝ * 2.9.1
       ⍝   * Documentation corrected regarding INI files.
-      r←(Last⍕⎕THIS)'3.1.1' '2017-03-23'
+      r←(Last⍕⎕THIS)'3.2.0' '2017-03-24'
     ∇
 
     ∇ {(rc log)}←Run refToTestNamespace;flags
@@ -356,11 +362,8 @@
       ref.Stop←debugFlag         ⍝ "Stop" is honored by "FailsIf" & "PassesIf"
       ref.⎕EX'INI'               ⍝ Get rid of any leftovers
       ps.(log trapFlag debugFlag batchFlag stopAt testCaseNos errCounter failedCounter)←''trapFlag debugFlag batchFlag stopAt testCaseNos 0 0
-      :If ⎕NEXISTS'testcases_',(2 ⎕NQ'#' 'GetEnvironment' 'Computername'),'.ini'
-          ref.INI←'flat'(⎕NEW #.IniFiles(,⊂'testcases_',(2 ⎕NQ'#' 'GetEnvironment' 'Computername'),'.ini')).Convert ⎕NS''
-      :ElseIf ⎕NEXISTS'Testcases.ini'
-          ref.INI←'flat'(⎕NEW #.IniFiles(,⊂'Testcases.ini')).Convert ⎕NS''
-      :EndIf
+      ⎕←(⎕PW-1)↑'--- Test framework "Tester" version ',(2⊃Version),' from ',(3⊃Version),' ',⎕PW⍴'-'
+      ref←ProcessIniFiles ref
       :If 0=ExecuteInitial ref ps
           log←,⊂'Could not initialize; see ',(⍕↑1↓⎕RSI),'.Initial'
           →∆GetOutOfHere,rc←1
@@ -376,11 +379,40 @@
       ps.stopAt∨←¯1∊×ps.testCaseNos
       ProcessTestCases ref ps
      ∆GetOutOfHere:
-      ExecuteCleanup ref
-      ref.⎕EX'INI'              ⍝ Get rid of any leftovers
+      :If 9=ref.⎕NC'INI'
+          ref.⎕EX'INI'          ⍝ Get rid of any leftovers
+          ⎕←'Inifile instance "INI" deleted'
+      :EndIf
       :If 0<ps.⎕NC'list'        ⍝ Then no test cases got executed, probably because `Initial` failed.
           (rc log)←ReportTestResults ps
           ref.TestCasesExecutedAt←FormatDateTime ⎕TS
+          ⎕←'Time of execution recorded on variable ',(⍕ref),'.TestCasesExecutedAt in: ',ref.TestCasesExecutedAt
+      :EndIf
+      ExecuteCleanup ref
+    ∇
+
+    ∇ ref←ProcessIniFiles ref;iniFilename;counter
+      counter←0
+      iniFilename←'testcases_',(2 ⎕NQ'#' 'GetEnvironment' 'Computername'),'.ini'
+      ⎕←'Searching for INI file ',iniFilename
+      :If ⎕NEXISTS iniFilename
+          ref.INI←'flat'(⎕NEW #.IniFiles(,⊂iniFilename)).Convert ⎕NS''
+          ⎕←'  INI file "',iniFilename'" found and instantiated as INI in ',⍕ref
+          counter+←1
+      :Else
+          ⎕←'  ...not found'
+      :EndIf
+      iniFilename←'Testcases.ini'
+      ⎕←'Searching for INI file ',iniFilename
+      :If ⎕NEXISTS iniFilename
+          ref.INI←'flat'(⎕NEW #.IniFiles(,⊂iniFilename)).Convert ⎕NS''
+          ⎕←'  INI file "',iniFilename'" found and instantiated as INI in ',⍕ref
+          counter+←1
+      :Else
+          ⎕←'  ...not found'
+      :EndIf
+      :If 0<counter
+          ⎕←(⍕counter),' INI file',((1<counter)/'s'),' instantiated'
       :EndIf
     ∇
 
@@ -391,6 +423,7 @@
 
     ∇ {r}←ExecuteInitial(ref parms)
       r←1
+      ⎕←'Looking for a function "Initial"...'
       :If 3=ref.⎕NC'Initial'
           :Select ↑(⎕IO+1)⊃1 ref.⎕AT'Initial'
           :Case 0
@@ -408,6 +441,9 @@
           :Else
               11 ⎕SIGNAL⍨'The "Initial" function in ',(⍕ref),' has an invalid signature: it''s neither monadic nor niladic'
           :EndSelect
+          ⎕←'  "Initial" found and sucessfully executed'
+      :Else
+          ⎕←'  ...not found'
       :EndIf
     ∇
 
@@ -489,6 +525,7 @@
                   ⎕←⊃¯1↑ps.log
               :EndIf
           :EndTrap
+          {}⎕WA  ⍝ Enforce a memory compaction in order to get rid of any rubbish.
       :EndFor
 ⍝Done
     ∇
@@ -548,8 +585,12 @@
     ∇
 
     ∇ ExecuteCleanup ref
+      ⎕←'Looking for a function "Cleanup"...'
       :If 3=ref.⎕NC'Cleanup'
           ref.Cleanup
+          ⎕←'  Function "Cleanup" found and sucessfully executed.'
+      :Else
+          ⎕←'  ...not found'
       :EndIf
     ∇
 
@@ -766,13 +807,15 @@
 ⍝ These are all established by calling the `EstablishHelpers' method.
 ⍝ The lists includes helpers that won't be established in case the namespace hosting the test cases is scripted!
           ⎕IO←1 ⋄ ⎕ML←1
-          force←⎕THIS≡⊃⎕RSI
+          force←⎕THIS≡⊃(1↓⎕RSI),⊂''
           r←0 2⍴' '
           list←'Run' 'RunDebug' 'RunThese' 'RunBatchTests' 'RunBatchTestsInDebugMode' 'E' 'L' 'G' 'FailsIf' 'PassesIf'
           list,←'GoToTidyUp' 'RenameTestFnsTo' 'ListHelpers' '∆OK' '∆Failed' '∆NoBatchTest' '∆Inactive' '∆NoAcreTests'
           list,←'∆WindowsOnly' '∆LinuxOnly' '∆MacOnly' '∆LinuxOrMacOnly' '∆LinuxOrWindowsOnly' '∆MacOrWindowsOnly'
           list←,¨list
-          list/⍨←force∨0<⊃∘⎕NC¨list
+          :If '#.Tester.Helpers'≢⍕⊃⎕RSI
+              list/⍨←force∨0<⊃∘⎕NC¨list
+          :EndIf
           r←↑{⍵(#.APLTreeUtils.dlb{⍺⍺{⍵↓⍨¯1+⍵⍳'⍝'}⍺⍺ ⍵}1⊃(1↓⎕NR ⍵),⊂'')}¨list
         ∇
 
