@@ -9,4 +9,7 @@ mainmatter.txt
 07_DebuggingEXEs.md
 08_handlingErrors.md
 09_testing.md
-13_help.md
+10_documentation.md
+# 11_makeme.md
+# 12_WindowsEventLog.md
+# 13_help.md

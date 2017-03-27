@@ -1,6 +1,6 @@
 {:: encoding="utf-8" /}
 
-> This chapter cannot be finished before the problems (several!) I found in the `]snap` command are fixed.
+> `⍝TOTO⍝` This chapter cannot be finished before the problems (several!) I found in the `]snap` command are fixed.
 >
 > (Neither can the software)
 
@@ -33,7 +33,7 @@ Double-click the EXE and you will see `Markdown2Help2`'s own help system:
 
 ![Markdown2Help's Help](images/13_Viewer.jpg)
 
-We also need the script `MarkAPL` which is used to convert the help pages -- which are written in Markdown [^markdown] -- to HTML. You know by now how to download scripts from the APLTree library.
+We also need the script `MarkAPL` which is used to convert the help pages -- which are written in Markdown -- to HTML. You know by now how to download scripts from the APLTree library.
 
 Finally we need to modify the DYAPP so that our boot function loads the module into the workspace:
 
@@ -83,11 +83,12 @@ When you right-click on a page like "Foo" and then select "Edit help page" from 
 
 ![A help page in the editor](images/13_EditMarkdown.jpg)
 
-This is the definition of the help page in Markdown. If you don't know what Markdown is please read both the Markdown article on Wikipedia [^markdown] and `Markdown2Help`'s own help file. The time will be a good investment in any case because these days Markdown is used pretty much everywhere.
+This is the definition of the help page in Markdown. 
 
 Notes:
 
-* The first line specifies a key-value-pair. "index" is the key and "This is about foo" is the value of that key. This is interpreted by `Markdown2Help` as an index entry.
+* The first line specifies a key-value-pair. "index" is the key and "This is about foo" is the value of that key.
+  This is interpreted by `Markdown2Help` as an index entry.
 
   Note that this is not a Markdown feature but a `Markdown2Help` feature.
 * `# Foo` defines a header of level one. Every help page must have such a header.
@@ -95,6 +96,8 @@ Notes:
 * `Go to →[Overview]` is also a paragraph, but this paragraph carries a link. "Overview" must be the name of a page. If the title of the page is different from the name, the title is going to be shown as link text in the help page.
 
 Make some changes, for example add another paragraph, and then press <escape>. `Markdown2Help` takes your changes, converts the Markdown to HTML and shows the changed page straight away. This gives you an idea of how easy it actually is to change help pages. Adding and deleting help pages -- and nodes -- can be achieved via the context menu.
+
+Even if you are familiar whith Markdown you should read `Markdown2Help`'s own help file before you start using Markdown2Help seriously. Some Markdown features as not supported by the help system, and internal links are implemented in a simplified way.
 
 
 ## Changing title and sequence
@@ -290,4 +293,3 @@ The resulting website does not offer all the features the Windows version comes 
 
 
 [^ham]: <http://www.helpandmanual.com/>
-[^markdown]: <https://en.wikipedia.org/wiki/Markdown>

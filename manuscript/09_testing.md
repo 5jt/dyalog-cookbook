@@ -122,7 +122,7 @@ In this chapter we'll tackle unit tests.
 
 Unit tests should execute _fast_: developers often want to execute them even when still working on a project in order to make sure that they have not broken anything, or to find out what they broke. When executing the test suite takes too long it defeats the purpose.
 
-Sometimes it cannot be avoided that tests take quite a while, for example when testing GUIs. In that case it might be an idea to create a group of tests that comprehend not all but just the most important ones.
+Sometimes it cannot be avoided that tests take quite a while, for example when testing GUIs. In that case it might be an idea to create a group of tests that comprehend not all but just the most important ones. Those can then be executed while actually working on the code base while the full-blown test suite is only executed every now and then, maybe only before checking in the code.
 
 
 ## Preparing: helpers
@@ -160,7 +160,7 @@ RunThese
 
 The helpers can be categorized:
 
-* Those starting their names with a `∆` character are niladic functions that return a result. They act like constants in other programming languages. APL does not have constants, but they can be emulated with niladic functions.
+* Those starting their names with a `∆` character are niladic functions that return a result. They act like constants in other programming languages. APL does not have constants, but they can be emulated with niladic functions. (Strictly speaking they are not helpers)
 * Those starting their names with `Run` are used to run all or selected test cases in slightly different scenarios.
 * `FailsIf`, `PassesIf` and `GoToTidyUp` are used for flow control. 
 * Miscellaneous
@@ -193,9 +193,9 @@ Let's look at an example: `FailsIf` takes a Boolean right argument and returns e
 0
 ~~~
 
-That means that the statement `→FailsIf 1` will jump to 0, leaving the function carrying the statement.
+That means that the statement `→FailsIf 1` will jump to 0, exiting the function carrying the statement.
 
-Since GoTo statements are rarely used these days because under most circumstances control structures are way better it is probably worthwhile to mention that `→⍬` -- as well as `→''` -- makes the interpreter carry on with the next line. In other words, it's not going anywhere, it just carries on. That's exactly what we want when the right argument of `FailsIf` is a `0` because in that case the test has not failed, at least not yet.
+Since GoTo statements are rarely used these days because under most circumstances control structures are way better, it is probably worthwhile to mention that `→⍬` -- as well as `→''` -- makes the interpreter carry on with the next line. In other words the function just carries on. That's exactly what we want when the right argument of `FailsIf` is a `0` because in that case the test has not failed.
 
 `PassesIf` is exactly the same thing but just with a negated argument: it returns a `1` when the right argument is `1` and an empty vector in case the right argument is `0`.
 
@@ -209,7 +209,7 @@ This is useful in case a test function needs to do some cleaning up, no matter w
     #.FilesAndDirs.DeleteFile tempFilename
 ~~~
 
-When everything goes according to plan the function would eventually execute these lines anyway, but when a test case fails you have something like that:
+When everything goes according to plan the function would eventually execute these lines anyway, but when a test case fails you need this:
 
 ~~~
     →GoToTidyUp expected≢result
@@ -276,7 +276,7 @@ The template covers all possibilities, and we will discuss all of them. However,
 What we changed:
 
 * We renamed the template from `Test_000` to `Test_001`.
-* We described it in line 1 as thoroughly as possible. The reason is that this line is later the only way to tell this test case from any others. In other words, it is really important to get this right.
+* We described in line 1 as thoroughly as possible what the test case is doing. The reason is that this line is later the only way to tell this test case from any other. In other words, it is really important to get this right. By the way: if you cannot describe in a single line what the test case is doing it's most likely doing too much.
 * We set `⎕TRAP` so that any error 999 will stop the interpreter with a deliberate error; we will soon see why and what for.
 * We also localize `⎕TRAP` so that any error 999 has an effect only within the test function. In fact any other error than 999 is passed through with the `N` option in order to allow `⎕TRAP`s further up the stack to take control.
 * We initialize the explicit result `R` by assigning the value returned by the niladic function `∆Failed`. That allows us to simply leave the function in case a test fails: the result will then tell.
@@ -291,7 +291,7 @@ A> ### Ordinary namespaces versus scripted ones
 A>
 A> There's a difference between an ordinary namespace and a scripted namespace: imagine you've called `#.Tester.EstablishHelpersIn` within an ordinary namespace. Now you change/add/delete test functions; that would have no effect on anything else in that namespace. In other words, the helpers would continue to exist.
 A>
-A> When you change a namespace script on the other hand the namespace is re-created from the script, and that means that our helpers will disappear because they are not a part of the `Tests` namespace.
+A> When you change a namespace script on the other hand the namespace is re-created from the script, and that means that our helpers will disappear because they are not a part of the `Tests` script.
 
 Let's call our test case. We do this by running the `Run` method first:
 
@@ -310,13 +310,20 @@ That's what we expect.
 A> ### What is a test case?!
 A> You might wonder how `Run` established what is a test case and what isn't: that's achieved by naming conventions. Any test function _must_ start their name with `Test_`. After that there are two possibilities:
 A> 
-A> 1. In the simple case there are one or more digits after the `_`; nothing but digits. Therefore these all qualify as test cases: `Test_1`, `Test_01`, `Test_001` and so on.
+A> 1. In the simple case there are one or more digits after the `_`; nothing but digits. Therefore these all qualify as test cases: `Test_1`, `Test_01`, `Test_001` and so on. `Test_01A` however does not.
 A> 1. In case you have a large number of test cases you most probably want to group them in one way or another. You can add a group name after the first `_` and add a second `_` followed by one or more digits. Therefore `Test_map_1` is recognized as a test case, and so is `Test_Foo_9999`. `Test_Foo_Goo_1` however is not.
 
 What if we want to look into a broken or failing test case? Of course in our current scenario -- which is extremely simple -- we could just trace into `Test_001` and find out what's going on, but if we take advantage of the many features the test framework is actually offering then we cannot do this (soon it will become clear why). However, there is a way to do this no matter whether the scenario is simple, reasonably complex or extremely complex: we call `RunDebug`:
 
 ~~~
 RunDebug 0
+--- Test framework "Tester" version 3.2.0 from 2017-03-24 -------
+Searching for INI file testcases_{computername}.ini
+  ...not found
+Searching for INI file Testcases.ini
+  ...not found
+Looking for a function "Initial"...
+  ...not found
 --- Tests started at 2017-03-14 12:16:00 on #.Tests -------------
 SYNTAX ERROR
       . ⍝ Deliberate error
@@ -329,16 +336,28 @@ SYNTAX ERROR
 #.Tester.Run__[39]
 #.Tester.RunDebug[17]
 #.Tests.RunDebug[3]
+Time of execution recorded on variable #.Tests.TestCasesExecutedAt: yyyy-mm-dd hh:mm:ss
+Looking for a function "Cleanup"...
+  ...not found
 ~~~
 
-It stopped in line 6. Obviously the call to `FailsIf` has something to do with this, and so has the `⎕TRAP` setting, because that's where the "Deliberate error" is coming from. Indeed this is the case: all three flow control functions, `FailIf`, `PassesIf` and `GoToTidyUp` check whether they are running in debug mode and if that is the case then rather returning a result that indicates a failing test case they `⎕SIGNAL` a 999 which is then caught by the `⎕TRAP` which in turns first prints `⍝ Deliberate error` to the session and then hands over control to the user. You can now start the Tracer and investigate why the test case failed.
+A> Note that there are INI files mentioned, and `Initial` and `Cleanup`. Ignore this for the time being; we will discuss this later on.
+
+It stopped in line 6. Obviously the call to `FailsIf` has something to do with this, and so has the `⎕TRAP` setting, because apparently that's where the "Deliberate error" comes from. Indeed this is the case: all three flow control functions, `FailIf`, `PassesIf` and `GoToTidyUp` check whether they are running in debug mode and if that is the case then rather returning a result that indicates a failing test case they `⎕SIGNAL 999` which is then caught by the `⎕TRAP` which in turn first prints `⍝ Deliberate error` to the session and then hands over control to the user. You can now start the Tracer and investigate why the test case failed.
 
 The difference is the first of the two flags provided as right argument to the test function: `stopFlag`. This is `0` when `Run` executes the test cases, but it is `1` when `RunDebug` is in charge. The three flow control functions `FailsIf`, `PassesIf` and `GoToTidyUp` all honour `stopFlag` - that's how it works.
 
-Now sometimes you don't want the test function to go to the point where the error actually appears, for example because the test functions does a lot of precautioning, and you want to check this because there might be something wrong with this, causing the failure. Note that we passed a `0` as right argument to `RunDebug`. If we pass a `1` instead then the test framework would stop just before it would start executing the test case otherwise:
+Now sometimes you don't want the test function to go to the point where the error actually appears, for example in case the test function does a lot of precautioning, and you want to check this because there might be something wrong with it, causing the failure. Note that so far we passed a `0` as right argument to `RunDebug`. If we pass a `1` instead then the test framework would stop just before it would start executing the test case:
 
 ~~~
       RunDebug 1
+--- Test framework "Tester" version 3.2.0 from 2017-03-24 -------
+Searching for INI file testcases_{computername}.ini
+  ...not found
+Searching for INI file Testcases.ini
+  ...not found
+Looking for a function "Initial"...
+  ...not found      
 --- Tests started at 2017-03-14 13:29:24 on #.Tests -------------
 
 ExecuteTestFunction[6]
@@ -348,6 +367,9 @@ ExecuteTestFunction[6]
 #.Tester.Run__[39]
 #.Tester.RunDebug[17]
 #.Tests.RunDebug[3]
+Time of execution recorded on variable #.Tests.TestCasesExecutedAt: yyyy-mm-dd hh:mm:ss
+Looking for a function "Cleanup"...
+  ...not found
 ~~~
 
 You can now trace into `Test_001`.
@@ -383,7 +405,7 @@ Now enter `)reset` and then run `RunDebug 1`. Trace into `Test_001` and watch wh
 
 This checks whether the error message is what we expect. Trace through the test function and watch what it is doing. After having left the test function you may click the green triangle in the Tracer ("Continue execution of all threads").
 
-We have discussed the functions `Run`, `RunDebug` and `RunThese`. That leaves `RunBatchTests` and `RunBatchTestsInDebugMode`; what are they for? Imagine a test that would either require an enormous amount off effort to implement or alternatively you just build something up and then ask the human in front of the monitor: "Does this look alright?". That's certainly _not_ a batch test case because it needs a human sitting in front of the monitor and taking action. If you know upfront that there won't be a human paying attention then you can prevent non-batch test cases from being executed by calling either `RunBatchTests` or `RunBatchTestsInDebugMode`.
+We have discussed the functions `Run`, `RunDebug` and `RunThese`. That leaves `RunBatchTests` and `RunBatchTestsInDebugMode`; what are they for? Imagine a test that would either require an enormous amount off effort to implement or alternatively you just build something up and then ask the human in front of the monitor: "Does this look alright?". That's certainly _not_ a batch test case because it needs a human sitting in front of the monitor. If you know upfront that there won't be a human paying attention then you can prevent non-batch test cases from being executed by calling either `RunBatchTests` or `RunBatchTestsInDebugMode`.
 
 But how does this work? We already learned that `stopFlag`, the first of the two flags passed to any test case, is ruling whether any errors are trapped or not. The second flag is called `batchFlag`, and that gives you an idea what it's good for. If you have a test which interacts with a user (=cannot run without a human) then your test case would typically look like this:
 
@@ -400,7 +422,7 @@ But how does this work? We already learned that `stopFlag`, the first of the two
  :EndIf
 ~~~
 
-The test function checks the `batchFlag` and tells via the explicit result that it did not execute because it is not a batch test.
+The test function checks the `batchFlag` and tells via the explicit result that it did not execute because it is not suitable for batch testing.
 
 One can argue whether the test case we have implemented makes much sense, but it allowed us to investigate the basic features of the test framework. We are now ready to investigate the more sophisticated features.
 
@@ -430,12 +452,19 @@ Now we try to execute this test cases:
 ~~~
       #.Tests.GetHelpers
       RunThese 2
+--- Test framework "Tester" version 3.2.0 from 2017-03-24 ----------------
+Searching for INI file testcases_{computername}.ini
+  ...not found
+Searching for INI file Testcases.ini
+  ...not found
+Looking for a function "Initial"...
+  ...not found      
 --- Tests started at 2017-03-22 15:37:12 on #.Tests ----------------------
   Test_002 (1 of 1) : Check whether `map` works fine with appropriate data
  -------------------------------------------------------------------------
-   1 test case executed                                                                                 
-   0 test cases failed                                                                                  
-   0 test cases broken                                                                                  
+   1 test case executed
+   0 test cases failed
+   0 test cases broken
 
 ~~~
 
@@ -466,6 +495,7 @@ Let's call this test:
 #.Tests
       GetHelpers
       RunThese 3
+...      
 VALUE ERROR
 TxtToCsv[4] MyLogger.Log'Source: ',fullfilepath
             ∧
@@ -496,23 +526,33 @@ Let's try again:
 
 ~~~
       RunThese 3
+--- Test framework "Tester" version 3.2.0 from 2017-03-24 -------------------------
+Searching for INI file testcases_{computername}.ini
+  ...not found
+Searching for INI file Testcases.ini
+  ...not found
+Looking for a function "Initial"...
+  ...not found      
 --- Tests started at 2017-03-22 15:56:41 on #.Tests -------------------------------
   Test_003 (1 of 1) : Test whether `TxtToCsv` handles a non-existing file correctly
  ----------------------------------------------------------------------------------
    1 test case executed
    0 test cases failed
    0 test cases broken
+Time of execution recorded on variable #.Tests.TestCasesExecutedAt: yyyy-mm-dd hh:mm:ss
+Looking for a function "Cleanup"...
+  ...not found   
 ~~~
 
-Clearly we need to have one test case for every result the function `TxtToCsv` might return but of course we are not doing this here and now. We have more important test cases to write: we want to make sure that whenever we have created a new version of the EXE that it will keep working.
+Clearly we need to have one test case for every result the function `TxtToCsv` might return but we leave that as an exercise to you. We have more important test cases to write: we want to make sure that whenever we create a new version of the EXE it will keep working.
 
 Time for a new version of MyApp. Make a copy of `Z:\code\v08` as `Z:\code\v09`.
 
-The first things we do is renaming the test functions we have so far: Rather than `Test_001` it will be `Test_map_0` and so forth. This way we group all `map`-related functions together. The new test cases we are about to add will be named `Test_exe_01` etc.
+First we rename the test functions we have so far: Rather than `Test_001` it will be `Test_map_01` and so forth. This way we group all `map`-related functions together. The new test cases we are about to add will be named `Test_exe_01` etc.
 
 ### The "Initial" function
 
-For that we need a folder where we can store some files for test purposes. We add a function `Initial` to the `Test` script:
+For testing the EXE we need a folder where we can store files temporarily. We add a function `Initial` to the `Test` script:
 
 ~~~
 :Namespace Tests
@@ -528,7 +568,11 @@ For that we need a folder where we can store some files for test purposes. We ad
 ...
 ~~~
 
-Before the `Tester` framework executes any test cases it first checks whether there is a function `Initial`. If that's the case it executes `Initial`. Therefore `Initial` is the ideal place to get things done that all the test cases rely on. `Initial` does not have to return a result but if it does it must be shy. The function may or may not accept a right argument. If it does it will be fed with a namespace that holds all the parameters.
+Before the `Tester` framework executes any test cases it first checks whether there is a function `Initial`. If that's the case it executes `Initial`. Therefore `Initial` is the ideal place to get things done that all test cases rely on. 
+
+`Initial` does not have to return a result but if it does it must be a Boolean. For "success" it should return a `1` and otherwise a `0`. If it does return `0` then no test cases are executed but if there is a function `Cleanup` it will be executed. Therefore `Cleanup` should be ready to clean up in case `Initial` was partly successful. 
+
+`Initial` may or may not accept a right argument. If it does it will be fed with a namespace that holds all the parameters.
 
 What we do in `Initial`:
 
@@ -538,6 +582,10 @@ What we do in `Initial`:
 * We ask for a list of all text files in the `texts\en\` folder.
 * We copy all those files over to our temporary test folder.
 * Finally we check the return code of the copy operation; if any of them is not OK we execute a full stop; there is no point in carrying on in such a case.
+
+A> What if you need to initialize something (say a database connection) but it is somehow different depending on what machine the tests are exected on (IP address, user-id, password...)?
+A> The test framework tries to find two different INI files in the current directory:
+A> First it looks for `testcase_{computername}.INI`. If it cannot find this then it tries to find `testcase.INI`. If it finds any of them then it instantiates the `IniFile` class as `INI` on these INI files within the namespace that hosts your test cases.
 
 Now we are ready to test the EXE: create it from scratch. Our first test case will process "Ulysses":
 
@@ -562,7 +610,7 @@ Now we are ready to test the EXE: create it from scratch. Our first test case wi
 
 Notes:
 
-* First we make sure that there are no CSV files lingering around in `∆Path`.
+* First we make sure that there are no CSV files in `∆Path`.
 * Then we call the EXE and pass the filename of "Ulysses" as a command line parameter.
 * We check the return code and jump to `∆TidyUp` in case it's not what we expect.
 * We then check whether there is now a file "Ulysses.cvs" in `∆Path`.
@@ -573,12 +621,22 @@ Let's run our new test case:
 ~~~
       GetHelpers
       RunThese 'exe'
+--- Test framework "Tester" version 3.2.0 from 2017-03-24 -----
+Searching for INI file testcases_{computername}.ini
+  ...not found
+Searching for INI file Testcases.ini
+  ...not found
+Looking for a function "Initial"...
+  ...not found
 --- Tests started at 2017-03-22 20:07:20 on #.Tests -----------
   Test_exe_01 (1 of 1) : Process a single file with .\MyApp.exe
  --------------------------------------------------------------
    1 test case executed
    0 test cases failed
    0 test cases broken
+Time of execution recorded on variable #.Tests.TestCasesExecutedAt in: yyyy-mm-dd hh:mm:ss
+Looking for a function "Cleanup"...
+  ...not found   
 ~~~
 
 We need one more test case:
@@ -611,6 +669,13 @@ This one will process _all_ TXT files in `∆Path` and create a file `total.csv`
 ~~~
       GetHelpers
       ⎕←⊃Run
+--- Test framework "Tester" version 3.2.0 from 2017-03-24 ----------------------------
+Searching for INI file testcases_{computername}.ini
+  ...not found
+Searching for INI file Testcases.ini
+  ...not found
+Looking for a function "Initial"...
+  ...not found      
 --- Tests started at 2017-03-22 20:16:26 on #.Tests ----------------------------------
   Test_exe_01 (1 of 5) : Process a single file with .\MyApp.exe
   Test_exe_02 (2 of 5) : Process all TXT files in a certain directory
@@ -621,6 +686,9 @@ This one will process _all_ TXT files in `∆Path` and create a file `total.csv`
    5 test cases executed
    0 test cases failed
    0 test cases broken
+Time of execution recorded on variable #.Tests.TestCasesExecutedAt in: yyyy-mm-dd hh:mm:ss
+Looking for a function "Cleanup"...
+  ...not found   
 0   
 ~~~
 
@@ -632,7 +700,7 @@ Note that the function `Run` prints its findings to the session but also returns
 
 ### Cleaning up
 
-Although we have been careful and removed anything that test cases might have left behind (in particular those that failed) in all our test cases, we have not cleaned up after ourselves: the directory `∆Path` points to should be removed. We can achieve this by introducing a function `Cleanup`:
+Although we have been careful and made sure that every single test case cleans up after itself (in particular those that failed), we have not removed the directory `∆Path` points to. We can achieve this by introducing a function `Cleanup`:
 
 ~~~
 :Namespace Tests
@@ -672,6 +740,11 @@ map
  Test_exe_01  Process a single file with .\MyApp.exe
  Test_exe_02  Process all TXT files in a certain directory    
 ~~~
+
+
+## TestCasesExecutedAt
+
+Whenever the test cases were executed `Tester` notifies the time on a global variable `TestCasesExecutedAt` in the hosting namespace. This can be used in order to find out whether part of the code has been changed since the last time the cases were executed. However, in order to do this you have to make sure that the variable is either saved somewhere or added to the scripts `Tests`.
 
 
 ## Conclusion

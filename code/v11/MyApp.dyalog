@@ -1,13 +1,20 @@
 ﻿:Namespace MyApp
+   ⍝ Counting letter frequencies in text
 
     ⎕IO←1 ⋄ ⎕ML←1 ⋄ ⎕WX←3 ⋄ ⎕PP←15 ⋄ ⎕DIV←1
 
+    ∇ Z←Copyright
+      Z←'The Dyalog Cookbook, Kai Jaeger & Stephen Taylor 2017'
+    ∇
+
     ∇ r←Version
+   ⍝ * 1.5.0:
+   ⍝   * `Export` method added.
    ⍝ * 1.4.0:
    ⍝   * Handles errors with a global trap.
    ⍝   * Returns an exit code to calling environment.
    ⍝ * 1.3.0:
-   ⍝   * MyApp gives a Ride now, INI settings permitted.
+   ⍝   * MyApp gives a Ride now, INI settings permitted.
    ⍝ * 1.2.0:
    ⍝   * The application now honours INI files.
    ⍝ * 1.1.0:
@@ -15,7 +22,7 @@
    ⍝   * Logging implemented.
    ⍝ * 1.0.0
    ⍝   * Runs as a stand-alone EXE and takes parameters from the command line.
-      r←(⍕⎕THIS)'1.4.0' '2017-02-26'
+      r←(⍕⎕THIS)'1.5.0' '2017-02-26'
     ∇
 
 ⍝ === Aliases (referents must be defined previously)
@@ -36,6 +43,28 @@
               ind⊃l,⊂'Unknown error'
           }
     :EndNamespace
+
+    ∇ msg←{flags}Export filename;type;flags;resource;icon;cmdline;success;try;max
+    ⍝ Attempts to export the application
+      flags←{0<⎕NC ⍵:⍎⍵ ⋄ 0}'flags'       ⍝ 2 = BOUND_CONSOLE
+      max←50
+      type←'StandaloneNativeExe'
+      resource←''
+      icon←F.NormalizePath'.\images\logo.ico'
+      cmdline←''
+      success←try←0
+      :Repeat
+          :Trap 11
+              2 ⎕NQ'.' 'Bind',filename type flags resource icon cmdline
+              success←1
+          :Else
+              ⎕DL 0.2
+          :EndTrap
+          try+←1
+      :Until success∨max<try
+      msg←⊃success⌽('*** ERROR: Failed to export EXE')('Exported: ',filename)
+      msg,←(try>1)/' after ',(⍕try),' tries'
+    ∇
 
       CountLetters←{
           {⍺(≢⍵)}⌸⎕A{⍵⌿⍨⍵∊⍺}Config.Accents U.map A.Uppercase ⍵

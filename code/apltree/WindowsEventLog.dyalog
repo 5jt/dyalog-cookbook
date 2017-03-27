@@ -5,10 +5,11 @@
 ⍝ Note that `source` must have been registered by a user with admin rights. Typically that
 ⍝ is done by an installer, so we can rely on it being available.\\
 ⍝ Applications and services should write to the Application log or to a custom log. Device
-⍝ drivers should write to the System log.\\
-⍝ However, starting with version 2.0 this class **only** allows you to write to the "Application"
-⍝ log. (Earlier versions offered other options as well but due to additional security measures
-⍝ taken my Microsoft they won't work any more anyway)
+⍝ drivers should write to the System log.\\                                               
+⍝ Note that when you specify just a one-element vector as argument to the constructor (by
+⍝ calling `⎕NEW`) then this is interpreted as `source`. If you specify a two-element vector
+⍝ then this is treated as `(log source)`.
+⍝
 ⍝ ## Examples
 ⍝ To write messages to a source "myApp" in the "Application" log:
 ⍝ ~~~
@@ -29,16 +30,14 @@
 
     ∇ r←Version
       :Access Public Shared
+      ⍝ * 1.5.2
+      ⍝   * Documentation was faulty.
       ⍝ * 1.5.1
       ⍝   * Test cases improved.
       ⍝ * 1.5.0
       ⍝   * The two-item constructor now accepts an empty text vector as "Log". This defaults to
       ⍝     "Application" then.
-      ⍝ * 1.4.0
-      ⍝   * This version needs at least Dyalog 15.0 Unicode
-      ⍝ * 1.3.0
-      ⍝   * Doc converted to Markdown (requires at least ADOC 5.0).
-      r←(Last⍕⎕THIS)'1.5.1' '2017-03-16'
+      r←(Last⍕⎕THIS)'1.5.2' '2017-03-27'
     ∇
 
     :Property Log
@@ -115,19 +114,19 @@
 
     ∇ r←Read;i
       :Access Public
-      ⍝ Return all event log entries.
+      ⍝ Return **all** event log entries.
       r←''
       :For i :In ⍳myLog.Entries.Count
           r,←⊂(⍕i),'. ',{myLog.Entries.(get_Item ⍵).Message}i-1
       :EndFor
     ∇
 
-    ∇ r←ReadThese ind;i
+    ∇ r←ReadThese rowNumbers;row
       :Access Public
       ⍝ Return the specified log file entries.
       r←''
-      :For i :In ind
-          r,←⊂(⍕i),'. ',{myLog.Entries.(get_Item ⍵).Message}i-1
+      :For row :In rowNumbers
+          r,←⊂(⍕row),'. ',{myLog.Entries.(get_Item ⍵).Message}row-1
       :EndFor
     ∇
 

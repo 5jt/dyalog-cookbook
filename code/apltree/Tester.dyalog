@@ -6,7 +6,7 @@
 ⍝ Note that with version 3.1 the restriction that the namespace that hosts
 ⍝ all the test cases must not be scripted was lifted. However, some helpers
 ⍝ are not available, and there are limits to what you can achieve with a
-⍝ scripted namespace.
+⍝ scripted namespace.\\
 ⍝ These are the `Run*` functions you may call:
 ⍝ * `Run`
 ⍝ * `RunBatchTests`
@@ -46,16 +46,16 @@
 ⍝
 ⍝ ## Comments in line 1
 ⍝ Line 1 of a test function must contain information that allow a user to identify
-⍝ what this particular test is all about. The `L` (for "List) function (one
+⍝ what this particular test is all about. The `L` (for "List") function (one
 ⍝ of the [Helpers](#) - see there) lists all test functions with their names
-⍝ and this single comment line. Also all `Run*` function list this first line.
+⍝ and this single comment line. Also, all `Run*` functions list this first line.
 ⍝
 ⍝ ## The right argument
 ⍝ All test functions must accept a right argument of length two:
 ⍝
 ⍝ ### [1] batchFlag
 ⍝ Use this to avoid running test cases that depend on a human beeing in front
-⍝ of the monitor (sometimes needed to ask questions).
+⍝ of the monitor (sometimes needed to answer questions).
 ⍝
 ⍝ ### [2] Stop flag
 ⍝ Setting this to 1 prevents errors from being trapped, so you can
@@ -90,6 +90,9 @@
 ⍝ right argument. That allows you to, say, check the parameters.
 ⍝ Use this to initialise an environment all your test cases need.
 ⍝
+⍝ The function may or may not return a result. If it does it must be a Boolean
+⍝ indicating whether initializing was sucessful (1) or not (0).
+⍝
 ⍝ ## "Cleanup" function
 ⍝ If a function `Cleanup` exists in the namespace hosting the test cases
 ⍝ it is executed automatically after the test cases have been executed.
@@ -103,8 +106,9 @@
 ⍝ * If no such file exists they try to find "testcase.ini"
 ⍝
 ⍝ If one of those files exists a namespace `Ini` is created within the
-⍝ namespace where your test cases live. This namespace is populated with the
-⍝ contents of the INI file found.
+⍝ namespace where your test cases live. This means that your test functions can
+⍝ access this since it is a true global variable. This namespace is populated with
+⍝ the contents of the INI file found.\\
 ⍝ After executing the test cases this namespace is deleted.
 ⍝
 ⍝ ## Helpers
@@ -121,14 +125,14 @@
 ⍝ RunDebug                  Run all test cases with DEBUG flag on
 ⍝ RunThese                  Run just the specified tests.
 ⍝ RunBatchTests             Run all batch tests
-⍝ RunBatchTestsInDebugMode  Run all batch tests in debug mode (no error trapping) and with stopFlag←1.
-⍝ E                         Get all functions into the editor starting their names with "Test_".
-⍝ L                         Prints a list with all test cases and the first comment line to the session.
+⍝ RunBatchTestsInDebugMode  Run all batch tests in debug mode with stopFlag←1.
+⍝ E                         Get all test functions into the editor.
+⍝ L                         Prints list with all test fns & the first comment line to `⎕SE`
 ⍝ G                         Prints all groups to the session.
 ⍝ FailsIf                   Usage : →FailsIf x, where x is a boolean scalar
 ⍝ PassesIf                  Usage : →PassesIf x, where x is a boolean scalar
-⍝ GetTestFnsTemplate        ⍝ Returns a vector of text vectors with the code of a template test case.
-⍝ GoToTidyUp                Returns either an empty vector or "Label" which defaults to ∆TidyUp
+⍝ GetTestFnsTemplate        Returns vector of text vectors with code of template test fns
+⍝ GoToTidyUp                Returns either '' or `Label` which defaults to ∆TidyUp
 ⍝ RenameTestFnsTo           Renames a test function and tell acre.
 ⍝ ListHelpers               Lists all helpers available from the `Tester` class.
 ⍝ ∆OK                       Constant; used as result of a test function
@@ -155,6 +159,8 @@
 
     ∇ r←Version
       :Access Public shared
+      ⍝ * 3.2.1
+      ⍝   * Bug fix: reporting information to the session was inconsistent. Same was true for `log`.
       ⍝ * 3.2.0
       ⍝   * `Tester` is now reporting:
       ⍝     * It's version and date
@@ -173,9 +179,7 @@
       ⍝   * Bug fixes
       ⍝     * `Run` should have returned a Boolean flag and a report. Prior to 3.0 is return
       ⍝       just the report.
-      ⍝ * 2.9.1
-      ⍝   * Documentation corrected regarding INI files.
-      r←(Last⍕⎕THIS)'3.2.0' '2017-03-24'
+      r←(Last⍕⎕THIS)'3.2.1' '2017-03-27'
     ∇
 
     ∇ {(rc log)}←Run refToTestNamespace;flags
@@ -190,7 +194,7 @@
     ∇ {(rc log)}←{trapAndDebugFlag}RunBatchTests refToTestNamespace;flags
     ⍝ Runs all test cases in `refToTestNamespace` but tells the test functions
     ⍝ that this is a batch run meaning that test cases in need for any human
-    ⍝ being for interaction should quit silently.\\
+    ⍝ being for interaction should not execute the test case and return `∆NoBatchTest`.\\
     ⍝ Returns 0 for okay or a 1 in case one or more test cases are broken or failed.\\
     ⍝ This method can run in a runtime as well as in an automated test environment.\\
     ⍝ The left argument defaults to 0 but can be set to 1. It sets both, `stopFlag`\\
@@ -222,15 +226,11 @@
     ∇
 
     ∇ {log}←testCaseNos RunTheseIn refToTestNamespace;flags;rc
-    ⍝ Like RunDebug but it runs just `testCaseNos` in `refToTestNamespace`.\\
-    ⍝ Example that executes 'Test_special_02' and 'Test_999':\\
+    ⍝ Same as `RunDebug` but it runs just `testCaseNos` in `refToTestNamespace`.\\
+    ⍝ Example that executes `Test_special_02` and `Test_999`:\\
     ⍝ ~~~
     ⍝ 'Special_02' 999 RunTheseIn ⎕THIS
     ⍝ ~~~
-    ⍝ 2. Numeric Vector
-    ⍝ 3. Vector of length with:
-    ⍝    1) A string specifying a group
-    ⍝    2) A vector with numbers (empty=all of that group)
     ⍝
     ⍝ Example that executes test cases 2 & 3 of group "Special":
     ⍝ ~~~
@@ -242,9 +242,13 @@
     ∇
 
     ∇ EditAll refToTestNamespace;list
-     ⍝ :Access Public Shared
+     :Access Public Shared
      ⍝ Opens all test functions in the editor
-      {⎕ED ⍵}&¨GetAllTestFns refToTestNamespace
+      :If IsScripted refToTestNamespace
+          ⎕ED ⍕refToTestNamespace
+      :Else
+          {⎕ED ⍵}&¨GetAllTestFns refToTestNamespace
+      :EndIf
     ∇
 
     ∇ r←GetAllTestFns refToTestNamespace;buff
@@ -258,8 +262,9 @@
 
     ∇ r←{searchString}ListTestCases y;refToTestNamespace;list;b;full
       :Access Public Shared
-     ⍝ Returns the comment expected in line 1 of all test cases found in refToTestNamespace.\\
-     ⍝ You can specify a string as optional secomd parameter of the right argument:
+     ⍝ `y` is either `refToTestNamespace` or (`refToTestNamespace` `sarchString`).
+     ⍝ Returns the comment expected in line 1 of all test cases found in `refToTestNamespace`.\\
+     ⍝ You can specify a string as optional second parameter of the right argument:
      ⍝ then only test cases that do contain that string in either their names or in
      ⍝ line 1 will be reported.\\
      ⍝ The optional left argument defaults to 1 which stands for "full", meaning that
@@ -362,10 +367,10 @@
       ref.Stop←debugFlag         ⍝ "Stop" is honored by "FailsIf" & "PassesIf"
       ref.⎕EX'INI'               ⍝ Get rid of any leftovers
       ps.(log trapFlag debugFlag batchFlag stopAt testCaseNos errCounter failedCounter)←''trapFlag debugFlag batchFlag stopAt testCaseNos 0 0
-      ⎕←(⎕PW-1)↑'--- Test framework "Tester" version ',(2⊃Version),' from ',(3⊃Version),' ',⎕PW⍴'-'
-      ref←ProcessIniFiles ref
+      ps.log,←⊂(⎕PW-1)↑'--- Test framework "Tester" version ',(2⊃Version),' from ',(3⊃Version),' ',⎕PW⍴'-'
+      ¯1 ShowLog ps.log
+      ref←ProcessIniFiles ref ps
       :If 0=ExecuteInitial ref ps
-          log←,⊂'Could not initialize; see ',(⍕↑1↓⎕RSI),'.Initial'
           →∆GetOutOfHere,rc←1
       :EndIf
       :If 0∊⍴ps.list←GetAllTestFns ref
@@ -375,44 +380,61 @@
       ps.returnCodes←⍬
       →(0∊⍴ps.list)/∆GetOutOfHere
       ps.log,←⊂(⎕PW-1)↑(,'--- Tests started at ',FormatDateTime ⎕TS),' on ',(⍕ref),' ',(⎕PW-1)⍴'-'
-      :If ~batchFlag ⋄ ⎕←⊃¯1↑ps.log ⋄ :EndIf
+      ¯1 ShowLog ps.log
       ps.stopAt∨←¯1∊×ps.testCaseNos
       ProcessTestCases ref ps
      ∆GetOutOfHere:
       :If 9=ref.⎕NC'INI'
           ref.⎕EX'INI'          ⍝ Get rid of any leftovers
-          ⎕←'Inifile instance "INI" deleted'
+          ps.log,←⊂'Inifile instance "INI" deleted'
+          ¯1 ShowLog ps.log
       :EndIf
       :If 0<ps.⎕NC'list'        ⍝ Then no test cases got executed, probably because `Initial` failed.
           (rc log)←ReportTestResults ps
           ref.TestCasesExecutedAt←FormatDateTime ⎕TS
-          ⎕←'Time of execution recorded on variable ',(⍕ref),'.TestCasesExecutedAt in: ',ref.TestCasesExecutedAt
+          ps.log,←⊂'Time of execution recorded on variable ',(⍕ref),'.TestCasesExecutedAt in: ',ref.TestCasesExecutedAt
+          ¯1 ShowLog ps.log
       :EndIf
-      ExecuteCleanup ref
+      ExecuteCleanup ref ps
+      ps.log,←⊂'*** Tests done'
+      ¯1 ShowLog ps.log
+      log←ps.log
     ∇
 
-    ∇ ref←ProcessIniFiles ref;iniFilename;counter
-      counter←0
-      iniFilename←'testcases_',(2 ⎕NQ'#' 'GetEnvironment' 'Computername'),'.ini'
-      ⎕←'Searching for INI file ',iniFilename
-      :If ⎕NEXISTS iniFilename
-          ref.INI←'flat'(⎕NEW #.IniFiles(,⊂iniFilename)).Convert ⎕NS''
-          ⎕←'  INI file "',iniFilename'" found and instantiated as INI in ',⍕ref
-          counter+←1
+    ∇ ref←ProcessIniFiles(ref ps);iniFilename;counter
+      :If 9=##.⎕NC'IniFiles'
+          counter←0
+          iniFilename←'testcases_',(2 ⎕NQ'#' 'GetEnvironment' 'Computername'),'.ini'
+          ps.log,←⊂'Searching for INI file ',iniFilename
+          ¯1 ShowLog ps.log
+          :If ⎕NEXISTS iniFilename
+              ref.INI←'flat'(⎕NEW ##.IniFiles(,⊂iniFilename)).Convert ⎕NS''
+              ps.log,←⊂'  INI file "',iniFilename'" found and instantiated as INI in ',⍕ref
+              ¯1 ShowLog ps.log
+              counter+←1
+          :Else
+              ps.log,←⊂'  ...not found'
+              ¯1 ShowLog ps.log
+          :EndIf
+          iniFilename←'Testcases.ini'
+          ps.log,←⊂'Searching for INI file ',iniFilename
+          ¯1 ShowLog ps.log
+          :If ⎕NEXISTS iniFilename
+              ref.INI←'flat'(⎕NEW ##.IniFiles(,⊂iniFilename)).Convert ⎕NS''
+              ps.log,←⊂'  INI file "',iniFilename'" found and instantiated as INI in ',⍕ref
+              ¯1 ShowLog ps.log
+              counter+←1
+          :Else
+              ps.log,←⊂'  ...not found'
+              ¯1 ShowLog ps.log
+          :EndIf
+          :If 0<counter
+              ps.log,←⊂(⍕counter),' INI file',((1<counter)/'s'),' instantiated'
+              ¯1 ShowLog ps.log
+          :EndIf
       :Else
-          ⎕←'  ...not found'
-      :EndIf
-      iniFilename←'Testcases.ini'
-      ⎕←'Searching for INI file ',iniFilename
-      :If ⎕NEXISTS iniFilename
-          ref.INI←'flat'(⎕NEW #.IniFiles(,⊂iniFilename)).Convert ⎕NS''
-          ⎕←'  INI file "',iniFilename'" found and instantiated as INI in ',⍕ref
-          counter+←1
-      :Else
-          ⎕←'  ...not found'
-      :EndIf
-      :If 0<counter
-          ⎕←(⍕counter),' INI file',((1<counter)/'s'),' instantiated'
+          ps.log,←⊂'Could not find the class "IniFiles" in ',(⍕##.⎕THIS),'; therefore no INI files were processed'
+          ¯1 ShowLog ps.log
       :EndIf
     ∇
 
@@ -421,9 +443,10 @@
           {⍎⌽⍵↑⍨¯1+⍨⍵⍳'_'}⌽⍵
       }
 
-    ∇ {r}←ExecuteInitial(ref parms)
+    ∇ {r}←ExecuteInitial(ref ps)
       r←1
-      ⎕←'Looking for a function "Initial"...'
+      ps.log,←⊂'Looking for a function "Initial"...'
+      ¯1 ShowLog ps.log
       :If 3=ref.⎕NC'Initial'
           :Select ↑(⎕IO+1)⊃1 ref.⎕AT'Initial'
           :Case 0
@@ -434,16 +457,22 @@
               :EndIf
           :Case 1
               :If 0=↑↑ref.⎕AT'Initial'
-                  ref.Initial parms
+                  ref.Initial ps
               :Else
-                  r←ref.Initial parms
+                  r←ref.Initial ps
               :EndIf
           :Else
               11 ⎕SIGNAL⍨'The "Initial" function in ',(⍕ref),' has an invalid signature: it''s neither monadic nor niladic'
           :EndSelect
-          ⎕←'  "Initial" found and sucessfully executed'
+          :If r
+              ps.log,←⊂'  "Initial" found and sucessfully executed'
+          :Else
+              ps.log,←⊂'  "Initial" found and executed but it signalled failure!'
+          :EndIf
+          ¯1 ShowLog ps.log
       :Else
-          ⎕←'  ...not found'
+          ps.log,←⊂'  ...not found'
+          ¯1 ShowLog ps.log
       :EndIf
     ∇
 
@@ -515,14 +544,14 @@
                       :Continue
                   :EndIf
               :Else
-                  ⎕←⊃¯1↑ps.log
+                  ¯1 ShowLog ps.log
               :EndIf
           :Else
               ps.errCounter+←1
               msg←{⍵↓⍨+/∧\' '=⍵}{⍵↓⍨⍵⍳'⍝'}2⊃ref.⎕NR this
               ps.log,←⊂'# ',this,,' (',(⍕i),' of ',(⍕noOf),') : ',msg
               :If ~ps.batchFlag
-                  ⎕←⊃¯1↑ps.log
+                  ¯1 ShowLog ps.log
               :EndIf
           :EndTrap
           {}⎕WA  ⍝ Enforce a memory compaction in order to get rid of any rubbish.
@@ -582,15 +611,20 @@
       :Else
           rc←2×~0∊⍴ps.returnCodes
       :EndIf
+      ps.log←log
     ∇
 
-    ∇ ExecuteCleanup ref
-      ⎕←'Looking for a function "Cleanup"...'
+    ∇ {r}←ExecuteCleanup(ref ps)
+      r←⍬
+      ps.log,←⊂'Looking for a function "Cleanup"...'
+      ¯1 ShowLog ps.log
       :If 3=ref.⎕NC'Cleanup'
           ref.Cleanup
-          ⎕←'  Function "Cleanup" found and sucessfully executed.'
+          ps.log,←⊂'  Function "Cleanup" found and sucessfully executed.'
+          ¯1 ShowLog ps.log
       :Else
-          ⎕←'  ...not found'
+          ps.log,←⊂'  ...not found'
+          ¯1 ShowLog ps.log
       :EndIf
     ∇
 
@@ -604,6 +638,15 @@
     ∇
 
     IsScripted←{16::0 ⋄ 1⊣⎕SRC ⍵}
+
+
+      ShowLog←{
+          ⍺←¯1
+          log←⍵
+          batchFlag:r←⍬
+          ⎕←⊃⍺↑log
+          1:r←⍬
+      }
 
     :Class Helpers
 ⍝ All private (!) functions of this sub class are going to be established within the

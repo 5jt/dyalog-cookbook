@@ -121,7 +121,7 @@ leanpub-end-insert
 ∇
 ~~~
 
-So far we have used the method `WriteInfo`. For demonsttration purposes we use the two other methods available , `WriteWarning` and `WriteError`:
+So far we have used the method `WriteInfo`. For demonstration purposes we use the two other methods available, `WriteWarning` and `WriteError`:
 
 ~~~
 ∇ rc←TxtToCsv fullfilepath;files;tbl;lines;target
@@ -137,7 +137,7 @@ leanpub-end-insert
 
 Having made all these changes we are ready to compile the WS from scratch: 
 
-1. Double-click the DYAPP in `v04a`.
+1. Double-click the DYAPP in `v??`.
 1. Change the WSID to "MyApp"
 1. Execute the command `)save` in order to save the WS.
 1. Execute `)off`
@@ -146,7 +146,7 @@ Why do we need to do this? Because the source "MyApp" is very unlikely to exist 
 
 But it is available for the EXE that starts your version of Dyalog. Find it, right-click on it and select "Run as admin". Windows will most likely ask whether you are sure about this and then start an instance of Dyalog with elevated rights. Now you can `)load` the workspace we have just created and run `⎕LX`.
 
-Now start the Event Viewer; As a result of running the program with admin rights you should see something like this:
+Now start the Event Viewer; as a result of running the program with admin rights you should see something like this:
 
 ![The Windows Event Log](images/WindowsEventLog.jpg)
 
@@ -167,16 +167,19 @@ No doubt you feel now confident with the Windows Event Log, right? Well, keep re
 
 * When the Event Viewer is up and running and you either create or delete a log or a source and then press F5 then the Event Viewer GUI flickers, and you might expect that to be an indicator for the GUI having updated itself but that's not the case, at least not at the time of writing (2017-03). You have to close the Event Viewer and re-open it to actually see your changes.
 
-* Even when your user ID has admin rights and you've started Dyalog in elevated mode ("Run as administrator" in the context menu) you _cannot_ delete a custom log with calls to `WinReg` (The APLTree member that deal with the Windows Registry). The only way to delete custom logs is with the Registry Editor: go to the key
+* Even when your user ID has admin rights and you've started Dyalog in elevated mode ("Run as administrator" in the context menu) you _cannot_ delete a custom log with calls to `WinReg` (the APLTree member that deals with the Windows Registry). The only way to delete custom logs is with the Registry Editor: go to the key
 
   `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\EventLog\`
   
-  and delete the key(s) (=children) you want to get rid of. It's not a bad idea to create a system restore point [^restore] before you do that. By yhe way, if you never payed attention to System Restore Points you really need to follow the link because under Windows 10 System Restore Points are not generated automaticelly by default anymore; you have to switch them on explicitly.
+  and delete the key(s) (=children) you want to get rid of. It's not a bad idea to create a system restore point [^restore] before you do that. By the way, if you never payed attention to System Restore Points you really need to follow the link because under Windows 10 System Restore Points are not generated automaticelly by default anymore; you have to switch them on explicitly.
   
 * Once you have written events to a source and then deleted the log the source pretends to belong to, the events remain saved anyway. They are just not vsisible anymore. That can be proven by re-creating the log: all the events make a come-back and show up again as they did before. 
 
   If you really want to get rid of the logs then you have to select the "Clear log" command from the context menu in the Event Viewer (tree only!) before you delete the log.
+
+* If you want to analyze the contents of a log in APL you will find the instance methods `Read` (which reads the whole log) and `ReadThese` (which takes line numbers and reads just them) useful. 
  
 
- [^winlog]: Microsoft on the Windows Event Log: <https://msdn.microsoft.com/en-us/library/windows/desktop/aa363648(v=vs.85).aspx>
+[^winlog]: Microsoft on the Windows Event Log: <https://msdn.microsoft.com/en-us/library/windows/desktop/aa363648(v=vs.85).aspx>
+ 
 [^restore]: Details about System Restore Point: <https://en.wikipedia.org/wiki/System_Restore>

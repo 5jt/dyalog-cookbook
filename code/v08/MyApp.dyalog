@@ -7,7 +7,7 @@
    ⍝   * Handles errors with a global trap.
    ⍝   * Returns an exit code to calling environment.
    ⍝ * 1.3.0:
-   ⍝   * MyApp gives a Ride now, INI settings permitted.
+   ⍝   * MyApp gives a Ride now, INI settings permitted.
    ⍝ * 1.2.0:
    ⍝   * The application now honours INI files.
    ⍝ * 1.1.0:

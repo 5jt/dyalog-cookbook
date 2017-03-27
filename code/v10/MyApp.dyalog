@@ -1,6 +1,11 @@
 ﻿:Namespace MyApp
+   ⍝ Counting letter frequencies in text
 
     ⎕IO←1 ⋄ ⎕ML←1 ⋄ ⎕WX←3 ⋄ ⎕PP←15 ⋄ ⎕DIV←1
+    
+    ∇ Z←Copyright
+      Z←'The Dyalog Cookbook, Kai Jaeger & Stephen Taylor 2017'
+    ∇
 
     ∇ r←Version
    ⍝ * 1.4.0:

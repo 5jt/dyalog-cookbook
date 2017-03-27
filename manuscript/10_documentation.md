@@ -20,7 +20,7 @@ We'll come in a later chapter to how to offer online help from a Help menu. For 
 
 ## A description of what the application does
 
-This is a useful thing to have, perhaps as a sales document. One or two pages suffices. Including limitations is important: files in certain formats, up to certain sizes. Perhaps a list of Frequently Asked Questions and their answers.
+This is a useful thing to have, perhaps as a sales document. One or two pages suffices. Including limitations is important: files in certain formats, up to certain sizes. Perhaps a list of Frequently Asked Questions [^faq] and their answers.
 
 Beyond that, you have the formal tests. This is what you _know_ the system does. It passes its tests. Especially if you're supporting your application on multiple versions of Windows, you'll want those tests to be extensive.
 
@@ -58,11 +58,13 @@ Heading comments
 
 Trailing comments
 
-: Comments at the ends of lines act as margin notes. Do not use them as a running translation of the code. Instead aim to for expository style and code that needs no translation. On lines where you're not satisfied you've achieved expository style, do write an explanatory comment. Better to reserve trailing comments for other notes, such as `⍝ FIXME slow for >1E7 elements`. (Using a tag such as `FIXME` makes it easy to bookmark lines for review.) Aligning trailing comments to begin at the same column makes them easier to scan, and is considered OCD compliant [^ocd].
+: Comments at the ends of lines act as margin notes. Do not use them as a running translation of the code. Instead aim to for expository style and code that needs no translation. On lines where you're not satisfied you've achieved expository style, do write an explanatory comment. Better to reserve trailing comments for other notes, such as `⍝FIXME⍝ slow for >1E7 elements` [^fixme]. (Using a tag such as `⍝FIXME⍝` makes it easy to bookmark lines for review.) Aligning trailing comments to begin at the same column makes them easier to scan, and is considered OCD compliant [^ocd]. 
+
+I> Note that Dyalog offers a special command for Aligning Comments: "AC". You can assign a keystroke to this command: open the "Configuration" dialog (Options / Configure...), select the "Keyboard Shortcuts" tab and sort the table with a click on the "Code" column, then look for "AC".
 
 The above conventions are simple enough and have long been in wide use.
 
-If you are exporting scripts for others to use -- for example, contributing to a library -- then it's worth going a step further. You and other _authors_ of a script need to read comments in the context of the code, But potential _users_ of a script will want to know only how to call its methods.
+If you are exporting scripts for others to use -- for example, contributing to a library -- then it's worth going a step further. You and other _authors_ of a script need to read comments in the context of the code, but potential _users_ of a script will want to know only how to call its methods.
 
 _Automatic documentation generation_ will extract documentation from your scripts for other users. Just as above, the documentation is maintained as comments in the code. But now header comments are presented without the code lines.
 
@@ -71,11 +73,12 @@ _Automatic documentation generation_ will extract documentation from your script
 
 ADOC is an acronym for _automatic documentation_ generation. It works on classes, and on namespaces where certain conventions are observed.
 
-In its most basic function, it lists methods, properties and fields and requires no comments in the code. In its more powerful function, it composes from header comments an HTML page. Honouring Markdown conventions, it provides all the typographical conventions you need for documentation.
+In its most basic function, it lists methods, properties and fields and requires no comments in the code. In its more powerful function, it composes from header comments an HTML page. Honouring Markdown [^markdown] conventions, it provides all the typographical conventions you need for documentation. If you don't know what Markdown is please read the Markdown article on Wikipedia [^markdown] and `Markdown2Help`'s own help file. The time will be a good investment in any case because these days Markdown is used pretty much everywhere.
 
-Previously only found as a class in the APLTree library, it is now shipped in Dyalog Version 15.0 as three user commands.
+Previously only found as a class in the APLTree library, it is now shipped in Dyalog Version 16.0 as three user commands.
 
-### List
+
+### The "List" method
 
 Lists the methods and fields of a class. (Requires no comments.)
 
@@ -91,7 +94,8 @@ Lists the methods and fields of a class. (Requires no comments.)
       Version
 ~~~      
 
-### Browse
+
+### The "Browse" method
 
 ~~~
     ]adoc_browse #.HandleError
@@ -101,7 +105,8 @@ Lists the methods and fields of a class. (Requires no comments.)
 
 Composes in HTML a documentation page and displays it in your default browser. 
 
-### Help 
+
+### The "Help" method
 
 ~~~
     ]adoc_help
@@ -114,6 +119,8 @@ Browses the ADOC class itself, displaying all the instructions you need to use i
 
 ## ADOC for MyApp
 
+⌹⌹⌹ `⍝TODO⍝` Currently ADOC does not process namespaces, at least not in the same way as classes are processed. We need to polish this chapter once ADOC has learned how to deal with namepsaces.
+
 How might ADOC help us? Start by seeing what ADOC has to say about `MyApp` as it is now:
 
 ~~~
@@ -122,7 +129,9 @@ How might ADOC help us? Start by seeing what ADOC has to say about `MyApp` as it
 
 ![Using ADOC to browse the MyApp namespace](images/adoc_myapp_01.jpg)
 
-We see that ADOC has found and displayed the script’s header comments. We can improve this a little by editing the top of the script to follow ADOC's conventions.
+We see that ADOC has found and displayed the script’s header comments. We can improve this a little by editing the top of the script to follow ADOC's conventions. 
+
+Time for a new version of MyApp. Make a copy of `Z:\code\v09` as `Z:\code\v10`.
 
 ~~~
     :Namespace MyApp
@@ -130,20 +139,21 @@ We see that ADOC has found and displayed the script’s header comments. We can 
         
         ∇ Z←Copyright
           :Access Public Shared
-          Z←'The Dyalog Cookbook, Kai Jaeger & Stephen Taylor 2016'
+          Z←'The Dyalog Cookbook, Kai Jaeger & Stephen Taylor 2017'
         ∇
-
-        ∇ Z←Version
-          :Access Public Shared
-          Z←(⍕⎕THIS)'07' '2016-10-03'
-        ∇
+...
 ~~~        
 
-This gives us more prominent copyright and version notices. 
+This gives us more prominent copyright and version notices because ADOC looks for functions we the names `CopyRight` and `Version` and uses the information provided by them.
 
 ![Browsing the revised MyApp namespace](images/adoc_myapp_02.jpg)
 
-It's not much but then we're not exporting `MyApp` as a class for others to use. We'll revisit ADOC when we do that. 
+It's not much but then we're not exporting `MyApp` as a class for others to use.
 
+[^faq]: Compile those from questions actually asked by users. It's a common mistake to make the list up as "Question we would like our users to ask".
 
 [^ocd]: Thanks to Roger Hui for this term.
+
+[^fixme]: Be it `⍝FIXME⍝` or `⍝CHECKME⍝` or `⍝TODO⍝` - what matters is that you keep it consistent and searchable. That implies that the search term cannot be mistaken as something else by accident. For that reason  `⍝TODO⍝` is better than `TODO`.
+
+[^markdown]: <https://en.wikipedia.org/wiki/Markdown>
