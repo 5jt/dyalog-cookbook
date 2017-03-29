@@ -1,17 +1,17 @@
-♠{:: encoding="utf-8" /}
+{:: encoding="utf-8" /}
 
 # Make me
 
 It's time to take a closer look at the process of building the application workspace and exporting the EXE. In this chapter we'll
 
 * add the automated execution of test cases to the DYAPP.
-* create a "Make" utility that allows us to create everything thats needed for will finally be shipped to the customer.
+* create a "Make" utility that allows us to create everything thats needed for what will finally be shipped to the customer.
 
 At first glance you might think we can get away with splitting the DYAPP into two different versions, one for development and one for producing the final version of the EXE, but there will be tasks we cannot carry out with this approach. Examples are:
 
 * Currently we depend on whatever version of Dyalog is associated with DYAPPs. We need an explicit way to define that version, 
-  even if for the time being their is just one version installed on your machine.
-* We might want to convert any Markdown documents -- like README.MD -- into an HTML document. While the MD is for development, 
+  even if for the time being there is just one version installed on our machine.
+* We might want to convert any Markdown documents -- like README.MD -- into an HTML document. While the MD is the source, 
   the HTML will become part of the final product.
 * We need to make sure that the help system -- which we will introduce soon -- is properly compiled and configured.
 * Soon we need an installer that produces an EXE we can send to the customer for installing the software.
@@ -21,7 +21,7 @@ We resume, as usual, by saving a copy of `Z:\code\v10` as `Z:\code\v11`. Now del
 
 ## The development environment
 
-`MyApp.dyapp` does not need much changes, it comes with everything that's needed for development. The only thing we add is to execute the test cases automatically. Well, almost automatically. Ideally we should always make sure that all test cases pass when we call it a day, but sometimes that is just not possible due to the amount of work involved. In such cases it might or might not be sensible to execute the test cases before you start working: in case you _know_ they will fail and there are _many_ of them there is no point in wasting computer ressources and your time, so we better ask.
+`MyApp.dyapp` does not need many changes, it comes with everything that's needed for development. The only thing we add is to execute the test cases automatically. Well, almost automatically. Ideally we should always make sure that all test cases pass when we call it a day, but sometimes that is just not possible due to the amount of work involved. In such cases it might or might not be sensible to execute the test cases before you start working: in case you _know_ they will fail and there are _many_ of them there is no point in wasting computer ressources and your time, so we better ask.
 
 For that we are going to have a function `YesOrNo` which is very simple and straightforward: the right argument (`question`) is printed to the session and then the user might answer that question. If she does not enter one of: "YyNn" the question is repeated. If she enters one of "Yy" a 1 is returned, otherwise a 0. Since we use this to ask ourself (or any other programmer) the function does not have to be bullet proof; that's why we allow `¯1↑⍞`.
 
@@ -89,7 +89,7 @@ We are going to create a DYAPP file `Make.dyapp` that performs the "Make". Howev
 "C:\Program Files\Dyalog\Dyalog APL{yourPreferredVersion}\Dyalog.exe" DYAPP="%~dp0Make.dyapp"
 ~~~
 
-Of course you need to make amendments so that it is using the version of Dyalog you have chosen. If it is at the moment what happens to run  a DYAPP on a double-click then this will give you the correct path:
+Of course you need to make amendments so that it is using the version of Dyalog of your choice. If it is at the moment what happens to run  a DYAPP on a double-click then this will give you the correct path:
 
 ~~~
 `'"',(⊃#.GetCommandLineArgs),'"'`
@@ -107,7 +107,7 @@ A> For APLers, the current directory (sometimes called "working directory") is a
 A>
 A> That's fine except that for APLers "the application" is _not_ the DYALOG.EXE, it's the workspace, whether it was loaded from disk or assembled by a DYAPP. When you double-click `MyApp.dyapp` then the interpreter changes the current directory for you: when you ask for it it will actually be where the DYAPP lives, and that's fine from an APL application programmer's point of view.
 A> 
-A> Unfortunately that is not true for a workspace: whether you double-click or load a workspace, the current directory remains what it was before, and that's where the Dyalog EXE lives. Therefore it's probably not a bad idea to change the current directory yourself at the earliest possible stage after loading a workspace: call `#.FilesAndDirs.PolishCurrentDir` and your are done, no matter what the circumstances are. One of the authors is doing this for roughly 20 years now, and it has solved several problems without introducing new ones.
+A> Unfortunately that is not true in case you double-click or load a workspace: the current directory remains what it was before, and that's where the Dyalog EXE lives. Therefore it's probably not a bad idea to change the current directory yourself at the earliest possible stage after loading a workspace: call `#.FilesAndDirs.PolishCurrentDir` and your are done, no matter what the circumstances are. One of the authors is doing this for roughly 20 years now, and it has solved several problems without introducing new ones.
 
 Now we need to establish the `Make.dyapp` file:
 
@@ -128,7 +128,7 @@ Load Make
 Run #.Make.Run 1
 ~~~
 
-The upper part (until the blank line) is identical with `MyApp.dyapp` except that we don't load the stuff that's only needing during development. We then load a script `Make` and finally we call `Make.Run`. That's how `Make` looks at this point:
+The upper part (until the blank line) is identical with `MyApp.dyapp` except that we don't load the stuff that's only needed during development. We then load a script `Make` and finally we call `Make.Run`. That's how `Make` looks at this point:
 
 ~~~
 :Class Make
@@ -160,7 +160,7 @@ The upper part (until the blank line) is identical with `MyApp.dyapp` except tha
 :EndClass
 ~~~
 
-First we create the folder `DESTINATION` from scratch and then we copy everything that's needed to the folder `DESTINATION` is pointing to: the application icon and the INI file. Whether the function executes `⎕OFF` or not depends on the right argument `offFlag`. Why that is need will become apparent soon.
+First we create the folder `DESTINATION` from scratch and then we copy everything that's needed to the folder `DESTINATION` is pointing to: the application icon and the INI file. Whether the function executes `⎕OFF` or not depends on the right argument `offFlag`. Why that is needed will become apparent soon.
 
 Note that we don't copy `MyApp.ini` into `DESTINATION` but `MyApp.ini.template`; therefore we must create this file: copy `MyApp.ini` to `MyApp.ini.template` and then check its settings: in particular these settings are important:
 
@@ -178,7 +178,7 @@ Active      = 0
 
 Those might well get changed in `MyApp.ini` while working on the project, so we make sure that we get them set correctly in `MyApp.ini.template`.
 
-Note that the function executes a full stop in a dfn in case the right argument is a `1`. This is an easy way to make the function stop when something goes wrong. There is no point in doing anything but stopping the code from continuing since it is called by a programmer, and when it fails she wants to investighate straight away. And things can go wrong quite easily: if somebody is looking with the Windows Explorer into `DESTINATION` then the attempt to remove that folder will fail.
+Note that the function executes a full stop in a dfn in case the right argument is a `1`. This is an easy way to make the function stop when something goes wrong. There is no point in doing anything but stopping the code from continuing since it is called by a programmer, and when it fails she wants to investigate straight away. And things can go wrong quite easily; for example, if somebody is looking with the Windows Explorer into `DESTINATION` then the attempt to remove that folder will fail.
 
 In the penultimate line `Run` calls `Export`, a private function in the `Make` class that does not yet exist:
 
@@ -249,7 +249,7 @@ Notes: `Initial` ...
 * ... loads the script `Make.dyalog` into `#`.
 * ... runs the function `Make.Run`. The `0` provided as right argument tell `Make.Run` to _not_ execute `⎕OFF`.
 
-In the next step replace the string `'MyApp.exe '` by ` ∆ExeFilename,' '` in `Make` class. That makes sure that the EXE is created within the `MyApp` folder rather than in the current directory.
+In the next step replace the string `'MyApp.exe '` (note the trailing blank!) by ` ∆ExeFilename,' '` (note the leading and the trailing blank!) in the `Make` class. That makes sure that the EXE is created within the `MyApp` folder rather than in the current directory.
 
 Our last change: we add `⎕EX'∆ExeFilename'` to the `Cleanup` function in order to get rid of the global variable when the job is done.
 
@@ -259,4 +259,10 @@ Our last change: we add `⎕EX'∆ExeFilename'` to the `Cleanup` function in ord
 With the two DYAPPs and the BAT file, your development cycle now looks like this:
 
 1. Launch `MyApp.dyapp` and review test results. 
-2. Fix any errors and rerun `#.Tests.Run`. (If you edit the test themselves, either rerun `#,Tester.EstablishHelpersIn #.Tests` or simply close the session and relaunch Develop.dyapp.) 
+2. Fix any errors and rerun `#.Tests.Run`. If you edit the test themselves, either rerun 
+   
+   ~~~
+   `#,Tester.EstablishHelpersIn #.Tests` 
+   ~~~
+   
+   or simply close the session and relaunch Develop.dyapp.
