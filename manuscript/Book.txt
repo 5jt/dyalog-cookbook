@@ -10,6 +10,6 @@ mainmatter.txt
 08_handlingErrors.md
 09_testing.md
 10_documentation.md
-# 11_makeme.md
+11_makeme.md
 # 12_WindowsEventLog.md
 # 13_help.md
