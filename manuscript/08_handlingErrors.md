@@ -678,7 +678,7 @@ You can try this now but make sure that when you are ready you remove the line w
 : This flag allows you to switch off any error trapping _within_ `HandleError`. This can be useful in case something goes wrong. It's can be useful when working on or debugging `HandleError` itself.
  
 `saveCrash`, `saveErrorWS` and `saveVars`
-: While `saveCrash` and `saveVars` are probably always 1 setting `saveErrorWS` to 0 is perfectly reasonable in case you know upfront that any attempt to save the error WS will fail, for example because your application is multi-threaded.
+: While `saveCrash` and `saveVars` are probably always 1 setting `saveErrorWS` to 0 is perfectly reasonable in case you know upfront that any attempt to save the error WS will fail, for example because your application is multi-threaded. Another good reason to avoid saving a workspace is to keep your code from spying eyes.
 
 `customFns` and `customFnsParent`
 : This allows you to make sure that `HandleError` will call a function of your choice. For example, you can use this to send an email or a text to a certain address.

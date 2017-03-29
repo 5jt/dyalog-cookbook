@@ -34,7 +34,7 @@
       resource←cmdline←''
       success←try←0
       :Repeat
-          :Trap 11                                                               
+          :Trap 11
               2 ⎕NQ'.' 'Bind',(DESTINATION,'\',exeName)type flags resource icon cmdline
               success←1
           :Else

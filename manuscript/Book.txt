@@ -11,5 +11,7 @@ mainmatter.txt
 09_testing.md
 10_documentation.md
 11_makeme.md
-# 12_WindowsEventLog.md
-# 13_help.md
+12_help.md
+13_Scheduled Tasks
+# 14_Services
+# 15_WindowsEventLog.md

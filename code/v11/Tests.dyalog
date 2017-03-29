@@ -3,7 +3,7 @@
 
     ∇ Initial;list;rc
       ∆Path←##.FilesAndDirs.GetTempPath,'\MyApp_Tests'
-      ∆ExeFilename←'MyApp.exe'
+      ∆ExeFilename←'MyApp\MyApp.exe'
       #.FilesAndDirs.RmDir ∆Path
       'Create!'#.FilesAndDirs.CheckPath ∆Path
       list←⊃#.FilesAndDirs.Dir'..\..\texts\en\*.txt'

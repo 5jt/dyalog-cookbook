@@ -73,7 +73,7 @@ Now a developer who double-clicks the DYAPP in order to assemble the workspace w
 
 I> In most programming languages the process of compiling the source code and putting together an application is done by a utility that's called "Make"; therefore we use the same term.
 
-At first sight it might seem that we can get away with a reduced version of `Develop.dyapp`, but that is not quite true. Soon we will discuss how to add a help system to our application. We must then make sure that the help system is compiled properly when the application is assembled. We cannot do this with a DYAPP; we need more flexibility.
+At first sight it might seem that we can get away with a reduced version of `Develop.dyapp`, but that is not quite true. Soon we will discuss how to add a help system to our application. We must then make sure that the help system is compiled properly when the application is assembled. Later even more tasks will come up. Conclusion: we cannot do this with a DYAPP; we need more flexibility.
 
 A> ### More complex scenarios 
 A> 
@@ -83,29 +83,31 @@ A> Also, if you have not one but quite a number of applications to deal with it 
 
 `Execute`, `Tester` and `Tests` have no place in the finished application, and we don't need to establish the test helpers either.
 
-Now we create a DYAPP file that performs the "Make", so we call it `Make.dyapp`:
+We are going to create a DYAPP file `Make.dyapp` that performs the "Make". However, if you want to make sure that you can specify explicitly the version of Dyalog that should run this DYAPP rather than relying on what happens to be associated with the file extensions DWS, DYALOG and DYAPP at the time you double-click it then you need a batch file that starts the correct version of Dyalog. Create such a batch file as `Make.bat`. This is the contents:
 
 ~~~
-
+"C:\Program Files\Dyalog\Dyalog APL{yourPreferredVersion}\Dyalog.exe" DYAPP="%~dp0Make.dyapp"
 ~~~
 
-If you want to make sure that you can specify explicitly the version of Dyalog that should run this DYAPP rather than relying on what happens to be associated with the file extensions DWS, DYALOG and DYAPP at the time you double-click it then you need a batch file that starts the correct version of Dyalog. Create such a batch file as `Make.bat`. This is the contents:
+Of course you need to make amendments so that it is using the version of Dyalog you have chosen. If it is at the moment what happens to run  a DYAPP on a double-click then this will give you the correct path:
 
 ~~~
-"C:\Program Files\Dyalog\Dyalog APL{yourPreferredVersion}\Dyalog.exe" DYAPP="%~dp0Make"
+`'"',(⊃#.GetCommandLineArgs),'"'`
 ~~~
-
-Of course you need to make amendments so that it is using the version of Dyalog you have chosen. If it is at the moment what happens to run  a DYAPP on a double-click then `'"',(⊃#.GetCommandLineArgs),'"'` will give you the correct path.
 
 You might want to add other parameters like `MAXWS=128MB` to the BAT file.
 
-Note that the expression `%~dp0` in a batch file will give you the full path -- with a trailing `\` -- of the folder that hosts the batch file. In other words, `"%~dp0Make"` would result in a full path pointing to `MyApp.dyapp`, no matter where that is. You _must_ specify a full path because when the interpreter tries to find the DYAPP the current directory is where the EXE lives, _not_ where the bat file lives.
+Note that the expression `%~dp0` in a batch file will give you the full path -- with a trailing `\` -- of the folder that hosts the batch file. In other words, `"%~dp0Make.dyapp"` would result in a full path pointing to `MyApp.dyapp`, no matter where that is. You _must_ specify a full path because when the interpreter tries to find the DYAPP, the current directory is where the EXE lives, _not_ where the bat file lives.
+
+I> _Warning:_ Note that at the time of writing (2017-04) you _must_ write "dyapp" in lowercase characters - DYAPP would _not_ work!
 
 A> ### The current directory
 A> 
-A> For APLers, the current directory (sometimes called "working directory") is a strange animal. In general, the current directory is where "the application" lives. That means that if you start an application `C:\Program Files\Foo\Foo.exe` then for the application "Foo" the current directory will be `C:\Program Files\Foo`. That's fine except that for APLers "the application" is _not_ the DYALOG.EXE, it's the workspace, whether it was loaded from disk or assembled by a DYAPP. When you double-click `MyApp.dyapp` then the interpreter changes the current directory for you: when you ask for it it will actually be where the DYAPP lives, and that's fine from an APL application programmer's point of view.
+A> For APLers, the current directory (sometimes called "working directory") is a strange animal. In general, the current directory is where "the application" lives. That means that if you start an application `C:\Program Files\Foo\Foo.exe` then for the application "Foo" the current directory will be `C:\Program Files\Foo`. 
+A>
+A> That's fine except that for APLers "the application" is _not_ the DYALOG.EXE, it's the workspace, whether it was loaded from disk or assembled by a DYAPP. When you double-click `MyApp.dyapp` then the interpreter changes the current directory for you: when you ask for it it will actually be where the DYAPP lives, and that's fine from an APL application programmer's point of view.
 A> 
-A> Unfortunately that is not true for a workspace: when you load a workspace then the current directory remains what it was before, and that's where the Dyalog EXE lives. Therefore it's probably not a bad idea to change the current directory yourself at the earliest possible stage after loading a workspace: call `#.FilesAndDirs.PolishCurrentDir` and your are done, no matter what the circumstances are. One of the authors is doing this for roughly 20 years now, and it has solved several problems without introducing new ones.
+A> Unfortunately that is not true for a workspace: whether you double-click or load a workspace, the current directory remains what it was before, and that's where the Dyalog EXE lives. Therefore it's probably not a bad idea to change the current directory yourself at the earliest possible stage after loading a workspace: call `#.FilesAndDirs.PolishCurrentDir` and your are done, no matter what the circumstances are. One of the authors is doing this for roughly 20 years now, and it has solved several problems without introducing new ones.
 
 Now we need to establish the `Make.dyapp` file:
 
