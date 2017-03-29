@@ -458,14 +458,13 @@ Searching for INI file testcases_{computername}.ini
 Searching for INI file Testcases.ini
   ...not found
 Looking for a function "Initial"...
-  ...not found      
+  ...not found
 --- Tests started at 2017-03-22 15:37:12 on #.Tests ----------------------
   Test_002 (1 of 1) : Check whether `map` works fine with appropriate data
  -------------------------------------------------------------------------
    1 test case executed
    0 test cases failed
    0 test cases broken
-
 ~~~
 
 Works fine. Excellent.

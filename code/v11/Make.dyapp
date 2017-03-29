@@ -9,4 +9,6 @@ Load Constants
 Load Utilities
 Load MyApp
 Run #.MyApp.SetLX #.MyApp.GetCommandLineArg ⍬
-Run #.MyApp.Export 'MyApp.exe'
+
+Load Make
+Run #.Make.Run 1

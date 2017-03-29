@@ -16,7 +16,7 @@ At first glance you might think we can get away with splitting the DYAPP into tw
 * We need to make sure that the help system -- which we will introduce soon -- is properly compiled and configured.
 * Soon we need an installer that produces an EXE we can send to the customer for installing the software.
 
-We resume, as usual, by saving a copy of `Z:\code\v10` as `Z:\code\v11`.
+We resume, as usual, by saving a copy of `Z:\code\v10` as `Z:\code\v11`. Now delete `MyApp.exe` from `Z:\code\v11`: from now on we will create the EXE somewhere else.
 
 
 ## The development environment
@@ -66,9 +66,48 @@ Run #.DevHelpers.RunTests 0
 leanpub-end-insert
 ~~~
 
-Now a developer who double-clicks the DYAPP in order to assemble the workspace will always be reminded of running all test cases before she starts working on the application. Experience tells us that this is not a bad thing.
+Now a developer who double-clicks the DYAPP in order to assemble the workspace will always be reminded of running all test cases before she starts working on the application. Experience tells us that this is a good thing.
 
-However, we are going to use `MyApp.dyalog` for the "Make" process as well. That means we need a way to tell the essentials from what's only needed for supporting the development process. Therefore we restructure `MyApp.dyapp` and insert a comment line:
+
+## "Make" the application
+
+I> In most programming languages the process of compiling the source code and putting together an application is done by a utility that's called "Make"; therefore we use the same term.
+
+At first sight it might seem that we can get away with a reduced version of `Develop.dyapp`, but that is not quite true. Soon we will discuss how to add a help system to our application. We must then make sure that the help system is compiled properly when the application is assembled. We cannot do this with a DYAPP; we need more flexibility.
+
+A> ### More complex scenarios 
+A> 
+A> In a more complex application than ours you might prefer a different approach. Using an INI file for this is not a bad idea: it gives you way more freedom in defining all sorts of things while a DYAPP allows you to define just the modules to be loaded.
+A> 
+A> Also, if you have not one but quite a number of applications to deal with it is certainly not a bad idea to use a generalized user command like `]runmake`.
+
+`Execute`, `Tester` and `Tests` have no place in the finished application, and we don't need to establish the test helpers either.
+
+Now we create a DYAPP file that performs the "Make", so we call it `Make.dyapp`:
+
+~~~
+
+~~~
+
+If you want to make sure that you can specify explicitly the version of Dyalog that should run this DYAPP rather than relying on what happens to be associated with the file extensions DWS, DYALOG and DYAPP at the time you double-click it then you need a batch file that starts the correct version of Dyalog. Create such a batch file as `Make.bat`. This is the contents:
+
+~~~
+"C:\Program Files\Dyalog\Dyalog APL{yourPreferredVersion}\Dyalog.exe" DYAPP="%~dp0Make"
+~~~
+
+Of course you need to make amendments so that it is using the version of Dyalog you have chosen. If it is at the moment what happens to run  a DYAPP on a double-click then `'"',(⊃#.GetCommandLineArgs),'"'` will give you the correct path.
+
+You might want to add other parameters like `MAXWS=128MB` to the BAT file.
+
+Note that the expression `%~dp0` in a batch file will give you the full path -- with a trailing `\` -- of the folder that hosts the batch file. In other words, `"%~dp0Make"` would result in a full path pointing to `MyApp.dyapp`, no matter where that is. You _must_ specify a full path because when the interpreter tries to find the DYAPP the current directory is where the EXE lives, _not_ where the bat file lives.
+
+A> ### The current directory
+A> 
+A> For APLers, the current directory (sometimes called "working directory") is a strange animal. In general, the current directory is where "the application" lives. That means that if you start an application `C:\Program Files\Foo\Foo.exe` then for the application "Foo" the current directory will be `C:\Program Files\Foo`. That's fine except that for APLers "the application" is _not_ the DYALOG.EXE, it's the workspace, whether it was loaded from disk or assembled by a DYAPP. When you double-click `MyApp.dyapp` then the interpreter changes the current directory for you: when you ask for it it will actually be where the DYAPP lives, and that's fine from an APL application programmer's point of view.
+A> 
+A> Unfortunately that is not true for a workspace: when you load a workspace then the current directory remains what it was before, and that's where the Dyalog EXE lives. Therefore it's probably not a bad idea to change the current directory yourself at the earliest possible stage after loading a workspace: call `#.FilesAndDirs.PolishCurrentDir` and your are done, no matter what the circumstances are. One of the authors is doing this for roughly 20 years now, and it has solved several problems without introducing new ones.
+
+Now we need to establish the `Make.dyapp` file:
 
 ~~~
 Target #
@@ -83,117 +122,139 @@ Load Utilities
 Load MyApp
 Run #.MyApp.SetLX #.MyApp.GetCommandLineArg ⍬
 
-⍝ Start Development only
-Load ..\AplTree\Tester
-Load ..\AplTree\Execute
-Load Tests
-Load DevHelpers
-Run #.Tester.EstablishHelpersIn #.Tests
-Run #.DevHelpers.RunTests 0
+Load Make
+Run #.Make.Run 1
 ~~~
 
-Everything above the line `⍝ Start Development only` is essential; that's easy enough to find out.
-
-
-## "Make" the application
-
-I> In most other programming languages the process of compiling the course code and putting together an application is done by a utility that's called "Make". Therefore we use the same term.
-
-At first sight it might seem that we can get away with a reduced version of `Develop.dyapp`, but that is not quite true. Soon we will discuss how to add a help system to our application. We must then make sure that the help system is compiled properly when the application is assembled. We cannot do this with a DYAPP; we need more flexibility.
-
-A> ### More complex scenarios 
-A> 
-A> In a more complex application than ours you might prefer a different approach. Using an INI file for this is not a bad idea: it gives yoy way more freedom in defining all sorts of things while a DYAPP allows you to define just the modules to be loaded.
-A> 
-A> Also, if you have not one but quite a number of applications to deal with it is certainly not a bad idea to use a generalized user command like `]runmake`.
-
-
-
-`Execute`, `Tester` and `Tests` have no place in the finished application, and we don't need to establish the test helpers either.
-
-We could expunge them before exporting the active workspace as an EXE. Or -- have _two_ makefiles, one for the development environment, one for export. We go for the second approach.
-
-Duplicate `MyApp.dyapp` and name the files `Develop.dyapp` and `Export.dyapp`. Edit `Export.dyapp` as follows: 
+The upper part (until the blank line) is identical with `MyApp.dyapp` except that we don't load the stuff that's only needing during development. We then load a script `Make` and finally we call `Make.Run`. That's how `Make` looks at this point:
 
 ~~~
-Target #
-Load ..\AplTree\APLTreeUtils
-Load ..\AplTree\FilesAndDirs
-Load ..\AplTree\HandleError
-Load ..\AplTree\IniFiles
-Load ..\AplTree\Logger
-Load Constants
-Load Utilities
-Load MyApp
-Run MyApp.Export
-~~~    
-
-Now, `#.MyApp.Export` doesn't exist yet, so we'd better create it. You'll have noticed exporting an EXE can fail from time to time, and you might have performed this from the _File_ menu enough times to have tired of it. So we'll automate it. Automating it doesn't make it any more reliable, but it certainly makes retries easier. 
-
-~~~
-∇ msg←{flags}Export filename;type;flags;resource;icon;cmdline;success;try;max
-⍝ Attempts to export the application
-  flags←{0<⎕NC ⍵:⍎⍵ ⋄ 0}'flags'       ⍝ 2 = BOUND_CONSOLE
-  max←50
-  type←'StandaloneNativeExe'
-  resource←''
-  icon←F.NormalizePath'.\images\logo.ico'
-  cmdline←''
-  success←try←0
-  :Repeat
-      :Trap 11
-          2 ⎕NQ'.' 'Bind',filename type flags resource icon cmdline
-          success←1
-      :Else
-          ⎕DL 0.2
-      :EndTrap
-      try+←1
-  :Until success∨max<try
-  msg←⊃success⌽('*** ERROR: Failed to export EXE')('Exported: ',filename)
-  msg,←(try>1)/' after ',(⍕try),' tries'    
+:Class Make
+⍝ Puts the application `MyApp` together:
+⍝ * Remover folder `Source\` in the current directory
+⍝ * Create folder `Source\` in the current directory
+⍝ * Copy icon to `Source\`
+⍝ * Copy the INI file template over to `DESTINATION`
+⍝ * Creates `MyApp.exe` within `Source\`
+    ⎕IO←1 ⋄ ⎕ML←1
+    DESTINATION←'MyApp'
+    ∇ {filename}←Run offFlag;rc;en;more;successFlag;F;msg
+      :Access Public Shared
+      F←##.FilesAndDirs
+      (rc en more)←F.RmDir DESTINATION
+      {⍵:.}0≠rc
+      successFlag←'Create!'F.CheckPath DESTINATION
+      {⍵:.}1≠successFlag
+      (successFlag more)←2↑'images'F.CopyTree DESTINATION,'\images'
+      {⍵:.}1≠successFlag
+      (rc more)←'MyApp.ini.template'F.CopyTo DESTINATION,'\MyApp.ini'
+      {⍵:.}0≠rc
+      Export'MyApp.exe'
+      filename←DESTINATION,'\MyApp.exe'
+      :If offFlag
+          ⎕OFF
+      :EndIf
+    ∇
+:EndClass
 ~~~
 
-Basically, the choices you have been making from the _File > Export_ dialogue, now wrapped as a function. It tries up to 50 times which according to our experience is always enough to get the job done unless something is really wrong, like the EXE being running.
+First we create the folder `DESTINATION` from scratch and then we copy everything that's needed to the folder `DESTINATION` is pointing to: the application icon and the INI file. Whether the function executes `⎕OFF` or not depends on the right argument `offFlag`. Why that is need will become apparent soon.
 
-Running the DYAPP creates our working environment:
-
-~~~
-clear ws
-Booting Z:\code\v06\Develop.dyapp
-Loaded: #.APLTreeUtils
-Loaded: #.FilesAndDirs
-Loaded: #.HandleError
-Loaded: #.IniFiles
-Loaded: #.Logger
-Loaded: #.Tester
-Loaded: #.Constants
-Loaded: #.Tests
-Loaded: #.Utilities
-Loaded: #.MyApp    
-~~~       
-
-The foregoing is a good example of how having automated tests allows us to refactor code with confidence that we'll notice and fix anything we break. 
-
-And if we execute the suggested expression...[^export]
+Note that we don't copy `MyApp.ini` into `DESTINATION` but `MyApp.ini.template`; therefore we must create this file: copy `MyApp.ini` to `MyApp.ini.template` and then check its settings: in particular these settings are important:
 
 ~~~
-          #.Environment.Export '.\MyApp.exe'                            
-    Exported .\MyApp.exe
+...
+[Config]
+Debug       = ¯1   ; 0=enfore error trapping; 1=prevent error trapping;
+Trap        = 1    ; 0 disables any :Trap statements (local traps)
+ForceError  = 0    ; 1=let TxtToCsv crash (for testing global trap handling)
+...
+[Ride]
+Active      = 0
+...
 ~~~
 
+Those might well get changed in `MyApp.ini` while working on the project, so we make sure that we get them set correctly in `MyApp.ini.template`.
+
+Note that the function executes a full stop in a dfn in case the right argument is a `1`. This is an easy way to make the function stop when something goes wrong. There is no point in doing anything but stopping the code from continuing since it is called by a programmer, and when it fails she wants to investighate straight away. And things can go wrong quite easily: if somebody is looking with the Windows Explorer into `DESTINATION` then the attempt to remove that folder will fail.
+
+In the penultimate line `Run` calls `Export`, a private function in the `Make` class that does not yet exist:
+
+~~~
+...
+    ∇
+    ∇ {r}←{flags}Export exeName;type;flags;resource;icon;cmdline;try;max;success
+    ⍝ Attempts to export the application
+      r←⍬
+      flags←{0<⎕NC ⍵:⍎⍵ ⋄ 0}'flags'       ⍝ 2 = BOUND_CONSOLE
+      max←50
+      type←'StandaloneNativeExe'
+      icon←F.NormalizePath DESTINATION,'\images\logo.ico'
+      resource←cmdline←''
+      success←try←0
+      :Repeat
+          :Trap 11
+              2 ⎕NQ'.' 'Bind',(DESTINATION,'\',exeName)type flags resource icon cmdline
+              success←1
+          :Else
+              ⎕DL 0.2
+          :EndTrap
+      :Until success∨max<try←try+1
+      :If 0=success
+          ⎕←'*** ERROR: Failed to export EXE to ',DESTINATION,'\',exeName,' after ',(⍕try),' tries.'
+          . ⍝ Deliberate error; allows investigation
+      :EndIf
+    ∇
+:EndClass
+~~~
+
+`Export` automates what we've done so far by calling the "Export" command from the "File" menu. In case the "Bind" method fails it tries up to 50 times before it gives up. This is because from experience we know that depending on the OS and the machine and God knows what else sometimes the command fails several times before it finally succeeds. 
+
+Double-click `Make.dyapp`: a folder `MyApp` should appear in `Z:\code\v11` with, among other files, `MyApp.exe`.
+
+
+## The tests
+
+Now that we have a way to automatically assemble all the necessary files our application will finally consist of we need to amend our tests. Double-click `MyApp.dyapp`. You don't need to execute the test cases right now because we are going to change them.
+
+We need to make a few changes:
+
+~~~
+:Namespace Tests
+    ⎕IO←1 ⋄ ⎕ML←1
+    ∇ Initial;list;rc
+      ∆Path←##.FilesAndDirs.GetTempPath,'\MyApp_Tests'
+leanpub-start-insert      
+      ∆ExeFilename←'MyApp.exe'
+leanpub-end-insert      
+      #.FilesAndDirs.RmDir ∆Path
+      'Create!'#.FilesAndDirs.CheckPath ∆Path
+      list←⊃#.FilesAndDirs.Dir'..\..\texts\en\*.txt'
+      rc←list #.FilesAndDirs.CopyTo ∆Path,'\'
+      ⍎(0∨.≠⊃rc)/'.'
+leanpub-start-insert      
+      ⎕SE.UCMD'Load ',#.FilesAndDirs.PWD,'\Make.dyalog -target=#'
+      #.Make.Run 0      
+leanpub-end-insert      
+    ∇
+ ...
+:EndNamespace      
+~~~
+
+Notes: `Initial` ...
+
+* ... now creates a global variable `∆ExeFilename` which will be used by the test cases.
+* ... loads the script `Make.dyalog` into `#`.
+* ... runs the function `Make.Run`. The `0` provided as right argument tell `Make.Run` to _not_ execute `⎕OFF`.
+
+In the next step replace the string `'MyApp.exe '` by ` ∆ExeFilename,' '` in `Make` class. That makes sure that the EXE is created within the `MyApp` folder rather than in the current directory.
+
+Our last change: we add `⎕EX'∆ExeFilename'` to the `Cleanup` function in order to get rid of the global variable when the job is done.
 
 
 ## Workflow
 
-With the two DYAPPs, your development cycle now looks like this:
+With the two DYAPPs and the BAT file, your development cycle now looks like this:
 
-1. Launch Develop.dyapp and review test results. 
+1. Launch `MyApp.dyapp` and review test results. 
 2. Fix any errors and rerun `#.Tests.Run`. (If you edit the test themselves, either rerun `#,Tester.EstablishHelpersIn #.Tests` or simply close the session and relaunch Develop.dyapp.) 
-3. Launch Export.dyapp, which will export a new EXE. Close the session. 
-
-
-
-[^circle]: the best example of this are the circle functions represented by `○`. 
-
-[^export]: It would be great if `#.Environment.Export` could be run straight from the DYAPP. But the DYAPP has to finish before an EXE can be exported. 
-

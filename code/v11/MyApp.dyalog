@@ -43,29 +43,7 @@
               ind⊃l,⊂'Unknown error'
           }
     :EndNamespace
-
-    ∇ msg←{flags}Export filename;type;flags;resource;icon;cmdline;success;try;max
-    ⍝ Attempts to export the application
-      flags←{0<⎕NC ⍵:⍎⍵ ⋄ 0}'flags'       ⍝ 2 = BOUND_CONSOLE
-      max←50
-      type←'StandaloneNativeExe'
-      resource←''
-      icon←F.NormalizePath'.\images\logo.ico'
-      cmdline←''
-      success←try←0
-      :Repeat
-          :Trap 11
-              2 ⎕NQ'.' 'Bind',filename type flags resource icon cmdline
-              success←1
-          :Else
-              ⎕DL 0.2
-          :EndTrap
-          try+←1
-      :Until success∨max<try
-      msg←⊃success⌽('*** ERROR: Failed to export EXE')('Exported: ',filename)
-      msg,←(try>1)/' after ',(⍕try),' tries'
-    ∇
-
+   
       CountLetters←{
           {⍺(≢⍵)}⌸⎕A{⍵⌿⍨⍵∊⍺}Config.Accents U.map A.Uppercase ⍵
       }
