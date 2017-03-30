@@ -51,7 +51,7 @@ Finally in Part 2 we'll introduce some professional writing techniques that migh
   
 * Internet access. Not necessarily all the time but probably most of the time. Not only because it gives you access to the [APL wiki](http://aplwiki.com) and the Dyalog forum (see below) but mainly for acessing the APLTree tools and the web site that is associated with [this book](http://cookbook.dyalog.com).
 
-  However, we also tried to write the book in a way so that you can just read it that's what you prefer.
+  However, we also tried to write the book in a way so that you can just read it if that's what you prefer.
   
 We have not attempted to 'dumb down' our use of the language for readers with less experience. In some cases we stop to discuss linguistic features; mostly not. If you see an expression you cannot read, a little experimentation and consultation of the reference material should show how it works. 
 

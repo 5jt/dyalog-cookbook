@@ -85,6 +85,7 @@
       r←⍬
       MyLogger←Initial ⍬
       MyLogger.Log'Started MyApp in ',F.PWD
+      MyLogger.Log #.GetCommandLine
       r←TxtToCsv arg~''''
       MyLogger.Log'Shutting down MyApp'
     ∇

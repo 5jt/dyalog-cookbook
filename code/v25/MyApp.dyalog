@@ -109,6 +109,7 @@
       #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
       MyLogger←OpenLogFile'Logs'
       MyLogger.Log'Started MyApp in ',F.PWD
+      MyLogger.Log #.GetCommandLine      
       MyWinEventLog←⎕NEW ##.WindowsEventLog(,⊂'Myapp')
       Log2WindowsEventLog'Application started'
     ∇

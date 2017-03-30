@@ -14,7 +14,7 @@ We see an alert message: _This Dyalog APL runtime application has attempted to u
 
 T> As soon as you close the message box a CONTINUE workspace will be created as a sibling of the EXE. Such a CONTINUE WS can be loaded and investigated, making it easy to figure out what the problem is. However, this is only true as long as there is only a single thread running in the EXE. 
 T> 
-T> Note that for analyzing purposes a CONTINUE workspace must be loaded in an already running instance of Dyalog. In other words: don't double-click a CONTINUE! The reason is that `⎕DM` and `⎕DMX` are overwritten in the process of booting SALT, meaning that you loose the error message. You _may_ be able to recreate them by re-executing the failing line but that might be dangerous, or fail in a different way when executed without the application having been initialised.
+T> Note that for analyzing purposes a CONTINUE workspace must be loaded in an already running instance of Dyalog. In other words: don't double-click a CONTINUE! The reason is that `⎕DM` and `⎕DMX` are overwritten in the process of booting SALT, meaning that you loose the error message. You _may_ be able to recreate them by re-executing the failing line but that might be dangerous, or fail in a different way when executed without the application having been initialised properly.
 
 The next version of `MyApp` could do better by having the program write a log file recording what happens.
 
@@ -177,20 +177,22 @@ We create a function `Initial` (short for "Initialize") which calls `OpenLogFile
 
 At the moment `Initial` is not doing too much, but that will change. Note that we took the opportunity to make sure that all the system settings in `#` are set according to our needs. `MyApp` sets these variables for itself but within `Initial` we now make sure that `#` uses the same values as well, no matter what the session defaults are.
 
-We also change in `ProcessFile`:
+We also need to change `ProcessFile`:
 
 ~~~
 ∇ data←(fns ProcessFiles)files;txt;file
+⍝ was: (data enc nl)←(fns ProcessFiles)files;txt;file
 ⍝ Reads all files and executes `fns` on the contents.
    data←⍬
    :For file :In files
        txt←'flat' A.ReadUtf8File file
+       ⍝ was: (txt enc nl)←⎕NGET file
        data,←⊂fns txt
    :EndFor
 ∇
 ~~~
 
-We use `APLTreeUtils.ReadUtf8File` rather than `⎕NGET` because it optionally returns a flat string without a performance penalty, although that is only an issue with really large file. This is achieved by passing "flat" as the (optional) left argument to `ReadUtf8File`. We ignore encoding and new line character and allow it to default to the current operating system. As a side effect `ProcessFiles` won't crash anymore when `files` is empty.
+We use `APLTreeUtils.ReadUtf8File` rather than `⎕NGET` because it optionally returns a flat string without a performance penalty, although that is only an issue with really large file. This is achieved by passing "flat" as the (optional) left argument to `ReadUtf8File`. We ignore encoding and new line character and allow it to default to the current operating system. As a side effect `ProcessFiles` won't crash anymore when `files` is empty because `enc` and `nl` have disappeared from the function. 
 
 Now we have to make sure that `Initial` is called from `StartFromCmdLine`:
 
@@ -200,12 +202,15 @@ Now we have to make sure that `Initial` is called from `StartFromCmdLine`:
    r←⍬
    MyLogger←Initial ⍬
    MyLogger.Log'Started MyApp in ',F.PWD      
+   MyLogger.Log #.GetCommandLine
    r←TxtToCsv arg~''''
    MyLogger.Log'Shutting down MyApp'
 ∇
 ~~~
 
-We take the opportunity to moce code from `TxtToCsv` to a new function `GetFiles`. This new function will take the command line argument and return a list of files which may contain zero, one or many filenames:
+Note that we add the opportunity here to log the full command line. In an application that receives its parameters from the command line this is an important thing do to.
+
+We take the opportunity to move code from `TxtToCsv` to a new function `GetFiles`. This new function will take the command line argument and return a list of files which may contain zero, one or many filenames:
 
 ~~~
  ∇ (target files)←GetFiles fullfilepath;csv;target;path;stem

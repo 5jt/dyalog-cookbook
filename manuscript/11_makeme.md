@@ -160,9 +160,11 @@ The upper part (until the blank line) is identical with `MyApp.dyapp` except tha
 :EndClass
 ~~~
 
+Note that the function executes a full stop in a dfn in case the right argument is a `1`. This is an easy way to make the function stop when something goes wrong. There is no point in doing anything but stopping the code from continuing since it is called by a programmer, and when it fails she wants to investigate straight away. And things can go wrong quite easily; for example, if somebody is looking with the Windows Explorer into `DESTINATION` then the attempt to remove that folder will fail.
+
 First we create the folder `DESTINATION` from scratch and then we copy everything that's needed to the folder `DESTINATION` is pointing to: the application icon and the INI file. Whether the function executes `⎕OFF` or not depends on the right argument `offFlag`. Why that is needed will become apparent soon.
 
-Note that we don't copy `MyApp.ini` into `DESTINATION` but `MyApp.ini.template`; therefore we must create this file: copy `MyApp.ini` to `MyApp.ini.template` and then check its settings: in particular these settings are important:
+We don't copy `MyApp.ini` into `DESTINATION` but `MyApp.ini.template`; therefore we must create this file: copy `MyApp.ini` to `MyApp.ini.template` and then check its settings: in particular these settings are important:
 
 ~~~
 ...
@@ -178,7 +180,22 @@ Active      = 0
 
 Those might well get changed in `MyApp.ini` while working on the project, so we make sure that we get them set correctly in `MyApp.ini.template`.
 
-Note that the function executes a full stop in a dfn in case the right argument is a `1`. This is an easy way to make the function stop when something goes wrong. There is no point in doing anything but stopping the code from continuing since it is called by a programmer, and when it fails she wants to investigate straight away. And things can go wrong quite easily; for example, if somebody is looking with the Windows Explorer into `DESTINATION` then the attempt to remove that folder will fail.
+However, that leaves us vulnerable to another problem: imagine we introduce a new section and/or a new key and forget to copy it over to the tmeplate. In order to avoid this we add a test case to `Tests`:
+
+~~~
+    ∇ R←Test_misc_01(stopFlag batchFlag);⎕TRAP;ini1;ini2
+      ⍝ Check whether MyApp.ini and MyApp.ini.template have the same sections and keys
+      ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+      R←∆Failed
+      ini1←⎕NEW ##.IniFiles(,⊂'MyApp.ini')
+      ini2←⎕NEW ##.IniFiles(,⊂'MyApp.ini.template')
+      →PassesIf ini1.GetSections≡ini2.GetSections
+      →PassesIf(ini1.Get ⍬ ⍬)[;2]≡(ini2.Get ⍬ ⍬)[;2]
+      R←∆OK
+    ∇
+~~~
+
+The test simply checks whether the two INI files have the same sections and the same keys; that's sufficient to notify us in case we forgot something.
 
 In the penultimate line `Run` calls `Export`, a private function in the `Make` class that does not yet exist:
 
@@ -247,7 +264,7 @@ Notes: `Initial` ...
 
 * ... now creates a global variable `∆ExeFilename` which will be used by the test cases.
 * ... loads the script `Make.dyalog` into `#`.
-* ... runs the function `Make.Run`. The `0` provided as right argument tell `Make.Run` to _not_ execute `⎕OFF`.
+* ... runs the function `Make.Run`. The `0` provided as right argument tell `Make.Run` to _not_ execute `⎕OFF`, something we would not appreciate at this stage.
 
 In the next step replace the string `'MyApp.exe '` (note the trailing blank!) by ` ∆ExeFilename,' '` (note the leading and the trailing blank!) in the `Make` class. That makes sure that the EXE is created within the `MyApp` folder rather than in the current directory.
 

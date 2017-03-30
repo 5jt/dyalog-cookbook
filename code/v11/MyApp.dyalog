@@ -159,6 +159,7 @@
       CheckForRide Config
       MyLogger←OpenLogFile Config.LogFolder
       MyLogger.Log'Started MyApp in ',F.PWD
+      MyLogger.Log #.GetCommandLine      
       MyLogger.Log↓⎕FMT Config.∆List
     ∇
 

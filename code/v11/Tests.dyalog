@@ -76,6 +76,17 @@
       R←∆OK
     ∇
 
+    ∇ R←Test_misc_01(stopFlag batchFlag);⎕TRAP;ini1;ini2
+      ⍝ Check whether MyApp.ini and MyApp.ini.template have the same sections and keys
+      ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+      R←∆Failed
+      ini1←⎕NEW ##.IniFiles(,⊂'MyApp.ini')
+      ini2←⎕NEW ##.IniFiles(,⊂'MyApp.ini.template')
+      →PassesIf ini1.GetSections≡ini2.GetSections
+      →PassesIf(ini1.Get ⍬ ⍬)[;2]≡(ini2.Get ⍬ ⍬)[;2]
+      R←∆OK
+    ∇
+
     ∇ {r}←GetHelpers
       r←#.Tester.EstablishHelpersIn ⎕THIS
     ∇

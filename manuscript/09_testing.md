@@ -39,6 +39,13 @@ If you are writing the first version of a function, writing the tests first will
 If you are modifying an existing function, write new tests for the new things it is to do. Run the revised tests and see that the code fails the new tests. If the unchanged code _passes_ any of the new tests... review your understanding of what you're trying to do! 
 
 
+## Readability
+
+Reading and understanding APL code is more difficult than in other programming language due to the higher abstraction level and the power of APL's primitives. However, as long as you have an example were the function is fed with correct data it's always possible to decipher the code. Things can become very nasty indeed if an application crashes because inappropriate data arrives at your function. However, before you can figure out whether the data is appropriate or not you need to understand the code - a hen-egg problem.
+
+That's when test cases can be very useful as well, because they demonstrate which data a function is expected to process. It also emphasizes why it is important to have test cases for all the different types of data (or parameters) a function is supposed to process. In this respect test cases should be exhaustive.
+
+
 ### Write better 
 
 Writing functions with a view to passing formal tests will encourage you to write in _functional style_. In pure functional style, a function reads only the information in its arguments and writes only its result. No side effects or references. 

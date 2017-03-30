@@ -211,6 +211,9 @@ leanpub-start-insert
 leanpub-end-insert  
   MyLogger←OpenLogFile Config.LogFolder
   MyLogger.Log'Started MyApp in ',F.PWD
+leanpub-start-insert    
+  MyLogger.Log #.GetCommandLine
+leanpub-end-insert    
   MyLogger.Log↓⎕FMT Config.∆List
 ∇
 ~~~
