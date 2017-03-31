@@ -205,7 +205,7 @@ In the penultimate line `Run` calls `Export`, a private function in the `Make` c
     ∇ {r}←{flags}Export exeName;type;flags;resource;icon;cmdline;try;max;success
     ⍝ Attempts to export the application
       r←⍬
-      flags←{0<⎕NC ⍵:⍎⍵ ⋄ 0}'flags'       ⍝ 2 = BOUND_CONSOLE
+      flags←##.Constants.BIND_FLAGS.RUNTIME{⍺←0 ⋄ 0<⎕NC ⍵:⍎⍵ ⋄ ⍺}'flags'
       max←50
       type←'StandaloneNativeExe'
       icon←F.NormalizePath DESTINATION,'\images\logo.ico'
@@ -229,7 +229,22 @@ In the penultimate line `Run` calls `Export`, a private function in the `Make` c
 
 `Export` automates what we've done so far by calling the "Export" command from the "File" menu. In case the "Bind" method fails it tries up to 50 times before it gives up. This is because from experience we know that depending on the OS and the machine and God knows what else sometimes the command fails several times before it finally succeeds. 
 
-Double-click `Make.dyapp`: a folder `MyApp` should appear in `Z:\code\v11` with, among other files, `MyApp.exe`.
+We specified `##.Constants.BIND_FLAGS.RUNTIME` as a default for `flags`, but that does not exist yet, so we add it to the `Constants` namespace:
+
+~~~
+:Namespace Constants
+...
+    :EndNamespace
+leanpub-start-insert
+    :Namespace BIND_FLAGS
+        BOUND_CONSOLE←2
+        RUNTIME←8
+    :EndNamespace
+leanpub-end-insert    
+:EndNamespace
+~~~
+
+Double-click `Make.dyapp`: a folder `MyApp` should appear in `Z:\code\v12` with, among other files, `MyApp.exe`.
 
 
 ## The tests

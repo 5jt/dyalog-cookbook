@@ -43,7 +43,7 @@
               ind⊃l,⊂'Unknown error'
           }
     :EndNamespace
-   
+
       CountLetters←{
           {⍺(≢⍵)}⌸⎕A{⍵⌿⍨⍵∊⍺}Config.Accents U.map A.Uppercase ⍵
       }
@@ -65,7 +65,7 @@
               :Trap Config.Trap/FileRelatedErrorCodes
                   A.WriteUtf8File target lines
               :Case
-                  MyLogger.LogError'Writing to <',target,'> failed, rc=',(⍕⎕EN),'; ',⊃⎕DM
+                  MyLogger.LogError ⎕EN('Writing to <',target,'> failed; ',⊃⎕DM)
                   rc←EXIT.UNABLE_TO_WRITE_TARGET
                   :Return
               :EndTrap
@@ -110,7 +110,7 @@
           :Trap Config.Trap/FileRelatedErrorCodes
               txt←'flat'A.ReadUtf8File file
           :Case
-              MyLogger.LogError'Unable to read source: ',file
+              MyLogger.LogError ⎕EN('Unable to read source: ',file)
               Off EXIT.UNABLE_TO_READ_SOURCE
           :EndTrap
           data,←⊂fns txt
@@ -159,7 +159,7 @@
       CheckForRide Config
       MyLogger←OpenLogFile Config.LogFolder
       MyLogger.Log'Started MyApp in ',F.PWD
-      MyLogger.Log #.GetCommandLine      
+      MyLogger.Log #.GetCommandLine
       MyLogger.Log↓⎕FMT Config.∆List
     ∇
 
@@ -196,11 +196,17 @@
       r←⍬
       :If 0≠Config.Ride
           rc←3502⌶0
-          {0=⍵:r←1 ⋄ ⎕←'Problem! rc=',⍕⍵ ⋄.}rc
+          :If ~rc∊0 ¯1
+              11 ⎕SIGNAL⍨'Problem switching off Ride, rc=',⍕rc
+          :EndIf
           rc←3502⌶'SERVE::',⍕Config.Ride
-          {0=⍵:r←1 ⋄ ⎕←'Problem! rc=',⍕⍵ ⋄.}rc
+          :If 0≠rc
+              11 ⎕SIGNAL⍨'Problem setting the Ride connecion string to SERVE::',(⍕Config.Ride),', rc=',⍕rc
+          :EndIf
           rc←3502⌶1
-          {0=⍵:r←1 ⋄ ⎕←'Problem! rc=',⍕⍵ ⋄.}rc
+          :If ~rc∊0 ¯1
+              11 ⎕SIGNAL⍨'Problem switching on Ride, rc=',⍕rc
+          :EndIf
           {_←⎕DL ⍵ ⋄ ∇ ⍵}1
       :EndIf
     ∇
@@ -210,7 +216,7 @@
           :If exitCode=EXIT.OK
               MyLogger.Log'Shutting down MyApp'
           :Else
-              MyLogger.LogError'MyApp is unexpectedly shutting down, return code is ',EXIT.GetName exitCode
+              MyLogger.LogError exitCode('MyApp is unexpectedly shutting down: ',EXIT.GetName exitCode)
           :EndIf
       :EndIf
       :If A.IsDevelopment

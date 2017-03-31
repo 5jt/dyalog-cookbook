@@ -14,4 +14,4 @@ mainmatter.txt
 12_help.md
 13_Scheduled Tasks
 # 14_Services
-# 15_WindowsEventLog.md
+15_WindowsEventLog.md

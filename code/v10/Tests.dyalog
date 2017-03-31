@@ -3,10 +3,10 @@
 
     ∇ Initial;list;rc
       ∆Path←##.FilesAndDirs.GetTempPath,'\MyApp_Tests'
-      #.FilesAndDirs.RmDir ∆Path
-      'Create!'#.FilesAndDirs.CheckPath ∆Path
-      list←⊃#.FilesAndDirs.Dir'..\..\texts\en\*.txt'
-      rc←list #.FilesAndDirs.CopyTo ∆Path,'\'
+      ##.FilesAndDirs.RmDir ∆Path
+      'Create!'##.FilesAndDirs.CheckPath ∆Path
+      list←⊃##.FilesAndDirs.Dir'..\..\texts\en\*.txt'
+      rc←list ##.FilesAndDirs.CopyTo ∆Path,'\'
       ⍎(0∨.≠⊃rc)/'.'
     ∇
 
@@ -15,13 +15,13 @@
       ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
       R←∆Failed
       ⍝ Precautions:
-      #.FilesAndDirs.DeleteFile⊃#.FilesAndDirs.Dir ∆Path,'\*.csv'
-      rc←#.Execute.Application'MyApp.exe ',∆Path,'\ulysses.txt'
+      ##.FilesAndDirs.DeleteFile⊃##.FilesAndDirs.Dir ∆Path,'\*.csv'
+      rc←##.Execute.Application'MyApp.exe ',∆Path,'\ulysses.txt'
       →GoToTidyUp ##.MyApp.EXIT.OK≠⊃rc
-      →GoToTidyUp~#.FilesAndDirs.Exists ∆Path,'\ulysses.csv'
+      →GoToTidyUp~##.FilesAndDirs.Exists ∆Path,'\ulysses.csv'
       R←∆OK
      ∆TidyUp:
-      #.FilesAndDirs.DeleteFile⊃#.FilesAndDirs.Dir ∆Path,'\*.csv'
+      ##.FilesAndDirs.DeleteFile⊃##.FilesAndDirs.Dir ∆Path,'\*.csv'
     ∇
 
     ∇ R←Test_exe_02(stopFlag batchFlag);⎕TRAP;rc;listCsvs
@@ -29,15 +29,15 @@
       ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
       R←∆Failed
       ⍝ Precautions:
-      #.FilesAndDirs.DeleteFile⊃#.FilesAndDirs.Dir ∆Path,'\*.csv'
-      rc←#.Execute.Application'MyApp.exe ',∆Path,'\'
+      ##.FilesAndDirs.DeleteFile⊃##.FilesAndDirs.Dir ∆Path,'\*.csv'
+      rc←##.Execute.Application'MyApp.exe ',∆Path,'\'
       →GoToTidyUp ##.MyApp.EXIT.OK≠⊃rc
-      listCsvs←⊃#.FilesAndDirs.Dir ∆Path,'\*.csv'
+      listCsvs←⊃##.FilesAndDirs.Dir ∆Path,'\*.csv'
       →GoToTidyUp 1≠⍴listCsvs
-      →GoToTidyUp'total.csv'≢#.APLTreeUtils.Lowercase⊃,/1↓⎕NPARTS⊃listCsvs
+      →GoToTidyUp'total.csv'≢##.APLTreeUtils.Lowercase⊃,/1↓⎕NPARTS⊃listCsvs
       R←∆OK
      ∆TidyUp:
-      #.FilesAndDirs.DeleteFile⊃#.FilesAndDirs.Dir ∆Path,'\*.csv'
+      ##.FilesAndDirs.DeleteFile⊃##.FilesAndDirs.Dir ∆Path,'\*.csv'
     ∇
 
     ∇ R←Test_map_01(stopFlag batchFlag);⎕TRAP
@@ -45,7 +45,7 @@
       ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
       R←∆Failed
       :Trap 5
-          {}(⊂⎕A)#.Utilities.map'APL is great'
+          {}(⊂⎕A)##.Utilities.map'APL is great'
           →FailsIf 1
       :Else
           →PassesIf'Left argument is not a two-element vector'≡⊃⎕DM
@@ -67,19 +67,19 @@
       ⍝ Test whether `TxtToCsv` handles a non-existing file correctly
       ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
       R←∆Failed
-      #.MyApp.(Config MyLogger)←##.MyApp.Initial ⍬
-      rc←#.MyApp.TxtToCsv'This_file_does_not_exist'
+      ##.MyApp.(Config MyLogger)←##.MyApp.Initial ⍬
+      rc←##.MyApp.TxtToCsv'This_file_does_not_exist'
       →FailsIf ##.MyApp.EXIT.SOURCE_NOT_FOUND≢rc
       R←∆OK
     ∇
 
     ∇ {r}←GetHelpers
-      r←#.Tester.EstablishHelpersIn ⎕THIS
+      r←##.Tester.EstablishHelpersIn ⎕THIS
     ∇
 
     ∇ Cleanup
       :If 0<⎕NC'∆Path'
-          #.FilesAndDirs.RmDir ∆Path
+          ##.FilesAndDirs.RmDir ∆Path
           ⎕EX '∆Path'
       :EndIf
     ∇

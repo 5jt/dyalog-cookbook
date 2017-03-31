@@ -145,11 +145,17 @@
       r←⍬
       :If 0≠Config.Ride
           rc←3502⌶0
-          {0=⍵:r←1 ⋄ ⎕←'Problem! rc=',⍕⍵ ⋄.}rc
+          :If ~rc∊0 ¯1
+              11 ⎕SIGNAL⍨'Problem switching off Ride, rc=',⍕rc
+          :EndIf
           rc←3502⌶'SERVE::',⍕Config.Ride
-          {0=⍵:r←1 ⋄ ⎕←'Problem! rc=',⍕⍵ ⋄.}rc
+          :If 0≠rc
+              11 ⎕SIGNAL⍨'Problem setting the Ride connecion string to SERVE::',(⍕Config.Ride),', rc=',⍕rc
+          :EndIf
           rc←3502⌶1
-          {0=⍵:r←1 ⋄ ⎕←'Problem! rc=',⍕⍵ ⋄.}rc
+          :If ~rc∊0 ¯1
+              11 ⎕SIGNAL⍨'Problem switching on Ride, rc=',⍕rc
+          :EndIf
           {_←⎕DL ⍵ ⋄ ∇ ⍵}1
       :EndIf
     ∇

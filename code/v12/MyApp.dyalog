@@ -1,13 +1,22 @@
 ﻿:Namespace MyApp
+   ⍝ Counting letter frequencies in text
 
     ⎕IO←1 ⋄ ⎕ML←1 ⋄ ⎕WX←3 ⋄ ⎕PP←15 ⋄ ⎕DIV←1
 
+    ∇ Z←Copyright
+      Z←'The Dyalog Cookbook, Kai Jaeger & Stephen Taylor 2017'
+    ∇
+
     ∇ r←Version
+   ⍝ * 1.6.0:
+   ⍝   * Safety net added that makes sure only one instance of `MyApp` is running
+   ⍝ * 1.5.0:
+   ⍝   * `Export` method added.
    ⍝ * 1.4.0:
    ⍝   * Handles errors with a global trap.
    ⍝   * Returns an exit code to calling environment.
    ⍝ * 1.3.0:
-   ⍝   * MyApp gives a Ride now, INI settings permitted.
+   ⍝   * MyApp gives a Ride now, INI settings permitted.
    ⍝ * 1.2.0:
    ⍝   * The application now honours INI files.
    ⍝ * 1.1.0:
@@ -15,7 +24,7 @@
    ⍝   * Logging implemented.
    ⍝ * 1.0.0
    ⍝   * Runs as a stand-alone EXE and takes parameters from the command line.
-      r←(⍕⎕THIS)'1.4.0' '2017-02-26'
+      r←(⍕⎕THIS)'1.6.0' '2017-02-26'
     ∇
 
 ⍝ === Aliases (referents must be defined previously)
@@ -30,6 +39,7 @@
         SOURCE_NOT_FOUND←112
         UNABLE_TO_READ_SOURCE←113
         UNABLE_TO_WRITE_TARGET←114
+        ALREADY_RUNNING←115
           GetName←{
               l←' '~¨⍨↓⎕NL 2
               ind←({⍎¨l}l)⍳⍵
@@ -125,6 +135,7 @@
       (Config MyLogger)←Initial ⍬
       ⎕TRAP←(Config.Debug=0)SetTrap Config
       rc←TxtToCsv arg~''''
+      Cleanup ⍬
       Off rc
     ∇
 
@@ -149,6 +160,7 @@
     ⍝ Prepares the application.
       #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
       Config←CreateConfig ⍬
+      Config.ControlFileTieNo←CheckForOtherInstances ⍬
       CheckForRide Config
       MyLogger←OpenLogFile Config.LogFolder
       MyLogger.Log'Started MyApp in ',F.PWD
@@ -186,7 +198,7 @@
 
     ∇ {r}←CheckForRide Config;rc
     ⍝ Checks whether the user wants to have a Ride and if so make it possible.
-      r←⍬
+      r←1
       :If 0≠Config.Ride
           rc←3502⌶0
           :If ~rc∊0 ¯1
@@ -234,6 +246,37 @@
       #.ErrorParms.windowsEventSource←'MyApp'
       #.ErrorParms.addToMsg←' --- Something went terribly wrong'
       trap←force ##.HandleError.SetTrap'#.ErrorParms'
+    ∇
+
+    ∇ {tno}←CheckForOtherInstances dummy;filename;listOfTiedFiles;ind
+    ⍝ Attempts to tie the file "MyApp.dcf" exclusively and returns the tie number.
+    ⍝ If that is not possible than an error is thrown because we can assume that the
+    ⍝ application is already running.\\
+    ⍝ Notes:
+    ⍝ * In case the file is already tied it is untied first.
+    ⍝ * If the file does not exist it is created.
+      filename←'MyAppCtrl.dcf'
+      :If 0=F.IsFile filename
+          tno←filename ⎕FCREATE 0
+      :Else
+          :If ~0∊⍴⎕FNUMS
+              listOfTiedFiles←A.dtb↓⎕FNAMES
+              ind←listOfTiedFiles⍳⊂filename
+          :AndIf ind≤⍴⎕FNUMS
+              ⎕FUNTIE ind⊃⎕FNUMS
+          :EndIf
+          :Trap 24
+              tno←filename ⎕FTIE 0
+          :Else
+              'Application is already running'⎕SIGNAL EXIT.ALREADY_RUNNING
+          :EndTrap
+      :EndIf
+    ∇
+
+    ∇ {r}←Cleanup dummy
+      r←⍬
+      ⎕FUNTIE Config.ControlFileTieNo
+      Config.ControlFileTieNo←⍬
     ∇
 
 :EndNamespace

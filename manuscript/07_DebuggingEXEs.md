@@ -95,11 +95,17 @@ We add a function `CheckForRide`:
       r←⍬
       :If 0≠Config.Ride
           rc←3502⌶0
-          {0=⍵:r←1 ⋄ ⎕←'Problem! rc=',⍕⍵ ⋄ .}rc
+          :If ~rc∊0 ¯1
+              11 ⎕SIGNAL⍨'Problem switching off Ride, rc=',⍕rc
+          :EndIf
           rc←3502⌶'SERVE::',⍕Config.Ride
-          {0=⍵:r←1 ⋄ ⎕←'Problem! rc=',⍕⍵ ⋄ .}rc
+          :If 0≠rc
+              11 ⎕SIGNAL⍨'Problem setting the Ride connecion string to SERVE::',(⍕Config.Ride),', rc=',⍕rc
+          :EndIf
           rc←3502⌶1
-          {0=⍵:r←1 ⋄ ⎕←'Problem! rc=',⍕⍵ ⋄ .}rc
+          :If ~rc∊0 ¯1
+              11 ⎕SIGNAL⍨'Problem switching on Ride, rc=',⍕rc
+          :EndIf
           {_←⎕DL ⍵ ⋄ ∇ ⍵}1
       :EndIf
 ∇
@@ -133,13 +139,13 @@ Notes:
 
 * With `{_←⎕DL ⍵ ⋄ ∇ ⍵}1` we start an endless loop: wait for a second, then call the function again recursively. Its a dfn, so there is no stack growing on recursive calls.
 
-Now you can start Ride, enter "localhost" and the port number as parameters, connect to the interpreter or stand-alone EXE etc. and then select "Strong interrupt" from the "Actions" menu in order to interrupt the endless loop; you can then start debugging the application. Note that this does not require the development EXE to be involved: it may well be a runtime EXE. However, you need a development license in order to be legally entitled to do this.
+Now you can start Ride, enter "localhost" and the port number as parameters, connect to the interpreter or stand-alone EXE etc. and then select "Strong interrupt" from the "Actions" menu in order to interrupt the endless loop; you can then start debugging the application. Note that this does not require the development EXE to be involved: it may well be a runtime EXE. However, you need of course a development license in order to be legally entitled to do this.
 
 T> Prior to version 16.0 one had to copy the files "ride27_64.dll" (or "ride27_32.dll") and "ride27ssl64.dll" (or "ride27ssl32.dll") so that they are siblings of the EXE. From 16.0 onwards you must copy the Conga DLLs instead. Failure in doing that will make `3502⌶1` fail. Note that "2.7" refers to the version of Conga, not Ride. Prior to version 3.0 of Conga every application (interpreter, Ride, etc.) needed to have their own copy of the Conga DLLs, with a different name. Since 3.0 Conga can serve several applications in parallel.
 
 A> ### Restartable functions
 A> 
-A> Note only do we try to exit functions at the bottom, we also like them to be "restartable". What we mean by that is that we want a function -- and its variables -- to survive `→1`. This is not always possible, for example when a function starts a thread and must not start a second one for the same task, or a file was tied etc. but most of the time it is possible to achieve that. That means that something like this must be avoided:
+A> Not only do we try to exit functions at the bottom, we also like them to be "restartable". What we mean by that is that we want a function -- and its variables -- to survive `→1`. This is not always possible, for example when a function starts a thread and must not start a second one for the same task, or a file was tied etc. but most of the time it is possible to achieve that. That means that something like this must be avoided:
 A>
 A>~~~
 A> ∇r←MyFns arg

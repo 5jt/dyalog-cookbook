@@ -112,7 +112,7 @@ Now we have to introduce a function `Off`:
       :If exitCode=EXIT.OK
           MyLogger.Log'MyApp is closing down gracefully'
       :Else
-          MyLogger.LogError'MyApp is closing down, rc = ',EXIT.GetName exitCode
+          MyLogger.LogError exitCode('MyApp is unexpectedly shutting down: ',EXIT.GetName exitCode)
       :EndIf
   :EndIf
   :If A.IsDevelopment

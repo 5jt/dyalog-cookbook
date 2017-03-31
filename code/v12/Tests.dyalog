@@ -3,11 +3,14 @@
 
     ∇ Initial;list;rc
       ∆Path←##.FilesAndDirs.GetTempPath,'\MyApp_Tests'
+      ∆ExeFilename←'MyApp\MyApp.exe'
       ##.FilesAndDirs.RmDir ∆Path
       'Create!'##.FilesAndDirs.CheckPath ∆Path
       list←⊃##.FilesAndDirs.Dir'..\..\texts\en\*.txt'
       rc←list ##.FilesAndDirs.CopyTo ∆Path,'\'
       ⍎(0∨.≠⊃rc)/'.'
+      ⎕SE.UCMD'Load ',##.FilesAndDirs.PWD,'\Make.dyalog -target=#'
+      ##.Make.Run 0
     ∇
 
     ∇ R←Test_exe_01(stopFlag batchFlag);⎕TRAP;rc
@@ -16,7 +19,7 @@
       R←∆Failed
       ⍝ Precautions:
       ##.FilesAndDirs.DeleteFile⊃##.FilesAndDirs.Dir ∆Path,'\*.csv'
-      rc←##.Execute.Application'MyApp.exe ',∆Path,'\ulysses.txt'
+      rc←##.Execute.Application ∆ExeFilename,' ',∆Path,'\ulysses.txt'
       →GoToTidyUp ##.MyApp.EXIT.OK≠⊃rc
       →GoToTidyUp~##.FilesAndDirs.Exists ∆Path,'\ulysses.csv'
       R←∆OK
@@ -30,7 +33,7 @@
       R←∆Failed
       ⍝ Precautions:
       ##.FilesAndDirs.DeleteFile⊃##.FilesAndDirs.Dir ∆Path,'\*.csv'
-      rc←##.Execute.Application'MyApp.exe ',∆Path,'\'
+      rc←##.Execute.Application ∆ExeFilename,' ',∆Path,'\'
       →GoToTidyUp ##.MyApp.EXIT.OK≠⊃rc
       listCsvs←⊃##.FilesAndDirs.Dir ∆Path,'\*.csv'
       →GoToTidyUp 1≠⍴listCsvs
@@ -63,13 +66,26 @@
       R←∆OK
     ∇
 
-    ∇ R←Test_map_03(stopFlag batchFlag);⎕TRAP;rc
+    ∇ R←Test_TxtToCsv_01(stopFlag batchFlag);⎕TRAP;rc
       ⍝ Test whether `TxtToCsv` handles a non-existing file correctly
       ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
       R←∆Failed
       ##.MyApp.(Config MyLogger)←##.MyApp.Initial ⍬
       rc←##.MyApp.TxtToCsv'This_file_does_not_exist'
-      →FailsIf ##.MyApp.EXIT.SOURCE_NOT_FOUND≢rc
+      →GoToTidyUp rc≢##.MyApp.EXIT.SOURCE_NOT_FOUND
+      R←∆OK
+     ∆TidyUp:
+      ##.MyApp.Cleanup ⍬
+    ∇
+
+    ∇ R←Test_misc_01(stopFlag batchFlag);⎕TRAP;ini1;ini2
+      ⍝ Check whether MyApp.ini and MyApp.ini.template have the same sections and keys
+      ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+      R←∆Failed
+      ini1←⎕NEW ##.IniFiles(,⊂'MyApp.ini')
+      ini2←⎕NEW ##.IniFiles(,⊂'MyApp.ini.template')
+      →PassesIf ini1.GetSections≡ini2.GetSections
+      →PassesIf(ini1.Get ⍬ ⍬)[;2]≡(ini2.Get ⍬ ⍬)[;2]
       R←∆OK
     ∇
 
@@ -77,11 +93,13 @@
       r←##.Tester.EstablishHelpersIn ⎕THIS
     ∇
 
-    ∇ Cleanup
+    ∇ {r}←Cleanup
+      r←⍬
       :If 0<⎕NC'∆Path'
           ##.FilesAndDirs.RmDir ∆Path
-          ⎕EX '∆Path'
+          ⎕EX'∆Path'
       :EndIf
+      ⎕EX'∆ExeFilename'
     ∇
 
 :EndNamespace

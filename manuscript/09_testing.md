@@ -265,7 +265,7 @@ The template covers all possibilities, and we will discuss all of them. However,
   ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
   R←∆Failed     
   :Trap 5
-      {}(⊂⎕A)#.Utilities.map'APL is great'
+      {}(⊂⎕A)##.Utilities.map'APL is great'
       →FailsIf 1
   :Else
       .
@@ -274,7 +274,7 @@ The template covers all possibilities, and we will discuss all of them. However,
 ∇
 
 ∇ {r}←GetHelpers
-  r←#.Tester.EstablishHelpersIn ⎕THIS
+  r←##.Tester.EstablishHelpersIn ⎕THIS
 ∇
 
 :EndNamespace
@@ -289,6 +289,8 @@ What we changed:
 * We initialize the explicit result `R` by assigning the value returned by the niladic function `∆Failed`. That allows us to simply leave the function in case a test fails: the result will then tell.
 * We trap the call to `map` which we expect to fail with a length error because we provide a scalar as left argument.
 * In case there is no error we call the function `∆FailsIf` and provide a `1` as right argument. That makes `∆FailsIf` return a `0` and therefore leave `Test_001`.
+
+You might have noticed that we address, say, `Utilities` with `#.Utilities` rather than `##.Utilities`. Making this a habit is a good idea: currently it does not make a difference, but when you later decide to move everything in `#` into, say, a namespace `#.Container` (you never know!) then `##.` would still work while `#.` wouldn't.
 
 The `:Else` part is not ready yet; the full stop will prevent the test function from carrying on when we get there.
 
@@ -487,7 +489,7 @@ Now let's make sure that the work horse is doing okay; for this we add another t
     ⍝ Test whether `TxtToCsv` handles a non-existing file correctly
       ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
       R←∆Failed
-      rc←#.MyApp.TxtToCsv 'This_file_does_not_exist'
+      rc←##.MyApp.TxtToCsv 'This_file_does_not_exist'
       →FailsIf ##.MyApp.EXIT.SOURCE_NOT_FOUND≢rc
       R←∆OK
     ∇
@@ -517,9 +519,9 @@ TxtToCsv[4] MyLogger.Log'Source: ',fullfilepath
       ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
       R←∆Failed
 leanpub-start-insert      
-      #.MyApp.(Config MyLogger)←##.MyApp.Initial ⍬
+      ##.MyApp.(Config MyLogger)←##.MyApp.Initial ⍬
 leanpub-end-insert      
-      rc←#.MyApp.TxtToCsv 'This_file_does_not_exist'
+      rc←##.MyApp.TxtToCsv 'This_file_does_not_exist'
       →FailsIf ##.MyApp.EXIT.SOURCE_NOT_FOUND≢rc
       R←∆OK
     ∇      
@@ -554,7 +556,14 @@ Clearly we need to have one test case for every result the function `TxtToCsv` m
 
 Time for a new version of MyApp. Make a copy of `Z:\code\v08` as `Z:\code\v09`.
 
-First we rename the test functions we have so far: Rather than `Test_001` it will be `Test_map_01` and so forth. This way we group all `map`-related functions together. The new test cases we are about to add will be named `Test_exe_01` etc.
+First we rename the test functions we have so far: 
+
+* `Test_001` becomes `Test_map_01` 
+* `Test_002` becomes `Test_map_02` 
+* `Test_003` becomes `Test_TxtToCsv_01` 
+
+This way we group all `map`-related functions together. The new test cases we are about to add will be named `Test_exe_01` etc. For our application we could get  away without grouping, but once you have more than, say, 20 test cases grouping is a must.
+
 
 ### The "Initial" function
 
@@ -565,10 +574,10 @@ For testing the EXE we need a folder where we can store files temporarily. We ad
 ⎕IO←1 ⋄ ⎕ML←1
  ∇ Initial;list;rc
    ∆Path←##.FilesAndDirs.GetTempPath,'\MyApp_Tests'
-   #.FilesAndDirs.RmDir ∆Path
-   'Create!'#.FilesAndDirs.CheckPath ∆Path
-   list←↑#.FilesAndDirs.Dir'..\..\texts\en\*.txt'
-   rc←list #.FilesAndDirs.CopyTo ∆Path,'\'
+   ##.FilesAndDirs.RmDir ∆Path
+   'Create!'##.FilesAndDirs.CheckPath ∆Path
+   list←↑##.FilesAndDirs.Dir'..\..\texts\en\*.txt'
+   rc←list ##.FilesAndDirs.CopyTo ∆Path,'\'
    ⍎(0∨.≠⊃rc)/'.'
  ∇
 ...
@@ -603,13 +612,13 @@ Now we are ready to test the EXE: create it from scratch. Our first test case wi
       ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
       R←∆Failed
       ⍝ Precautions:
-      #.FilesAndDirs.DeleteFile⊃#.FilesAndDirs.Dir ∆Path,'\*.csv'
-      rc←#.Execute.Application'MyApp.exe ',∆Path,'\ulysses.txt'
+      ##.FilesAndDirs.DeleteFile⊃##.FilesAndDirs.Dir ∆Path,'\*.csv'
+      rc←##.Execute.Application'MyApp.exe ',∆Path,'\ulysses.txt'
       →GoToTidyUp ##.MyApp.EXIT.OK≠⊃rc
-      →GoToTidyUp~#.FilesAndDirs.Exists ∆Path,'\ulysses.csv'
+      →GoToTidyUp~##.FilesAndDirs.Exists ∆Path,'\ulysses.csv'
       R←∆OK
      ∆TidyUp:
-      #.FilesAndDirs.DeleteFile⊃#.FilesAndDirs.Dir ∆Path,'\*.csv'
+      ##.FilesAndDirs.DeleteFile⊃##.FilesAndDirs.Dir ∆Path,'\*.csv'
     ∇
 ...
 ~~~
@@ -657,15 +666,15 @@ We need one more test case:
   ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
   R←∆Failed
   ⍝ Precautions:
-  #.FilesAndDirs.DeleteFile⊃#.FilesAndDirs.Dir ∆Path,'\*.csv'
-  rc←#.Execute.Application'MyApp.exe ',∆Path,'\'
+  ##.FilesAndDirs.DeleteFile⊃##.FilesAndDirs.Dir ∆Path,'\*.csv'
+  rc←##.Execute.Application'MyApp.exe ',∆Path,'\'
   →GoToTidyUp ##.MyApp.EXIT.OK≠⊃rc
-  listCsvs←⊃#.FilesAndDirs.Dir ∆Path,'\*.csv'
+  listCsvs←⊃##.FilesAndDirs.Dir ∆Path,'\*.csv'
   →GoToTidyUp 1≠⍴listCsvs
-  →GoToTidyUp'total.csv'≢#.APLTreeUtils.Lowercase⊃,/1↓⎕NPARTS⊃listCsvs
+  →GoToTidyUp'total.csv'≢##.APLTreeUtils.Lowercase⊃,/1↓⎕NPARTS⊃listCsvs
   R←∆OK
  ∆TidyUp:
-  #.FilesAndDirs.DeleteFile⊃#.FilesAndDirs.Dir ∆Path,'\*.csv'
+  ##.FilesAndDirs.DeleteFile⊃##.FilesAndDirs.Dir ∆Path,'\*.csv'
 ∇
 ...
 ~~~
@@ -682,13 +691,13 @@ Searching for INI file Testcases.ini
   ...not found
 Looking for a function "Initial"...
   ...not found      
---- Tests started at 2017-03-22 20:16:26 on #.Tests ----------------------------------
-  Test_exe_01 (1 of 5) : Process a single file with .\MyApp.exe
-  Test_exe_02 (2 of 5) : Process all TXT files in a certain directory
-  Test_map_01 (3 of 5) : Check the length of the left argument
-  Test_map_02 (4 of 5) : Check whether `map` works fine with appropriate data
-  Test_map_03 (5 of 5) : Test whether `TxtToCsv` handles a non-existing file correctly
- -------------------------------------------------------------------------------------
+--- Tests started at 2017-03-22 20:16:26 on #.Tests ---------------------------------------
+  Test_TxtToCsv_03 (1 of 5) : Test whether `TxtToCsv` handles a non-existing file correctly
+  Test_exe_01 (2 of 5)      : Process a single file with .\MyApp.exe
+  Test_exe_02 (3 of 5)      : Process all TXT files in a certain directory
+  Test_map_01 (4 of 5)      : Check the length of the left argument
+  Test_map_02 (5 of 5)      : Check whether `map` works fine with appropriate data  
+ ------------------------------------------------------------------------------------------
    5 test cases executed
    0 test cases failed
    0 test cases broken
@@ -713,7 +722,7 @@ Although we have been careful and made sure that every single test case cleans u
 ...
 ∇ Cleanup
   :If 0<⎕NC'∆Path'
-      #.FilesAndDirs.RmDir ∆Path
+      ##.FilesAndDirs.RmDir ∆Path
       ⎕EX '∆Path'
   :EndIf
 ∇
@@ -737,11 +746,11 @@ Now that we have two groups we can take advantage of the `G` and the `L` helpers
 exe
 map
       L''
- Test_exe_01  Process a single file with .\MyApp.exe                      
- Test_exe_02  Process all TXT files in a certain directory                  
- Test_map_01  Check the length of the left argument                         
- Test_map_02  Check whether `map` works fine with appropriate data          
- Test_map_03  Test whether `TxtToCsv` handles a non-existing file correctly 
+ Test_exe_01       Process a single file with .\MyApp.exe                      
+ Test_exe_02       Process all TXT files in a certain directory                  
+ Test_map_01       Check the length of the left argument                         
+ Test_map_02       Check whether `map` works fine with appropriate data          
+ Test_TxtToCsv_03  Test whether `TxtToCsv` handles a non-existing file correctly 
       L'ex'
  Test_exe_01  Process a single file with .\MyApp.exe
  Test_exe_02  Process all TXT files in a certain directory    
@@ -756,6 +765,11 @@ Whenever the test cases were executed `Tester` notifies the time on a global var
 ## Conclusion
 
 We have now a test suite available that allows us at any stage to call it in order to make sure that everything still works. This is invaluable.
+
+
+## The sequence of tests
+
+We will discover later on that the sequence in which test cases are executed might have on impact on whether they fail or not, even if you try to avoid any dependencies. That doesn't mean that you don't need to pay attention! In fact you should always aim for any test case to be completely independent from any other test case.
 
 
 ## Testing in different versions of Windows 

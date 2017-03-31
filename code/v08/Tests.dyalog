@@ -5,7 +5,7 @@
       ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
       R←∆Failed
       :Trap 5
-          {}(⊂⎕A)#.Utilities.map'APL is great'
+          {}(⊂⎕A)##.Utilities.map'APL is great'
           →FailsIf 1
       :Else
           →PassesIf'Left argument is not a two-element vector'≡↑⎕DM
@@ -27,14 +27,14 @@
       ⍝ Test whether `TxtToCsv` handles a non-existing file correctly
       ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
       R←∆Failed
-      #.MyApp.(Config MyLogger)←##.MyApp.Initial ⍬
-      rc←#.MyApp.TxtToCsv'This_file_does_not_exist'
+      ##.MyApp.(Config MyLogger)←##.MyApp.Initial ⍬
+      rc←##.MyApp.TxtToCsv'This_file_does_not_exist'
       →FailsIf ##.MyApp.EXIT.SOURCE_NOT_FOUND≢rc
       R←∆OK
     ∇
 
     ∇ {r}←GetHelpers
-      r←#.Tester.EstablishHelpersIn ⎕THIS
+      r←##.Tester.EstablishHelpersIn ⎕THIS
     ∇
 
 :EndNamespace
