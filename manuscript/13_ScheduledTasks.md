@@ -75,7 +75,7 @@ In order to force the application to run only once at any given time we add a fu
        :Trap 24
            tno←filename ⎕FTIE 0
        :Else
-           'Application is already running'⎕SIGNAL EXIT.ALREADY_RUNNING
+           'Application is already running'⎕SIGNAL C.APP_STATUS.ALREADY_RUNNING
        :EndTrap
    :EndIf
 ∇
@@ -85,10 +85,10 @@ Notes:
 
 * First we check whether the file `MyAppCtrl.dcf` exists. If it doesn't we create it and the job is done: creating a file always implies an exclusive tie.
 * If it does exist we check whether it is tied by itself, in case we are developing and have restarted the application without having closed it down properly. We then untie the file.
-* Finally we attempt to tie the file exclusively but trap error 24 - that's "FILE TIED". If that's the case we throw an error `EXIT.ALREADY_RUNNING`.
+* Finally we attempt to tie the file exclusively but trap error 24 - that's "FILE TIED". If that's the case we throw an error `Constants,APP_STATUS.ALREADY_RUNNING`.
 * The file is expected (or will be created) in the current directory. 
 
-Since this function will throw an error `ALREADY_RUNNING` we need to add this to the `EXIT` namespace in `MyApp`:
+Since this function will throw an error `Constants.APP_STATUS.ALREADY_RUNNING` we need to add this to the `EXIT` namespace in `MyApp`:
 
 ~~~
 :Namespace EXIT
