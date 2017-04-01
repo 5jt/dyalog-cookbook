@@ -289,7 +289,7 @@ However, from experience we know that the likelihood of the task _not_ running a
 
 If you want to Ride into a Scheduled Task and therefore set in the INI file the `[Ride]Active` flag to `1` and the Windows Firewall has yet no rules for this port and this application then you _won't_ see the usual message (assuming that you use a user id with admin rights) you expect to see when you run the application for the very first time:
 
-![Windows Firewall](images\Firewall_01.jpg")
+![Windows Firewall](images\Firewall_01.jpg)
 
 The application would start, seemingly run for a short period of time and then stop again without leaving any traces: no error codes, no log files, no crash files, nothing.
 
@@ -372,7 +372,7 @@ With this function we can convert the decimal value 2147942402 into a hex value:
 80070002
 ~~~
 
-Now the first four digits, 8007, means that what follows is a win32 status code. The last 4 are the status code. This is a hexadecimal number that needs to be converted into decimal (the `]fromhex` user command would do), but because the number is so small there is not difference between hex and decimal anyway, so we can convert it into an error message straight away:
+Now the first four digits, 8007, mean that what follows is a win32 status code. The last 4 are the status code. This is a hexadecimal number that needs to be converted into decimal (the `]fromhex` user command would do), but because the number is so small there is no difference between hex and decimal anyway, so we can convert it into an error message straight away:
 
 ~~~
       ]load ..\apltree\WinSys
