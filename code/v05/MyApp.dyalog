@@ -23,8 +23,9 @@
       }
 
     ∇ rc←TxtToCsv fullfilepath;files;tbl;lines;target
-   ⍝ Write a sibling CSV of the TXT located at fullfilepath,
-   ⍝ containing a frequency count of the letters in the file text
+   ⍝ Write a sibling CSV containing a frequency count of the letters in the input files(s).\\
+   ⍝ `fullfilepath` can point to a file or a folder. In case it is a folder then all TXTs
+   ⍝ within that folder are processed. The resulting CSV holds the total frequency count.
       MyLogger.Log'Source: ',fullfilepath
       (target files)←GetFiles fullfilepath
       :If 0∊⍴files

@@ -1,21 +1,38 @@
 ﻿:Namespace MyApp
+⍝ Counting letter frequencies in text.\\
+⍝ Can do one of:
+⍝ * calculate the letters in a given document.
+⍝ * calculate the letters in all documents in a given folder.
+⍝
+⍝ Sample application used by the Dyalog Cookbook.\\
+⍝ Authors: Kai Jaeger & Stephen Taylor.
+⍝ For more details see <http://cookbook.dyalog.com>
 
     ⎕IO←1 ⋄ ⎕ML←1 ⋄ ⎕WX←3 ⋄ ⎕PP←15 ⋄ ⎕DIV←1
 
+    ∇ Z←Copyright
+      Z←'The Dyalog Cookbook, Kai Jaeger & Stephen Taylor 2017'
+    ∇
+
     ∇ r←Version
-   ⍝ * 1.4.0:
-   ⍝   * Handles errors with a global trap.
-   ⍝   * Returns an exit code to calling environment.
-   ⍝ * 1.3.0:
-   ⍝   * MyApp gives a Ride now, INI settings permitted.
-   ⍝ * 1.2.0:
-   ⍝   * The application now honours INI files.
-   ⍝ * 1.1.0:
-   ⍝   * Can now deal with non-existent files.
-   ⍝   * Logging implemented.
-   ⍝ * 1.0.0
-   ⍝   * Runs as a stand-alone EXE and takes parameters from the command line.
-      r←(⍕⎕THIS)'1.4.0' '2017-02-26'
+      r←(⍕⎕THIS)'1.5.0' '2017-02-26'
+    ∇
+
+    ∇ History      
+      ⍝ * 1.5.0:
+      ⍝   * MyApp is now ADOCable (function PublicFns).
+      ⍝ * 1.4.0:
+      ⍝   * Handles errors with a global trap.
+      ⍝   * Returns an exit code to calling environment.
+      ⍝ * 1.3.0:
+      ⍝   * MyApp gives a Ride now, INI settings permitted.
+      ⍝ * 1.2.0:
+      ⍝   * The application now honours INI files.
+      ⍝ * 1.1.0:
+      ⍝   * Can now deal with non-existent files.
+      ⍝   * Logging implemented.
+      ⍝ * 1.0.0
+      ⍝   * Runs as a stand-alone EXE and takes parameters from the command line.
     ∇
 
 ⍝ === Aliases (referents must be defined previously)
@@ -30,6 +47,7 @@
         SOURCE_NOT_FOUND←112
         UNABLE_TO_READ_SOURCE←113
         UNABLE_TO_WRITE_TARGET←114
+        ALREADY_RUNNING←115
           GetName←{
               l←' '~¨⍨↓⎕NL 2
               ind←({⍎¨l}l)⍳⍵
@@ -43,7 +61,7 @@
 
     ∇ rc←TxtToCsv fullfilepath;files;tbl;lines;target
    ⍝ Write a sibling CSV containing a frequency count of the letters in the input files(s).\\
-   ⍝ `fullfilepath` can point to a file or a folder. In case it is a folder then all TXTs
+   ⍝ `fullfilepath` can point to a file or a folder. In case it's a folder then all TXTs
    ⍝ within that folder are processed. The resulting CSV holds the total frequency count.\\
    ⍝ Returns one of the values defined in `EXIT`.
       MyLogger.Log'Source: ',fullfilepath
@@ -67,6 +85,12 @@
               MyLogger.Log' ',↑files
           :EndIf
       :EndIf
+    ∇
+    
+    ∇{r}←LoopOverFolder dummy;folder
+     :For folder :in Config.WatchFolders
+     .
+     :EndFor
     ∇
 
     ∇ (rc target files)←GetFiles fullfilepath;csv;target;path;stem;isDir
@@ -126,6 +150,7 @@
       (Config MyLogger)←Initial ⍬
       ⎕TRAP←(Config.Debug=0)SetTrap Config
       rc←TxtToCsv arg~''''
+      Cleanup ⍬
       Off rc
     ∇
 
@@ -150,6 +175,7 @@
     ⍝ Prepares the application.
       #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
       Config←CreateConfig ⍬
+      Config.ControlFileTieNo←CheckForOtherInstances ⍬
       CheckForRide Config
       MyLogger←OpenLogFile Config.LogFolder
       MyLogger.Log'Started MyApp in ',F.PWD
@@ -167,6 +193,7 @@
       Config.DumpFolder←'./Errors'
       Config.Ride←0      ⍝ If this is not 0 the app accepts a Ride & treats Config.Ride as port number
       Config.ForceError←0
+      .
       iniFilename←'expand'F.NormalizePath'MyApp.ini'
       :If F.Exists iniFilename
           myIni←⎕NEW ##.IniFiles(,⊂iniFilename)
@@ -187,7 +214,7 @@
 
     ∇ {r}←CheckForRide Config;rc
     ⍝ Checks whether the user wants to have a Ride and if so make it possible.
-      r←⍬
+      r←1
       :If 0≠Config.Ride
           rc←3502⌶0
           :If ~rc∊0 ¯1
@@ -235,6 +262,41 @@
       #.ErrorParms.windowsEventSource←'MyApp'
       #.ErrorParms.addToMsg←' --- Something went terribly wrong'
       trap←force ##.HandleError.SetTrap'#.ErrorParms'
+    ∇
+
+    ∇ {tno}←CheckForOtherInstances dummy;filename;listOfTiedFiles;ind
+    ⍝ Attempts to tie the file "MyApp.dcf" exclusively and returns the tie number.
+    ⍝ If that is not possible than an error is thrown because we can assume that the
+    ⍝ application is already running.\\
+    ⍝ Notes:
+    ⍝ * In case the file is already tied it is untied first.
+    ⍝ * If the file does not exist it is created.
+      filename←'MyAppCtrl.dcf'
+      :If 0=F.IsFile filename
+          tno←filename ⎕FCREATE 0
+      :Else
+          :If ~0∊⍴⎕FNUMS
+              listOfTiedFiles←A.dtb↓⎕FNAMES
+              ind←listOfTiedFiles⍳⊂filename
+          :AndIf ind≤⍴⎕FNUMS
+              ⎕FUNTIE ind⊃⎕FNUMS
+          :EndIf
+          :Trap 24
+              tno←filename ⎕FTIE 0
+          :Else
+              'Application is already running'⎕SIGNAL EXIT.ALREADY_RUNNING
+          :EndTrap
+      :EndIf
+    ∇
+
+    ∇ {r}←Cleanup dummy
+      r←⍬
+      ⎕FUNTIE Config.ControlFileTieNo
+      Config.ControlFileTieNo←⍬
+    ∇    
+
+    ∇ r←PublicFns
+      r←'StartFromCmdLine' 'TxtToCsv' 'SetLX' 'GetCommandLineArg'
     ∇
 
 :EndNamespace

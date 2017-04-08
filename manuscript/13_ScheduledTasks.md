@@ -314,12 +314,10 @@ You most probably forgot to copy over the DLLs needed by Ride [^ride] itself. Th
 
 A> ### Windows return codes
 A> 
-A> In case you want to translate a Windows return code like 32 into a more meaningful piece of information you can do this:
+A> In case you want to translate a Windows return code like 32 into a more meaningful piece of information you might consider downloading the user command `GetMsg`. Once installed properly you can do this:
 A> 
 A> ~~~
-A>       ]load ..\apltree\WinSys
-A> #.WinSys
-A>       #.WinSys.GetMsgFrom 32
+A>       ]GetMsgFrom 32
 A> The process cannot access the file because it is being used by another process.
 A> ~~~
 A>
@@ -372,7 +370,7 @@ With this function we can convert the decimal value 2147942402 into a hex value:
 80070002
 ~~~
 
-Now the first four digits, 8007, mean that what follows is a win32 status code. The last 4 are the status code. This is a hexadecimal number that needs to be converted into decimal (the `]fromhex` user command would do), but because the number is so small there is no difference between hex and decimal anyway, so we can convert it into an error message straight away:
+Now the first four digits, 8007, mean that what follows is a win32 status code. The last 4 are the status code. This is a hexadecimal number that needs to be converted into decimal (`Hex` with a `1` as left argument converts decimals to hex, but the `]fromhex` user command would do as well), but because the number is so small there is no difference between hex and decimal anyway, so we can convert it into an error message straight away:
 
 ~~~
       ]load ..\apltree\WinSys

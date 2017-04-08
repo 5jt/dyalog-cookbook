@@ -17,8 +17,9 @@
       }
 
     ∇ noOfBytes←TxtToCsv fullfilepath;csv;stem;path;files;lines;nl;enc;tgt;tbl
-   ⍝ Write a sibling CSV of the TXT located at fullfilepath,
-   ⍝ containing a frequency count of the letters in the file text
+   ⍝ Write a sibling CSV containing a frequency count of the letters in the input files(s).\\
+   ⍝ `fullfilepath` can point to a file or a folder. In case it is a folder then all TXTs
+   ⍝ within that folder are processed. The resulting CSV holds the total frequency count.
       fullfilepath~←'"'
       csv←'.csv'
       :Select C.NINFO.TYPE ⎕NINFO fullfilepath

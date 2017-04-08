@@ -172,13 +172,6 @@
       ⍝ * 3.1.0
       ⍝   * Now accepts the namespace hosting the tests to be scripted.
       ⍝   * New method `GetTestFnsTemplate` introduced.
-      ⍝ * 3.0.0
-      ⍝   * `Initial` may return a Boolean result. 0 means it could not initialize.
-      ⍝   * When `EstablishHelpersIn` or any of the `Run*` functions is executed the hosting
-      ⍝     namespace is checked for being an ordinary named namespace.
-      ⍝   * Bug fixes
-      ⍝     * `Run` should have returned a Boolean flag and a report. Prior to 3.0 is return
-      ⍝       just the report.
       r←(Last⍕⎕THIS)'3.2.1' '2017-03-27'
     ∇
 

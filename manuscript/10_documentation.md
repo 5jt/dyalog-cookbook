@@ -60,9 +60,9 @@ Trailing comments
 
 : Comments at the ends of lines act as margin notes. Do not use them as a running translation of the code. Instead aim to for expository style and code that needs no translation. On lines where you're not satisfied you've achieved expository style, do write an explanatory comment. Better to reserve trailing comments for other notes, such as `⍝FIXME⍝ slow for >1E7 elements` [^fixme]. (Using a tag such as `⍝FIXME⍝` makes it easy to bookmark lines for review.) Aligning trailing comments to begin at the same column makes them easier to scan, and is considered OCD compliant [^ocd]. 
 
-I> Note that Dyalog offers a special command for Aligning Comments: "AC". You can assign a keystroke to this command: open the "Configuration" dialog (Options / Configure...), select the "Keyboard Shortcuts" tab and sort the table with a click on the "Code" column, then look for "AC".
-
 The above conventions are simple enough and have long been in wide use.
+
+I> Note that Dyalog offers a special command for Aligning Comments: "AC". You can assign a keystroke to this command: open the "Configuration" dialog (Options / Configure...), select the "Keyboard Shortcuts" tab and sort the table with a click on the "Code" column, then look for "AC".
 
 If you are exporting scripts for others to use -- for example, contributing to a library -- then it's worth going a step further. You and other _authors_ of a script need to read comments in the context of the code, but potential _users_ of a script will want to know only how to call its methods.
 
@@ -71,9 +71,9 @@ _Automatic documentation generation_ will extract documentation from your script
 
 ## ADOC
 
-ADOC is an acronym for _automatic documentation_ generation. It works on classes, and on namespaces where certain conventions are observed.
+ADOC is an acronym for _automatic documentation_ generation. It works on classes and namespaces.
 
-In its most basic function, it lists methods, properties and fields and requires no comments in the code. In its more powerful function, it composes from header comments an HTML page. Honouring Markdown [^markdown] conventions, it provides all the typographical conventions you need for documentation. If you don't know what Markdown is please read the Markdown article on Wikipedia [^markdown] and `Markdown2Help`'s own help file. The time will be a good investment in any case because these days Markdown is used pretty much everywhere.
+In its most basic function, it lists methods, properties and fields (functions, operators and variableas) and requires no comments in the code. In its more powerful function, it composes from header comments an HTML page. Honouring Markdown   conventions, it provides all the typographical conventions you need for documentation. If you don't know what Markdown is please read the Markdown article on Wikipedia [^markdown] and `Markdown2Help`'s own help file. The time will be a good investment in any case because these days Markdown is used pretty much everywhere.
 
 Previously only found as a class in the APLTree library, it is now shipped in Dyalog Version 16.0 as three user commands.
 
@@ -119,7 +119,6 @@ Browses the ADOC class itself, displaying all the instructions you need to use i
 
 ## ADOC for MyApp
 
-⌹⌹⌹ `⍝TODO⍝` Currently ADOC does not process namespaces, at least not in the same way as classes are processed. We need to polish this chapter once ADOC has learned how to deal with namepsaces.
 
 How might ADOC help us? Start by seeing what ADOC has to say about `MyApp` as it is now:
 
@@ -129,31 +128,120 @@ How might ADOC help us? Start by seeing what ADOC has to say about `MyApp` as it
 
 ![Using ADOC to browse the MyApp namespace](images/adoc_myapp_01.jpg)
 
-We see that ADOC has found and displayed the script’s header comments. We can improve this a little by editing the top of the script to follow ADOC's conventions. 
+We see that ADOC has found and displayed the script’s header comments. It also seems to document all the functions within the `MyApp` namepsace. If `MyApp` would contain any operators and/or variables you will find them in the document produced by ADOC as well.
 
-Time for a new version of MyApp. Make a copy of `Z:\code\v09` as `Z:\code\v10`.
+We can improve this in a number of ways. Time for a new version of MyApp. Make a copy of `Z:\code\v09` as `Z:\code\v10`.
+
+### Leading comments: basic information
+
+
+First we edit the top of the script to follow ADOC's conventions:
 
 ~~~
-    :Namespace MyApp
-    ⍝ Counting letter frequencies in text
-        
-        ∇ Z←Copyright
-          :Access Public Shared
-          Z←'The Dyalog Cookbook, Kai Jaeger & Stephen Taylor 2017'
-        ∇
+:Namespace MyApp
+    ⍝ Counting letter frequencies in text.\\
+    ⍝ Can do one of:
+    ⍝ * calculate the letters in a given document.
+    ⍝ * calculate the letters in all documents in a given folder.
+    ⍝
+    ⍝ Sample application used by the Dyalog Cookbook.\\
+    ⍝ Authors: Kai Jaeger & Stephen Taylor.
+    ⍝ For more details see <http://cookbook.dyalog.com>
 ...
-~~~        
+~~~ 
 
-This gives us more prominent copyright and version notices because ADOC looks for functions we the names `CopyRight` and `Version` and uses the information provided by them.
+
+### Public interface
+
+Next we specify which functions we want to be included in the document: not all but just those that are designed to be called from the outside. In a class those are called "Public method", and it's easy to see way.
+
+For classes ADOC can work out what's public and what isn't due to the `Public Access` statement. For namespaces there is no such mechanism. We already know that by default ADOC considers all functions and operators as well as all variables public, but it also offers a mechanism to reduce this list to what's really public. For that ADOC looks for three functions `PublicFns`, `PublicOpr` and `PublicVars`. They may return an empty vector (nothing public for that type of object) or a list of names. If one or two of them exist then the mising one(s) are believed to be empty, so the default then changes to "list nothing at all".
+
+We don't have any operator or variable in the namespace, so we define at the bottom of the script the public functions:
+
+~~~
+∇ r←PublicFns
+  r←'StartFromCmdLine' 'TxtToCsv' 'SetLX' 'GetCommandLineArg'
+∇
+:EndNamespace
+~~~
+
+
+### Reserved names
+
+ADOC honors a couple of function in a special way. If any such function exists its result is treated in a special way. In the rare circumstances that you have a name conflict and **don't** want ADOC to treat some of those names in any special way then you have to instruct ADOC accordingly with a parameter spaces. Refer to the ADOC documentation for details.
+
+
+#### Version
+
+If `Version` is niladic and returns a three-item vector then this vector is expected to be:
+
+* Name 
+* Version number
+* Version data
+
+These pieces of information are then integrated accordingly into the document.
+
+
+#### Copyright
+
+If `Copyright` is niladic and returns either a simple text vector or a vector of text vectors then these pieces of information are then integrated accordingly into the document.
+
+
+#### History
+
+If `History` is niladic and returns either a simple text vector or a vector of text vectors then these pieces of information are then integrated accordingly into the document.
+
+We had already a function `Version` in place but so far we've added comments regarding the different versions to it. Those should go into `History` instead. Therefore we reaplace the existing `Version` function by these three functions:
+
+~~~
+∇ Z←Copyright
+  Z←'The Dyalog Cookbook, Kai Jaeger & Stephen Taylor 2017'
+∇
+
+∇ r←Version
+  r←(⍕⎕THIS)'1.5.0' '2017-02-26'
+∇
+
+∇ r←History
+  r←''
+  r,←⊂'* 1.5.0:'
+  r,←⊂'  * MyApp is now ADOCable (function PublicFns).'
+  r,←⊂'* 1.4.0:'
+  r,←⊂'  * Handles errors with a global trap.'
+  r,←⊂'  * Returns an exit code to calling environment.'
+  r,←⊂'* 1.3.0:'
+  r,←⊂'  * MyApp gives a Ride now, INI settings permitted.'
+  r,←⊂'* 1.2.0:'
+  r,←⊂'  * The application now honours INI files.'
+  r,←⊂'* 1.1.0:'
+  r,←⊂'  * Can now deal with non-existent files.'
+  r,←⊂'  * Logging implemented.'
+  r,←⊂'* 1.0.0'
+  r,←⊂'  * Runs as a stand-alone EXE and takes parameters from the command line.'
+∇
+~~~
+
+This gives us more prominent copyright and version notices as well as information about the most recent changes.
+
+Finally we need to address the problem that the variables inside `EXIT` are essential for using `MyApp`; they should be part of the documentation. ADOC has ignored the namespace EXIT but we can change this by specifying it explicitly:
+
+~~~
+    ]ADOC_Browse #.MyApp,#.MyApp.EXIT
+~~~
 
 ![Browsing the revised MyApp namespace](images/adoc_myapp_02.jpg)
 
-It's not much but then we're not exporting `MyApp` as a class for others to use.
+When you scroll down (or click at "Exit" in the top-left corner) then you get to the part of the document where `EXIT` is documented:
+
+![Browsing the revised MyApp namespace](images/adoc_myapp_03.jpg)
+
+That will do for now.
 
 [^faq]: Compile those from questions actually asked by users. It's a common mistake to make the list up as "Question we would like our users to ask".
 
 [^ocd]: Thanks to Roger Hui for this term.
 
-[^fixme]: Be it `⍝FIXME⍝` or `⍝CHECKME⍝` or `⍝TODO⍝` - what matters is that you keep it consistent and searchable. That implies that the search term cannot be mistaken as something else by accident. For that reason  `⍝TODO⍝` is better than `TODO`.
+[^fixme]: Be it `⍝FIXME⍝` or `⍝CHECKME⍝` or `⍝TODO⍝` - what matters is that you keep it consistent and searchable. That implies that the search term cannot be mistaken as something else by accident. For that reason  `⍝TODO⍝` is slighty better better than `TODO`.
 
 [^markdown]: <https://en.wikipedia.org/wiki/Markdown>
