@@ -72,4 +72,17 @@
       __name←__ind⊃⎕NL-2
     ∇
 
+    ∇ __allNumbers←List __start
+    ⍝ Returns a matrix with all symbolic names and their numbers in case `__start` is empty.\\
+    ⍝ In case `__start` is not empty only the symbolic names that start with `__start` are listed.\\
+    ⍝ `start` is **not** case sensitive.
+      :Access Public Shared
+      __allNumbers←⎕NL-2
+      __allNumbers←('__'∘≢¨2↑¨__allNumbers)/__allNumbers
+      __allNumbers←__allNumbers,[1.5]⍎¨__allNumbers
+      :If ~0∊⍴__start←{1(819⌶)⍵}__start~'*'
+          __allNumbers←(((⍴,__start)↑[2]↑__allNumbers[;1])∧.=__start)⌿__allNumbers
+      :EndIf
+    ∇
+
 :EndClass

@@ -219,7 +219,7 @@ Load MyApp
 Run #.MyApp.SetLX #.MyApp.GetCommandLineArg ⍬
 ~~~
 
-The `EventCodes` class comes with a method `GetName` that, when fed with an integer, returns the symbolic name. We can use that to convert the number to meaningful names:
+The `EventCodes` class comes with a method `GetName` that, when fed with an integer, returns the symbolic name. We can use that to convert return codes to meaningful names:
 
 ~~~
       #.EventCodes.GetName¨ #.MyApp.FileRelatedErrorCodes
@@ -271,7 +271,7 @@ A> Well, for a very good reason: trapping everything includes such basic things 
 A> 
 A> That being said, if you really have to trap _all_ errors (occasionally this makes sense) then make sure that you can switch it off with a global flag as in `:Trap trap/0`: if `trap` is 1 then the trap is active, otherwise it is not.
 
-In this context the `:Trap` structure has an advantage over `⎕TRAP`. When it fires, and control advances to its `:Else` fork, the trap is immediately cleared. So there is no need explicitly to reset the trap to avoid an open loop.  But be careful when you call other functions: in case they crash the `:Trap` would catch the error!
+Back to `ProcessFiles`. Note that in this context the `:Trap` structure has an advantage over `⎕TRAP`. When it fires, and control advances to its `:Else` fork, the trap is immediately cleared. So there is no need explicitly to reset the trap to avoid an open loop.  But be careful when you call other functions: in case they crash the `:Trap` would catch the error!
 
 The handling of error codes and messages can easily obscure the rest of the logic. Clarity is not always easy to find, but is well worth working for. This is particularly true where there is no convenient test for an error, only a trap for when it is encountered. 
 
@@ -448,7 +448,7 @@ leanpub-start-insert
 leanpub-end-insert                     
 ~~~
 
-We change `TxtToCsv` so that is crashes in case `Config.ForceError` equals 1:
+We change `TxtToCsv` so that it crashes in case `Config.ForceError` equals 1:
 
 ~~~
 ∇ rc←TxtToCsv fullfilepath;files;tbl;lines;target

@@ -128,7 +128,7 @@ How might ADOC help us? Start by seeing what ADOC has to say about `MyApp` as it
 
 ![Using ADOC to browse the MyApp namespace](images/adoc_myapp_01.jpg)
 
-We see that ADOC has found and displayed the script’s header comments. It also seems to document all the functions within the `MyApp` namepsace. If `MyApp` would contain any operators and/or variables you will find them in the document produced by ADOC as well.
+We see that ADOC has found and displayed all the functions within the `MyApp` namespace. If `MyApp` would contain any operators and/or variables you would find them in the document as well.
 
 We can improve this in a number of ways. Time for a new version of MyApp. Make a copy of `Z:\code\v09` as `Z:\code\v10`.
 
@@ -153,13 +153,14 @@ First we edit the top of the script to follow ADOC's conventions:
 
 ### Public interface
 
-Next we specify which functions we want to be included in the document: not all but just those that are designed to be called from the outside. In a class those are called "Public method", and it's easy to see way.
+Next we specify which functions we want to be included in the document: not all but just those that are designed to be called from the outside. In a class those are called "Public interface", and it's easy to see way.
 
-For classes ADOC can work out what's public and what isn't due to the `Public Access` statement. For namespaces there is no such mechanism. We already know that by default ADOC considers all functions and operators as well as all variables public, but it also offers a mechanism to reduce this list to what's really public. For that ADOC looks for three functions `PublicFns`, `PublicOpr` and `PublicVars`. They may return an empty vector (nothing public for that type of object) or a list of names. If one or two of them exist then the mising one(s) are believed to be empty, so the default then changes to "list nothing at all".
+For classes ADOC can work out what's public and what isn't due to the `Public Access` statement. For namespaces there is no such mechanism. We already know that by default ADOC considers all functions and operators as well as all variables public, but it also offers a mechanism to reduce this list to what's really public. For that ADOC looks for a function `Public`. It may return an empty vector (nothing public for that type of object) or a list of names. This list would define what is public.
 
-We don't have any operator or variable in the namespace, so we define at the bottom of the script the public functions:
+We don't have any operators or variables in the namespace, so we define at the bottom of the script just the public functions:
 
 ~~~
+...
 ∇ r←PublicFns
   r←'StartFromCmdLine' 'TxtToCsv' 'SetLX' 'GetCommandLineArg'
 ∇
@@ -169,7 +170,7 @@ We don't have any operator or variable in the namespace, so we define at the bot
 
 ### Reserved names
 
-ADOC honors a couple of function in a special way. If any such function exists its result is treated in a special way. In the rare circumstances that you have a name conflict and **don't** want ADOC to treat some of those names in any special way then you have to instruct ADOC accordingly with a parameter spaces. Refer to the ADOC documentation for details.
+ADOC honors seevral functions in a special way. If any such function exists, its result is treated in a special way. In the rare circumstances that you have a name conflict and **don't** want ADOC to treat some of those names in any special way then you have to instruct ADOC accordingly with a parameter spaces. Refer to the ADOC documentation for details.
 
 
 #### Version
@@ -180,7 +181,7 @@ If `Version` is niladic and returns a three-item vector then this vector is expe
 * Version number
 * Version data
 
-These pieces of information are then integrated accordingly into the document.
+These pieces of information are then integrated into the document.
 
 
 #### Copyright
@@ -190,9 +191,9 @@ If `Copyright` is niladic and returns either a simple text vector or a vector of
 
 #### History
 
-If `History` is niladic and returns either a simple text vector or a vector of text vectors then these pieces of information are then integrated accordingly into the document.
+If `History` is niladic and should not return a result. Instead it should carry comments with information about the history of the script.
 
-We had already a function `Version` in place but so far we've added comments regarding the different versions to it. Those should go into `History` instead. Therefore we reaplace the existing `Version` function by these three functions:
+We had already a function `Version` in place, and so far we've added comments regarding the different versions to it. Those should go into `History` instead. Therefore we reaplace the existing `Version` function by these three functions:
 
 ~~~
 ∇ Z←Copyright
@@ -203,22 +204,21 @@ We had already a function `Version` in place but so far we've added comments reg
   r←(⍕⎕THIS)'1.5.0' '2017-02-26'
 ∇
 
-∇ r←History
-  r←''
-  r,←⊂'* 1.5.0:'
-  r,←⊂'  * MyApp is now ADOCable (function PublicFns).'
-  r,←⊂'* 1.4.0:'
-  r,←⊂'  * Handles errors with a global trap.'
-  r,←⊂'  * Returns an exit code to calling environment.'
-  r,←⊂'* 1.3.0:'
-  r,←⊂'  * MyApp gives a Ride now, INI settings permitted.'
-  r,←⊂'* 1.2.0:'
-  r,←⊂'  * The application now honours INI files.'
-  r,←⊂'* 1.1.0:'
-  r,←⊂'  * Can now deal with non-existent files.'
-  r,←⊂'  * Logging implemented.'
-  r,←⊂'* 1.0.0'
-  r,←⊂'  * Runs as a stand-alone EXE and takes parameters from the command line.'
+∇ History      
+  ⍝ * 1.5.0:
+  ⍝   * MyApp is now ADOCable (function PublicFns).
+  ⍝ * 1.4.0:
+  ⍝   * Handles errors with a global trap.
+  ⍝   * Returns an exit code to calling environment.
+  ⍝ * 1.3.0:
+  ⍝   * MyApp gives a Ride now, INI settings permitted.
+  ⍝ * 1.2.0:
+  ⍝   * The application now honours INI files.
+  ⍝ * 1.1.0:
+  ⍝   * Can now deal with non-existent files.
+  ⍝   * Logging implemented.
+  ⍝ * 1.0.0
+  ⍝   * Runs as a stand-alone EXE and takes parameters from the command line.
 ∇
 ~~~
 
