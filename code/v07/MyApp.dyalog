@@ -104,7 +104,7 @@
           :Trap Config.Trap/FileRelatedErrorCodes
               txt←'flat'A.ReadUtf8File file
           :Case
-              MyLogger.LogError ⎕en('Unable to read source: ',file)
+              MyLogger.LogError ⎕EN('Unable to read source: ',file)
               Off EXIT.UNABLE_TO_READ_SOURCE
           :EndTrap
           data,←⊂fns txt
@@ -153,7 +153,7 @@
       CheckForRide Config
       MyLogger←OpenLogFile Config.LogFolder
       MyLogger.Log'Started MyApp in ',F.PWD
-      MyLogger.Log #.GetCommandLine      
+      MyLogger.Log #.GetCommandLine
       MyLogger.Log↓⎕FMT Config.∆List
     ∇
 
@@ -220,9 +220,26 @@
       :EndIf
     ∇
 
-    ∇ r←FileRelatedErrorCodes
-    ⍝ Useful to trap all file (and directory) related errors.
-      r←12 18 20 21 22 23 24 25 26 28 30 31 32 34 35
+    ∇ r←FileRelatedErrorCodes;E
+    ⍝ Returns all the error codes that are related to files and directories.
+    ⍝ Useful to trap all those errors.
+      r←''
+      E←##.EventCodes
+      r,←E.HOLD_ERROR
+      r,←E.FILE_TIE_ERROR
+      r,←E.FILE_INDEX_ERROR
+      r,←E.FILE_FULL
+      r,←E.FILE_NAME_ERROR
+      r,←E.FILE_DAMAGED
+      r,←E.FILE_TIED
+      r,←E.FILE_TIED_REMOTELY
+      r,←E.FILE_SYSTEM_ERROR
+      r,←E.FILE_SYSTEM_NOT_AVAILABLE
+      r,←E.FILE_SYSTEM_TIES_USED_UP
+      r,←E.FILE_TIE_QUOTA_USED_UP
+      r,←E.FILE_NAME_QUOTA_USED_UP
+      r,←E.FILE_SYSTEM_NO_SPACE
+      r,←E.FILE_ACCESS_ERROR_CONVERTING_FILE
     ∇
 
     ∇ trap←{force}SetTrap Config

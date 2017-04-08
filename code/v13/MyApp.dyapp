@@ -5,6 +5,7 @@ Load ..\AplTree\HandleError
 Load ..\AplTree\IniFiles
 Load ..\AplTree\OS
 Load ..\AplTree\Logger
+Load ..\AplTree\EventCodes
 Load ..\AplTree\ServiceState
 Load Constants
 Load Utilities

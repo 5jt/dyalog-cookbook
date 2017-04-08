@@ -7,6 +7,7 @@ Load ..\AplTree\IniFiles
 Load ..\AplTree\OS
 Load ..\AplTree\Logger
 Load ..\AplTree\Tester
+Load ..\AplTree\EventCodes
 Load Constants
 Load Tests
 Load Utilities

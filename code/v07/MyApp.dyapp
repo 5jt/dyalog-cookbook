@@ -6,6 +6,7 @@ Load ..\AplTree\Execute
 Load ..\AplTree\IniFiles
 Load ..\AplTree\OS
 Load ..\AplTree\Logger
+Load ..\AplTree\EventCodes
 Load Constants
 Load Utilities
 Load MyApp

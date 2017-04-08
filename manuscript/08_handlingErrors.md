@@ -199,14 +199,73 @@ In the line with the `:Trap` we call a niladic function (exception to the rule!)
 
 ~~~
 ∇ r←FileRelatedErrorCodes
-⍝ Useful to trap all file (and directory) related errors.
+⍝ Returns all the error codes that are related to files and directories.
+⍝ Useful to trap all those errors.
   r←12 18 20 21 22 23 24 25 26 28 30 31 32 34 35
 ∇    
 ~~~
 
+Doesn't that contradict our policy to avoid meaningless constants in the code? It does indeed. Let's fix this. There is a class `EventCodes` available that contains symbolic names for all these error numbers. The symbolic names are taken from the help page you get when you press `F1` on `⎕TRAP`. Add this class to your DYAPP file:
+
+~~~
+...
+Load ..\AplTree\Logger
+leanpub-start-insert  
+Load ..\AplTree\EventCodes.dyalog
+leanpub-end-insert  
+Load Constants
+Load Utilities
+Load MyApp
+Run #.MyApp.SetLX #.MyApp.GetCommandLineArg ⍬
+~~~
+
+The `EventCodes` class comes with a method `GetName` that, when fed with an integer, returns the symbolic name. We can use that to convert the number to meaningful names:
+
+~~~
+      #.EventCodes.GetName¨ #.MyApp.FileRelatedErrorCodes
+HOLD_ERROR  FILE_TIE_ERROR  FILE_INDEX_ERROR  FILE_FULL  FILE_NAME_ERROR...      
+~~~
+
+We can convert this into something that will be useful when we change the function `FileRelatedErrorCodes`:
+
+~~~
+      ⍪'r,←E.'∘,¨#.EventCodes.GetName¨#.MyApp.FileRelatedErrorCodes
+ r,←E.HOLD_ERROR                        
+ r,←E.FILE_TIE_ERROR                    
+ r,←E.FILE_INDEX_ERROR                  
+ r,←E.FILE_FULL                         
+ ...
+~~~
+
+Now we can change `FileRelatedErrorCodes` by copying what we've just printed to the session into the function:
+
+~~~
+∇ r←FileRelatedErrorCodes;E
+⍝ Returns all the error codes that are related to files and directories.
+⍝ Useful to trap all those errors.
+  r←''
+  E←##.EventCodes  
+  r,←E.HOLD_ERROR                        
+  r,←E.FILE_TIE_ERROR                    
+  r,←E.FILE_INDEX_ERROR                  
+  r,←E.FILE_FULL                         
+  r,←E.FILE_NAME_ERROR                   
+  r,←E.FILE_DAMAGED                      
+  r,←E.FILE_TIED                         
+  r,←E.FILE_TIED_REMOTELY                
+  r,←E.FILE_SYSTEM_ERROR                 
+  r,←E.FILE_SYSTEM_NOT_AVAILABLE         
+  r,←E.FILE_SYSTEM_TIES_USED_UP          
+  r,←E.FILE_TIE_QUOTA_USED_UP            
+  r,←E.FILE_NAME_QUOTA_USED_UP           
+  r,←E.FILE_SYSTEM_NO_SPACE              
+  r,←E.FILE_ACCESS_ERROR_CONVERTING_FILE 
+∇
+~~~
+
 A> ### Why don't we just :Trap all errors?
 A> 
-A> `:Trap 0` would trap all errors - easier to read and write than `:Trap 12 18 20 21 22 23 24 25 26 28 30 31 32 34 35`, so why don't we do this?
+A> `:Trap 0` would trap all errors - way easier to read and write, so why don't we do this?
 A> 
 A> Well, for a very good reason: trapping everything includes such basic things like a VALUE ERROR, which is most likely introduced by a typo or by removing a function or an operator in the false believe that it is not called anywhere. We don't want to trap those, really. The sooner they come to light the better. For that reason we restrict the errors to be trapped to whatever might pop up when it comes to dealing with files and directories.
 A> 
