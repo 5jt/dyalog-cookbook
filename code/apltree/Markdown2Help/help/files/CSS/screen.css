@@ -109,6 +109,14 @@ background-color: #ffe4c4;
 border: solid 1px silver;
 border-collapse: collapse;
 margin: 1.5em 10px;
+tbody tr:nth-child(even) {background-color: hsla(0, 0%, 90%, 1);}
+tbody tr:nth-child(odd) {background-color: white;}
+}
+li > table, blockquote {
+margin-left:0;
+}
+li > p > img {
+margin-left:0;
 }
 td, th {
 padding: .5em 1em;

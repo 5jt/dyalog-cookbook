@@ -92,6 +92,15 @@
 
     ∇ r←Version
       :Access Public Shared
+      r←(Last⍕⎕THIS)'2.3.0' '2017-05-18'
+    ∇
+
+    ∇ History
+      :Access Public Shared
+      ⍝ * 2.3.0
+      ⍝   * `crash` now contains `SaveFailed` with a message in case saving an error WS failed.
+      ⍝   * Method `History` introduced.
+      ⍝   * Now managed by acre 3.
       ⍝ * 2.2.1
       ⍝   * Bug fix: the change in 2.2.0 should have been Windows-only but wasn't.
       ⍝ * 2.2.0
@@ -114,7 +123,6 @@
       ⍝ * 2.0.0
       ⍝   * Supports Windows, Linux, Mac OS.
       ⍝   * Needs at least Dyalog 15.0 Unicode
-      r←(Last⍕⎕THIS)'2.2.1' '2017-03-21'
     ∇
 
     ∇ {filename}←{signal}Process parms;crash;TRAP;⎕IO;⎕ML;⎕TRAP
@@ -144,8 +152,8 @@
       0 ⎕TKILL ⎕TNUMS~⎕TID   ⍝ Try to kill all threads but itself and the main thread
       WriteToLogFile parms
       WriteHtmlFile parms crash filename
+      crash←SaveErrorWorkspace filename parms crash
       SaveCrash filename crash parms
-      SaveErrorWorkspace filename parms
       WriteToWindowsEvents parms
       ExecuteCustomFns parms
       :If 0≠parms.signal
@@ -416,7 +424,7 @@
       :EndIf
     ∇
 
-    ∇ {r}←SaveErrorWorkspace(filename parms);wsid;lx
+    ∇ {crash}←SaveErrorWorkspace(filename parms crash);wsid;lx
       :If parms.saveErrorWS
           wsid←⎕WSID
           ⎕WSID←filename
@@ -424,6 +432,8 @@
           ⎕LX←'⎕TRAP←0 ''S'' ⍝',⎕LX
           :Trap parms.trapSaveWSID/0
               ⎕SAVE ⎕WSID
+          :Else
+              crash.SaveFailed←⎕DMX.Message
           :EndTrap
           ⎕WSID←wsid       ⍝ Potentially important (for example when running test cases)
           ⎕LX←lx

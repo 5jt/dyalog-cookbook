@@ -16,11 +16,18 @@
 
     ∇ r←Version
       :Access Public Shared
+      r←(Last⍕⎕THIS)'3.1.0' '2017-05-19'
+    ∇
+
+    ∇ History
+      :Access Public Shared
+      ⍝ * 3.1.0:
+      ⍝   * Method `History` introduced.
+      ⍝   * `IniFiles` is now managed by acre 3.
       ⍝ * 3.0.0:
       ⍝   * Needs at least Dyalog version 15.0 Unicode
       ⍝   * Does not need either `WinFile` or `FilesAndDirs` anymore.
       ⍝   * Documentation converted to Markdown. Requires at least ADOC 5.0.
-      r←(Last⍕⎕THIS)'3.0.0' '2016-09-04'
     ∇
 
     ∇ r←GetSections

@@ -15,6 +15,14 @@
 
     ∇ r←Version
       :Access Public shared
+      r←({⍵↑⍨-'.'⍳⍨⌽⍵}⍕⎕THIS)'2.6.0' '2017-05-19'
+    ∇
+
+    ∇ History
+      :Access Public shared
+      ⍝ * 2.6.0:
+      ⍝   Method `History` introduced.
+      ⍝   `WinSys` is no managed by acre 3.
       ⍝ * 2.5.0:
       ⍝   * This version requires Dyalog 15.0 Unicode or better.
       ⍝   * Old code removed.
@@ -27,7 +35,6 @@
       ⍝ These functions are not mantained any more and will be removed from `WinSys`
       ⍝ in a future release. See the `OS` class which offers platform-independent
       ⍝ alternatives for these functions.
-      r←({⍵↑⍨-'.'⍳⍨⌽⍵}⍕⎕THIS)'2.5.0' '2016-09-01'
     ∇
 
     :Field Public Shared ReadOnly SM_CXSCREEN←0                 ⍝ Screen size

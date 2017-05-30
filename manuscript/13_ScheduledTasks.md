@@ -111,7 +111,7 @@ We change `Initial` so that it calls this new function:
 leanpub-start-insert   
    Config.ControlFileTieNo←CheckForOtherInstances ⍬
 leanpub-end-insert   
-   CheckForRide Config
+   (0≠Config.Ride) Config.Ride
 ...
 ∇
 ~~~
@@ -230,7 +230,7 @@ A> * Even if you run an application with admin rights (sometimes called "in elev
 The tab does not carry any mysteries.
 
 
-#### The tab "Action"
+#### The "Action" tab 
 
 After clicking "New" this is what you get:
 
@@ -238,7 +238,7 @@ After clicking "New" this is what you get:
 
 Make sure that you use the "Browse" button to navigate to the EXE/BAT/whatever you want to run as a Scheduled Task. That avoids typos.
 
-"Add arguments" allows you specify something like "maxws=345MB" or the name of a workspace in case "Program" is not an EXE but a Dyalog interpreter.
+"Add arguments" allows you specify something like "maxws=345MB" or the name of a workspace in case "Program" is not an EXE but a Dyalog interpreter. In particular you should add `DYALOG_NOPOPUPS=1`. This prevents any dialogs from popping up (aplcore, WS FULL etc.). You don't want them when Dyalog is running in the background because there's nobody around to click the "OK" button...
 
 "Start in" is useful for specifying what will become the current (or working) directory for the running program. We recommend to set the current directory from within your workspace, so you don't really need to set this here except that when you don't you might well get an error code 2147942512. We will discuss later how such error codes can be analyzed, but for the time being you have to believe us that it actually means "Not enough space available on the disk". When you do specify the "Start in" parameter it runs just fine.
 

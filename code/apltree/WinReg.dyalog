@@ -40,6 +40,14 @@
 
     ∇ R←Version
       :Access Public Shared
+      R←(Last⍕⎕THIS)'2.9.0' '2017-05-19'
+    ∇
+
+    ∇ History
+      :Access Public Shared
+      ⍝ * 2.9.0
+      ⍝   * Method `History` introduced.
+      ⍝   * `WinReg` is now managed by acre 3.
       ⍝ * 2.8.1:
       ⍝   * Bug fix in `CopyTree`.
       ⍝ * 2.8.0:
@@ -51,7 +59,6 @@
       ⍝ * 2.7.0:
       ⍝   * Requires ta least Dyalog 15.0 Unicode!
       ⍝ * 2.6.0: Documentation improved and converted to Markdown (Requires at least ADOC 5.0).
-      R←(Last⍕⎕THIS)'2.8.1' '2017-02-03'
     ∇
 
   ⍝ All data types, including those not supported yet
@@ -446,7 +453,7 @@
 
     ∇ r←GetAllValues y
       :Access Public Shared
-      ⍝⍝  ⍝TODO⍝  ⍝TODO⍝  ⍝TODO⍝
+      ⍝⍝  ⍝TODO⍝  : delete in the next major version
       ⍝ DEPRECATED
       ⍝ This was a misnomer from the start.
       ⍝
@@ -681,7 +688,7 @@
           'WinReg error: invalid right argument ("source")'⎕SIGNAL 11
       :EndIf
       :If ~destinationIsHandle
-          'WinReg error: destination must not be a Registry value'⎕SIGNAL 11/⍨0≠#.WinReg.DoesValueExist destination
+          'WinReg error: destination must not be a Registry value'⎕SIGNAL 11/⍨0≠##.WinReg.DoesValueExist destination
       :EndIf
       wv←GetVersion                 ⍝ Get the Windows version
       'WinReg error: "CopyTree" is not supported in this version of Windows'⎕SIGNAL 11/⍨6>1⊃wv

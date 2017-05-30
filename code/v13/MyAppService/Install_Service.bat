@@ -1,0 +1,1 @@
+"C:\Program Files\Dyalog\Dyalog APL-64 15.0 Unicode\dyalogrt.exe" "%~dp0\MyAppService.DWS" APL_ServiceInstall=MyAppService DYALOG_NOPOPUPS=1 MAXWS=64MB

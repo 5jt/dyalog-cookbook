@@ -60,7 +60,7 @@
       ⍝ Check whether `map` works fine with appropriate data
       ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
       R←∆Failed
-      (Config MyLogger)←##.MyApp.Initial ⍬
+      (Config MyLogger)←##.MyApp.Initial 0
       →FailsIf'APL IS GREAT'≢Config.Accents ##.Utilities.map ##.APLTreeUtils.Uppercase'APL is great'
       →FailsIf'UßU'≢Config.Accents ##.Utilities.map ##.APLTreeUtils.Uppercase'üßÜ'
       R←∆OK
@@ -70,7 +70,7 @@
       ⍝ Test whether `TxtToCsv` handles a non-existing file correctly
       ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
       R←∆Failed
-      ##.MyApp.(Config MyLogger)←##.MyApp.Initial ⍬
+      ##.MyApp.(Config MyLogger)←##.MyApp.Initial 0
       rc←##.MyApp.TxtToCsv'This_file_does_not_exist'
       →GoToTidyUp rc≢##.MyApp.EXIT.SOURCE_NOT_FOUND
       R←∆OK
@@ -84,8 +84,8 @@
       R←∆Failed
       ini1←⎕NEW ##.IniFiles(,⊂'MyApp.ini')
       ini2←⎕NEW ##.IniFiles(,⊂'MyApp.ini.template')
-      →PassesIf ini1.GetSections≡ini2.GetSections
-      →PassesIf(ini1.Get ⍬ ⍬)[;2]≡(ini2.Get ⍬ ⍬)[;2]
+      →PassesIf ini1.GetSections{(∧/⍺∊⍵)∧(∧/⍵∊⍺)}ini2.GetSections
+      →PassesIf(ini1.Get ⍬ ⍬)[;2]{(∧/⍺∊⍵)∧(∧/⍵∊⍺)}(ini2.Get ⍬ ⍬)[;2]
       R←∆OK
     ∇
 

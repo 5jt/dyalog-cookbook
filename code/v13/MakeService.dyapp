@@ -6,15 +6,20 @@ Load ..\AplTree\IniFiles
 Load ..\AplTree\OS
 Load ..\AplTree\Logger
 Load ..\AplTree\EventCodes
-Load ..\AplTree\ServiceState
 Load Constants
 Load Utilities
 Load MyApp
+
+Load ..\AplTree\ServiceState
 Load ..\AplTree\Tester
 Load ..\AplTree\Execute
-Load Tests
-Load DevHelpers
+Load ..\AplTree\WinSys
+Load TestsForServices
 Load ServiceHelpers
-Run #.MyApp.SetLXForApplication #.MyApp.GetCommandLineArg ⍬
-Run #.Tester.EstablishHelpersIn #.Tests
-Run #.DevHelpers.RunTests 0
+
+Run #.ServiceHelpers.CreateBatFiles ⍬
+Run '#.⎕EX''ServiceHelpers'''
+Run #.MyApp.SetLXForService 0 4512   ⍝ [1|0]: Ride/no Ride, [n] Ride port number
+
+Load MakeService
+Run #.MakeService.Run 0

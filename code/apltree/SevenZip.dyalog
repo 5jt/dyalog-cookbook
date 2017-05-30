@@ -40,6 +40,14 @@
 
     ∇ r←Version
       :Access Public Shared
+      r←(Last⍕⎕THIS)'2.1.0' '2017-05-19'
+    ∇
+
+    ∇ History
+      :Access Public Shared
+    ⍝ * 2.1.0:
+    ⍝   * New method `History`.
+    ⍝   * `SevenZip` is now managed by acre 3.
     ⍝ * 2.0.3: `type`...
     ⍝ * 2.0.2:
     ⍝   * Finally I got to the bottom of the occasionally failure that disappeared
@@ -52,7 +60,6 @@
     ⍝     under Windows anymore as a side effect.
     ⍝   * Bug fixes:
     ⍝     * The were problems with filenames containing a space.
-      r←(Last⍕⎕THIS)'2.0.3' '2017-03-06'
     ∇
 
     :Property zipFilename

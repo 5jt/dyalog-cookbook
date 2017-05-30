@@ -101,6 +101,12 @@ border: solid 1pt silver;
 border-collapse: collapse;
 page-break-inside:avoid;
 }
+li > table , img, blockquote {
+margin-left:0;
+}
+li > p > img {
+margin-left:0;
+}
 td {
 padding: .5em 1em;
 border: solid 1pt silver;

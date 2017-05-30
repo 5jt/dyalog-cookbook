@@ -58,30 +58,31 @@
           {⍺(≢⍵)}⌸⎕A{⍵⌿⍨⍵∊⍺}Config.Accents U.map A.Uppercase ⍵
       }
 
-    ∇ rc←TxtToCsv fullfilepath;files;tbl;lines;target
+    ∇ rc←TxtToCsv fullfilepath;files;tbl;lines;target;success
    ⍝ Write a sibling CSV containing a frequency count of the letters in the input files(s).\\
-   ⍝ `fullfilepath` can point to a file or a folder. In case it's a folder then all TXTs
+   ⍝ `fullfilepath` can point to a file or a folder. In case it is a folder then all TXTs
    ⍝ within that folder are processed. The resulting CSV holds the total frequency count.\\
    ⍝ Returns one of the values defined in `EXIT`.
-      MyLogger.Log'Source: ',fullfilepath
       (rc target files)←GetFiles fullfilepath
       {⍵:⍎'. ⍝ Deliberate error (INI flag "ForceError")'}Config.ForceError
       :If rc=EXIT.OK
           :If 0∊⍴files
               MyLogger.Log'No files found to process'
-              rc←EXIT.SOURCE_NOT_FOUND
           :Else
               tbl←⊃⍪/(CountLetters ProcessFiles)files
               lines←{⍺,',',⍕⍵}/{⍵[⍒⍵[;2];]}⊃{⍺(+/⍵)}⌸/↓[1]tbl
               :Trap Config.Trap/FileRelatedErrorCodes
                   A.WriteUtf8File target lines
+                  success←1
               :Case
+                  success←0
                   MyLogger.LogError ⎕EN('Writing to <',target,'> failed; ',⊃⎕DM)
                   rc←EXIT.UNABLE_TO_WRITE_TARGET
-                  :Return
               :EndTrap
-              MyLogger.Log(⍕⍴files),' file',((1<⍴files)/'s'),' processed:'
-              MyLogger.Log' ',↑files
+              :If success
+                  MyLogger.Log(⍕⍴files),' file',((1<⍴files)/'s'),' processed:'
+                  MyLogger.Log' ',↑files
+              :EndIf
           :EndIf
       :EndIf
     ∇
@@ -110,7 +111,7 @@
               files←,⊂fullfilepath
           :EndIf
           target←(~0∊⍴files)/target
-          rc←(1+0∊⍴files)⊃EXIT.(OK SOURCE_NOT_FOUND)
+          rc←EXIT.OK
       :EndIf
     ∇
 
@@ -202,25 +203,27 @@
       Config.DumpFolder←'expand'F.NormalizePath Config.DumpFolder
     ∇
 
-    ∇ {r}←CheckForRide Config;rc
-    ⍝ Checks whether the user wants to have a Ride and if so make it possible.
-      r←⍬
-      :If 0≠Config.Ride
+    ∇ {r}←{wait}CheckForRide (rideFlag ridePort);rc
+    ⍝ Depending on what's provided as right argument we prepare
+    ⍝ for a Ride or we don't.
+      r←1
+      wait←{0<⎕NC ⍵:⍎⍵ ⋄ 0}'wait'
+      :If rideFlag 
           rc←3502⌶0
           :If ~rc∊0 ¯1
               11 ⎕SIGNAL⍨'Problem switching off Ride, rc=',⍕rc
           :EndIf
-          rc←3502⌶'SERVE::',⍕Config.Ride
+          rc←3502⌶'SERVE::',ridePort
           :If 0≠rc
-              11 ⎕SIGNAL⍨'Problem setting the Ride connecion string to SERVE::',(⍕Config.Ride),', rc=',⍕rc
+              11 ⎕SIGNAL⍨'Problem setting the Ride connecion string to SERVE::',(⍕ridePort),', rc=',⍕rc
           :EndIf
           rc←3502⌶1
           :If ~rc∊0 ¯1
               11 ⎕SIGNAL⍨'Problem switching on Ride, rc=',⍕rc
           :EndIf
-          {_←⎕DL ⍵ ⋄ ∇ ⍵}1
+          {_←⎕DL ⍵ ⋄ ∇ ⍵}⍣(⊃wait)⊣⍬
       :EndIf
-    ∇
+    ∇    
 
     ∇ Off exitCode
       :If 0<⎕NC'MyLogger'

@@ -46,6 +46,14 @@
 
     ∇ r←Version
       :Access Public shared
+      r←(Last⍕⎕THIS)'1.8.0' '2017-05-18'
+    ∇
+
+    ∇ History
+      :Access Public Shared
+    ⍝ * 1.8.0
+    ⍝   * Method `History` polished.
+    ⍝   * Now managed by acre 3.
     ⍝ * 1.7.1
     ⍝   * Syntax fix for new version of `FilesAndDirs`.
     ⍝ * 1.7.0
@@ -56,12 +64,6 @@
     ⍝ * 1.5.0
     ⍝   * `Version` is now returning just the name (no path).
     ⍝   * For marking up inline APL code now ticks (`) are used.
-      r←(Last⍕⎕THIS)'1.7.1' '2016-09-15'
-    ∇
-
-    ∇ r←History
-      :Access Public Shared
-      r←'See: http://aplwiki.com/Execute/ProjectPage'
     ∇
 
     ∇ {(rc processInfo result more)}←{cs}Application program;⎕IO;⎕ML;NORMAL_PRIORITY_CLASS;nl;bool;startupInfo;processHandle;threadHandle;StillActive;Ctrl_C_Is;ProcessAborted;i;∆CreateProcess;∆GetCurrentDirectory;∆GetExitCodeProcess;∆GetExitCodeThread;∆WaitForSingleObject;∆TerminateProcess;∆TerminateThread

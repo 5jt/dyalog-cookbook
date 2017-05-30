@@ -5,7 +5,7 @@
 ⍝ Note that `source` must have been registered by a user with admin rights. Typically that
 ⍝ is done by an installer, so we can rely on it being available.\\
 ⍝ Applications and services should write to the Application log or to a custom log. Device
-⍝ drivers should write to the System log.\\                                               
+⍝ drivers should write to the System log.\\
 ⍝ Note that when you specify just a one-element vector as argument to the constructor (by
 ⍝ calling `⎕NEW`) then this is interpreted as `source`. If you specify a two-element vector
 ⍝ then this is treated as `(log source)`.
@@ -30,6 +30,14 @@
 
     ∇ r←Version
       :Access Public Shared
+      r←(Last⍕⎕THIS)'1.6.0' '2017-05-19'
+    ∇
+
+    ∇ History
+      :Access Public Shared
+      ⍝ * 1.6.0
+      ⍝   * New method `History`.
+      ⍝   * `WindowsEventLog` is now managed by acre 3.
       ⍝ * 1.5.2
       ⍝   * Documentation was faulty.
       ⍝ * 1.5.1
@@ -37,7 +45,6 @@
       ⍝ * 1.5.0
       ⍝   * The two-item constructor now accepts an empty text vector as "Log". This defaults to
       ⍝     "Application" then.
-      r←(Last⍕⎕THIS)'1.5.2' '2017-03-27'
     ∇
 
     :Property Log

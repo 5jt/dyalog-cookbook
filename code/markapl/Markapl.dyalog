@@ -60,43 +60,38 @@
 
     ∇ r←Version
       :Access Public Shared
-      ⍝ ##### 2.8.6
-      ⍝ * Bug fix:
-      ⍝   * Comment lines within a code block disappeared under some circumstances.
-      ⍝ ##### 2.8.6
-      ⍝ * Bug fixes:
-      ⍝   * Under some circumstances a footnote ref was not recognized as such.
-      ⍝   * MarkAPL called one of its own methods with a fully qualified name.
-      ⍝ ##### 2.8.5
-      ⍝ * Bug fix
-      ⍝   * A header (`#`) without **any** caption crashed MarkAPL.
-      ⍝ ##### 2.8.4
+      ⍝ See `History`
+      r←(Last⍕⎕THIS)'3.2.0' '2017-05-20'
+    ∇
+
+    ∇ History
+      :Access Public Shared
+      ⍝ ##### 3.2.0
+      ⍝ * CSS improved for both screen and print: lists (particularly nested ones), tables and blockquotes.
       ⍝ * Bug fixes
-      ⍝   * A link that contained \_ or \* within code was not displayed correctly.
-      ⍝ ##### 2.8.3
+      ⍝   * `cssUrl` required a file delimiter at the end. It should be optional.
+      ⍝ ##### 3.1.1
       ⍝ * Bug fixes
-      ⍝   * URLs in links got reported in the session by accident.
-      ⍝ ##### 2.8.2
+      ⍝   * Lines that should be empty by contained nothing but blank characters could lead to an endless
+      ⍝     loop. This can easily happen when the markdown is a matrix at one stage. Now **all** trailing
+      ⍝     blanks are removed early.
+      ⍝ ##### 3.1.0
+      ⍝ * Bug fixes
+      ⍝   * "C:\\Users\\{username}\" should become "C:\Users\{username}\" but did not.
+      ⍝   * A function call that carried a `_` failed because the `_` was converted into <em>.
+      ⍝   * `Help` might have complained about not finding the file "MarkAPL_CheatSheet.md"
+      ⍝     even when the right argument was 0 (=no recompile of the Markdown required).
+      ⍝   * Three `|||` where treated like a code fence (like `~~~`).
+      ⍝   * Handling of "http://", "file://" etc. on `cssUrl` was incorrect.
+      ⍝ * Setting `subTocs` to 1 has no effect in case `toc` is 0.
+      ⍝ * `MarkAPL` is now managed by acre 3.
+      ⍝ ##### 3.0.1
+      ⍝ * Bug fix: both `Help` and `Reference` crashed with a 0 as right argument.
+      ⍝ ##### 3.0.0
+      ⍝ * Lists may now contain tables, images and quotes. (So far only paragraphs and
+      ⍝   code blocks were supported)
       ⍝ * Bug fixes:
-      ⍝   * Problems are not reported to the session if it is not...
-      ⍝     * ... a development version
-      ⍝     * ... there is nothing to report (in the past an empty vector was printed).
-      ⍝
-      ⍝ ##### 2.8.1
-      ⍝ * Bug fixes:
-      ⍝ * A code block carrying `<` or `<` and is part os a list item went wrong.
-      ⍝
-      ⍝ ##### 2.8.0
-      ⍝ * HTML entities can be injected now (in the sense of them being converted) by escaping the
-      ⍝   `&` character. So far `&` has not been an escapable character.
-      ⍝ * A URL in a link that does not specify the protocol now defaults to `http://`. This is not
-      ⍝   true for autolinks!
-      ⍝ * Bug fixes:
-      ⍝   * The lists created inside <nav> (TOC) were wrongly structured (although they work fine).
-      ⍝   * Documentation failed to mention the affect of `markdownStrict←1` regarding Guillemets.
-      ⍝   * A URL in a link that carried a `_` caused havoc.
-      ⍝   * `CorrectSlashes` turned any `\` into `/`. Should honour the OS. It does now.
-      r←(Last⍕⎕THIS)'2.8.7' '2017-02-10'
+      ⍝   * Lines in lists with a wrong indentation could completely disappear.
     ∇
 
     :Field Public Shared ReadOnly PartOfNames←⎕A,⎕D,'_∆⍙','qwertyuiopasdfghjklzxcvbnm'
@@ -291,6 +286,51 @@
       parms.reportLinks←1
     ∇
 
+    ∇ ns←Init(parms markdown);buffer
+    ⍝ Creates a namespace "ns" that contains important stuff needed to process `markdown`.
+    ⍝ See "MarkAPL.html" for details.
+      :Access Public Shared
+      :If 0∊⍴parms
+          parms←CreateParms
+      :EndIf
+      parms←EstablishDefaultHomeFolder parms
+      :If ¯1≡parms.cssURL
+          parms.cssURL←parms.homeFolder
+      :EndIf
+      {}CompileMarkAPLFnsAndOprs parms
+      :If 0∊⍴markdown
+          'Neither "markdown" nor "inputFilename" are set?!'⎕SIGNAL 6/⍨0∊⍴parms.inputFilename
+          markdown←ReadUtf8File parms.inputFilename
+      :EndIf
+      'Invalid Markdown (depth)'⎕SIGNAL 11/⍨2≠|≡markdown
+      markdown←,¨markdown
+      'Invalid Markdown (depth)'⎕SIGNAL 11/⍨(,1)≢∪≡¨markdown
+      markdown←'\t'⎕R(4⍴' ')⍠('Mode' 'M')⊣markdown  ⍝ Replace all <TAB> chars by 4 spaces
+      parms.cssURL,←(~(¯1↑parms.cssURL)∊'/\')/##.FilesAndDirs.CurrentSep
+      parms.(inputFilename outputFilename)←1 CorrectSlash¨parms.(inputFilename outputFilename)
+      parms.(cssURL screenCSS printCSS)←0 CorrectSlash¨parms.(cssURL screenCSS printCSS)
+      ns←Create_NS ⍬
+      markdown←RemoveAllComments markdown
+      ns.markdown←dtb(Nest markdown),⊂''
+      ns.markdown←{0=+/b←(⎕UCS 0)=w←⍵:w ⋄ (b/w)←⎕UCS 65533}¨ns.markdown ⍝ Replace U+0000 by U+FFFD for secutity reasons
+      ns.markdownLC←Lowercase ns.markdown           ⍝ We need this often, so we do this ONCE
+      buffer←dlb ns.markdown
+      ns.emptyLines←WhatAreEmptyLines buffer
+      ns.leadingChars←(16⌊⍴∘,¨ns.markdown)↑¨buffer
+      ns.lineNumbers←⍳⍴ns.leadingChars              ⍝ Useful for reporting problems
+      ns.withoutBlanks←ns.markdown~¨' '
+      ns.abbreviations←0 2⍴''
+      ns.linkRefs←⍬
+      ns.data←⍬
+      ns.(subToc toc)←⊂''
+      ns.parms←parms
+      ns←ProcessAllDataDefsDefiningMarkAPLParms⍣(~parms.ignoreEmbeddedParms)⊣ns
+      :If (,0)≢,parms.toc
+          parms.bookmarkLink⌈←⌈/parms.toc
+      :EndIf
+      parms.head←Nest parms.head
+    ∇
+
     ∇ ns←Process ns
     ⍝ Takes a namespace, typically created by calling `Init`, and then processes `ns.markdown`,
     ⍝ creating ns.html along the way.
@@ -319,51 +359,8 @@
       ns.html←{1=≡⍵:⍵ ⋄ ⊃,/⊃⍵}¨ns.html
     ∇
 
-    ∇ ns←Init(parms markdown);buffer
-    ⍝ Creates a namespace "ns" that contains important stuff needed to process `markdown`.
-    ⍝ See "MarkAPL.html" for details.
-      :Access Public Shared
-      :If 0∊⍴parms
-          parms←CreateParms
-      :EndIf
-      parms←EstablishDefaultHomeFolder parms
-      :If ¯1≡parms.cssURL
-          parms.cssURL←parms.homeFolder
-      :EndIf
-      {}CompileMarkAPL parms
-      :If 0∊⍴markdown
-          'Neither "markdown" nor "inputFilename" are set?!'⎕SIGNAL 6/⍨0∊⍴parms.inputFilename
-          markdown←ReadUtf8File parms.inputFilename
-      :EndIf
-      'Invalid Markdown (depth)'⎕SIGNAL 11/⍨2≠|≡markdown
-      markdown←,¨markdown
-      'Invalid Markdown (depth)'⎕SIGNAL 11/⍨(,1)≢∪≡¨markdown
-      markdown←'\t'⎕R(4⍴' ')⍠('Mode' 'M')⊣markdown  ⍝ Replace all <TAB> chars by 4 spaces
-      parms.(inputFilename outputFilename cssURL screenCSS printCSS)←CorrectSlash¨parms.(inputFilename outputFilename cssURL screenCSS printCSS)
-      ns←Create_NS ⍬
-      markdown←RemoveAllComments markdown
-      ns.markdown←(Nest markdown),⊂''
-      ns.markdown←{0=+/b←(⎕UCS 0)=w←⍵:w ⋄ (b/w)←⎕UCS 65533}¨ns.markdown ⍝ Replace U+0000 by U+FFFD for secutity reasons
-      ns.markdownLC←Lowercase ns.markdown           ⍝ We need this often, so we do this ONCE
-      buffer←dlb ns.markdown
-      ns.emptyLines←WhatAreEmptyLines buffer
-      ns.leadingChars←(16⌊⍴∘,¨ns.markdown)↑¨buffer
-      ns.lineNumbers←⍳⍴ns.leadingChars              ⍝ Useful for reporting problems
-      ns.withoutBlanks←ns.markdown~¨' '
-      ns.abbreviations←0 2⍴''
-      ns.linkRefs←⍬
-      ns.data←⍬
-      ns.(subToc toc)←⊂''
-      ns.parms←parms
-      ns←ProcessAllDataDefsDefiningMarkAPLParms⍣(~parms.ignoreEmbeddedParms)⊣ns
-      :If (,0)≢,parms.toc
-          parms.bookmarkLink⌈←⌈/parms.toc
-      :EndIf
-      parms.head←Nest parms.head
-    ∇
-
     ∇ r←Execute y
-    ⍝ This is used for test purposes only.
+    ⍝ This is used for test purposes only: to execute non-public methods.
       :Access Public Shared
       'Invalid call'⎕SIGNAL 11/⍨~IsDevelopment
       :If 0=⎕NC'ns'
@@ -385,7 +382,11 @@
       ns←CompileHelp'MarkAPL.html'recompileFlag parms
       :If ¯1≠×recompileFlag  ⍝ This syntax is used only by the `Make` workspace and test cases, therefore it is not documented.
       :AndIf parms.viewInBrowser
-          GoToWebPage'file://',ns.parms.outputFilename
+          :If ⍬≢ns
+              GoToWebPage'file://',ns.parms.outputFilename
+          :Else
+              GoToWebPage'file://',parms.outputFilename
+          :EndIf
       :EndIf
     ∇
 
@@ -401,7 +402,11 @@
       ns←CompileHelp'MarkAPL_CheatSheet.html'recompileFlag parms
       :If ¯1≠×recompileFlag  ⍝ This syntax is used only by the `Make` workspace and test cases, therefore it is not documented.
       :AndIf parms.viewInBrowser
-          GoToWebPage'file://',ns.parms.outputFilename
+          :If ⍬≢ns
+              GoToWebPage'file://',ns.parms.outputFilename
+          :Else
+              GoToWebPage'file://',parms.outputFilename
+          :EndIf
       :EndIf
     ∇
 
@@ -470,7 +475,7 @@
      ⍝ * removes all comments
      ⍝ * removes any spaces around `;:{}`
      ⍝ * replaces <TAB> chars by spaces
-     ⍝ * removes multiple spaces
+     ⍝ * removes multiple spaces
      ⍝
      ⍝ Note that this method can have desastrous results when performed on non-valid CSS!\\
      ⍝ Throws an error in case something is not right with the CSS.
@@ -536,7 +541,7 @@
       :If 1<⍴ns.markdown                                ⍝ A definitions has at least two lines
       :AndIf 1≤ScanForPara ns                           ⍝ Exactly one line for a term but there might be no empty line after it.
       :AndIf ~0∊⍴'^\s{0,3}:\s'⎕S 0⊣⊃(+/∧\1↓ns.emptyLines)↓1↓ns.markdown  ⍝ Is there ": " in the first non-empty line?
-          noOf←(1 1⍷ns.emptyLines)⍳1                    ⍝ Maximum number of lines until the last `:` of this definition list
+          noOf←(⍴ns.markdown)⌊(1 1⍷ns.emptyLines)⍳1     ⍝ Maximum number of lines until the last `:` of this definition list
           colons←': '∘≡¨2↑¨noOf↑ns.leadingChars         ⍝ Where are any leading colons followed by a space?
           total←0
       :AndIf 0<+/colons                                 ⍝ Any at all? If not it's not a definition list!
@@ -586,7 +591,7 @@
     ∇
 
     ∇ r←ProcessBlockQuotes ns;parms;md;ns2
-    ⍝ Processes any blockquotes recursively. That way they dan contain **everything**, including blockquotes.
+    ⍝ Processes any blockquotes recursively. That way they can contain **everything**, including blockquotes.
       r←0
       :If '> '≡2↑⊃ns.leadingChars
           ns.noOf←ScanForBlockQuotes ns
@@ -609,7 +614,7 @@
       :EndIf
     ∇
 
-    ∇ r←ProcessList ns;bl;type;i;startAt;item;pFlag;noOfBlanks;levels;levelChange;buff;sa;lastType;lastItem;toBeAdded;indentations;html;lastWasEmpty;indendations;cb;drop;para;Max;buff2
+    ∇ r←ProcessList ns;bl;type;i;startAt;item;pFlag;noOfBlanks;levels;levelChange;buff;sa;lastType;lastItem;toBeAdded;indentations;html;lastWasEmpty;indendations;cb;drop;para;Max;buff2;ns2;parms;ns3;md;report
     ⍝ Processing lists is more complex than one would think at first glance for several reasons:
     ⍝ * Lists can be nested at any level.
     ⍝ * A nested list can have a different type.
@@ -625,6 +630,7 @@
       :Else
           type←,(1+(⊃⊃ns.leadingChars)∊'*+-')⌷'ou'
           bl←dtb GetListBlock ns.noOf↑ns.markdown
+          report←''
           :If type='u'
               html←,⊂'<ul>'
           :Else
@@ -735,10 +741,48 @@
                               :EndIf
                               drop←2+⍴cb
                               i+←1+⍴cb
+                          :ElseIf '|'=⊃dlb buff                             ⍝ Is it a table?
+                          :AndIf (+/∧\' '=buff)≥⊃noOfBlanks                 ⍝ Max number of spaces is the indentation
+                              drop←+/∧\'|'=,1↑[2]dlb↑bl
+                              buff←drop↑bl
+                              ns2←Init ns.parms(dlb buff)
+                              ns2←Process ns2
+                              report,←((⊃ns.lineNumbers)+ns.noOf-⍴bl)PolishLineNumbersInReport ns2.report
+                              ((⍴html)⊃html)←(-⍴'</li>')↓(⍴html)⊃html
+                              html,←ns2.html
+                              ((⍴html)⊃html),←'</li>'
+                          :ElseIf '> '≡2⍴dlb buff                           ⍝ Is it a blockquote?
+                              ns3←⎕NS''
+                              ns3.(markdown markdownLC leadingChars emptyLines withoutBlanks lineNumbers)←(ns.noOf-⍴bl)↓¨ns.noOf↑¨ns.(markdown markdownLC leadingChars emptyLines withoutBlanks lineNumbers)
+                              drop←ScanForBlockQuotes ns3
+                              parms←CreateParms
+                              parms.bookmarkLink←0
+                              parms.markdownStrict←ns.parms.markdownStrict
+                              parms.verbose←0
+                              parms.checkLinks←0
+                              parms.checkFootnotes←0
+                              parms.subTocs←0
+                              md←noOfBlanks↓¨drop↑ns3.markdown
+                              ns2←Init parms md
+                              ns2←Process ns2
+                              ((⍴html)⊃html)←(-⍴'</li>')↓(⍴html)⊃html
+                              html,←ns2.html
+                              ((⍴html)⊃html),←'</li>'
+                              report,←((⊃ns.lineNumbers)+ns.noOf-⍴bl)PolishLineNumbersInReport ns2.report
                           :Else
                               (drop para)←CollectItemPara bl
                               i←i+drop-1
-                              sa←GetSpecialAttributes para
+                              :If '!['{⍺≡(⍴⍺)↑⍵}dlb buff
+                              :AndIf '![CDATA['{⍺≢(⍴⍺)↑⍵}dlb buff
+                              :AndIf 1
+                              ⍝ Regular expression needed that catches the image.
+                              ⍝ If nothing is left then any special attributes belong to the image rather than the paragraph.
+                              ⍝ OR: The definition of images is wrong and special attributes MUST be specified inside the ()!!!!
+                              ⍝ (That's much more likely!)
+                                  sa←'' ⍝ then any special attributes
+                              :Else
+                                  sa←GetSpecialAttributes para
+                              :EndIf
                               para←dtb sa DropSpecialAttributes para
                               buff←⊃¯1↑html
                               :If '</li>'≡({{⌽⍵↑⍨⍵⍳'<'}⌽⍵}buff)
@@ -747,6 +791,8 @@
                               :EndIf
                               html,←⊂'<p',sa,'>',(dlb ns ProcessInlineMarkUp para),'</p></li>'
                           :EndIf
+                      :Else
+                          html,←⊂'<p>',(⊃bl),'</p>'
                       :EndIf
                       lastWasEmpty←0
                   :EndIf
@@ -963,7 +1009,7 @@
     ∇ r←ProcessCodeBlock ns;bl;buff;sa;pattern
     ⍝ Handles code block, either "~~~" (Markdown2 Extra) or "```" (Git).
       r←0
-      :If 1=⍴'^\s{0,3}[~|`]{3,}\s{0,}({.*?})?\s{0,}$'⎕S 0⊣⊃ns.markdown
+      :If 1=⍴'^\s{0,3}[~`]{3,}\s{0,}({.*?})?\s{0,}$'⎕S 0⊣⊃ns.markdown
           pattern←('`~'[1+'~'∊⊃ns.markdown]),'{3,}'
       :AndIf ¯1≢ns.noOf←pattern FindFenceEnd 1↓ns.markdown
           :If 2<ns.noOf
@@ -1194,7 +1240,8 @@
     ∇
 
     ∇ ns←InjectSubTOCs ns;where;i;header;level;ind;from;noOf;levels;toc;drop;md;ns2;subToc;parms
-      :If ~0∊⍴ns.subToc
+      :If (,0)≢,ns.parms.toc
+      :AndIf ~0∊⍴ns.subToc
           where←Where∨/¨'<<subtoc>>'∘⍷¨Lowercase ns.html
           :For i :In ⍳⍴ns.subToc
               (level header)←i⊃ns.subToc
@@ -1740,7 +1787,7 @@
 
     ∇ txt←{mask}ProcessDoubleUnderscores txt_;noOf;bool;ind;start;end
     ⍝ Takes a string and marks up everything between __ and __ as <strong>
-    ⍝ except when it occurs within a word or within APL code.
+    ⍝ except when it occurs within a word or within APL code or as part of a function call.
       txt←'  ',txt_,'  '
       :If 0<+/bool←(⍳⍴txt)∊2+'[^_]__[^_]'⎕S 0⊣txt
       :AndIf 0<+/bool←bool\'\'≠txt[¯1+Where bool]
@@ -1761,8 +1808,9 @@
     ∇ txt←{mask}ProcessUnderscores txt_;noOf;bool;ind;start;end;txt2;b
     ⍝ Takes a string and marks up everything between _ and _ as <strong>
     ⍝ except when it occurs ...
-    ⍝ * within a word.
-    ⍝ * within APL code.
+    ⍝ * within a word
+    ⍝ * within APL code
+    ⍝ * as part of a function call
     ⍝ * between &amp;pointybracket_open; and &amp;pointybracket_close;
       txt2←txt←'  ',txt_,'  '
       txt2←'\\_'⎕R'⌹⌹'⍠('Mode' 'D')⊣txt2
@@ -1771,6 +1819,7 @@
           bool∧←~GetMaskForCode txt
           bool∧←~MaskPointyBrackets txt
           bool∧←~MaskTagAttrs txt
+          bool∧←~MaskFunctionCall txt
       :AndIf ~0∊⍴ind←Where bool
       :AndIf ~0∊⍴ind←((txt 1∘NotWithinWord¨ind))/ind
           start←((⍴ind)⍴1 0)/ind
@@ -1992,30 +2041,28 @@
       :EndIf
     ∇
 
-    ∇ ns←InjectTOC ns;param;levels;b;h;ns2;html;r;tocHtml;drop;parms;links;noOf;buff
+    ∇ ns←InjectTOC ns;param;levels;b;h;ns2;html;r;tocHtml;drop;parms;links;noOf;buff;toc
     ⍝ Inject a TOC in case the user has specified this
-      :If (,0)≢,ns.parms.toc
-          :If 1=⍴,ns.parms.toc
-              levels←⍳ns.parms.toc
+      :If 1=⍴,ns.parms.toc
+          levels←⍳ns.parms.toc
+      :Else
+          levels←ns.parms.toc
+      :EndIf
+      :If ~0∊⍴toc←↑((⊃¨ns.toc)∊levels)/ns.toc
+          drop←⌊/toc[;1]
+          :If (,0)≢,ns.parms.numberHeaders
+              toc,←toc{⍵[;4]⌿⍨⍵[;2]∊⍺[;3]}ns.headers
+              links←ns.parms.bookmarkMayStartWithDigit{⍺ CompileBookMarkName ⍵''}¨toc[;3]
+              tocHtml←ns CreateTOC toc[;1 2 4],links
           :Else
-              levels←ns.parms.toc
+              links←{(3⊃⍵)≡GetBookMarkNameFromCaption(2⊃⍵)'':3⊃⍵ ⋄ 3⊃⍵}¨↓toc
+              tocHtml←ns CreateTOC(toc[;1 2],(⊂'')),links
           :EndIf
-          :If ~0∊⍴toc←↑((⊃¨ns.toc)∊levels)/ns.toc
-              drop←⌊/toc[;1]
-              :If (,0)≢,ns.parms.numberHeaders
-                  toc,←toc{⍵[;4]⌿⍨⍵[;2]∊⍺[;3]}ns.headers
-                  links←ns.parms.bookmarkMayStartWithDigit{⍺ CompileBookMarkName ⍵''}¨toc[;3]
-                  tocHtml←ns CreateTOC toc[;1 2 4],links
-              :Else
-                  links←{(3⊃⍵)≡GetBookMarkNameFromCaption(2⊃⍵)'':3⊃⍵ ⋄ 3⊃⍵}¨↓toc
-                  tocHtml←ns CreateTOC(toc[;1 2],(⊂'')),links
-              :EndIf
-              :If '<a' '<h'≡2↑¨2↑ns.html                        ⍝ First two lines define a header?!
-                  noOf←1⍳⍨'</a>'{⍺∘≡¨(⍴⍺)↑¨⍵}ns.html
-                  ns.html←(noOf↑ns.html),tocHtml,noOf↓ns.html   ⍝ Insert after the first header
-              :Else
-                  ns.html←tocHtml,ns.html                       ⍝ Put TOC before anything else
-              :EndIf
+          :If '<a' '<h'≡2↑¨2↑ns.html                        ⍝ First two lines define a header?!
+              noOf←1⍳⍨'</a>'{⍺∘≡¨(⍴⍺)↑¨⍵}ns.html
+              ns.html←(noOf↑ns.html),tocHtml,noOf↓ns.html   ⍝ Insert after the first header
+          :Else
+              ns.html←tocHtml,ns.html                       ⍝ Put TOC before anything else
           :EndIf
       :EndIf
     ∇
@@ -2092,7 +2139,7 @@
       ⍝ The end of a fence must have at last three ⍺ characters and may have leading and trailing blanks as well
       ⍝ but nothing else, in particular no special attributes.
       ⍝ ⍵ is a vector of mMarkdown vectors.
-          ⍺←'[~|`]{3,}' ⍝ The default
+          ⍺←'[~`]{3,}' ⍝ The default
           pattern←⍺
           ~0∊⍴noOf←1+('^\s{0,3}',pattern,'\s{0,}$')⎕S 2⍠('Mode' 'L')⊣⍵:1+⊃noOf ⍝ Add the leading one which is not in ⍵
           ¯1
@@ -2151,24 +2198,25 @@
           EscapeSpecialChars tx
       }
 
-      RemoveEscapeChars←{
+    ∇ r←RemoveEscapeChars tx;mask;b;specialChars;ind;b2
     ⍝ Remove the "\" (Escape character) from ⍵ except when ...
     ⍝ * there are two of them in a row (one survives)
     ⍝ * they are part of code (survives untouched)
     ⍝ * it appears with an attribute definition like <div attr="\3">
     ⍝ * any character to the right of the `\` is not one of `_*|<~{}(&`
     ⍝ This does not work on, say, "\\\\\\\\\\\\\\\; that why this is no legal.
-          tx←⍵
-          mask←~GetMaskForCodeTags tx
-          mask←mask\{~Between ⍵∊'<>'}mask/tx
-          b←'\'=(mask/tx),' '
-          ⍝ We try to be smart: only those are to be escaped anyway, so nothing else is touched
-          specialChars←'_*|<~`{}(&'
-          b∧←b\((mask/tx),' ')[1+Where b]∊specialChars
-          b←¯1↓b∧b\'\'≠((mask/tx),' ')[1+Where b]
-          b∨←'\\'⍷mask/tx
-          ((~mask)∨mask\~b)/tx
-      }
+      mask←~GetMaskForCodeTags tx
+      mask←mask\{~Between ⍵∊'<>'}mask/tx
+      b←'\'=(mask/tx),' '
+    ⍝ We try to be smart: only those are to be escaped anyway, so nothing else is touched
+      specialChars←'_*|<~`{}(&\'
+      b∧←b\((mask/tx),' ')[1+Where b]∊specialChars
+      b←¯1↓b∧b\'\'≠((mask/tx),' ')[1+Where b]
+      r←((~mask)∨mask\~b)/tx
+      mask←~GetMaskForCodeTags r
+      b←~mask\'\\'⍷mask/r
+      r←b/r
+    ∇
 
     ∇ ns←HandleAbbreviations ns;html;abbr;comment;match2;match1;tag1;tag2;b
       :If ~0∊⍴ns.abbreviations
@@ -2528,8 +2576,18 @@
       r←¯1↓⊃1 ⎕NPARTS''
     ∇
 
-      CorrectSlash←{t←⍵
-          ##.FilesAndDirs.NormalizePath ⍵
+      CorrectSlash←{
+      ⍝ ⍺ is a Boolean that decides whether ⍵ shall be normalized (1) or not (0).
+      ⍝ For everything that points to the local file system we want normalization,
+      ⍝ but for stuff that potentially points elsewhere (like `cssUrl`) we don't want that:
+      ⍝ We don't necessarily know the OS over there!
+      ⍝ Default is normalization.
+      ⍝ Leave only kind of protocol alone like "http://" etc. but also stuff like "foo://".
+          ⍺←1
+          ss←'://' ⍝ Search string
+          0=+/bool←ss⍷⍵:##.FilesAndDirs.NormalizePath⍣(⊃⍺)⊣⍵
+          length←¯1+(⍴ss)+bool⍳1
+          (length↑⍵),##.FilesAndDirs.NormalizePath⍣(⊃⍺)⊣length↓⍵
       }
 
       InjectPointyBrackets←{
@@ -2700,7 +2758,7 @@
           start{{⍵↑⍨¯1+⍵⍳'"'}(⍺+⍴'href="')↓⍵}⍵
       }
 
-      CompileMarkAPL←{
+      CompileMarkAPLFnsAndOprs←{
           parms←⍵
           0=parms.compileFunctions:0    ⍝ Don't?!
           1(400⌶)'Between':0            ⍝ already compiled
@@ -2729,6 +2787,16 @@
           ind←∊{(⊃⍵)+⍳1↓⍵}¨'<[a-z]*\b[^>]*>'⎕S(0 1)⊣txt
           r[ind]←1
           r
+      }
+
+      MaskFunctionCall←{
+          txt←,⍵
+          b←(⍴txt)⍴0
+          mask←~GetMaskForCodeTags txt
+          0∊⍴ind←'[^⍎]⍎⍎[^⍎]'⎕S 0⊣' ',(mask/txt),' ':b
+          ind←{↑,/{⍵[1]+⍳⍵[2]-⍵[1]}¨↓(((⍴⍵)÷2),2)⍴⍵}ind
+          b[ind]←1
+          b
       }
 
       ReplaceQTC_byBlank←{
@@ -2762,8 +2830,8 @@
       :Else
           noOf←1++/∧\0=IsHtmlList¨1↓noOf↑bl
           options←('Mode' 'M')('EOL' 'CR')('DotAll' 1)
-          :If ~0∊⍴buff←{⍵↑⍨⊃'[~|`]{3,}\s{0,}'⎕S 0⍠options⊣⍵}1↓⊃,/(⎕UCS 13),¨dlb¨noOf↑bl
-              noOf←⊃((⎕UCS 13)+.={⍵↑⍨⊃'[~|`]{3,}\s{0,}'⎕S 0⍠options⊣⍵}1↓⊃,/(⎕UCS 13),¨dlb¨noOf↑bl),noOf
+          :If ~0∊⍴buff←{⍵↑⍨⊃'[~`]{3,}\s{0,}'⎕S 0⍠options⊣⍵}1↓⊃,/(⎕UCS 13),¨dlb¨noOf↑bl
+              noOf←⊃((⎕UCS 13)+.={⍵↑⍨⊃'[~`]{3,}\s{0,}'⎕S 0⍠options⊣⍵}1↓⊃,/(⎕UCS 13),¨dlb¨noOf↑bl),noOf
               noOf-←0∊⍴' '~⍨noOf⊃bl
           :EndIf
           para←dlb⊃,/' ',¨noOf↑bl
@@ -2891,8 +2959,7 @@
       RemoveAllComments←{
           markdown←⍵
           markdown←1↓∊(⎕UCS 10),¨markdown
-          ind←1+'^\s{0,3}[~|`]{3,}\s{0,}({.*?})?\s{0,}$'⎕S 0⍠('Mode' 'M')('DotAll' 1)('EOL' 'LF')⊣markdown
-          0∊⍴ind:⍵
+          ind←1+'^\s{0,3}[~`]{3,}\s{0,}({.*?})?\s{0,}$'⎕S 0⍠('Mode' 'M')('DotAll' 1)('EOL' 'LF')⊣markdown
           b←(⍴markdown)⍴0
           b[ind]←1
           b←Between b
@@ -2905,7 +2972,7 @@
       ⍝ Note that empty lines within code block are ignore!
           b←0=⊃∘⍴∘,¨⍵
           buff←{'}'≠⊃w←dlb⌽⍵:⍵ ⋄ ~'{'∊w:⍵ ⋄ ⌽w↓⍨w⍳'{'}¨⍵            ⍝ Drop special attributes, if there are any
-          b∧~{⍵∨≠\⍵}1=⊃¨⍴¨{'^\s{0,3}[~|`]{3,}\s{0,}$'⎕S 0⊣⍵}¨buff   ⍝ Mask any code blocks
+          b∧~{⍵∨≠\⍵}1=⊃¨⍴¨{'^\s{0,3}[~`]{3,}\s{0,}$'⎕S 0⊣⍵}¨buff   ⍝ Mask any code blocks
       }
 
     ∇ cb←MassageCodeBlock(cb noOfBlanks);pc
@@ -2929,10 +2996,10 @@
       :If 0∊⍴parms.outputFilename
           parms.outputFilename←fn
       :EndIf
-      :If 0=##.FilesAndDirs.Exists parms.inputFilename
-          6 ⎕SIGNAL⍨'File "',parms.inputFilename,'" not found; set "homeFolder"'
-      :EndIf
       :If |recompileFlag
+          :If 0=##.FilesAndDirs.Exists parms.inputFilename
+              6 ⎕SIGNAL⍨'File "',parms.inputFilename,'" not found; set "homeFolder"'
+          :EndIf
           :If 0∊⍴parms.outputFilename
               parms.outputFilename←fn
           :Else

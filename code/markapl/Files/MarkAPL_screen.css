@@ -425,7 +425,7 @@ th {
 /* MarkAPL default CSS file for screens */
 
 body  {
-    margin: 0;
+    margin: 0pt 0pt 0pt 0pt;
     font-family: "Bookman Old Style", serif;
     background-color: #fdfdfd;
     font-size: 18px;
@@ -480,6 +480,9 @@ a:visited {
 a.autoheader_anchor {
 	text-decoration: none;
 }
+ul {
+	list-style-type: disc;
+}
 ul, ol {
     padding: 0;
     margin: 0;
@@ -489,11 +492,17 @@ li > ul, ol {
 }
 li {
     line-height: 1.3;
-    margin-left: 1.5em;
+    margin-left: 25px;
     margin-bottom: 10px;
 }
-li ul, li ul {
-    margin-left: 14px;
+ul > li {    
+    margin-left: 20px;    
+}
+li ul {
+    margin-left: 10px;
+}
+li ul {
+    margin-left: 5px;
 }
 li p {
 	padding: 1px 0 0 0;	
@@ -502,21 +511,21 @@ li p {
 }
 p, ul, ol {
     line-height: 1.3;
-    padding: 8px 8px 0 0;
+    padding: 8px 0 0 0;
     margin: 0;
     color: #292929;
 }
 pre {
 	overflow: auto;
 	padding: 10px 5px;
-   margin: 10px 0 10px 0 !important;
-   white-space: pre-wrap;
+	margin: 10px 0 10px 0 !important;
+	white-space: pre-wrap;
 	background-color: #faebd7;
 	color: #3e3e3e;
-   border: 1px Silver dashed;
-   display: block;
-   font-family: APLFont, monospace;
-   font-weight: 400;
+	border: 1px Silver dashed;
+	display: block;
+	font-family: APLFont, monospace;
+	font-weight: 400;
 }
 pre > code {
 	line-height: 1.2;
@@ -526,6 +535,9 @@ pre > code {
 	background-color: inherit;
 	color: inherit;
 	font-weight: inherit;
+}
+li > pre {
+    left-margin: 0;   
 }
 nav code {
 	background-color: inherit;
@@ -553,7 +565,7 @@ th, td {
 table {
   border-color: Black;
   background-color: #ebebeb;
-  margin: 20px 20px;
+  margin: 20px 0 20px 0;
   border: 2px black;
   border-collapse: collapse;
   font-family: APLFont;
@@ -562,6 +574,10 @@ table {
   border: 1pt solid Gray;
 }
 
+li > table {
+  margin: 10px 0 10px 0;
+}    
+
 tr	{
 	margin: 20px;
 }
@@ -569,7 +585,22 @@ tr	{
 blockquote {
 	border-left: 5px solid silver;
 	padding-left: 5px;
+	margin: 15px 5px 15px 10px;
 }
+
+blockquote * {
+	margin-left: 15px;
+}
+
+blockquote ul li {
+	margin-left: 215px;
+}
+
+blockquote ol li {
+	margin-left: 25px;
+}
+
+li > blockquote {margin-left: 0;}
 
 nav {
 	background-color: #f5f5f5;
@@ -622,13 +653,18 @@ nav p{
    font-size: 75%;  
    padding-top: 0;
 }
+dl {
+	margin-top: 0.1em;
+	margin-bottom: 0.1em;
+}
 dt {
+	margin-top: 0.75em;
+	margin-bottom: 0.1em;
 	font-weight: 800;
 }
 label#hide_toc_label {
    font-size: 80%;
 }
-
 .toc-container {
 	position: relative;
 	height: auto;

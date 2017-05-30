@@ -39,6 +39,14 @@
 
     ∇ r←Version
       :Access Public shared
+      r←(Last⍕⎕THIS)'2.4.0' '2017-05-19'
+    ∇
+
+    ∇ History
+      :Access Public shared
+      ⍝ * 2.4.0
+      ⍝   * Method `History` introduced.
+      ⍝   * `Logger` is now managed by acre 3.
       ⍝ * 2.3.0
       ⍝   * New method `CreateParms` introduced which brings `Logger` in line with all other members
       ⍝     of the APLTree project. `CreateProperySpace` is deprecated now but is still available.
@@ -52,11 +60,6 @@
       ⍝     its meanings. It's still accepted but internally changed to ANSI.
       ⍝ * 2.0.0
       ⍝   * Doc converted to Markdown (requires at least ADOC 5.0).
-      ⍝ * 1.9.0
-      ⍝   * APL inline code is marked up now with ticks (`).
-      ⍝   * The `Version` function returns just the name (no path).
-      ⍝   * `History` method removed.
-      r←(Last⍕⎕THIS)'2.3.0' '2017-01-08'
     ∇
 
 ⍝ --------------- Properties and Fields
@@ -154,6 +157,8 @@
     ⍝ it is situated either in the same namespace as `Logger` itself or in `#` or where
     ⍝ `Logger` got instanciated from. If this is not appropriate for you, you **must**
     ⍝  set `refToUtils` to the namespace which keeps `FilesAndDirs`.
+    ⍝ However, you are discouraged for actully setting this property since the places where `Logger`
+    ⍝ tries to find it should be sufficient. The property remains available for compatibility reasons.
     :Access Public Instance
         ∇ r←get
           r←_refToUtils

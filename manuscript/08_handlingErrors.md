@@ -143,7 +143,9 @@ leanpub-end-insert
    csv←'.csv'
 leanpub-start-insert   
    :If 0=F.Exists fullfilepath
+leanpub-end-insert      
        rc←EXIT.SOURCE_NOT_FOUND
+leanpub-start-insert          
    :ElseIf ~isDir←F.IsDir fullfilepath
    :AndIf ~F.IsFile fullfilepath
        rc←EXIT.INVALID_SOURCE
@@ -163,7 +165,7 @@ leanpub-start-insert
 leanpub-end-insert       
        target←(~0∊⍴files)/target
 leanpub-start-insert       
-       rc←(1+0∊⍴files)⊃EXIT.(OK SOURCE_NOT_FOUND)
+       rc←EXIT.OK
 leanpub-end-insert       
    :EndIf
 ∇
@@ -280,35 +282,31 @@ Note that here for the first time we take advantage of the `[Config]Trap` flag d
 Finally we need to amend `TxtToCsv`:
 
 ~~~
-    ∇ exit←TxtToCsv fullfilepath;∆;isDev;Log;LogError;files;target
+    ∇ exit←TxtToCsv fullfilepath;∆;isDev;Log;LogError;files;target;success
      ⍝ Write a sibling CSV of the TXT located at fullfilepath,
      ⍝ containing a frequency count of the letters in the file text
 leanpub-start-insert          
-     ⍝ Returns one of the values defined in `EXIT`.     
-leanpub-end-insert          
-      MyLogger.Log'Started MyApp in ',F.PWD
-      MyLogger.Log'Source: ',fullfilepath
-leanpub-start-insert           
+     ⍝ Returns one of the values defined in `EXIT`.        
       (rc target files)←GetFiles fullfilepath
       :If rc=EXIT.OK
 leanpub-end-insert                 
           :If 0∊⍴files
               MyLogger.Log'No files found to process'
-leanpub-start-insert                         
-              rc←EXIT.SOURCE_NOT_FOUND
-leanpub-end-insert                         
           :Else
               tbl←⊃⍪/(CountLetters ProcessFiles)files
               lines←{⍺,',',⍕⍵}/{⍵[⍒⍵[;2];]}⊃{⍺(+/⍵)}⌸/↓[1]tbl
               :Trap Config.Trap/FileRelatedErrorCodes
                   A.WriteUtf8File target lines
+                  success←1
               :Case
                   MyLogger.LogError'Writing to <',target,'> failed, rc=',(⍕⎕EN),'; ',⊃⎕DM
                   rc←EXIT.UNABLE_TO_WRITE_TARGET
-                  :Return
+                  success←0
               :EndTrap
-              MyLogger.Log(⍕⍴files),' file',((1<⍴files)/'s'),' processed:'
-              MyLogger.Log' ',↑files
+              :If success
+                  MyLogger.Log(⍕⍴files),' file',((1<⍴files)/'s'),' processed:'
+                  MyLogger.Log' ',↑files
+              :EndIf
 leanpub-start-insert                                       
           :EndIf
 leanpub-end-insert                                   

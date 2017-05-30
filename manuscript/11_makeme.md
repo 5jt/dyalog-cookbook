@@ -11,7 +11,7 @@ At first glance you might think we can get away with splitting the DYAPP into tw
 
 * Currently we depend on whatever version of Dyalog is associated with DYAPPs. We need an explicit way to define that version, 
   even if for the time being there is just one version installed on our machine.
-* We might want to convert any Markdown documents -- like README.MD -- into an HTML document. While the MD is the source, 
+* We might want to convert any Markdown documents -- like README.MD -- into HTML documents. While the MD is the source, 
   the HTML will become part of the final product.
 * We need to make sure that the help system -- which we will introduce soon -- is properly compiled and configured.
 * Soon we need an installer that produces an EXE we can send to the customer for installing the software.
@@ -92,22 +92,32 @@ We are going to create a DYAPP file `Make.dyapp` that performs the "Make". Howev
 Of course you need to make amendments so that it is using the version of Dyalog of your choice. If it is at the moment what happens to run  a DYAPP on a double-click then this will give you the correct path:
 
 ~~~
-`'"',(⊃#.GetCommandLineArgs),'"'`
+'"',(⊃#.GetCommandLineArgs),'"'
+@echo off
+if NOT ["%errorlevel%"]==["0"] (
+    pause
+    exit /b %errorlevel%
+)
 ~~~
 
 You might want to add other parameters like `MAXWS=128MB` to the BAT file.
 
-Note that the expression `%~dp0` in a batch file will give you the full path -- with a trailing `\` -- of the folder that hosts the batch file. In other words, `"%~dp0Make.dyapp"` would result in a full path pointing to `MyApp.dyapp`, no matter where that is. You _must_ specify a full path because when the interpreter tries to find the DYAPP, the current directory is where the EXE lives, _not_ where the bat file lives.
+Notes:
 
-I> _Warning:_ Note that at the time of writing (2017-04) you _must_ write "dyapp" in lowercase characters - DYAPP would _not_ work!
+* The expression `%~dp0` in a batch file will give you the full path -- with a trailing `\` -- of the folder that hosts the batch file. In other words, `"%~dp0Make.dyapp"` would result in a full path pointing to `MyApp.dyapp`, no matter where that is. You _must_ specify a full path because when the interpreter tries to find the DYAPP, the current directory is where the EXE lives, _not_ where the bat file lives.
+* Checking `errorlevel` makes sure that in case of an error the batch file pauses. That gets us around the nasty problem that when you double-click a BAT file, you see a black windows popping up for a split of a second and then it's gone, leaving you wondering whether it has worked alright or not. Now when an error occurs it will pause. In addition it will pass the value of `errorlevel` as return code of the batch script.
+
+  However, this technique is suitable only for scripts that are supposed to be executed by a WCU [^WCU]; you don't want to have a pause in scripts that are called by other scripts.
+
+I> _Warning:_ Note that at the time of writing (2017-05) you _must_ write "dyapp" in lowercase characters - DYAPP would _not_ work!
 
 A> ### The current directory
 A> 
 A> For APLers, the current directory (sometimes called "working directory") is a strange animal. In general, the current directory is where "the application" lives. That means that if you start an application `C:\Program Files\Foo\Foo.exe` then for the application "Foo" the current directory will be `C:\Program Files\Foo`. 
 A>
-A> That's fine except that for APLers "the application" is _not_ the DYALOG.EXE, it's the workspace, whether it was loaded from disk or assembled by a DYAPP. When you double-click `MyApp.dyapp` then the interpreter changes the current directory for you: when you ask for it it will actually be where the DYAPP lives, and that's fine from an APL application programmer's point of view.
+A> That's fine except that for APLers "the application" is _not_ the DYALOG.EXE, it's the workspace, whether it was loaded from disk or assembled by a DYAPP. When you double-click `MyApp.dyapp` then the interpreter changes the current directory for you: it's where the DYAPP lives, and that's fine from an APL application programmer's point of view.
 A> 
-A> Unfortunately that is not true in case you double-click or load a workspace: the current directory remains what it was before, and that's where the Dyalog EXE lives. Therefore it's probably not a bad idea to change the current directory yourself at the earliest possible stage after loading a workspace: call `#.FilesAndDirs.PolishCurrentDir` and your are done, no matter what the circumstances are. One of the authors is doing this for roughly 20 years now, and it has solved several problems without introducing new ones.
+A> The same holds true when you double-click a workspace but it is _not_ true when you _load_ a workspace: the current directory remains what it was before, and that's where the Dyalog EXE lives. Therefore it's probably not a bad idea to change the current directory yourself at the earliest possible stage after loading a workspace: call `#.FilesAndDirs.PolishCurrentDir` and your are done, no matter what the circumstances are. One of the authors is doing this for roughly 20 years now, and it has solved several problems without introducing new ones.
 
 Now we need to establish the `Make.dyapp` file:
 
@@ -133,7 +143,7 @@ The upper part (until the blank line) is identical with `MyApp.dyapp` except tha
 ~~~
 :Class Make
 ⍝ Puts the application `MyApp` together:
-⍝ * Remover folder `Source\` in the current directory
+⍝ * Remove folder `Source\` in the current directory
 ⍝ * Create folder `Source\` in the current directory
 ⍝ * Copy icon to `Source\`
 ⍝ * Copy the INI file template over to `DESTINATION`
@@ -189,8 +199,8 @@ However, that leaves us vulnerable to another problem: imagine we introduce a ne
       R←∆Failed
       ini1←⎕NEW ##.IniFiles(,⊂'MyApp.ini')
       ini2←⎕NEW ##.IniFiles(,⊂'MyApp.ini.template')
-      →PassesIf ini1.GetSections≡ini2.GetSections
-      →PassesIf(ini1.Get ⍬ ⍬)[;2]≡(ini2.Get ⍬ ⍬)[;2]
+      →PassesIf ini1.GetSections{(∧/⍺∊⍵)∧(∧/⍵∊⍺)}ini2.GetSections
+      →PassesIf(ini1.Get ⍬ ⍬)[;2]{(∧/⍺∊⍵)∧(∧/⍵∊⍺)}(ini2.Get ⍬ ⍬)[;2]
       R←∆OK
     ∇
 ~~~
@@ -244,7 +254,7 @@ leanpub-end-insert
 :EndNamespace
 ~~~
 
-Double-click `Make.dyapp`: a folder `MyApp` should appear in `Z:\code\v12` with, among other files, `MyApp.exe`.
+Double-click `Make.dyapp`: a folder `MyApp` should appear in `Z:\code\v11` with, among other files, `MyApp.exe`.
 
 
 ## The tests
@@ -298,3 +308,5 @@ With the two DYAPPs and the BAT file, your development cycle now looks like this
    ~~~
    
    or simply close the session and relaunch Develop.dyapp.
+   
+[WCU]: Worst Case User, also known as Dumbest Assumable User (DAU).

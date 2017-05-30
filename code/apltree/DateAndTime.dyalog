@@ -85,10 +85,16 @@
 
     ∇ r←Version
       :Access Public Shared
-      ⍝ * 1.2.0: Requires now at least Dyalog 15.0 Unicode
+      r←({1↓⊃,/¯1↑⍵⊂⍨'.'=⍵}⍕⎕THIS)'1.3.0' '2017-04-25'
+    ∇
+
+    ∇ {r}←History
+      :Access Public Shared
+      r←⍬
+      ⍝ * 1.3.0: Method `History` introduced.
+      ⍝ * 1.2.0: Requires now at least Dyalog 15.0 Unicode.
       ⍝ * 1.1.0: Doc converted to Markdown (requires at least ADOC 5.0)
       ⍝ Few more examples and one more test case.
-      r←({1↓⊃,/¯1↑⍵⊂⍨'.'=⍵}⍕⎕THIS)'1.2.0' '2016-09-01'
     ∇
 
     :Field ReadOnly Public Shared WeekDays←'Monday' 'Tuesday' 'Wednesday' 'Thursday' 'Friday' 'Saturday' 'Sunday'

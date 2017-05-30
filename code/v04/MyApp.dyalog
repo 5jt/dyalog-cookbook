@@ -30,7 +30,6 @@
    ⍝ Write a sibling CSV containing a frequency count of the letters in the input files(s).\\
    ⍝ `fullfilepath` can point to a file or a folder. In case it is a folder then all TXTs
    ⍝ within that folder are processed. The resulting CSV holds the total frequency count.
-      MyLogger.Log'Source: ',fullfilepath
       (target files)←GetFiles fullfilepath
       :If 0∊⍴files
           MyLogger.Log'No files found to process'

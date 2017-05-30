@@ -1,6 +1,6 @@
 ﻿:Class Make
 ⍝ Puts the application `MyApp` together:
-⍝ * Remover folder `Source\` in the current directory
+⍝ * Remove folder `Source\` in the current directory
 ⍝ * Create folder `Source\` in the current directory
 ⍝ * Copy icon to `Source\`
 ⍝ * Copy the INI file template over to `DESTINATION`

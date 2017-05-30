@@ -45,7 +45,7 @@ We want to make the Ride configurable. That means we cannot do it earlier than a
 ⍝ Prepares the application.
   #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
   Config←CreateConfig ⍬
-  CheckForRide Config
+  CheckForRide (0≠Config.Ride) Config.Ride
   MyLogger←OpenLogFile Config.LogFolder
   MyLogger.Log'Started MyApp in ',F.PWD   
   MyLogger.Log #.GetCommandLine
@@ -90,26 +90,35 @@ leanpub-start-insert
 We add a function `CheckForRide`:
 
 ~~~
-∇ {r}←CheckForRide Config
-⍝ Checks whether the user wants to have a Ride and if so make it possible.
-      r←⍬
-      :If 0≠Config.Ride
-          rc←3502⌶0
-          :If ~rc∊0 ¯1
-              11 ⎕SIGNAL⍨'Problem switching off Ride, rc=',⍕rc
-          :EndIf
-          rc←3502⌶'SERVE::',⍕Config.Ride
-          :If 0≠rc
-              11 ⎕SIGNAL⍨'Problem setting the Ride connecion string to SERVE::',(⍕Config.Ride),', rc=',⍕rc
-          :EndIf
-          rc←3502⌶1
-          :If ~rc∊0 ¯1
-              11 ⎕SIGNAL⍨'Problem switching on Ride, rc=',⍕rc
-          :EndIf
-          {_←⎕DL ⍵ ⋄ ∇ ⍵}1
-      :EndIf
-∇
+ ∇ {r}←{wait}CheckForRide (rideFlag ridePort);rc
+  ⍝ Depending on what's provided as right argument we prepare
+  ⍝ for a Ride or we don't.
+    r←1
+    wait←{0<⎕NC ⍵:⍎⍵ ⋄ 0}'wait'
+    :If rideFlag 
+        rc←3502⌶0
+        :If ~rc∊0 ¯1
+            11 ⎕SIGNAL⍨'Problem switching off Ride, rc=',⍕rc
+        :EndIf
+        rc←3502⌶'SERVE::',ridePort
+        :If 0≠rc
+            11 ⎕SIGNAL⍨'Problem setting the Ride connecion string to SERVE::',(⍕ridePort),', rc=',⍕rc
+        :EndIf
+        rc←3502⌶1
+        :If ~rc∊0 ¯1
+            11 ⎕SIGNAL⍨'Problem switching on Ride, rc=',⍕rc
+        :EndIf
+        {_←⎕DL ⍵ ⋄ ∇ ⍵}⍣(⊃wait)⊣⍬
+    :EndIf
+ ∇
 ~~~
+
+* The optional left argument defaults to 0. If it is 1 then the function waits for Ride to hook on.
+* `rideFlag` determines whether the function takes action (1) or not (0).
+* `ridePort` defines the port to be used for communicating with Ride.
+* In case something goes wrong the function signals an error.
+* For principle reasons the function first tries to disable Ride. This allows a restart of the application without any further ado. It then specifies the port and then it activates Ride.
+* Finally, in case `⍺` was 1, an endless loop is entered. In case you are worried about the status indicator because the loop if established as a recursive call: recursive dfn calls do not have an impact on the status indicator.
 
 Finally we amend the `Version` function:
 

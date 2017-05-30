@@ -153,15 +153,15 @@ First we edit the top of the script to follow ADOC's conventions:
 
 ### Public interface
 
-Next we specify which functions we want to be included in the document: not all but just those that are designed to be called from the outside. In a class those are called "Public interface", and it's easy to see way.
+Next we specify which functions we want to be included in the document: not all but just those that are designed to be called from the outside. In a class those are called "Public interface", and it's easy to see why.
 
-For classes ADOC can work out what's public and what isn't due to the `Public Access` statement. For namespaces there is no such mechanism. We already know that by default ADOC considers all functions and operators as well as all variables public, but it also offers a mechanism to reduce this list to what's really public. For that ADOC looks for a function `Public`. It may return an empty vector (nothing public for that type of object) or a list of names. This list would define what is public.
+For classes ADOC can work out what's public and what isn't due to the `Public Access` statements. For namespaces there is no such mechanism. We just learned that by default ADOC considers all functions and operators as well as all variables public, but it also offers a mechanism to reduce this list to what's really public. For that ADOC looks for a function `Public`. It may return an empty vector (nothing is public at all) or a list of names. This list would define what is public.
 
-We don't have any operators or variables in the namespace, so we define at the bottom of the script just the public functions:
+Let's define the public functions at the bottom of the script:
 
 ~~~
 ...
-∇ r←PublicFns
+∇ r←Public
   r←'StartFromCmdLine' 'TxtToCsv' 'SetLX' 'GetCommandLineArg'
 ∇
 :EndNamespace
@@ -170,7 +170,7 @@ We don't have any operators or variables in the namespace, so we define at the b
 
 ### Reserved names
 
-ADOC honors seevral functions in a special way. If any such function exists, its result is treated in a special way. In the rare circumstances that you have a name conflict and **don't** want ADOC to treat some of those names in any special way then you have to instruct ADOC accordingly with a parameter spaces. Refer to the ADOC documentation for details.
+ADOC honors several functions in a special way. If any such function exists, its result is treated in a special way. In the rare circumstances that you have a name conflict and **don't** want ADOC to treat some of those names in any special way then you have to instruct ADOC accordingly with a parameter spaces. Refer to the ADOC documentation for details regarding `ignoreVersion`, `ignoreCopyright` and `ignoreHistory`.
 
 
 #### Version
@@ -235,6 +235,11 @@ Finally we need to address the problem that the variables inside `EXIT` are esse
 When you scroll down (or click at "Exit" in the top-left corner) then you get to the part of the document where `EXIT` is documented:
 
 ![Browsing the revised MyApp namespace](images/adoc_myapp_03.jpg)
+
+
+#### ADOC_Doc
+
+There is one more reserved name: `ADOC_Doc`. This is useful when you want to document an unscripted (ordinary) namespace. Just add a niladic function that returns no or a shy result with comments. Those comments are processed in exactly the same way leading comments in scripts are processed.
 
 That will do for now.
 

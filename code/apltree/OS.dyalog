@@ -12,18 +12,20 @@
 
     ∇ r←Version
       :Access Public shared
+      r←(Last⍕⎕THIS)'1.3.0' '2017-05-19'
+    ∇
+
+    ∇ History
+      :Access Public shared
+      ⍝ * 1.3.0
+      ⍝   * Bug fixed in `KillPID`: did not always return a result.
+      ⍝   * Method `History` introduced.
+      ⍝   * Managed by acre 3 now.
       ⍝ * 1.2.1
       ⍝   * Fix in `ShellExecute`: when `rc` is not 0 then result should be empty and `more` shouldn't.
       ⍝ * 1.2.0
       ⍝   * Documentation improved.
       ⍝   * Bug fix in `ShellExecute` (Linux and Mac OS only).
-      ⍝ * 1.1.0
-      ⍝   * New method `WinExecBatch` which is similar to `WinExecute` but catches the standard output.
-      ⍝ * 1.0.1
-      ⍝   * Attempt to catch output with `WinExecute` was ill-designed: this is **not possible** with
-      ⍝     `ShellExec`, the underlying Windows API call. The parameter was therefore removed.
-      ⍝ * 1.0.0 - First version
-      r←(Last⍕⎕THIS)'1.2.1' '2016-09-15'
     ∇
 
     ∇ (rc more result)←ShellExecute cmd;buff
@@ -226,6 +228,7 @@
     ⍝ Kill one or more processes identified by their process ID.\\
     ⍝ See also [`GetPID`](#).
       :Access Public Shared
+      r←0
       :Select GetOperatingSystem ⍬
       :Case 'Win'
           '∆OpenProcess'⎕NA'U4 KERNEL32.C32|OpenProcess I4 I2 I4'
@@ -244,7 +247,6 @@
           :Until 0∊⍴pid←1↓pid
       :CaseList 'Lin' 'Mac'
           '∆KillPID'⎕NA'I4 ',GetSharedLib,'| kill I4 I4'
-          r←0
           :Repeat
               :Trap 11
                   r←∆KillPID 2↑↑pid

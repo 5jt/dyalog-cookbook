@@ -241,7 +241,6 @@ We have to make sure that `GetFiles` is called from `TxtToCsv`. Note that moving
 ∇ rc←TxtToCsv fullfilepath;files;tbl;lines;target
 ⍝ Write a sibling CSV of the TXT located at fullfilepath,
 ⍝ containing a frequency count of the letters in the file text 
-   MyLogger.Log'Source: ',fullfilepath
    (target files)←GetFiles fullfilepath
    :If 0∊⍴files
        MyLogger.Log'No files found to process'

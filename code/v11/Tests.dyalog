@@ -82,8 +82,8 @@
       R←∆Failed
       ini1←⎕NEW ##.IniFiles(,⊂'MyApp.ini')
       ini2←⎕NEW ##.IniFiles(,⊂'MyApp.ini.template')
-      →PassesIf ini1.GetSections≡ini2.GetSections
-      →PassesIf(ini1.Get ⍬ ⍬)[;2]≡(ini2.Get ⍬ ⍬)[;2]
+      →PassesIf ini1.GetSections{(∧/⍺∊⍵)∧(∧/⍵∊⍺)}ini2.GetSections
+      →PassesIf(ini1.Get ⍬ ⍬)[;2]{(∧/⍺∊⍵)∧(∧/⍵∊⍺)}(ini2.Get ⍬ ⍬)[;2]
       R←∆OK
     ∇
 

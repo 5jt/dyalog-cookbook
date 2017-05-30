@@ -5,12 +5,11 @@ Load ..\AplTree\HandleError
 Load ..\AplTree\IniFiles
 Load ..\AplTree\OS
 Load ..\AplTree\Logger
-Load ..\AplTree\ServiceState
 Load ..\AplTree\EventCodes
 Load Constants
 Load Utilities
 Load MyApp
-Run #.MyApp.SetLX #.MyApp.GetCommandLineArg ⍬
+Run #.MyApp.SetLXForApplication #.MyApp.GetCommandLineArg ⍬
 
 Load Make
 Run #.Make.Run 1

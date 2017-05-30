@@ -159,6 +159,21 @@
 
     ∇ r←Version
       :Access Public shared
+      r←(Last⍕⎕THIS)'3.3.0' '2017-05-19'
+    ∇
+
+    ∇ History
+      :Access Public shared
+      ⍝ * 3.3.0
+      ⍝   * `RunThese` had a problem with groups under certain circumstances.
+      ⍝   * acre 3.x is now supported (function `RenameTestFnsTo`).
+      ⍝   * Helper `FindSpecialString` introduced.
+      ⍝   * Helper `ListHelpers` now requires a right argument.
+      ⍝   * Method `History` introduced.
+      ⍝   * Bug fixes:
+      ⍝     * When `EstablishHelpersIn` was called from a namespace that was not a child of root it did not work.
+      ⍝     * Sorting of test function is now case insensitive.
+      ⍝   * Project is now managed by acre 3.
       ⍝ * 3.2.1
       ⍝   * Bug fix: reporting information to the session was inconsistent. Same was true for `log`.
       ⍝ * 3.2.0
@@ -167,12 +182,6 @@
       ⍝     * Whether it found (and instantiated) any INI file or not.
       ⍝     * Whether it found (and executed) a function `Initial` or not.
       ⍝     * Whether it found (and executed) a function `Cleanup` or not.
-      ⍝ * 3.1.1
-      ⍝   * Bug fix in `ListHelpers` caused by changes in 3.1
-      ⍝ * 3.1.0
-      ⍝   * Now accepts the namespace hosting the tests to be scripted.
-      ⍝   * New method `GetTestFnsTemplate` introduced.
-      r←(Last⍕⎕THIS)'3.2.1' '2017-03-27'
     ∇
 
     ∇ {(rc log)}←Run refToTestNamespace;flags
@@ -235,10 +244,10 @@
     ∇
 
     ∇ EditAll refToTestNamespace;list
-     :Access Public Shared
+      :Access Public Shared
      ⍝ Opens all test functions in the editor
       :If IsScripted refToTestNamespace
-          ⎕ED ⍕refToTestNamespace
+          ⎕ED⍕refToTestNamespace
       :Else
           {⎕ED ⍵}&¨GetAllTestFns refToTestNamespace
       :EndIf
@@ -250,6 +259,7 @@
       r←''
       :If ~0∊⍴buff←'T'refToTestNamespace.⎕NL 3
           r←' '~¨⍨↓({∧/(↑¯1↑'_'Split ⍵~' ')∊⎕D}¨↓buff)⌿buff
+          r←r[⍋Lowercase⊃Lowercase r]
       :EndIf
     ∇
 
@@ -488,7 +498,7 @@
                   ps.list←,⊂ps.group
                   ps.group←''
               :Else
-                  lookFor←(('Test_'{⍵≡(⍴⍺)↑⍵}ps.group)/'_'),ps.group
+                  lookFor←{(('Test_'{⍺/⍨⍺≢(⍴⍺)↑⍵}⍵)),⍵}ps.group
                   :If '*'=¯1↑lookFor
                       lookFor←¯1↓lookFor
                       ps.list←(∨/¨(⊂lookFor)⍷¨ps.list)/ps.list  ⍝ First restrict to group
@@ -496,7 +506,7 @@
                       :If 0∊⍴buff←(∨/¨(⊂lookFor)⍷¨ps.list)/ps.list  ⍝ First restrict to group
                           ps.list←''
                       :Else
-                          ps.list←(1=⍴∪{2⊃'_'Split ⍵}¨buff)/buff
+                          ps.list←buff/⍨lookFor∘≡¨{⍵↓⍨-(⌽⍵)⍳'_'}¨buff
                       :EndIf
                   :EndIf
               :EndIf
@@ -738,6 +748,7 @@
               r←(({⍎⍵↑⍨-(-⎕IO)+'_'⍳⍨⌽⍵}¨r)∊numbers)⌿r
           :EndIf
           r←r,⍪{⎕ML←3 ⋄ {⍵↓⍨+/∧\' '=⍵}{⎕IO←1 ⋄ ⍵↓⍨⍵⍳'⍝'}∊1↑1↓⎕NR ⍵}¨r
+          r←r[⍋{⎕ML←1 ⋄ ↑⍵}##.APLTreeUtils.Lowercase r[;⎕IO];]
         ∇
 
         ∇ r←G;⎕IO
@@ -750,8 +761,21 @@
           :EndIf
         ∇
 
+        ∇ r←{startIn}FindSpecialString what;⎕IO;⎕ML
+⍝ Use this to search for stuff like "CHECK" or "TODO" enclosed between `⍝` (⍵).
+⍝ Without left argument the search starts in #.
+⍝ However, at the time of writing the user command ]locate does not work on #.
+⍝ Reported as bug <01355> to Dyalog on 2017-04-24.
+          ⎕IO←0 ⋄ ⎕ML←3
+          startIn←{0<⎕NC ⍵:⍎⍵ ⋄ '#'}'startIn'
+          r←⍉1↓[1]⎕SE.UCMD'locate ',what,' -return=count -objects=',⍕startIn
+          :If 0<1↑⍴r←(0<r[;1])⌿r                             ⍝ Drop those with no hits
+              r[;0]←{2>'#'+.=⍵:⍵ ⋄ {⌽⍵↑⍨1+⍵⍳'#'}⌽⍵}¨r[;0]    ⍝ Circumvent bug <01356>
+          :EndIf
+        ∇
+
         ∇ {r}←oldName RenameTestFnsTo newName;⎕IO;body;rc;⎕ML;header;comment;res;name;right;left;newParent;oldParent;delFilanme
-⍝ Renames a test function and tell acre.
+⍝ Renames a test function and tells acre.
 ⍝ r ← ⍬
           ⎕IO←0 ⋄ ⎕ML←3
           r←⍬
@@ -818,39 +842,55 @@
           :If ' '≠1↑0⍴rc←newParent.⎕FX⊃body
               . ⍝ something went wrong
           :EndIf
-          :If 0=#.⎕NC'acre'
+          :If (0=#.⎕NC'acre')∧0=⎕SE.⎕NC'acre'
               ⎕←'acre not found in the workspace'
               oldParent.⎕EX oldName
           :Else
               (oldName newName)←{(⍕newParent),'.',⍵}¨oldName newName
-              delFilanme←(↑#.acre.GetChangeFileName newName),'.DEL'
-              :If ⎕NEXISTS delFilanme
-                  ⎕NDELETE delFilanme
-              :EndIf
-              :If 0∊⍴rc←#.acre.SetChanged newName
-                  ⎕←'acre was told about the introduction of a new test fns but it was not interested.'
-              :EndIf
-              :If 0∊⍴rc←#.acre.Erase oldName
-                  ⎕←'acre was told about the deletion of a test fns but it was not interested.'
+              :If 0<⎕SE.⎕NC'acre'
+                  delFilanme←(↑⎕SE.UCMD'acre.getchangefilename ',newName),'.DEL'
+                  :If ⎕NEXISTS delFilanme
+                      ⎕NDELETE delFilanme
+                  :EndIf
+                  :If 0∊⍴rc←⎕SE.UCMD'acre.setchanged ',newName
+                      ⎕←'acre was told about the introduction of a new test fns but it was not interested.'
+                  :EndIf
+                  :If 0∊⍴rc←⎕SE.UCMD'acre.Erase ',oldName
+                      ⎕←'acre was told about the deletion of a test fns but it was not interested.'
+                  :EndIf
+              :Else
+                  delFilanme←(↑#.acre.GetChangeFileName newName),'.DEL'
+                  :If ⎕NEXISTS delFilanme
+                      ⎕NDELETE delFilanme
+                  :EndIf
+                  :If 0∊⍴rc←#.acre.SetChanged newName
+                      ⎕←'acre was told about the introduction of a new test fns but it was not interested.'
+                  :EndIf
+                  :If 0∊⍴rc←#.acre.Erase oldName
+                      ⎕←'acre was told about the deletion of a test fns but it was not interested.'
+                  :EndIf
               :EndIf
               ⎕EX oldName
               ⎕←'***Done'
           :EndIf
         ∇
 
-        ∇ r←ListHelpers;list;⎕IO;⎕ML;force
+        ∇ r←ListHelpers force;list;⎕IO;⎕ML;force
 ⍝ Lists all helpers available from the `Tester` class.
-⍝ These are all established by calling the `EstablishHelpers' method.
-⍝ The lists includes helpers that won't be established in case the namespace hosting the test cases is scripted!
+⍝ When called by a user pass a `0` as right argument to see all helpers that are actually available.
+⍝ Specify a `1` in case you want to see all Helpers that **might** be available.
+⍝ Helpers are usually established by calling the `EstablishHelpers' method.
+⍝ The list includes helpers that won't be established in case the namespace hosting the test cases is scripted!
           ⎕IO←1 ⋄ ⎕ML←1
           force←⎕THIS≡⊃(1↓⎕RSI),⊂''
           r←0 2⍴' '
           list←'Run' 'RunDebug' 'RunThese' 'RunBatchTests' 'RunBatchTestsInDebugMode' 'E' 'L' 'G' 'FailsIf' 'PassesIf'
           list,←'GoToTidyUp' 'RenameTestFnsTo' 'ListHelpers' '∆OK' '∆Failed' '∆NoBatchTest' '∆Inactive' '∆NoAcreTests'
-          list,←'∆WindowsOnly' '∆LinuxOnly' '∆MacOnly' '∆LinuxOrMacOnly' '∆LinuxOrWindowsOnly' '∆MacOrWindowsOnly'
+          list,←'∆WindowsOnly' '∆LinuxOnly' '∆MacOnly' '∆LinuxOrMacOnly' '∆LinuxOrWindowsOnly'
+          list,←'∆MacOrWindowsOnly' 'FindSpecialString'
           list←,¨list
-          :If '#.Tester.Helpers'≢⍕⊃⎕RSI
-              list/⍨←force∨0<⊃∘⎕NC¨list
+          :If 'Tester.Helpers'≢{⍵↑⍨-+/∧\2>+\⌽'.'=⍵}⍕⊃⎕RSI
+              list/⍨←force∨0<⊃∘⎕NC¨list   ⍝ List only those that are around
           :EndIf
           r←↑{⍵(#.APLTreeUtils.dlb{⍺⍺{⍵↓⍨¯1+⍵⍳'⍝'}⍺⍺ ⍵}1⊃(1↓⎕NR ⍵),⊂'')}¨list
         ∇
@@ -863,29 +903,29 @@
 
         ∇ r←GetListHelpers
           :Access Public Shared
-⍝ Returns a list of all helper functions
+⍝ Returns a list of **all** helper functions.
 ⍝ These are defined as all private functions of the sub class `Helpers`.
-         
+
 ⍝ ↓↓↓↓ Circumvention of Dyalog bug <01154> (⎕nl 3 does NOT list the private functions of `Helpers`!)
-          r←ListHelpers[;1]
+          r←(ListHelpers 1)[;1]
         ∇
 
         ∇ R←Test_000(stopFlag batchFlag);⎕TRAP
 ⍝ Model for a test function.
           ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
           R←∆Failed
-         
+
 ⍝ Preconditions...
 ⍝ ...
-         
+
           →PassesIf 1≡1
           →FailsIf 1≢1
           →GoToTidyUp 1≢1
           R←∆OK
-         
+
          ∆TidyUp: ⍝ Clean up after this label
           ⍝ ...
-         
+
         ∇
 
         ∇ r←∆OK

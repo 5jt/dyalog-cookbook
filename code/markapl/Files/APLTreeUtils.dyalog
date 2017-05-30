@@ -1,5 +1,5 @@
 ﻿:Namespace APLTreeUtils
-⍝ *** Version 4.0.2 ⋄ 2016-12-22 ***
+⍝ *** Version 4.1.0 ⋄ 2017-05-10 ***
 ⍝
 ⍝ ## Overview
 ⍝ Version 4.0.0 is a major change in two respects:
@@ -30,6 +30,8 @@
 ⍝ * `WriteBytesAs8BitSignedIntegersToFile`
 ⍝
 ⍝ ## Version History
+⍝ * 4.1.0
+⍝   * Now managed by acre 3.
 ⍝ * 4.0.2
 ⍝   * Documentation improved.
 ⍝ * 4.0.1

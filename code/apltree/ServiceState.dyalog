@@ -2,39 +2,71 @@
 ⍝ This namespace provides an interface between an APL application designed
 ⍝ to run as a service and the Windows Service Control Manager (SCM). The
 ⍝ SCM is sending messages which are caught by the `ServiceState.OnServiceHandler`
-⍝ callback.
+⍝ callback which is in turn expected to respond to those messages reasonably.
 ⍝
-⍝ `ServiceState` offers all sort of functions but normally the user will call just:
+⍝ `ServiceState` offers all sorts of functions but normally the user will call just:
 ⍝ * `ServiceState.CreateParmSpace`
 ⍝ * `ServiceState.Ini`
 ⍝ * `ServiceState.CheckServiceMessages`
 ⍝
-⍝ Run `#.ServiceState.Init` to get started. You can either specify an empty
+⍝ Run `##.ServiceState.Init` to get started. You can either specify an empty
 ⍝ right argument (if you are happy with the defaults) or a parameter
 ⍝ space. It is suggested to create a parameter space by calling:
 ⍝ ~~~
-⍝ ps←#.ServiceState.CreateParmSpace
+⍝ ps←##.ServiceState.CreateParmSpace
 ⍝ ~~~
 ⍝ You can then change the defaults. Call
 ⍝ ~~~
 ⍝ ps.∆List
 ⍝ ~~~
-⍝ for a list of all settings. Finally pass this as right argument to `Init`.
+⍝ for a list of all defaults. Finally pass the parameter space as right argument
+⍝ to `Init`.
 ⍝
-⍝ Note that `Init` associates `#.ServiceState.OnServiceHandler` as the
-⍝ callback function for state changes signalled by SCM. This callback will
+⍝ Note that `Init` associates `##.ServiceState.OnServiceHandler` as the
+⍝ callback function for state changes requested by SCM. This callback will
 ⍝ set internally a variable which indicates what state is requested by the SCM.
 ⍝
-⍝ In general the application is supposed to...
-⍝ 1. check whether a state change is required.
-⍝ 1. take appropriate action (if any).
+⍝ The application is supposed to check whether a state change is required and if so
+⍝ to take an appropriate action and finally signal back to the SCM that the state
+⍝ was changed accordingly.
 ⍝
-⍝ All this can be achieved by calling the operator `CheckServiceMessages`.
-⍝ This takes a log function as operand and a flag that indicates whether the
-⍝ application is running as a service; `#.ServiceState.IsRunningAsService`
-⍝ is telling this.
+⍝ All this can be achieved by calling the operator `CheckServiceMessages`, typically
+⍝ in the main loop of the application. The operator takes a log function as operand
+⍝ and a flag that indicates whether the application is running as a service which is
+⍝ returned by a call to `##.ServiceState.IsRunningAsService` - no further actions needed.\\
+⍝ All this in a single function (not recommended but as an example):
+⍝ ~~~
+⍝ ∇ {r}←Run dummy;S
+⍝   r←⍬
+⍝   parms←#.ServiceState.CreateParmSpace
+⍝   parms.logFunction←'Log'
+⍝   S←#.ServiceState
+⍝   S.Init parms
+⍝   :Repeat
+⍝       ⎕DL 1
+⍝       :If (Log S.CheckServiceMessages)S.IsRunningAsService
+⍝           :Leave
+⍝       :EndIf
+⍝       Workhorse ⍬
+⍝   :Until 0
+⍝   S.Off 0
+⍝ ~~~
+⍝ This assumes that `Log` is a function that takes a text vector or a vector of text vectors
+⍝ as right argument and writes them to a log file.\\
+⍝ Notes:
+⍝ * Any request to "Pause" (as well as "Continue") will be handled within `CheckServiceMessages`.
+⍝ * `CheckServiceMessages` return a 1 in case a "Stop" is requested and a 0 otherwise.
 ⍝
 ⍝ See the test cases for examples and the homepage (see below) for more details.
+⍝
+⍝ Note that with version 1.6 the `ride` parameter was removed from `ServiceState`. The
+⍝ reason for this was two-fold:
+⍝ * When a service does not start it's too late - you have to ride into the service
+⍝   asap.
+⍝ * When you want to debug a problem within the application then the application should
+⍝   give you a ride, not `ServiceState`.
+⍝
+⍝ That's why this feature was removed from `ServcieState`.
 ⍝
 ⍝ Needs Dyalog 14.0 or better.\\
 ⍝ Kai Jaeger ⋄ APL Team Ltd\\
@@ -44,13 +76,21 @@
 
     ∇ r←Version
       :Access Public Shared
-      r←({⍵↑⍨-¯1+'.'⍳⍨⌽⍵}⍕⎕THIS)'1.5.1' '2017-04-07'
+      r←({⍵↑⍨-¯1+'.'⍳⍨⌽⍵}⍕⎕THIS)'1.6.0' '2017-05-23'
     ∇
+
     ∇ History
-      ⍝ * 1.5.1:
-      ⍝   * `Initial` now indicates success via the result (admin rights!)
+    :Access Public Shared
+      ⍝ * 1.6.0:
+      ⍝   * `timeout` reduced from 10 to 5 seconds. 10 seconds may result in Windows
+      ⍝      error messages.
+      ⍝   * Method `Off` added.
+      ⍝   * Messages written to the log file are now clear about what is requested.
+      ⍝   * The option to allow the user a Ride was removed from `ServiceState`.
+      ⍝   * Testcases's `Initial` now indicates success via the result (admin rights!),
       ⍝   * Function `History` introduced.
-      ⍝   * Typos in documentation fixed
+      ⍝   * Typos in documentation fixed.
+      ⍝   * Now managed by acre 3.
       ⍝ * 1.5.0:
       ⍝   * Bug fix: the "ride" parameter worked with 14.1 and earlier only.
       ⍝ * 1.4.0:
@@ -146,14 +186,13 @@
       r←⍬
       ps2←CreateParmSpace
       :If 326=⎕DR ps
-          allowed←'logFunction' 'logFunctionParent' 'ride' 'timeout' 'eventQuitDQ'
+          allowed←'logFunction' 'logFunctionParent' 'timeout' 'eventQuitDQ'
           'Invalid parameter'⎕SIGNAL 11/⍨~∧/(' '~¨⍨↓ps.⎕NL 2 9)∊allowed
           ps2.{⍵{⍵{⍎⍺,'←⍵'}¨⍺.⍎¨⍵}⍵.⎕NL-2 9}ps  ⍝ Merge
       :EndIf
       ⎕THIS.{⍵{⍵{⍎⍺,'←⍵'}¨⍺.⍎¨⍵}⍵.⎕NL-2 9}ps2   ⍝ Set globals
       currentState←SERVICE_RUNNING
       requestedState←⍬
-      {}MakeRuntimeListenToRide⍣(0=IsDevelopment)⊣⍬
       '#'⎕WS'Event'eventQuitDQ 1    ⍝ To quit any ⎕DQ - we want be able to quit
       :If ~0∊⍴logFunction
           :If ⍬≡logFunctionParent
@@ -245,7 +284,7 @@
       :EndIf
     ∇
 
-    ∇ {r}←OnServiceHandler(obj event action state);state2
+    ∇ {r}←OnServiceHandler(obj event action state);state2;stateAsText
     ⍝ Callback designed to handle notifications from Windows Service Control Manager (SCM).\\
     ⍝ This function is established as a callback by `Init`.\\
     ⍝ Note that the interpreter has already responded automatically to
@@ -289,7 +328,8 @@
           {}_logFunction'"eventQuitDQ" was sent'
       :EndIf
       2 ⎕NQ'.' 'SetServiceState'state2           ⍝ Confirm to SCM.
-      {}_logFunction'Message "SetServiceState" was sent'
+      stateAsText←currentState{,1↑⍵⌿⍨⍺=⍎¨↓⍵}'SERVICE'{⍵⌿⍨((⍴,⍺)↑[2]⍵)∧.=⍺}⎕NL 3
+      {}_logFunction'Message "SetServiceState" with value "',stateAsText,'" was sent'
       r←0
     ∇
 
@@ -297,8 +337,7 @@
     ⍝ Creates a namespace populated with variables holding the default settings plus a function `∆List`.
       r←#.⎕NS''
       r.(⎕IO ⎕ML)←1
-      r.ride←0
-      r.timeout←10
+      r.timeout←5
       r.logFunction←''
       r.logFunctionParent←⍬
       r.eventQuitDQ←9999
@@ -307,10 +346,9 @@
 
     ∇ r←MethodList
 
-      r←'Init' 'CreateParmSpace' 'CheckServiceMessages' 'ConfirmStateChange' 'ShallServiceContinue' 'ShallServicePause' 'ShallServiceQuit' 'WaitForContinue' 'WaitForStateChange' 'IsRunningAsService'
+      r←'Init' 'CreateParmSpace' 'CheckServiceMessages' 'ConfirmStateChange' 'ShallServiceContinue' 'ShallServicePause'
+      r,←'ShallServiceQuit' 'WaitForContinue' 'WaitForStateChange' 'IsRunningAsService' 'IsDevelopment' 'Off'
     ∇
-
-⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝  Private stuff
 
       CheckState←{
           0::11
@@ -318,22 +356,14 @@
           ⍺/⍨~⍵∊pause start continue stop running
       }
 
-      MakeRuntimeListenToRide←{
-          0::0                  ⍝ This ↓ can cause a DOMAIN ERROR
-          v←{(//)⎕VFI ⍵/⍨2>+\'.'=⍵}1⊃'#'⎕WG'APLVersion'
-          14.1≥v:3502⌶⍬         ⍝ Make a Runtime EXE/DLL listen to Ride
-          _←3502⌶0              ⍝ Just to be sure.
-          _←3502⌶1
-          0
-      }
-
       Off←{
-    ⍝ In case `testflag←→1` the function returns ⍬.
-    ⍝ Otherwise it ⎕OFFs (runtime EXE/DLL) or executes:
-    ⍝ `→`
+    ⍝ In case `testflag←→1` the function returns ⍬.\\
+    ⍝ Otherwise it ⎕OFFs (in case its a runtime EXE or runtime DLL) or executes `→`.\\
+    ⍝ If you wish to pass a return code specify this as ⍺; that's then passed as right "argument" to `⎕OFF`.
           testFlag←⍵:⍬
-          0=IsDevelopment:⎕OFF
-          →
+          IsDevelopment:→
+          0=⎕NC'⍺':⎕OFF
+          ⎕OFF ⍺
       }
 
     ∇ r←IsDevelopment;⎕IO;⎕ML
@@ -346,5 +376,6 @@
     ∇ r←IsRunningAsService
       r←~0∊⍴2 ⎕NQ'.' 'GetEnvironment' 'RunAsService'
     ∇
+
 
 :EndNamespace

@@ -51,28 +51,33 @@
 
     ∇ r←Version
       :Access Public shared
+      r←(Last⍕⎕THIS)'1.6.2' '2017-05-28'
+    ∇
+
+    ∇ History
+      :Access Public shared
+      ⍝ * 1.6.2
+      ⍝   * Performance improved: `ListDirs`.
+      ⍝   * Bug fixes:
+      ⍝     * Internally `NormalizePath` was called with ¨ - that's redundant.
+      ⍝     * `(recursive 1) Dir folder` had a problem.
+      ⍝     * File pattern with wildcard and an extension (like `*.log`) had a problem in both
+      ⍝       `Dir` and `ListDir`.
+      ⍝ * 1.6.1
+      ⍝   * Bug fix: `'expand'∘NormalizePath¨fileList` did not expand. The `¨` is however redundant.
+      ⍝ * 1.6.0
+      ⍝   * Now managed by acre 3.
       ⍝ * 1.5.1
       ⍝   * Bug fix: "Windows only" for `NormalizePath` wasn't actually implemented.
       ⍝ * 1.5.0
       ⍝   * `NormalizePath` now expands environment variables (Windows only).
-      ⍝ * 1.4.2
-      ⍝   * `NormalizePath` now treats two leading `//` as a UNC path. This is a necessary step
-      ⍝     in order to overcome that `⎕NPARTS` returns two leading slashes in case the current
-      ⍝     directory **is** actually a UNC path.
-      ⍝ * 1.4.1
-      ⍝   * `CopyTree` did not work as expected when the `source` parameters had a trailing
-      ⍝     separator.
-      ⍝ * 1.4.0
-      ⍝   * `Dir` now supports both wildcards and recursive mode at the same time.
-      ⍝   * `RmDir` had a problem when, say, a console window was "looking" into the folder to
-      ⍝     be deleted, or one of its sub folders. It cannot delete such folders but should
-      ⍝     report the problem rather than crash.
-      r←(Last⍕⎕THIS)'1.5.1' '2017-03-21'
     ∇
 
-    ∇ r←{parms_}Dir path;buff;list;more;parms;rc;extension;filename;folder;subFolders
+    ∇ r←{parms_}Dir path;buff;list;more;parms;rc;extension;filename;folder;subFolders;pattern;isSelfCall
       :Access Public Shared
-    ⍝ List contents of `path`.\\
+    ⍝ List contents of `path`. With a trainling `/` path itself is excluded. That means that
+    ⍝ with `('recursive' 0)` and `path/` the result is empty if `path` does not contain anything
+    ⍝ but it not empty without the `/`.\\
     ⍝ `path` may be one of:
     ⍝ * A file: `Dir` returns attributes for just that file
     ⍝ * A directory without a trailing slash: `Dir` returns attributes for just that directory
@@ -107,19 +112,21 @@
     ⍝ | follow    | 0     | Shall symbolic links be followed |
     ⍝ | recursive | 0     | Shall `Dir` scan `path` recursively |
     ⍝ | type      | 0     | Use this to select the information to be returned<<br>>by `Dir`. 0 means names. For more information see<<br>>help on `⎕NINFO`. |
+    ⍝ Note that `selfCall` is used only internally in order to detect whether `Dir` has called itself recursively.
       r←⍬
       path←NormalizePath path
       parms←⎕NS''
       parms.follow←1
       parms.recursive←0
       parms.type←0
+      parms.selfCall←0
       :If 0<⎕NC'parms_'
           :If {2::0 ⋄ 1⊣⍵.⎕NL 2}parms_
               {}parms.{{⍎⍺,'←⍵'}/⍵}¨parms_.({⍵(⍎⍵)}¨↓⎕NL 2)
-              'Invalid parameter'⎕SIGNAL 11/⍨∨/~(' '~¨⍨↓parms.⎕NL 2)∊'follow' 'recursive' 'type'
+              'Invalid parameter'⎕SIGNAL 11/⍨∨/~(' '~¨⍨↓parms.⎕NL 2)∊'follow' 'recursive' 'type' 'selfCall'
           :Else
               parms_←,⊂∘,⍣(2=≡parms_)⊣parms_
-              'Invalid parameter'⎕SIGNAL 11/⍨0∊(↑¨parms_)∊' '~¨⍨↓parms.⎕NL 2
+              'Invalid parameter'⎕SIGNAL 11/⍨0∊(↑¨parms_)∊(' '~¨⍨↓parms.⎕NL 2),⊂'selfCall'
               parms.{{⍎⍺,'←⍵'}/⍵}¨parms_
           :EndIf
       :EndIf
@@ -138,9 +145,9 @@
                   :Return
               :EndIf
           :EndTrap
-          r←(0 1,parms.type~0 1)⎕NINFO⍠('Follow'parms.follow)('Wildcard' 1)⊣path,CurrentSep,'*'
+          r←(0 1,parms.type~0 1)⎕NINFO⍠('Follow'parms.follow)('Wildcard' 1)⊣path,'*'
           :If ~0∊0⊃r
-              (0⊃r)←NormalizePath¨0⊃r
+              (0⊃r)←NormalizePath 0⊃r
           :EndIf
           :If parms.recursive
           :AndIf ~0∊⍴r
@@ -167,21 +174,33 @@
           :Else
               'path does not exist'⎕SIGNAL 6/⍨0=⎕NEXISTS path
               folder←path
+              filename←(IsDir folder)/'*'
+              extension←''
           :EndIf
-          r←(0 1,parms.type~0 1)⎕NINFO⍠('Follow'parms.follow)('Wildcard' 1)⊣path
-          :If ~0∊0⊃r
-              (0⊃r)←NormalizePath¨0⊃r
-          :EndIf
-          r←r[,(0 1,parms.type~0 1)⍳parms.type]
+          pattern←folder,(filename{0∊⍴⍺,⍵:'' ⋄ '/',⍺,⍵}extension)
+          buff←(0 1,parms.type~0 1)⎕NINFO⍠('Follow'parms.follow)('Wildcard' 1)⊣pattern
+          buff←(2=1⊃buff)∘/¨buff
+          (0⊃buff)←NormalizePath 0⊃buff
+          r←buff[,(0 1,parms.type~0 1)⍳parms.type]
+          isSelfCall←parms.selfCall
+          parms.selfCall←1
           :If parms.recursive
           :AndIf IsDir folder
           :AndIf ~0∊⍴subFolders←ListDirs folder
-              subFolders←subFolders,¨⊂CurrentSep,filename,extension
-              buff←parms Dir¨subFolders
+              buff←parms Dir¨subFolders,¨⊂CurrentSep,filename,extension
+              :If 0=+/'*?'∊path
+                  buff←(⊂∘⊂¨subFolders),¨¨buff
+              :EndIf
               :If ~0∊⍴buff←↑{⍺,¨⍵}/buff
               :AndIf ~0∊⍴buff←(0<↑∘⍴¨buff)/buff
                   r←r,¨buff
               :EndIf
+          :EndIf
+          :If 0=isSelfCall
+          :AndIf 0∊⍴(filename,extension)~'*'
+              buff←(0 1,parms.type~0 1)⎕NINFO⍠('Follow'parms.follow)⊣folder
+              (0⊃buff)←NormalizePath 0⊃buff
+              r←(⊂¨buff),¨r
           :EndIf
       :EndIf
     ∇
@@ -224,7 +243,7 @@
           :EndIf
           (rc more)←↓⍉⊃source CopyTo¨target
       :Else
-          (source target)←NormalizePath¨source target
+          (source target)←NormalizePath source target
           :Select GetOperatingSystem ⍬
           :Case 'Win'
               '∆CopyFile'⎕NA'I kernel32.C32|CopyFile* <0T <0T I2'
@@ -287,8 +306,8 @@
       :EndIf
       :If 2=≡source
           target←Nest target
-          source←NormalizePath¨source
-          target←NormalizePath¨target
+          source←NormalizePath source
+          target←NormalizePath target
           :If ≢/⍴¨source target
           :AndIf 1≠⍴,target
               'Length of left and right argument do do not fit'⎕SIGNAL 5
@@ -331,13 +350,13 @@
     ⍝   existing files will be overwritten.
       :Access Public Shared
       success←1 ⋄ more←'' ⋄ list←0 3⍴'' 0 0
-
+     
       'Invalid left argument'⎕SIGNAL 11/⍨(~(≡source)∊0 1)∨80≠⎕DR source
       'Invalid right argument'⎕SIGNAL 11/⍨(~(≡target)∊0 1)∨80≠⎕DR target
       'Left argument is not a directory'⎕SIGNAL 11/⍨0=IsDir source
       'Right argument is a file'⎕SIGNAL 11/⍨IsFile target
       'Right argument has wildcard characters'⎕SIGNAL 11/⍨∨/'*?'∊target
-      (source target)←NormalizePath¨source target
+      (source target)←NormalizePath source target
       source←(-+/∧\CurrentSep=⌽source)↓source
       :If 0=⎕NEXISTS target
           :Trap 19 22
@@ -406,7 +425,7 @@
       'Invalid right argument'⎕SIGNAL 11/⍨(~(≡target)∊0 1)∨80≠⎕DR target
       'Left argument is not a directory'⎕SIGNAL 11/⍨0=IsDir source
       'Right argument is a file'⎕SIGNAL 11/⍨IsFile target
-      (source target)←NormalizePath¨source target
+      (source target)←NormalizePath source target
       (success more list)←source CopyTree target
       :If success
           list←list[;0 1 1 2]
@@ -546,7 +565,7 @@
               'ExpandEnvironmentStrings'⎕NA'I4 KERNEL32.C32|ExpandEnvironmentStrings* <0T >0T I4'
               path←1⊃ExpandEnvironmentStrings path 2048 2048
           :EndIf
-          expandFlag←'expand'≡{0<⎕NC ⍵:{0=1↑0 ⍵:⍵ ⋄ Lowercase ⍵}w←⍎⍵ ⋄ ''}'expandFlag'
+          expandFlag←{0<⎕NC ⍵:{0=1↑0⍴⍵:⍵ ⋄ 'expand'≡Lowercase ⍵}w←⍎⍵ ⋄ 0}'expandFlag'
           :If 1<≡path
               path←expandFlag NormalizePath¨path
           :Else
@@ -779,7 +798,7 @@
       ⍝ `path` must of course be a directory.\\
       ⍝ Specify the string "recursive" (not case sensitive) as left argument to make the
       ⍝ function work recursively.\\
-      ⍝ `path` might contain wildcard characters (`*` and `?`) but only in the last part
+      ⍝ `path` might contain wildcard characters (`*` and `?`) nowhere but in the last part
       ⍝ of the path and only if "recursive" is **not** specified as left argument.\\
       ⍝ Returns a vector of text vectors in case anything was found and `''` otherwise.
       path←NormalizePath path
@@ -787,15 +806,20 @@
       'Wildcard characters are allowed only in the last part of a path'⎕SIGNAL 11/⍨∨/'?*'∊part1
       'Right argument is not a directory'⎕SIGNAL 11/⍨0=IsDir{(a b)←SplitPath ⍵ ⋄ ~∨/'*?'∊b:⍵ ⋄ a}path
       path↓⍨←-CurrentSep=¯1↑path
-      recursiveFlag←'recursive'≡Lowercase{0<⎕NC ⍵:⍎⍵ ⋄ ''}'recursive'
+      recursiveFlag←{0=⎕NC ⍵:0 ⋄ w←⍎⍵ ⋄ 0=1↑0⍴w:w ⋄ 'recursive'≡Lowercase w}'recursive'
       :If recursiveFlag
       :AndIf ∨/'*?'∊path
           '"path" must not carry wildcard chars in case "Recursive" is specified'⎕SIGNAL 11
       :EndIf
       path,←(~∨/'?*'∊path)/CurrentSep
-      buff←('recursive'recursiveFlag)('type'(0 1))Dir path
+      buff←(0 1)⎕NINFO⍠('Wildcard' 1)⊣path,'*'
       r←(1=1⊃buff)/0⊃buff
-      r←NormalizePath¨r
+      :If ~0∊⍴r←NormalizePath r
+      :AndIf 1=recursiveFlag
+      :AndIf 0=+/'*?'∊path
+      :AndIf ~0∊⍴buff←↑,/recursiveFlag ListDirs¨r,¨'/'
+          r,←buff
+      :EndIf
     ∇
 
     ∇ r←{recursive}ListFiles path;buff;recursiveFlag;part1;part2
@@ -820,26 +844,25 @@
       path,←(~∨/'?*'∊path)/CurrentSep
       buff←('recursive'recursiveFlag)('type'(0 1))Dir path
       r←(2=1⊃buff)/0⊃buff
-      r←NormalizePath¨r
+      r←NormalizePath r
     ∇
 
     ∇ {success}←DeleteFile filenames
       :Access Public Shared
-      ⍝ Attempts to delete a file. Returns 1 in case of succes and 0 otherwise for each
-      ⍝ file in `filenames`.\\
+      ⍝ Attempts to delete one or more files. Returns 1 in case of succes and 0 otherwise
+      ⍝ for each file in `filenames`.\\
       ⍝ This function does not care whether the file exists or not, although naturally
-      ⍝ `sucess` will be 0 for any non-existing files.\\
+      ⍝ `success` will be 0 for any non-existing file.\\
       ⍝ `filenames` can be one of:
-      ⍝ * Text string representing a single filename.
+      ⍝ * Text vector representing a single filename.
       ⍝ * Vector of text vectors, each representing a single file.
       ⍝
-      ⍝ `filenames` are normalized, meaning that any `\` is replaced by `/`.\\
       ⍝ In case `filenames` is empty a 0 is returned.
       :If 0∊⍴filenames
           success←0
       :Else
           filenames←Nest filenames
-          filenames←NormalizePath¨filenames
+          filenames←NormalizePath filenames
           success←{19 22::0 ⋄ 0∊⍴⍵:0 ⋄ 1 ⎕NDELETE ⍵}¨filenames
       :EndIf
     ∇
@@ -847,12 +870,11 @@
     ∇ {success}←MkDir path;counter;flag
       :Access Public Shared
       ⍝ Make directory. If the directory already exists no action is taken and a 1 returned.\\
-      ⍝ Any part of `path` which does not already exist will be created in preparation
-      ⍝ of creating `path` itself.\\
+      ⍝ Any part of `path` which does not already exist will be created along the way.\\
       ⍝ In comparison with `⎕MKDIR` there some differences:
-      ⍝ * This method normalizes `path`, meaning that any `\` is changed into `/`.
+      ⍝ * This method normalizes `path`.
       ⍝ * Errors 19 & 22 are trapped.
-      ⍝ * The function overcomes a strange problem: on some systems the function refuses to create
+      ⍝ * The function overcomes a strange problem: on some systems `⎕MKDIR` refuses to create
       ⍝   the directory repeatedly unless the code is traced.
       ⍝
       ⍝ `success` is 1 in case the directory was created successfully or already existed, otherwise 0.
@@ -881,7 +903,7 @@
 
     ∇ bool←Exists y
       :Access Public Shared
-    ⍝ Same as `⎕NEXISTS` but `y` is normalized: any `\` becomes `/`.\\
+    ⍝ Same as `⎕NEXISTS` but `y` is normalized.\\
     ⍝ Note that if `y` is a symbolic link that exists then a 1 will be returned, no matter
     ⍝ whether the target the link is pointing to actually does exist or not.
       y←NormalizePath y

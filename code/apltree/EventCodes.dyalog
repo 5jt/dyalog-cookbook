@@ -60,16 +60,33 @@
 
     ∇ r←Version
       :Access Public Shared
-      r←({⍵}⍕⎕THIS)'1.0.0' '2017-04-07'
+      r←({⍵}⍕⎕THIS)'1.1.0' '2017-05-18'
+    ∇
+
+    ∇ History
+      :Access Public Shared
+      ⍝ * 1.1.0 ⋄ 2017-04-25
+      ⍝   * `GetName` can now process vectors as well.
+      ⍝   * Method `History` added
+      ⍝   * Now managed by acre 3
+      ⍝ * 1.0.0 ⋄ 2017-04-07
     ∇
 
     ∇ __name←GetName __eventCode;__allNumbers;__ind
+    ⍝ Returns the symbolic names for one or more event codes.
+    ⍝ * If the right argument is a scalar or a one-element vector then a text vector is returned.
+    ⍝ * If the right argument is a vector then a vector of text vectors is returned.
       :Access Public Shared
-      __allNumbers←⎕NL-2
-      __allNumbers←⍎¨('__'∘≢¨2↑¨__allNumbers)/__allNumbers
-      __ind←__allNumbers⍳⊃__eventCode
-      'Unknown event number'⎕SIGNAL 6/⍨__ind>⍴__allNumbers
-      __name←__ind⊃⎕NL-2
+      :If 0∊⍴__eventCode
+          __name←''
+      :Else
+          __allNumbers←⎕NL-2
+          __allNumbers←⍎¨('__'∘≢¨2↑¨__allNumbers)/__allNumbers
+          __ind←__allNumbers⍳__eventCode
+          'Unknown event number'⎕SIGNAL 6/⍨__ind∨.>⍴__allNumbers
+          __name←(⎕NL-2)[__ind]
+          __name←⊃∘,⍣(⊃1=⍴,__ind)⊣__name
+      :EndIf
     ∇
 
     ∇ __allNumbers←List __start
