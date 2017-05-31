@@ -13,5 +13,7 @@ mainmatter.txt
 11_makeme.md
 12_help.md
 13_ScheduledTasks.md
-# 14_Services.md
+14_Services.md
 15_WindowsEventLog.md
+
+Z_01 Windows_Environment_Variables

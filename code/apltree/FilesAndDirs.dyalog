@@ -1,4 +1,5 @@
 ﻿:Class FilesAndDirs
+
 ⍝ ## Overview
 ⍝ This class offers methods useful for dealing with files and directories. The class aims
 ⍝ to be platform-independent and work under Windows, Linux and Mac OS.
@@ -75,7 +76,7 @@
 
     ∇ r←{parms_}Dir path;buff;list;more;parms;rc;extension;filename;folder;subFolders;pattern;isSelfCall
       :Access Public Shared
-    ⍝ List contents of `path`. With a trainling `/` path itself is excluded. That means that
+    ⍝ List contents of `path`. With a trailing `/` path itself is excluded. That means that
     ⍝ with `('recursive' 0)` and `path/` the result is empty if `path` does not contain anything
     ⍝ but it not empty without the `/`.\\
     ⍝ `path` may be one of:

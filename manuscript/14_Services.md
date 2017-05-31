@@ -268,15 +268,19 @@ leanpub-start-insert
 leanpub-end-insert 
    Config←⎕NS''
    ...
+leanpub-start-insert          
+   Config.IsService←isService
+leanpub-end-insert          
+   ...         
        Config.Accents←⊃Config.Accents myIni.Get'Config:Accents'
 leanpub-start-insert       
-       :If 0=isService
-           Config.LogFolder←'expand'F.NormalizePath⊃Config.LogFolder myIni.Get'Folders:Logs'
-       :Else
-           Config.WatchFolders←⊃myIni.Get'Folders:Watch'
-       :EndIf
+        :If isService
+            Config.WatchFolders←⊃myIni.Get'Folders:Watch'
+        :Else
+            Config.LogFolder←'expand'F.NormalizePath⊃Config.LogFolder myIni.Get'Folders:Logs'
+        :EndIf
 leanpub-end-insert       
-       Config.DumpFolder←'expand'F.NormalizePath⊃Config.DumpFolder myIni.Get'Folders:Errors'
+        Config.DumpFolder←'expand'F.NormalizePath⊃Config.DumpFolder myIni.Get'Folders:Errors'
    ...
  ∇
 ~~~
@@ -312,22 +316,21 @@ Notes:
 The function `LoopOverFolder`:
 
 ~~~
- ∇ {r}←LoopOverFolder dummy;folder;files;hashes;noOf
-   r←⍬
-   :For folder :In Config.WatchFolders
-       files←#.FilesAndDirs.ListFiles folder,'\*.txt'
-       hashes←GetHash¨files
-       (files hashes)←(~hashes∊∆FileHashes[;2])∘/¨files hashes
-       :If 0<noOf←LoopOverFiles files hashes
-           MyLogger.Log(⍕noOf),' file(s) processed'
-           :If EXIT.OK=TxtToCsv folder
-               MyLogger.Log'Totals.csv updated'
-           :Else
-               MyLogger.Log'Could not update Totals.csv, RC=',EXIT.GetName rc
-           :EndIf
-       :EndIf
-   :EndFor
- ∇
+∇ {r}←LoopOverFolder dummy;folder;files;hashes;noOf;rc
+  r←⍬
+  :For folder :In Config.WatchFolders
+      files←#.FilesAndDirs.ListFiles folder,'\*.txt'
+      hashes←GetHash¨files
+      (files hashes)←(~hashes∊∆FileHashes[;2])∘/¨files hashes
+      :If 0<noOf←LoopOverFiles files hashes
+          :If EXIT.OK=rc←TxtToCsv folder
+              MyLogger.Log'Totals.csv updated'
+          :Else
+              LogError rc('Could not update Totals.csv, RC=',EXIT.GetName rc)
+          :EndIf
+      :EndIf
+  :EndFor
+∇
 ~~~
 
 This function calls `GetHash` so we better introduce this:
@@ -588,6 +591,9 @@ We could discuss all the sub functions called by these two functions but it woul
  
   (rc more)←∆Execute_SC_Cmd'start'
   →FailsIf 0≠rc
+  ∆Pause 2
+  (rc more)←∆Execute_SC_Cmd'query'
+  →FailsIf 0≠rc
   →FailsIf 0=∨/'STATE : 4 RUNNING'⍷#.APLTreeUtils.dmb more
   ∆Pause 2
  
@@ -625,8 +631,7 @@ This test simply starts, pauses, continues and finally stops the Service.
  
    (rc more)←∆Execute_SC_Cmd'start'
    →FailsIf 0≠rc
-   →FailsIf 0=∨/'STATE : 4 RUNNING'⍷A.dmb more
-   ∆Pause 2
+   ∆Pause 1
    (rc more)←∆Execute_SC_Cmd'query'
    →FailsIf 0=∨/'STATE : 4 RUNNING'⍷A.dmb more
  
@@ -637,7 +642,7 @@ This test simply starts, pauses, continues and finally stops the Service.
    noOfCSVs←⍴F.ListFiles ∆Path,'\input\en\*.csv'
    (success more list)←(∆Path,'\texts')F.CopyTree ∆Path,'\input\'  ⍝ All of them
    {1≠⍵:.}success
-   ∆Pause 2
+   ∆Pause 5
    newTotal←↑{','A.Split ⍵}¨A.ReadUtf8File ∆Path,'\input\en\total.csv'
    →PassesIf(noOfCSVs+6)=⍴F.ListFiles ∆Path,'\input\en\*.csv'
    →PassesIf oldTotal≢newTotal

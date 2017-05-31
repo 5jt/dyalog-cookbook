@@ -1,0 +1,26 @@
+Target #
+Load ..\AplTree\APLTreeUtils
+Load ..\AplTree\FilesAndDirs
+Load ..\AplTree\HandleError
+Load ..\AplTree\IniFiles
+Load ..\AplTree\OS
+Load ..\AplTree\WindowsEventLog
+Load ..\AplTree\Logger
+Load ..\AplTree\EventCodes
+Load Constants
+Load Utilities
+Load MyApp
+
+Load ..\AplTree\ServiceState
+Load ..\AplTree\Tester
+Load ..\AplTree\Execute
+Load ..\AplTree\WinSys
+Load TestsForServices
+Load ServiceHelpers
+
+Run #.ServiceHelpers.CreateBatFiles ⍬
+Run '#.⎕EX''ServiceHelpers'''
+Run #.MyApp.SetLXForService 0 4512   ⍝ [1|0]: Ride/no Ride, [n] Ride port number
+
+Load MakeService
+Run #.MakeService.Run 0

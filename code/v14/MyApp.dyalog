@@ -15,10 +15,12 @@
     ∇
 
     ∇ r←Version
-      r←(⍕⎕THIS)'1.6.0' '2017-02-26'
+      r←(⍕⎕THIS)'1.7.0' '2017-02-26'
     ∇
 
     ∇ History
+      ⍝ * 1.7.0:
+      ⍝   * Now reports to the Windows Event Log when running as a service
       ⍝ * 1.6.0:
       ⍝   * Method `RunAsService` added.
       ⍝ * 1.5.0:
@@ -70,7 +72,7 @@
       {⍵:⍎'. ⍝ Deliberate error (INI flag "ForceError")'}Config.ForceError
       :If rc=EXIT.OK
           :If 0∊⍴files
-              MyLogger.Log'No files found to process'
+              Log'No files found to process'
           :Else
               tbl←⊃⍪/(CountLetters ProcessFiles)files
               lines←{⍺,',',⍕⍵}/{⍵[⍒⍵[;2];]}⊃{⍺(+/⍵)}⌸/↓[1]tbl
@@ -79,18 +81,18 @@
                   success←1
               :Case
                   success←0
-                  MyLogger.LogError ⎕EN('Writing to <',target,'> failed; ',⊃⎕DM)
+                  LogError ⎕EN('Writing to <',target,'> failed; ',⊃⎕DM)
                   rc←EXIT.UNABLE_TO_WRITE_TARGET
               :EndTrap
               :If success
-                  MyLogger.Log(⍕⍴files),' file',((1<⍴files)/'s'),' processed:'
-                  MyLogger.Log' ',↑files
+                  Log(⍕⍴files),' file',((1<⍴files)/'s'),' processed:'
+                  Log' ',↑files
               :EndIf
           :EndIf
       :EndIf
     ∇
 
-    ∇ {r}←RunAsService(earlyRide ridePort);⎕TRAP;MyLogger;Config;∆FileHashes
+    ∇ {r}←RunAsService(earlyRide ridePort);⎕TRAP;MyLogger;Config;∆FileHashes;MyWinEventLog
     ⍝ Main function when app is running as a Windows Service.
     ⍝ `earlyRide`: flag that allows a very early Ride.
     ⍝ `ridePort`: Port number used by Ride.
@@ -99,7 +101,7 @@
       1 CheckForRide earlyRide ridePort
       #.FilesAndDirs.PolishCurrentDir
       ⎕TRAP←#.HandleError.SetTrap ⍬
-      (Config MyLogger)←Initial 1
+      (Config MyLogger MyWinEventLog)←Initial 1
       ⎕TRAP←(Config.Debug=0)SetTrap Config
       Config.ControlFileTieNo←CheckForOtherInstances ⍬
       ∆FileHashes←0 2⍴''
@@ -115,13 +117,13 @@
 
     ∇ {r}←MainLoop port;S
       r←⍬
-      MyLogger.Log'"MyApp" server started'
+      'both'Log'"MyApp" server started'
       S←#.ServiceState
       :Repeat
           CheckForRide 0 port
           LoopOverFolder ⍬
-          :If (MyLogger.Log S.CheckServiceMessages)S.IsRunningAsService
-              MyLogger.Log'"MyApp" is about to shut down...'
+          :If ('both'∘Log S.CheckServiceMessages)S.IsRunningAsService
+              'both'Log'"MyApp" is about to shut down...'
               :Leave
           :EndIf
           ⎕DL 2
@@ -136,9 +138,8 @@
           hashes←GetHash¨files
           (files hashes)←(~hashes∊∆FileHashes[;2])∘/¨files hashes
           :If 0<noOf←LoopOverFiles files hashes
-              MyLogger.Log(⍕noOf),' file(s) processed'
               :If EXIT.OK=rc←TxtToCsv folder
-                  MyLogger.Log'Totals.csv updated'
+                  Log'Totals.csv updated'
               :Else
                   LogError rc('Could not update Totals.csv, RC=',EXIT.GetName rc)
               :EndIf
@@ -191,7 +192,7 @@
           :Trap Config.Trap/FileRelatedErrorCodes
               txt←'flat'A.ReadUtf8File file
           :Case
-              MyLogger.LogError ⎕EN('Unable to read source: ',file)
+              LogError ⎕EN('Unable to read source: ',file)
               Off EXIT.UNABLE_TO_READ_SOURCE
           :EndTrap
           data,←⊂fns txt
@@ -242,21 +243,24 @@
       instance←⎕NEW ##.Logger(,⊂logParms)
     ∇
 
-    ∇ (Config MyLogger)←Initial isService;parms
+    ∇ r←Initial isService;parms;Config;MyLogger;MyWinEventLog
     ⍝ Prepares the application.
       #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
       Config←CreateConfig isService
       Config.ControlFileTieNo←CheckForOtherInstances ⍬
-      CheckForRide (0≠Config.Ride) Config.Ride
+      CheckForRide(0≠Config.Ride)Config.Ride
       MyLogger←OpenLogFile Config.LogFolder
-      MyLogger.Log'Started MyApp in ',F.PWD
-      MyLogger.Log 2 ⎕NQ'#' 'GetCommandLine'
-      MyLogger.Log↓⎕FMT Config.∆List
+      Log'Started MyApp in ',F.PWD
+      Log 2 ⎕NQ'#' 'GetCommandLine'
+      Log↓⎕FMT Config.∆List
+      r←Config MyLogger
       :If isService
+          MyWinEventLog←⎕NEW #.WindowsEventLog(,⊂'MyAppService')
           parms←#.ServiceState.CreateParmSpace
-          parms.logFunction←'Log'
-          parms.logFunctionParent←MyLogger
+          parms.logFunction←'''both''∘Log'
+          parms.logFunctionParent←⎕THIS
           #.ServiceState.Init parms
+          r,←MyWinEventLog
       :EndIf
     ∇
 
@@ -270,6 +274,7 @@
       Config.DumpFolder←'./Errors'
       Config.Ride←0      ⍝ If this is not 0 the app accepts a Ride & treats Config.Ride as port number
       Config.ForceError←0
+      Config.IsService←isService
       iniFilename←'expand'F.NormalizePath'MyApp.ini'
       :If F.Exists iniFilename
           myIni←⎕NEW ##.IniFiles(,⊂iniFilename)
@@ -277,10 +282,12 @@
           Config.Debug{¯1≡⍵:⍺ ⋄ ⍵}←myIni.Get'Config:debug'
           Config.Trap←⊃Config.Trap myIni.Get'Config:trap'
           Config.Accents←⊃Config.Accents myIni.Get'Config:Accents'
-          :If 0=isService
-              Config.LogFolder←'expand'F.NormalizePath⊃Config.LogFolder myIni.Get'Folders:Logs'
-          :Else
+          :If isService
               Config.WatchFolders←⊃myIni.Get'Folders:Watch'
+              Config.WriteToWindowsEventLog←myIni.Get'WINDOWSEVENTLOG:write'
+          :Else
+              Config.LogFolder←'expand'F.NormalizePath⊃Config.LogFolder myIni.Get'Folders:Logs'
+              Config.WriteToWindowsEventLog←0
           :EndIf
           Config.DumpFolder←'expand'F.NormalizePath⊃Config.DumpFolder myIni.Get'Folders:Errors'
           :If myIni.Exist'Ride'
@@ -292,12 +299,12 @@
       Config.DumpFolder←'expand'F.NormalizePath Config.DumpFolder
     ∇
 
-    ∇ {r}←{wait}CheckForRide (rideFlag ridePort);rc
+    ∇ {r}←{wait}CheckForRide(rideFlag ridePort);rc
      ⍝ Depending on what's provided as right argument we prepare
      ⍝ for a Ride or we don't.
       r←1
       wait←{0<⎕NC ⍵:⍎⍵ ⋄ 0}'wait'
-      :If rideFlag 
+      :If rideFlag
           rc←3502⌶0
           :If ~rc∊0 ¯1
               11 ⎕SIGNAL⍨'Problem switching off Ride, rc=',⍕rc
@@ -315,12 +322,10 @@
     ∇
 
     ∇ Off exitCode
-      :If 0<⎕NC'MyLogger'
-          :If exitCode=EXIT.OK
-              MyLogger.Log'Shutting down MyApp'
-          :Else
-              MyLogger.LogError exitCode('MyApp is unexpectedly shutting down: ',EXIT.GetName exitCode)
-          :EndIf
+      :If exitCode=EXIT.OK
+          'both'Log'Shutting down MyApp'
+      :Else
+          LogError exitCode('MyApp is unexpectedly shutting down: ',EXIT.GetName exitCode)
       :EndIf
       :If A.IsDevelopment
           →
@@ -357,7 +362,7 @@
       #.ErrorParms←##.HandleError.CreateParms
       #.ErrorParms.errorFolder←Config.DumpFolder
       #.ErrorParms.returnCode←EXIT.APPLICATION_CRASHED
-      #.ErrorParms.(logFunctionParent logFunction)←MyLogger'Log'
+      #.ErrorParms.(logFunctionParent logFunction)←⎕THIS'LogError'
       #.ErrorParms.windowsEventSource←'MyApp'
       #.ErrorParms.addToMsg←' --- Something went terribly wrong'
       trap←force ##.HandleError.SetTrap'#.ErrorParms'
@@ -403,5 +408,38 @@
       ⍝ Get hash for file ⍵
           ⊣2 ⎕NQ'#' 'GetBuildID'⍵
       }
+
+    ∇ {r}←{both}Log msg
+    ⍝ Writes to the application's log file only by default.
+    ⍝ By specifying 'both' as left argument one can force the fns to write
+    ⍝ `msg` also to the Windows Event Log if Config.WriteToWindowsEventLog.
+      r←⍬
+      both←(⊂{0<⎕NC ⍵:⍎⍵ ⋄ ''}'both')∊'both' 1
+      :If 0<⎕NC'MyLogger'
+          MyLogger.Log msg
+      :EndIf
+      :If both
+      :AndIf Config.WriteToWindowsEventLog
+          :Trap 0    ⍝ Don't allow logging to break!
+              MyWinEventLog.WriteInfo msg
+          :Else
+              MyLogger.LogError'Writing to the Windows Event Log failed for:'
+              MyLogger.LogError msg
+          :EndTrap
+      :EndIf
+    ∇
+
+    ∇ {r}←LogError(rc msg)
+    ⍝ Write to **both** the application's log file and the Windows Event Log.
+      MyLogger.LogError msg
+      :If Config.WriteToWindowsEventLog
+          :Trap 0
+              MyWinEventLog.WriteError msg
+          :Else
+              MyLogger.LogError'Could not write to the Windows Event Log:'
+              MyLogger.LogError msg
+          :EndTrap
+      :EndIf
+    ∇
 
 :EndNamespace
