@@ -234,7 +234,7 @@ Notes:
 
 Time to change `MyApp.Initial` function:
 
-~~~~
+~~~
 leanpub-start-insert
  ∇ (Config MyLogger)←Initial isService;parms
 leanpub-end-insert
@@ -358,7 +358,7 @@ The function `LoopOverFiles`:
 
 This function finally calls `TxtToCsv`.
 
-Because of the change we've made to the right argument of `Initial` we need  to change `StartFromCmdLine`:
+Because of the change we've made to the right argument of `Initial` we need  to change `StartFromCmdLine`; it needs a 0 as right argument now, indicating that it is _not_ running as a Service:
 
 ~~~
 ∇ {r}←StartFromCmdLine arg;MyLogger;Config;rc;⎕TRAP
@@ -381,7 +381,8 @@ leanpub-end-insert
 
  ∇ r←PublicFns
 leanpub-start-insert 
-   r←'StartFromCmdLine' 'TxtToCsv' 'SetLXForApplication' 'SetLXForService' 'GetCommandLineArg' 'RunAsService'
+   r←'StartFromCmdLine' 'TxtToCsv' 'SetLXForApplication' 'SetLXForService' 
+   r,←'GetCommandLineArg' 'RunAsService'
 leanpub-end-insert   
  ∇
 ~~~
@@ -519,7 +520,7 @@ A> ### Self-deleting code
 A>
 A> In case you wonder how it is possible that the function `MakeService.Run` deletes itself and keeps running anyway:
 A>
-A> APL code that is about to be executed is copied onto the stack. You can investigate the stack at any given moment with  `)si` and `)sinl`; for details type the command in question into the session and then press F1.
+A> APL code (functions, operators and scripts) that is about to be executed is copied onto the stack. You can investigate the stack at any given moment with  `)si` and `)sinl`; for details type the command in question into the session and then press F1.
 A>
 A> Even if the code of a class executes `⎕EX ⍕⎕THIS` or a function or operator `⎕EX ⊃⎕SI` the code keeps running because the copy on the stack will exist until the script or function or operator quits.
 
@@ -660,7 +661,7 @@ This test simply starts, pauses, continues and finally stops the Service.
 ∇
 ~~~
 
-Though this test starts and stops the Service, it's the real purpose is to make sure that the Service processes input files as expected.
+Though this test starts and stops the Service, it's real purpose is to make sure that the Service processes input files as expected.
 
 ### Running the tests
 
@@ -704,7 +705,7 @@ Finally run `#.TestsForServices.RunDebug 0`. You should see something like this:
 
 ~~~
 #.TestsForServices.RunDebug 0
---- Test framework "Tester" version 3.3.0 from 2017-05-19 ---------------------------------------------
+--- Test framework "Tester" version 3.3.0 from 2017-05-19 -----------------------------
 Searching for INI file testcases_APLTEAM2.ini
   ...not found
 Searching for INI file Testcases.ini
@@ -712,7 +713,7 @@ Searching for INI file Testcases.ini
 Looking for a function "Initial"...
 *** Service MyAppService successfully installed
   "Initial" found and sucessfully executed
---- Tests started at 2017-05-28 19:11:49 on #.TestsForServices ----------------------------------------
+--- Tests started at 2017-05-28 19:11:49 on #.TestsForServices ------------------------
    Pausing for 2 seconds...
    Pausing for 2 seconds...
    Pausing for 2 seconds...
@@ -722,7 +723,7 @@ Looking for a function "Initial"...
    Pausing for 2 seconds...
    Pausing for 2 seconds...
   Test_02 (2 of 2) : Start service, check results, give it some more work to do, check and stop it.
- ------------------------------------------------------------------------------------------------------ 
+ -------------------------------------------------------------------------------------------------- 
    2 test cases executed                                                                                
    0 test cases failed                                                                                  
    0 test cases broken                                                                                  

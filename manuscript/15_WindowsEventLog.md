@@ -193,6 +193,7 @@ leanpub-end-insert
 Note that we have to make use of the "compose" (`∘`) operator here: only by "gluing" the left argument (`'both'`) to the function name with the compose operator can we make sure that everything that's passed on to the `Log` function will be written not only to the log file but also to the Windows Event Log when `ServiceState` is managing the communication between the SCM and the application.
 
 The second function to be changed is `Off`:
+
 ~~~
     ∇ Off exitCode
       :If exitCode=EXIT.OK
