@@ -1,5 +1,5 @@
 ﻿:Namespace TestsForServices
-⍝ Installs a service "MyAppService" in a folder within the Windows Temp directory with 
+⍝ Installs a service "MyAppService" in a folder within the Windows Temp directory with
 ⍝ a randomly chosen name. The tests then start, pause, continue and stop the service.\\
 ⍝ It also checks whether the application produces the expected results.
 
@@ -25,14 +25,16 @@
     ∇
 
     ∇ R←Test_01(stopFlag batchFlag);⎕TRAP;rc;more
-      ⍝ Start, pause and continue the service.
+     ⍝ Start, pause and continue the service.
       ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
       R←∆Failed
      
       (rc more)←∆Execute_SC_Cmd'start'
       →FailsIf 0≠rc
+      ∆Pause 2 
+      (rc more)←∆Execute_SC_Cmd'query'
+      →FailsIf 0≠rc
       →FailsIf 0=∨/'STATE : 4 RUNNING'⍷#.APLTreeUtils.dmb more
-      ∆Pause 2
      
       (rc more)←∆Execute_SC_Cmd'pause'
       →FailsIf 0≠rc
@@ -50,7 +52,7 @@
       (rc more)←∆Execute_SC_Cmd'stop'
       →FailsIf 0≠rc
       ∆Pause 2
-      (rc more)←∆Execute_SC_Cmd'query'
+      (rc more)←∆Execute_SC_Cmd'query'○
       →FailsIf 0=∨/'STATE : 1 STOPPED'⍷#.APLTreeUtils.dmb more
      
       R←∆OK

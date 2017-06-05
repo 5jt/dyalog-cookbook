@@ -77,7 +77,7 @@ At first sight it might seem that we can get away with a reduced version of `Dev
 
 A> ### More complex scenarios 
 A> 
-A> In a more complex application than ours you might prefer a different approach. Using an INI file for this is not a bad idea: it gives you way more freedom in defining all sorts of things while a DYAPP allows you to define just the modules to be loaded.
+A> In a more complex application than ours you might prefer a different approach. Using an INI file for this is not a bad idea: it gives you way more freedom in defining all sorts of things while a DYAPP allows you to define just the modules to be loaded, and to execute some code.
 A> 
 A> Also, if you have not one but quite a number of applications to deal with it is certainly not a bad idea to use a generalized user command like `]runmake`.
 

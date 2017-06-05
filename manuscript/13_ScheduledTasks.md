@@ -240,7 +240,9 @@ Make sure that you use the "Browse" button to navigate to the EXE/BAT/whatever y
 
 "Add arguments" allows you specify something like "maxws=345MB" or the name of a workspace in case "Program" is not an EXE but a Dyalog interpreter. In particular you should add `DYALOG_NOPOPUPS=1`. This prevents any dialogs from popping up (aplcore, WS FULL etc.). You don't want them when Dyalog is running in the background because there's nobody around to click the "OK" button...
 
-"Start in" is useful for specifying what will become the current (or working) directory for the running program. We recommend to set the current directory from within your workspace, so you don't really need to set this here except that when you don't you might well get an error code 2147942512. We will discuss later how such error codes can be analyzed, but for the time being you have to believe us that it actually means "Not enough space available on the disk". When you do specify the "Start in" parameter it runs just fine.
+"Start in" is useful for specifying what will become the current (or working) directory for the running program. We recommend to set the current directory from within your workspace, so you don't really need to set this here except that when you don't you might well get an error code 2147942512. We will discuss later how such error codes can be analyzed, but for the time being you have to believe us that it actually means "Not enough space available on the disk". When you do specify the "Start in" parameter it runs just fine. 
+
+However, note that you _must not embrace_ the path with double-quotes. It's understandable that Microsoft does not require them in this context because by definition any blanks are part of the path, but why they do not just ignore them when specified is less understandable.
 
 
 #### The "Conditions" tab
@@ -346,36 +348,27 @@ Update the GUI by pressing F5 and you will see that errors are reported. The row
 
 One way to find out is to google for 2147942402. For this particular error this will certainly do, but sometimes you will have to go through plenty of pages when people managed to produce the same error code in very different circumstances, and it can be quite time consuming to find a page that carries useful information for _your_ circumstances.
 
-Instead we use this function written by Phil Last [^last]:
+Instead we use the user command [^hex] `Int2Hex` which is based on code written and contributed by Phil Last [^last]. With this user command we can convert the value 2147942402 into a hex value:
 
 ~~~
-Hex←{
-     t←0∊⊃⍬⍴0⍴⊂⍵
-     a←⎕D,'abcdef',⎕D,6⍴⎕A
-     t:a⌷⍨⊂⍉16⊥⍣¯1⊢⍵
-     16⊥⍉16|a⍳⍵
-⍝ ⍵ dec-number or hex-string
-⍝ ← hex-string or dec-number
-⍝   accepts hex as CAPS or small
-⍝   returns hex as small
-⍝   dec to hex is rank increasing
-⍝   hex to dec is rank decreasing
- }
-~~~
-
-With this function we can convert the decimal value 2147942402 into a hex value:
-
-~~~
-      Hex 2147942402
+      ]Int2Hex 2147942402
 80070002
 ~~~
 
-Now the first four digits, 8007, mean that what follows is a win32 status code. The last 4 are the status code. This is a hexadecimal number that needs to be converted into decimal (`Hex` with a `1` as left argument converts decimals to hex, but the `]fromhex` user command would do as well), but because the number is so small there is no difference between hex and decimal anyway, so we can convert it into an error message straight away:
+A> ### Third-party user commands
+A> 
+A> Naturally there are quite a number of useful third-party user commands available. For details how to install them see Appendix 2.
+
+Now the first four digits, 8007, mean that what follows is a win32 status code. The last 4 are the status code. This is a  number that needs to be converted into decimal:
 
 ~~~
-      ]load ..\apltree\WinSys
-#.WinSys
-      #.WinSys.GetMsgFrom 2
+      ]Hex2Int 0002
+~~~
+
+but in our case that is of course not necessary because the number is so small that there is no difference between hex and integer anyway, so we can convert it into an error message straight away. Again we use a user command that is not part of a standard Dyalog installation but because it is so useful we strongly recommend to install this as well [^getmsg]; it translates any Windows error code into meaningful text.
+
+~~~
+      ]GetMsgFrom
 The system cannot find the file specified.      
 ~~~
 
@@ -394,3 +387,7 @@ for details.
 [^ride]: This topic was discussed in the chapter "Debugging a stand-alone EXE"
 
 [^last]: <http://aplwiki.com/PhilLast>
+
+[^hex]: For details and download regarding the user commands `Hex2Int` and `Int2Hex` see <http://aplwiki.com/UserCommands/Hex>
+
+[^getmsg]: For details and download regarding the user command `GetMsgFrom` see <http://aplwiki.com/UserCommands/GetMsgFrom>

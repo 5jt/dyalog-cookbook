@@ -16,3 +16,5 @@ mainmatter.txt
 14_Services.md
 15_WindowsEventLog.md
 Z01_Windows_Environment_Variables.md
+Z02_UserCommands.md
+Z03_acre.md

@@ -7,9 +7,9 @@ Now that we have managed to establish `MyApp` as a Windows Service we have to ma
 
 In case you've never heard of it, or you are not sure what exactly the purpose of it is, this is for you; otherwise jump to "Why is the Windows Event Log important?".
 
-The Windows Event Log is by no means an alternative to application specific log files. Most ordinary applications do not write to the Windows Event Log at all, some only when things go wrong and very few always. In other words, for ordinary applications you may or may not find useful information in the Windows Event Log, but the likelihood is slim.
+The Windows Event Log is by no means an alternative to application specific log files. Most ordinary applications do not write to the Windows Event Log at all, some only when things go wrong and very few always. In other words, for ordinary applications you may or may not find useful information in the Windows Event Log.
 
-That's very different for any application that runs as a Windows Service: those are expected to write to the Windows Event Log when it starts, when it quits and when it encounters problems, and it might add even more information. You will find it hard to find an exception.
+That's very different for any application that runs as a Windows Service: those are _expected_ to write to the Windows Event Log when it starts, when it quits and when it encounters problems, and it might add even more information. You will find it hard to find an exception.
 
 Similarly Scheduled Tasks are expected to do the same, although some don't, or report just errors.
 
@@ -148,7 +148,7 @@ We also introduce a function `LogError`:
 ∇
 ~~~
 
-Note that the `Logger` class traps any errors that might occur. The `WindowsEventClass` does not do this, and the calls to `WriteInfo` and `WriteError` might fail for all sorts of reasons: invalid data type, invalid depth, lack of rights, you name it. Therefore both `Log` and `LogError` trap any errors and write to the log file in case it goes wrong. Note also that in this particular case it's appropriate to trap all possible errors (0) because we cannot possibly foresee what might go wrong.
+Note that the `Logger` class traps any errors that might occur. The `WindowsEventClass` does not do this, and the calls to `WriteInfo` and `WriteError` might fail for all sorts of reasons: invalid data type, invalid depth, lack of rights, you name it. Therefore both `Log` and `LogError` trap any errors and write to the log file in case something goes wrong. Note also that in this particular case it's okay to trap all possible errors (0) because we cannot possibly foresee what might go wrong.
 
 In case of an error we now want the function `LogError` to be called, so `SetTrap` needs an adjustment:
 
@@ -166,7 +166,7 @@ leanpub-end-insert
 
 Now it's time to replace the call to `MyLogger.Log` by a call to `Log` in the `MyApp` class; use the "Replace" feature of the editor in order to achieve that.
 
-There are however three functions where we need to add `'both'` as left argument to some calls to `Log`:
+There are however three functions where we need to add `'both'` as left argument:
 
 ~~~
 ∇ {r}←MainLoop port;S
