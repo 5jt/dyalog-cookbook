@@ -444,11 +444,11 @@ Notes:
 * In case you are not familiar with `%~dp0`: this stand for "the directory this BAT file was loaded from". In other words: as long as the workspace `MyAppService.DWS` (which we have not created yet) is a sibling of the BAT file it will work.
 * The un-install BAT file will check the `errorlevel` variable. If it detects an error it will pause so that one can actually see the error message even when we have just double-clicked the BAT file.
 
-A> When one double-clicks a BAT file in the Windows Explorer a console windows pops up for a split of a second and then disappears, no matter what the circumstances are.In other worse, when something goes wrong one would not know what.
+A> When one double-clicks a BAT file in the Windows Explorer a console windows pops up for a split of a second and then disappears, no matter what the circumstances are. In other worse, when something goes wrong, one would not know what.
 A>
 A> Checking the global variable `%ERRORLEVEL%` allows the BAT to execute a `Pause`, allowing us to investigate the error message.
 A>
-A> Whether that makes sense for BATs that are expected to run under program control depends on the circumstances. If it does not make sense then the BAT is supposed to return an error code to the calling environment rather than stopping.
+A> Whether that makes sense for BATs that are expected to run under program control depends on the circumstances. If it does not make sense then the BAT should  return an error code to the calling environment rather than stopping.
 
 
 ### "Make" for the Service
