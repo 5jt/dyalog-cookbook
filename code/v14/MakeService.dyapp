@@ -4,7 +4,6 @@ Load ..\AplTree\FilesAndDirs
 Load ..\AplTree\HandleError
 Load ..\AplTree\IniFiles
 Load ..\AplTree\OS
-Load ..\AplTree\WindowsEventLog
 Load ..\AplTree\Logger
 Load ..\AplTree\EventCodes
 Load Constants

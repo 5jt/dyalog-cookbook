@@ -271,7 +271,7 @@ A> `:Trap 0` would trap all errors - way easier to read and write, so why don't 
 A> 
 A> Well, for a very good reason: trapping everything includes such basic things like a VALUE ERROR, which is most likely introduced by a typo or by removing a function or an operator in the false believe that it is not called anywhere. We don't want to trap those, really. The sooner they come to light the better. For that reason we restrict the errors to be trapped to whatever might pop up when it comes to dealing with files and directories.
 A> 
-A> That being said, if you really have to trap _all_ errors (occasionally this makes sense) then make sure that you can switch it off with a global flag as in `:Trap trap/0`: if `trap` is 1 then the trap is active, otherwise it is not.
+A> That being said, if you really have to trap _all_ errors (occasionally this makes sense) then make sure that you can switch it off with a global flag as in `:Trap trapFlag/0`: if `trapFlag` is 1 then the trap is active, otherwise it is not.
 
 Back to `ProcessFiles`. Note that in this context the `:Trap` structure has an advantage over `⎕TRAP`. When it fires, and control advances to its `:Else` fork, the trap is immediately cleared. So there is no need explicitly to reset the trap to avoid an open loop.  But be careful when you call other functions: in case they crash the `:Trap` would catch the error!
 
@@ -338,7 +338,7 @@ leanpub-end-insert
 
 A> 104? Why not 4, the standard Windows code for a crashed application? The distinction is useful. An exit code of 104 will tell us  MyApp's trap caught and reported the crash. An exit code of 4 tells you even the trap failed!
 
-We want to establish general error trapping as soon as possible, but we also need to know where to save crash files etc. That means we start right after having instantiated the INI file, because that's where we get this kind of information from. For establishing error trapping we need to set `⎕TRAP`. Because we want to make sure that any function down the stack can pass a certain error up to the next definition of `⎕TRAP` (see the `⎕TRAP` help options "C" and "N") it is vitally important not only set to set but also to _localyze_ `⎕TRAP` in `StartFromCmdLine`
+We want to establish general error trapping as soon as possible, but we also need to know where to save crash files etc. That means we start right after having instantiated the INI file, because that's where we get this kind of information from. For establishing error trapping we need to set `⎕TRAP`. Because we want to make sure that any function down the stack can pass a certain error up to the next definition of `⎕TRAP` (see the `⎕TRAP` help, options "C" and "N") it is vitally important not only set to set but also to _localyze_ `⎕TRAP` in `StartFromCmdLine`
 
 ~~~
 leanpub-start-insert  
@@ -482,15 +482,18 @@ HandleError.Process caught SYNTAX ERROR
 
 Note that `HandleError` has not executed `⎕OFF` because we executed this in a development environment.
 
-That's all we see in the session, but when you check the folder `#.ErrorParms.errorFolder` you will find that indeed there were three new files created in that folder for this crash. (Note that in case you traced through the code there would be just two files: the workspace is missing. The reason is that with the Tracer active the current workspace cannot be saved; same when an edit window is open for some reason or more than one thread is used)
+That's all we see in the session, but when you check the folder `#.ErrorParms.errorFolder` you will find that indeed there were three new files created in that folder for this crash. (Note that in case you traced through the code there would be just two files: the workspace is missing. The reason is that with the Tracer active the current workspace cannot be saved, at least not with a pending stack. Generally there are two reasons why no workspace will be saved:
+
+* Any open edit or trace window
+* More than one thread was running at the moment of the crash.
 
 Because we've defined a source for the Windows Event Log `HandleError` has reported the error accordingly:
 
-![Windows Event Log](images\MyAppEventViewer.jpg)
+![Windows Event Log](images\MyAppEventViewer.png)
 
 We also find evidence in the log file that something broke; see LogDog:
 
-![The log file](images\LogDog2.jpg)
+![The log file](images\LogDog2.png)
 
 This is done automatically by the `HandleError` class for us because we provided the name of a logging function and a ref pointing to the instance where that log function lives.
 
@@ -704,7 +707,7 @@ You can try this now but make sure that when you are ready you remove the line w
 
 ## HandleError in detail
 
-`HandleError` can be configured in many ways by changing the defaults provided by the `CreateParms` method. There is a table with documentation available; execute `]ADOC_Browse #.HandleError` and then scroll to `CreateParms`. Most of the parameters are self-explaining but some need background information.
+`HandleError` can be configured in many ways by changing the defaults provided by the `CreateParms` method. There is a table with documentation available; execute `]ADoc #.HandleError` and then scroll to `CreateParms`. Most of the parameters are self-explaining but some need background information.
 
 ~~~
       #.HandleError.CreateParms.∆List

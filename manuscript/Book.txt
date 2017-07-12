@@ -15,6 +15,8 @@ mainmatter.txt
 13_ScheduledTasks.md
 14_Services.md
 15_WindowsEventLog.md
+16_WindowsRegistry.md
 Z01_Windows_Environment_Variables.md
 Z02_UserCommands.md
 Z03_acre.md
+Z04_Session.md

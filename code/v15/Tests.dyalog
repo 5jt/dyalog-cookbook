@@ -60,7 +60,7 @@
       ⍝ Check whether `map` works fine with appropriate data
       ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
       R←∆Failed
-      (Config MyLogger)←##.MyApp.Initial ⍬
+      (Config MyLogger)←##.MyApp.Initial 0
       →FailsIf'APL IS GREAT'≢Config.Accents ##.Utilities.map ##.APLTreeUtils.Uppercase'APL is great'
       →FailsIf'UßU'≢Config.Accents ##.Utilities.map ##.APLTreeUtils.Uppercase'üßÜ'
       R←∆OK
@@ -70,10 +70,12 @@
       ⍝ Test whether `TxtToCsv` handles a non-existing file correctly
       ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
       R←∆Failed
-      ##.MyApp.(Config MyLogger)←##.MyApp.Initial ⍬
+      ##.MyApp.(Config MyLogger)←##.MyApp.Initial 0
       rc←##.MyApp.TxtToCsv'This_file_does_not_exist'
-      →FailsIf ##.MyApp.EXIT.SOURCE_NOT_FOUND≢rc
+      →GoToTidyUp rc≢##.MyApp.EXIT.SOURCE_NOT_FOUND
       R←∆OK
+     ∆TidyUp:
+      ##.MyApp.Cleanup ⍬
     ∇
 
     ∇ R←Test_misc_01(stopFlag batchFlag);⎕TRAP;ini1;ini2
@@ -91,7 +93,7 @@
       r←##.Tester.EstablishHelpersIn ⎕THIS
     ∇
 
-    ∇ {r}←Cleanup dummy
+    ∇ {r}←Cleanup
       r←⍬
       :If 0<⎕NC'∆Path'
           ##.FilesAndDirs.RmDir ∆Path

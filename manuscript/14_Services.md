@@ -184,7 +184,7 @@ In the next chapter we will discuss how and why to use the Windows Event Log, in
 
 First of all we need to point out that `MyApp` as it stands is hardly a candidate for a Service. Therefore we have to make something up: the idea is to specify one to many folders to be watched by the `MyApp` Service. If any files are found then those are processed. Finally the app will store hashes for all files it has processed. That allows it to recognize any added, changed or removed files efficiently.
 
-In the future we need to create a workspace that can be loaded by the Service. Therefore we need to set `⎕LX`, and for that we create a new function:
+For the Service we need to create a workspace that can be loaded by that Service. Therefore we need to set `⎕LX`, and for that we create a new function:
 
 ~~~
  ∇ {r}←SetLXForService(earlyRide ridePort)

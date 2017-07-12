@@ -15,7 +15,7 @@ The Windows Registry is held in memory, so it is fast to read. It has been widel
 
 Settings needed by Windows itself _have_ to be stored in the Registry. For example, associating a file extension with your application, so that double clicking on its icon launches your application. 
 
-The APLTree class [WinReg](http://aplwiki.com/WinReg) provides methods for handling the Windows Registry. 
+The APLTree classes [WinRegSimple](http://aplwiki.com/WinReg) and [WinReg](http://aplwiki.com/WinReg) provide methods for handling the Windows Registry. 
 
 MyApp doesn't need the Windows Registry at this point. We'll store its configurations in configuration files.
 
@@ -84,7 +84,7 @@ Load ..\AplTree\OS
 
 and run the DYAPP to recreate the `MyApp` workspace. 
 
-You can read `IniFiles`'s documentation in a browser with `]adoc_browse #.IniFiles`.
+You can read `IniFiles`'s documentation in a browser with `]ADoc #.IniFiles`.
 
 ## The INI file
 
@@ -316,7 +316,7 @@ We have used the most important features of the `IniFiles` class, but it has mor
  
   would create a new instance which contains all the definitions of _both_ INI files. In case of a name conflict the last one wins. Here this would mean that machine specific definitions would overwrite more general ones.
   
-* Sometimes it is more appropriate to have a namespace representing the INI file as such, with sub namespaces representing the sections and variables within them representing the keys and values. This can be achieved by using the instance method `Convert`. See `]ADOC_Browse #.IniFiles` for details.
+* Sometimes it is more appropriate to have a namespace representing the INI file as such, with sub namespaces representing the sections and variables within them representing the keys and values. This can be achieved by using the instance method `Convert`. See `]ADoc #.IniFiles` for details.
 
   Here we give a simple example:
   

@@ -62,28 +62,28 @@ Trailing comments
 
 The above conventions are simple enough and have long been in wide use.
 
-I> Note that Dyalog offers a special command for Aligning Comments: "AC". You can assign a keystroke to this command: open the "Configuration" dialog (Options / Configure...), select the "Keyboard Shortcuts" tab and sort the table with a click on the "Code" column, then look for "AC".
+I> Note that Dyalog offers a special command for aligning comments: "AC". You can assign a keystroke to this command: open the "Configuration" dialog (Options / Configure...), select the "Keyboard Shortcuts" tab and sort the table with a click on the "Code" column, then look for "AC".
 
 If you are exporting scripts for others to use -- for example, contributing to a library -- then it's worth going a step further. You and other _authors_ of a script need to read comments in the context of the code, but potential _users_ of a script will want to know only how to call its methods.
 
 _Automatic documentation generation_ will extract documentation from your scripts for other users. Just as above, the documentation is maintained as comments in the code. But now header comments are presented without the code lines.
 
 
-## ADOC
+## ADoc
 
-ADOC is an acronym for _automatic documentation_ generation. It works on classes and namespaces.
+ADoc is an acronym for _automatic documentation_ generation. It works on classes and namespaces.
 
-In its most basic function, it lists methods, properties and fields (functions, operators and variableas) and requires no comments in the code. In its more powerful function, it composes from header comments an HTML page. Honouring Markdown   conventions, it provides all the typographical conventions you need for documentation. If you don't know what Markdown is please read the Markdown article on Wikipedia [^markdown] and `Markdown2Help`'s own help file. The time will be a good investment in any case because these days Markdown is used pretty much everywhere.
+In its most basic function, it lists methods, properties and fields (functions, operators and variableas) and requires no comments in the code. In its more powerful function, it composes from header comments an HTML page. Honouring Markdown conventions, it provides all the typographical features you need for documentation. If you don't know what Markdown is please read the Markdown article on Wikipedia [^markdown] and `Markdown2Help`'s own help file. The time will be a good investment in any case because these days Markdown is used pretty much everywhere.
 
-Previously only found as a class in the APLTree library, it is now shipped in Dyalog Version 16.0 as three user commands.
+Previously only found as a class in the APLTree library, it is now shipped in Dyalog Version 16.0 as a user command.
 
 
-### The "List" method
+### Get a summary
 
 Lists the methods and fields of a class. (Requires no comments.)
 
 ~~~
-          ]adoc_list #.HandleError
+          ]ADoc #.HandleError -summary
     *** HandleError (Class) ***
 
     Shared Methods:
@@ -94,27 +94,25 @@ Lists the methods and fields of a class. (Requires no comments.)
       Version
 ~~~      
 
+For a more detailed list with arguments and results specify `]ADoc #.HandleError -summary -full`.
 
-### The "Browse" method
+
+### Get it all
 
 ~~~
-    ]adoc_browse #.HandleError
+    ]ADoc #.HandleError
 ~~~
 
-![Using ADOC to browse the HandleError class](images/adoc_handleerror.jpg)
+![Using ADOC to browse the HandleError class](images/adoc_handleerror.png)
 
 Composes in HTML a documentation page and displays it in your default browser. 
 
 
-### The "Help" method
+### Getting help
 
-~~~
-    ]adoc_help
-~~~    
+To get basic information enter `]?adoc`. For some more details enter `]??adoc`. In order to get the full picture enter `]???adoc`. The underlying `ADOC` class then processes itself and creates an HTML page with detailed information.
 
-Browses the ADOC class itself, displaying all the instructions you need to use it. 
-
-![ADOC’s own documentation](images/adoc_help.jpg)
+![ADOC’s own documentation](images/adoc_help.png)
 
 
 ## ADOC for MyApp
@@ -123,12 +121,12 @@ Browses the ADOC class itself, displaying all the instructions you need to use i
 How might ADOC help us? Start by seeing what ADOC has to say about `MyApp` as it is now:
 
 ~~~
-    ]adoc_browse #.MyApp
+    ]ADoc #.MyApp
 ~~~    
 
-![Using ADOC to browse the MyApp namespace](images/adoc_myapp_01.jpg)
+![Using ADOC to browse the MyApp namespace](images/adoc_myapp_01.png)
 
-We see that ADOC has found and displayed all the functions within the `MyApp` namespace. If `MyApp` would contain any operators and/or variables you would find them in the document as well.
+ADOC has found and displayed all the functions within the `MyApp` namespace. If `MyApp` would contain any operators and/or variables you would find them in the document as well.
 
 We can improve this in a number of ways. Time for a new version of MyApp. Make a copy of `Z:\code\v09` as `Z:\code\v10`.
 
@@ -227,14 +225,14 @@ This gives us more prominent copyright and version notices as well as informatio
 Finally we need to address the problem that the variables inside `EXIT` are essential for using `MyApp`; they should be part of the documentation. ADOC has ignored the namespace EXIT but we can change this by specifying it explicitly:
 
 ~~~
-    ]ADOC_Browse #.MyApp,#.MyApp.EXIT
+    ]ADoc #.MyApp #.MyApp.EXIT
 ~~~
 
-![Browsing the revised MyApp namespace](images/adoc_myapp_02.jpg)
+![Browsing the revised MyApp namespace](images/adoc_myapp_02.png)
 
 When you scroll down (or click at "Exit" in the top-left corner) then you get to the part of the document where `EXIT` is documented:
 
-![Browsing the revised MyApp namespace](images/adoc_myapp_03.jpg)
+![Browsing the revised MyApp namespace](images/adoc_myapp_03.png)
 
 
 #### ADOC_Doc

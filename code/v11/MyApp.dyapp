@@ -6,6 +6,7 @@ Load ..\AplTree\IniFiles
 Load ..\AplTree\OS
 Load ..\AplTree\Logger
 Load ..\AplTree\EventCodes
+Load ..\AplTree\MarkAPL
 Load Constants
 Load Utilities
 Load MyApp
@@ -16,3 +17,5 @@ Load DevHelpers
 Run #.MyApp.SetLX #.MyApp.GetCommandLineArg ⍬
 Run #.Tester.EstablishHelpersIn #.Tests
 Run #.DevHelpers.RunTests 0
+Run #.DevHelpers.Stop
+Run #.DevHelpers.CopyMarkdown2Help ⍬

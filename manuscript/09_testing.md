@@ -111,7 +111,7 @@ leanpub-end-insert
     Run MyApp.Start 'Session'
 ~~~	
 
-Run the DYAPP to build the workspace. In the session you might want to execute `]adoc_browse #.Tester` to see the documentation for the Tester class if you are in doubt about any of the methods and helpers in `Tester` later on.
+Run the DYAPP to build the workspace. In the session you might want to execute `]ADoc #.Tester` to see the documentation for the Tester class if you are in doubt about any of the methods and helpers in `Tester` later on.
 
 
 ## Unit and functional tests 
@@ -350,9 +350,9 @@ Looking for a function "Cleanup"...
   ...not found
 ~~~
 
-A> Note that there are INI files mentioned, and `Initial` and `Cleanup`. Ignore this for the time being; we will discuss this later on.
+I> Note that there are INI files mentioned, and `Initial` and `Cleanup`. Ignore this for the time being; we will discuss this later on.
 
-It stopped in line 6. Obviously the call to `FailsIf` has something to do with this, and so has the `⎕TRAP` setting, because apparently that's where the "Deliberate error" comes from. Indeed this is the case: all three flow control functions, `FailIf`, `PassesIf` and `GoToTidyUp` check whether they are running in debug mode and if that is the case then rather returning a result that indicates a failing test case they `⎕SIGNAL 999` which is then caught by the `⎕TRAP` which in turn first prints `⍝ Deliberate error` to the session and then hands over control to the user. You can now start the Tracer and investigate why the test case failed.
+It stopped in line 6. Obviously the call to `FailsIf` has something to do with this, and so has the `⎕TRAP` setting, because apparently that's where the "Deliberate error" comes from. Indeed this is the case: all three flow control functions, `FailIf`, `PassesIf` and `GoToTidyUp` check whether they are running in debug mode and if that is the case then rather returning a result that indicates a failing test case they `⎕SIGNAL 999` which is then caught by the `⎕TRAP` which in turn first prints `⍝ Deliberate error` to the session and then hands over control to the user. You can now investigate variables or start the Tracer etc. in order to investigate why the test case failed.
 
 The difference is the first of the two flags provided as right argument to the test function: `stopFlag`. This is `0` when `Run` executes the test cases, but it is `1` when `RunDebug` is in charge. The three flow control functions `FailsIf`, `PassesIf` and `GoToTidyUp` all honour `stopFlag` - that's how it works.
 

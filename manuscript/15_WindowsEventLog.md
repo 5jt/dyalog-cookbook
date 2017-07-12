@@ -42,7 +42,7 @@ We keep it simple here and write to the "Application" log.
 
 ## Let's do it
 
-Copy `Z:\code\v13` to `Z:\code\v14`.
+Copy `Z:\code\v14` to `Z:\code\v15`.
 
 
 ### Loading WindowsEventLog
@@ -275,7 +275,7 @@ Now it's time to run the test cases for the Service:
 
 Now start the Event Viewer; you should see something like this:
 
-![The Windows Event Log](images/WindowsEventLog.jpg)
+![The Windows Event Log](images/WindowsEventLog.png)
 
 You might need to scroll down a bit.
 
@@ -332,7 +332,7 @@ No doubt you feel now confident with the Windows Event Log, right? Well, keep re
 
 * When the Event Viewer is up and running and you either create or delete a log or a source and then press F5 then the Event Viewer GUI flickers, and you might expect that to be an indicator for the GUI having updated itself; however, that's not the case, at least not at the time of writing (2017-03). You have to close the Event Viewer and re-open it to actually see your changes.
 
-* Even when your user ID has admin rights and you've started Dyalog in elevated mode ("Run as administrator" in the context menu) you _cannot_ delete a custom log with calls to `WinReg` (the APLTree member that deals with the Windows Registry). The only way to delete custom logs is with the Registry Editor: go to the key
+* Even when your user ID has admin rights and you've started Dyalog in elevated mode ("Run as administrator" in the context menu) you _cannot_ delete a custom log with calls to `WinReg` or `WinRegSimple` (the APLTree classes that deal with the Windows Registry). The only way to delete custom logs is with the Registry Editor: go to the key
 
   `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\EventLog\`
   

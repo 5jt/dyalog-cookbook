@@ -4,20 +4,22 @@
 
 Modern graphical user interfaces (GUIs, or more simply, UIs) are a wonder. UI conventions are so widely known it is now unremarkable for people to start using applications without prior training, expecting the software to make clear what they need to do. 
 
-This is a high standard to meet, and writing UIs is a deep art. The primary platforms for professional writers of UIs are currently Windows Presentation Foundation (WPF) and a combination of HTML 5 and JavaScript (HTML/JS). These are rich platforms, which enable effective and attractive UIs to be written. 
+This is a high standard to meet, and writing UIs is a deep art. The primary platforms for professional writers of UIs are currently a combination of HTML 5 and JavaScript (HTML/JS) and Windows Presentation Foundation (WPF). These are rich platforms, which enable effective and attractive UIs to be written. 
 
 The high quality of these UIs is particularly important for mass-market software, where users are unskilled and unsupported. 
 
-WPF and HTML/JS have a high learning threshold. There is much to be mastered before you can write good UIs on these platforms. 
+HTML/JS and WPF have a high learning threshold. There is much to be mastered before you can write good UIs on these platforms. 
 
 You have an alternative. The GUI tools native to Dyalog support perfectly workmanlike GUIs. They exploit and extend your existing knowledge of Dyalog. If you are producing high-value software for a few users, rather than software for casual use by millions, a native Dyalog GUI might be your best platform.
 
 Creating a GUI form in Dyalog could hardly be simpler:
 
+~~~
       UI←⎕NEW⊂'Form'
       UI.Caption←'Hello world'
+~~~      
 
-![Hello world form](images/form_01.jpg)
+![Hello world form](images/form_01.png)
 
 To the form we add controls, set callback functions to run when certain events occur, and invoke the form's `Wait` method. See the _Dyalog for Microsoft Windows Interface Guide_ for details and tutorials. 
 
@@ -30,17 +32,19 @@ It is common for a callback to read or set other controls in the UI. The questio
 Keep in mind the following common practices we'll want to accommodate.
 
 * A single callback function is often used to handle an event or events for several controls. 
-* It is common during development or maintenance to redesign parts of the UI. If you think of the UI as a tree rooted in its form, redesign can move entire branches of the tree. 
+* It is common during development or maintenance to redesign parts of the UI. If you think of the UI as a tree rooted in its form, redesign can move or relocate entire branches of the tree. 
 * We might want multiple instances of the same form. For example, if the form allows us to browse a customer record, we might want two records open at the same time. 
 
 Here are some strategies for embedding and navigating the UI tree. 
 
 ### Use absolute names 
 
-This is the method used above: `UI←⎕NEW⊂'Form'`. The object `UI` is a child of the workspace root. It's the strategy implied by the interface tutorials. It's easy to read and understand:
+This is the method used above: `UI←#.⎕NEW⊂'Form'`. The object `UI` is a child of the workspace root. It's the strategy implied by the interface tutorials. It's easy to read and understand:
 
+~~~
         UI.(MB←⎕NEW⊂'Menubar')
         UI.MB.(MenuFile←⎕NEW⊂'Menu'('Caption' '&File'))
+~~~        
 
 Notice that the `⎕NEW` that creates each control is executed within its parent. This constructs the UI tree. Notice too that the control is given a name within its parent. So, for example, we can refer to the File menu as `UI.MB.MenuFile`. This is clear enough, but it embeds the structure of the UI into the name of each control. So if we want to move a branch of the UI tree we have to find and edit every reference to controls in that branch. 
 
@@ -49,7 +53,7 @@ If we want multiple instances of the form, we will need to pass our code _refere
 
 ### Navigate relative paths 
 
-A callback can navigate the UI tree starting at the control that called it. `obj.##` gives it a reference to the `obj`s parent. Much as you construct relative filepaths, you can construct relative paths to other controls. 
+A callback can navigate the UI tree starting at the control that called it. `obj.##` gives it a reference to the `obj`'s parent. Much as you construct relative filepaths, you can construct relative paths to other controls. 
 
 This strategy sacrifices a little clarity (you need the UI tree clearly in mind in order to read the path) but by avoiding absolute names it supports multiple instances. 
 
@@ -94,6 +98,7 @@ We'll use this approach to build a simple user interface for MyApp. How simple? 
 
 A new namespace script, UI in which a niladic function `Run` runs the user interface:
 
+~~~
    ⍝ aliases
     (A E F)←#.(APLTreeUtils Environment FilesAndDirs)
     (M R U)←#.(MyApp RefNamespace Utilities)
@@ -107,9 +112,10 @@ A new namespace script, UI in which a niladic function `Run` runs the user inter
       Shutdown
      ⍝ done
     ∇
+~~~    
 
 Here we see the outline clearly. An instance of the RefNamespace class is assigned to `ui`. It is a namespace, empty apart from some standard methods -- 
-try `]adoc_browse #.RefNamespace` to see details. 
+try `]ADoc #.RefNamespace` to see details. 
 
 Functions `CreateGui` and `Init` build and initialise the user interface encapsulated in `ui`. Neither function needs to return a result, but doing so means the functions could be chained, for example:
 
@@ -120,6 +126,7 @@ Functions `CreateGui` and `Init` build and initialise the user interface encapsu
 
 Again, the functional style of `CreateGui` produces expository code. 
 
+~~~
     ∇ ui←CreateGui ui
       ui.∆LanguageCommands←''
       ui.∆MenuCommands←''
@@ -129,11 +136,13 @@ Again, the functional style of `CreateGui` produces expository code.
       ui←CreateEdit ui
       ui←CreateStatusbar ui
     ∇
+~~~    
 
 The UI namespace gets a couple of empty lists as properties: `∆LanguageCommands` and `∆MenuCommands`. We'll come to those in the menu bar. 
 
 Creating the form is also straightforward:
 
+~~~
     ∇ ui←CreateForm ui;∆
       ui.Font←⎕NEW'Font'(('Pname' 'APL385 Unicode')('Size' 16))
       ui.Icon←⎕NEW'Icon'(E.IconComponents{↓⍉↑⍵(⍺⍎¨⍵)}'Bits' 'CMap' 'Mask')
@@ -149,6 +158,7 @@ Creating the form is also straightforward:
       ui.∆form←⎕NEW'Form'∆
       ui.∆form.ui←ui
     ∇
+~~~    
 
 But notice key moves in the last two lines. When the form is created, its reference is assigned to a new property of the UI namespace: `∆form`. And, as will all its children, the form is given, as property `ui`, a reference to the UI namespace. 
 
@@ -161,6 +171,7 @@ We'll see this first in creating the menubar.
 
 Here we create a menubar as a child of the form, which we can refer to as `ui.∆form`. A reference to the menubar is saved in the UI namespace under the name `MB`. 
 
+~~~
     ∇ ui←CreateMenubar ui
       ui.MB←ui.∆form.⎕NEW⊂'Menubar'
      
@@ -170,15 +181,18 @@ Here we create a menubar as a child of the form, which we can refer to as `ui.�
       ui.∆MenuCommands.onSelect←⊂'OnMenuCommand'
       ui.∆MenuCommands.ui←ui
     ∇
+~~~    
 
 When both menus have been made, the callback `OnMenuCommand` is set for all the objects in the list `ui.∆MenuCommands`. Presumably that list was populated as a side effect of `CreateFileMenu` and/or `CreateLanguageMenu`. Just so:
 
+~~~
     ∇ ui←CreateFileMenu ui
       ui.MenuFile←ui.MB.⎕NEW'Menu'(⊂'Caption' '&File')
      
       ui.Quit←ui.MenuFile.⎕NEW'MenuItem'(⊂'Caption'('Quit',(⎕UCS 9),'Alt+F4'))
       ui.∆MenuCommands,←ui.Quit
     ∇
+~~~    
 
 Just so: the menu item Quit is created as a child of the File menu, and a reference to it appended to `ui.∆MenuCommands`. 
 
@@ -186,6 +200,7 @@ The Language menu has to be created dynamically from the languages defined in `#
 
 In principle we have a serious potential problem here. We're assigning menu items to alphabet names in the UI. The alphabet names are drawn from (among other sources) INI files. They could conflict with names defined during `CreateGui`. Although that seems highly unlikely, we should encapsulate the language names in their own namespace. For now, we've left a comment on the line that might break, and wrapped the assignment in a for-loop rather than using the _each_ operator. 
 
+~~~
     ∇ ui←CreateLanguageMenu ui;alph;mi
       ui.MenuLanguage←ui.MB.⎕NEW'Menu'(⊂'Caption' '&Language')
      
@@ -197,6 +212,7 @@ In principle we have a serious potential problem here. We're assigning menu item
       ui.∆LanguageCommands.Checked←ui.∆LanguageCommands∊ui⍎M.PARAMETERS.alphabet
       ui.∆MenuCommands,←ui.∆LanguageCommands
     ∇
+~~~    
 
 The Language menu items use the `Checked` property to display the current selection. By listing them in the property `∆LanguageCommands`, we can set `Checked` in a single test.
 
@@ -209,6 +225,7 @@ We've set a single callback function `OnMenuCommand` on all the menu items. In t
 
 But with many more menu items that strategy produces a 'cloud' of tiny callback functions. More legible to have a single 'portmanteau' callback for all menu items. 
 
+~~~
     ∇ Z←OnMenuCommand(obj xxx);ui
       ui←GetRef2ui obj
       :Select obj
@@ -220,10 +237,13 @@ But with many more menu items that strategy produces a 'cloud' of tiny callback 
       :EndSelect
       Z←0
     ∇
+~~~    
 
 The first move of the callback finds the UI namespace. This should be simply `obj.ui` but in case the `ui` property has not been defined for the invoking control, we use `GetRef2ui`, which either returns the property or searches the object's ancestors until it finds it. (Because the `ui` property was defined for the form itself, we know any search will at worst terminate there.)
 
+~~~
     GetRef2ui←{9=⍵.⎕NC'ui':⍵.ui ⋄ ∇ ⍵.##}
+~~~    
 
 Object references are scalars, so the expression `ui.∆LanguageCommands=obj` yields a simple Boolean vector. 
 
@@ -241,6 +261,7 @@ When `⎕DQ` encounters the Close event for its argument, it closes the object a
 
 Most of the UI functions can be written as Dfns and some writers prefer this form. Here as examples are a constructor and a callback. 
 
+~~~
       CreateGui←{
           ui←⍵
      
@@ -263,8 +284,7 @@ Most of the UI functions can be written as Dfns and some writers prefer this for
           ui.∆LanguageCommands.Checked←ui.∆LanguageCommands=obj
           0
       }
-
-
+~~~
 
 
 [^Mansour]: Thanks to Paul Mansour, the first person we know to describe this strategy. 

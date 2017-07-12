@@ -12,7 +12,9 @@ We see an alert message: _This Dyalog APL runtime application has attempted to u
 
 `MyApp` failed because there is no file or folder `Z:\texts\Does_not_exist`. That triggered an error in the APL code. The interpreter tried to display an error message and looked for input from a developer from the session. But a runtime task has no session, so at that point the interpreter popped the alert message and `MyApp` died.   
 
-T> As soon as you close the message box a CONTINUE workspace will be created as a sibling of the EXE. Such a CONTINUE WS can be loaded and investigated, making it easy to figure out what the problem is. However, this is only true as long as there is only a single thread running in the EXE. 
+T> Prior to version 16.0, as soon as you close the message box a CONTINUE workspace was created as a sibling of the EXE. Such a CONTINUE WS can be loaded and investigated, making it easy to figure out what the problem is. However, this is only true if it is a single-threaded application since no workcpace can be saved with any threads running but the main one.
+T>
+T>With version 16.0 you can still force the interpreter to drop a CONTINUE workspace by enabling the old behaviour with `2704⌶ 1` while `2704⌶ 0` would disable it, but that's the default anyway.
 T> 
 T> Note that for analyzing purposes a CONTINUE workspace must be loaded in an already running instance of Dyalog. In other words: don't double-click a CONTINUE! The reason is that `⎕DM` and `⎕DMX` are overwritten in the process of booting SALT, meaning that you loose the error message. You _may_ be able to recreate them by re-executing the failing line but that might be dangerous, or fail in a different way when executed without the application having been initialised properly.
 
@@ -41,10 +43,10 @@ A>
 A> Note that you can ask for a detailed documentation for how to use the members of the APLTree project by executing:
 A> 
 A> ~~~
-A> ]ADOC_Browse APLTreeUtils
+A> ]ADoc APLTreeUtils
 A> ~~~
 A> 
-A> I> If the user command `]ADOC_browse` is not available you should issue the `]uupdate` command. That would bring all Dyalog user commands up to date. `ADOC_Browse`, `ADOC_List` and `ADOC_Help` should then all be available.
+A> I> If the user command `]ADoc` is not available visit <https://www.dyalog.com/tools/user-commands.htm>.
 
 The `Logger` class and its dependencies will now be included when we build `MyApp`: 
 
@@ -192,7 +194,7 @@ We also need to change `ProcessFile`:
 ∇
 ~~~
 
-We use `APLTreeUtils.ReadUtf8File` rather than `⎕NGET` because it optionally returns a flat string without a performance penalty, although that is only an issue with really large file. This is achieved by passing "flat" as the (optional) left argument to `ReadUtf8File`. We ignore encoding and new line character and allow it to default to the current operating system. As a side effect `ProcessFiles` won't crash anymore when `files` is empty because `enc` and `nl` have disappeared from the function. 
+We use `APLTreeUtils.ReadUtf8File` rather than `⎕NGET` because it optionally returns a flat string without a performance penalty, although that is only an issue with really large files. This is achieved by passing "flat" as the (optional) left argument to `ReadUtf8File`. We ignore encoding and the new line character and allow it to default to the current operating system. As a side effect `ProcessFiles` won't crash anymore when `files` is empty because `enc` and `nl` have disappeared from the function. 
 
 Now we have to make sure that `Initial` is called from `StartFromCmdLine`:
 
@@ -208,7 +210,7 @@ Now we have to make sure that `Initial` is called from `StartFromCmdLine`:
 ∇
 ~~~
 
-Note that we add the opportunity here to log the full command line. In an application that receives its parameters from the command line this is an important thing do to.
+Note that we add the opportunity here to log the full command line. In an application that receives its parameters from the command line this is an important thing to do.
 
 We take the opportunity to move code from `TxtToCsv` to a new function `GetFiles`. This new function will take the command line argument and return a list of files which may contain zero, one or many filenames:
 
@@ -370,13 +372,14 @@ APLTree also offers applications that support the programmer during her work wit
 
 In order to use LogDog you first need to download it from <http://download.aplwiki.com>. We assume that you download it into the default download location. For a user "JohnDoe" that would be `C:\Users\JohnDoe\Downloads`.
 
-LogDog does not come with an installer. All you have to do is to install it into a folder where you have the right to add, delete and change files. That means `C:\Proram Files` and `C:\Proram Files (x86)` are not an option. If you want to install the application just for your own user ID then   `"C:\Users\JohnDoe\AppData\Local\Programs\LogDog` is the right place. If you want to install it for all users on your PC than we suggest that you create a folder like `C:\Programs_others`. Just make sure that the name of the folder starts with `Program` so that autocomplete displays all folders that have programs installed in them once you start typing `Progr`.
+LogDog does not come with an installer. All you have to do is to copy it into a folder where you have the right to add, delete and change files. That means `C:\Proram Files` and `C:\Proram Files (x86)` are not an option. If you want to install the application just for your own user ID then   `"C:\Users\JohnDoe\AppData\Local\Programs\LogDog` is the right place. If you want to install it for all users on your PC than we suggest that you create a folder 
+`"C:\Users\All users\Local\Programs\LogDog`. Of course `C:\MyPrograms\LogDog` might be okay as well.
 
 You start LogDog by double-clicking the EXE. You can then consult LogDog's help for how to open a log file. We recommend to go for the "Investigate folder" option. The reason is that every night at 24:00 a new log file with a new name is created. To put any new(er) log file on display you can issue the "Investigate folder" menu command again.
 
 Once you have started LogDog on the `MyApp` log file you will see something like this:
 
-![LogDog GUI](images/LogDog.jpg)
+![LogDog GUI](images/LogDog.png)
 
 Note that LogDog comes with an auto-scroll features, meaning that the latest entries at the bottom of the file are always visible. If you don't want this for any reason just tick the "Freeze" check box.
 
