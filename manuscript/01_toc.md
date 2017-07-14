@@ -8,22 +8,15 @@
 
 # Logging what happens
 
-> * Why UTF8? Should be explained because many tools except ANSI only, so there might be a drawback depending on the circumstances.
-> * Shall we use FilesAndDirs everywere? That would avoid using FileSep (/ instead) and `NormalizePath` (is done iunternally)
-> * The composed function `LogError` should be passed as an argument to the main function (but not ⎕LX`). 
-    That would allow using a stub in test cases. Important concept when it comes to testing.
-
-## Log files
-
 > To be added:
 * Choice of `encoding`
 * `autoRopen` and `filenameType` (Date)
 * `printToSession`
 * `active` flag
 
-## Windows Event Log
+# Configuration settings
 
-> Add something basic regarding the WindowsEventLog class and why it is important to notify the Windows Event Log, at least for serious problems: in many companies on servers the Windows Event Logs are constanctly scanned for any problems. In case of a problem typically an admin is notified in one way or another. See "Windows Event collector" for example.
+# Debugging EXEs
 
 # Handling errors
 
@@ -39,8 +32,6 @@
 > * signal
 > * windowsEventSource
 
-# Configuration settings
-
 # Testing: the sound of breaking glass
 
 > The container namespace being a scripted namespace might has significant disadvantages: investigate.
@@ -54,9 +45,27 @@
 > * Special INI files for test purposes.
 > * `G`, `L` and `E`.
 
+# Documentation - the Doc is in
+
 # Make me
 
-# Documentation - the Doc is in
+# Providing help
+
+> We introduce just Markdown2Help because...
+> 1. it needs nothing but Dyalog.
+> 2. it provides a functionality that it very close to a CHM file.
+
+> Although it's a Windows solution we still get a working --- though very basic --- HTML version on Linux and Mac OS.
+
+# Scheduled Tasks
+
+# Windows Services
+
+# Windows Event Log
+
+> Add something basic regarding the WindowsEventLog class and why it is important to notify the Windows Event Log, at least for serious problems: in many companies on servers the Windows Event Logs are constanctly scanned for any problems. In case of a problem typically an admin is notified in one way or another. See "Windows Event collector" for example.
+
+# Windows Registry
 
 # User Interface
 
@@ -69,14 +78,6 @@
 
 > Discuss why testing the UI as such is often not exactly a brilliant idea, and what exceptions there are and why.
 
-# Providing help
-
-> We introduce just Markdown2Help because...
-> 1. it needs nothing but Dyalog.
-> 2. it provides a functionality that it very close to a CHM file.
-
-> Although it's a Windows solution we still get a working --- though very basic --- HTML version on Linux and Mac OS.
-
 # Writing an installer
 
 > We focus on the --- relatively simple --- Inno installer for the Cookbook.
@@ -86,18 +87,6 @@
 > We need to discuss the best way of how to install under Linux and Mac-OS with Andy.
 
 # Working with other processes
-
-## Launching tasks (Windows Scheduler)
-
-### Importance of log files
-
-### Windows Event log
-
-### Pre-prepare for a RIDE
-
-## Running as a Windows service
-
-Same as for Windows Scheduled Tasks.
 
 ## Linux/Mac OS?
 

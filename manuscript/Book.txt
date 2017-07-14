@@ -1,5 +1,6 @@
 frontmatter.txt
 mainmatter.txt
+01_toc.md
 02_intro.md
 03_structure.md
 04_packaging.md
