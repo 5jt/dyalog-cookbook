@@ -29,11 +29,11 @@ We will also improve the code along the way while explaining why exactly the cha
 
 If you are an experienced Dyalog developer, you may be able to improve on what is described here. For this reason _The Dyalog Cookbook_ remains for now [an open-source project on GitHub](https://github.com/5jt/dyalog-cookbook). 
 
-Working through the book, you get to understand how the implementation issues and the solutions to them work. In Part 1 you will find ‘framework’ code for your application, growing more complex as the book progresses. You can find scripts for these interim versions in the `code` folder on the book website. Watch out: they are interim solutions, constantly improved along the way.
+Working through the book, you get to understand how the implementation issues and the solutions to them work. In the first chapters you will find ‘framework’ code for your application, growing more complex as the book progresses. You can find scripts for these interim versions in the `code` folder on the book website. Watch out: they are interim solutions, constantly improved along the way.
 
 You are of course welcome to simply copy and use the last version of the scripts. But there is much to be learned while stumbling. 
 
-Finally in Part 2 we'll introduce some professional writing techniques that might make maintaining your code easier – in what we hope will be a long useful future for it. This includes third-party tools, configuring your development environment and discussing user commands.
+Later on we'll introduce some professional writing techniques that might make maintaining your code easier – in what we hope will be a long useful future for it. This includes third-party tools, configuring your development environment and discussing user commands.
 
 
 ## What you need to use the Dyalog Cookbook
@@ -86,10 +86,8 @@ Kai Jaeger & Stephen Taylor
 [^apltree]: _APLTree_ is the name of an Open Source library that offers robust, tested and well documented solutions to many every-day problems you will face when addressing the tasks discussed in this book. It also offers some powerful tools that support the development proccess.
 We will use this library extensively and discuss it in detail but if you are curious: <http://aplwiki.com/CategoryAplTree>.
 
-[^win]: Perhaps one day you would like it to ship on multiple platforms. Perhaps one day we'll write that book too. Meanwhile, Microsoft Windows. 
 
-  You will however find that whenever possible we keep the code platform independent. If we use platform dependent utilities we will mentioned it and explain why, and we might mention alternatives available on other platforms.
+[^win]: Perhaps one day you would like it to ship on multiple platforms. Perhaps one day we'll write that book too. Meanwhile, Microsoft Windows. You will however find that whenever possible we keep the code platform independent. If we use platform dependent utilities we will mentioned it and explain why, and we might mention alternatives available on other platforms.
   
-[^classes]: These days seasoned programmers often have strong opinions about whether to use an object-oriented approach or a functional approach, or to mix the both. We have seen friendships going bust on discussing these issues.
-
-  In this book we take a mixed approach, and we will discuss the pros and cons of each of them.
+  
+[^classes]: These days seasoned programmers often have strong opinions about whether to use an object-oriented approach or a functional approach, or to mix the both. We have seen friendships going bust on discussing these issues. In this book we take a mixed approach, and we will discuss the pros and cons of each of them.
