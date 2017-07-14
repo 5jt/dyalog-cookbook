@@ -143,11 +143,11 @@ The upper part (until the blank line) is identical with `MyApp.dyapp` except tha
 ~~~
 :Class Make
 ⍝ Puts the application `MyApp` together:
-⍝ * Remove folder `Source\` in the current directory
-⍝ * Create folder `Source\` in the current directory
-⍝ * Copy icon to `Source\`
+⍝ * Remove folder `DESTINATION\` in the current directory
+⍝ * Create folder `DESTINATION\` in the current directory
+⍝ * Copy icon to `DESTINATION\`
 ⍝ * Copy the INI file template over to `DESTINATION`
-⍝ * Creates `MyApp.exe` within `Source\`
+⍝ * Creates `MyApp.exe` within `DESTINATION\`
     ⎕IO←1 ⋄ ⎕ML←1
     DESTINATION←'MyApp'
     ∇ {filename}←Run offFlag;rc;en;more;successFlag;F;msg
@@ -170,7 +170,7 @@ The upper part (until the blank line) is identical with `MyApp.dyapp` except tha
 :EndClass
 ~~~
 
-Note that the function executes a full stop in a dfn in case the right argument is a `1`. This is an easy way to make the function stop when something goes wrong. There is no point in doing anything but stopping the code from continuing since it is called by a programmer, and when it fails she wants to investigate straight away. And things can go wrong quite easily; for example, if somebody is looking with the Windows Explorer into `DESTINATION` then the attempt to remove that folder will fail.
+Note that the function executes a full stop in a dfn in case the right argument is a `1`. This is an easy way to make the function stop when something goes wrong. There is no point in doing anything but stopping the code from continuing since it is called by a programmer, and when it fails she wants to investigate straight away. And things can go wrong quite easily; for example, if somebody is looking with the Windows Explorer into `DESTINATION` then the attempt to remove that folder at the same time  will fail.
 
 First we create the folder `DESTINATION` from scratch and then we copy everything that's needed to the folder `DESTINATION` is pointing to: the application icon and the INI file. Whether the function executes `⎕OFF` or not depends on the right argument `offFlag`. Why that is needed will become apparent soon.
 

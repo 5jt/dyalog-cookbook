@@ -17,5 +17,3 @@ Load DevHelpers
 Run #.MyApp.SetLX #.MyApp.GetCommandLineArg ⍬
 Run #.Tester.EstablishHelpersIn #.Tests
 Run #.DevHelpers.RunTests 0
-Run #.DevHelpers.Stop
-Run #.DevHelpers.CopyMarkdown2Help ⍬

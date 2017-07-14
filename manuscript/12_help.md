@@ -12,7 +12,7 @@ Users expect applications to provide help in one way or another. One option is t
 However, we take a different approach here: rather than using any third-party software we use `Markdown2Help` from the APLTree library. That allows us to create a help system that...
 
 * offers pretty much the same functionality as CHM.
-* allows us to keep the help very close to the code.
+* allows us to keep the help close to the code.
 
 This is the simplest way to create a help system, and it allows you to run the help system from within your application in order to view either its start page or a particular page as well as viewing the help system without running your application at all.
 
@@ -44,7 +44,7 @@ A> ~~~
 A> ViewHelp.exe -helpfolder=C:\Foo\Help
 A> ~~~
 A>
-A> You can also tel `ViewHelper.exe` to put a particular help page on display rather than the default page:
+A> You can also tell `ViewHelper.exe` to put a particular help page on display rather than the default page:
 A>
 A> ~~~
 A> ViewHelp.exe -page=Sub.Foo
@@ -71,7 +71,7 @@ Double-click the DYAPP to get started.
 
 ## Creating a new help system
 
-`Markdown2Help` comes with a function `CreateStub` that will create a new help system for us. All we need is to find a good name which is not in use. The obvious candidate is "MyHelp", so we execute this statement:
+`Markdown2Help` comes with a function `CreateStub` that will create a new help system for us. All we need to do is finding a good name which is not in use. The obvious candidate is "MyHelp", so we execute this statement:
 
 ~~~
 #.Markdown2Help.CreateStub '#.MyHelp'
@@ -269,8 +269,8 @@ Also, for converting the Markdown to HTML `Markdown2Help` needs the `MarkAPL` cl
 
 ## What is the right strategy
 
-* Specify `noClose←1`. This means that when the user attempts to close the help system with a click into the close box or by selecting the "Quit" command from the "File" menu or by pressing Alt+F4 or Ctrl+W then the help system is not really closed down, it just makes itself invisible.
 * Start the help system by calling the `New` function as soon as the user presses F1 or select "Help" from the menubar or requests a particular help page by other means. Catch the result and assign it to a meaningful name: this represents your help system. We use the name `MyHelpInstance`.
+* Specify `noClose←1`. This means that when the user attempts to close the help system with a click into the close box or by selecting the "Quit" command from the "File" menu or by pressing Alt+F4 or Ctrl+W then the help system is not really closed down, it just makes itself invisible.
 * When the user later requests again a help page use this:
 
   ~~~
@@ -286,7 +286,7 @@ Also, for converting the Markdown to HTML `Markdown2Help` needs the `MarkAPL` cl
   
 ## The "Developers" menu
 
-In case the help system is running under a development version of Dyalog you have a "Developers" menu on the right side of the menubar. This offers a couple of powerful commands that support you in keeping your help system healthy. We discuss just the most important ones:
+In case the help system is running under a development version of Dyalog you have a "Developers" menu on the right side of the menubar. This offers a couple of commands that support you in keeping your help system healthy. We discuss just the most important ones:
 
 
 ### Show topic in browser
