@@ -73,7 +73,7 @@ Now a developer who double-clicks the DYAPP in order to assemble the workspace w
 
 I> In most programming languages the process of compiling the source code and putting together an application is done by a utility that's called "Make"; therefore we use the same term.
 
-At first sight it might seem that we can get away with a reduced version of `Develop.dyapp`, but that is not quite true. Soon we will discuss how to add a help system to our application. We must then make sure that the help system is compiled properly when the application is assembled. Later even more tasks will come up. Conclusion: we cannot do this with a DYAPP; we need more flexibility.
+At first sight it might seem that we can get away with a reduced version of `MyApp.dyapp`, but that is not quite true. Soon we will discuss how to add a help system to our application. We must then make sure that the help system is compiled properly when the application is assembled. Later even more tasks will come up. Conclusion: we cannot do this with a DYAPP; we need more flexibility.
 
 A> ### More complex scenarios 
 A> 
@@ -87,17 +87,17 @@ We are going to create a DYAPP file `Make.dyapp` that performs the "Make". Howev
 
 ~~~
 "C:\Program Files\Dyalog\Dyalog APL{yourPreferredVersion}\Dyalog.exe" DYAPP="%~dp0Make.dyapp"
+@echo off
+if NOT ["%errorlevel%"]==["0"] (
+    pause
+    exit /b %errorlevel%
+)
 ~~~
 
 Of course you need to make amendments so that it is using the version of Dyalog of your choice. If it is at the moment what happens to run  a DYAPP on a double-click then this will give you the correct path:
 
 ~~~
 '"',(⊃#.GetCommandLineArgs),'"'
-@echo off
-if NOT ["%errorlevel%"]==["0"] (
-    pause
-    exit /b %errorlevel%
-)
 ~~~
 
 You might want to add other parameters like `MAXWS=128MB` to the BAT file.
@@ -170,7 +170,7 @@ The upper part (until the blank line) is identical with `MyApp.dyapp` except tha
 :EndClass
 ~~~
 
-Note that the function executes a full stop in a dfn in case the right argument is a `1`. This is an easy way to make the function stop when something goes wrong. There is no point in doing anything but stopping the code from continuing since it is called by a programmer, and when it fails she wants to investigate straight away. And things can go wrong quite easily; for example, if somebody is looking with the Windows Explorer into `DESTINATION` then the attempt to remove that folder at the same time  will fail.
+Note that the function executes a full stop in a dfn in case its right argument is a `1`. This is an easy way to make the function stop when something goes wrong. There is no point in doing anything but stopping the code from continuing since it is called by a programmer, and when it fails she wants to investigate straight away. And things can go wrong quite easily; for example, the attempt to remove `DESTINATION` may fail simply because somebody is looking with the Windows Explorer into `DESTINATION` at the same time.
 
 First we create the folder `DESTINATION` from scratch and then we copy everything that's needed to the folder `DESTINATION` is pointing to: the application icon and the INI file. Whether the function executes `⎕OFF` or not depends on the right argument `offFlag`. Why that is needed will become apparent soon.
 
@@ -190,7 +190,7 @@ Active      = 0
 
 Those might well get changed in `MyApp.ini` while working on the project, so we make sure that we get them set correctly in `MyApp.ini.template`.
 
-However, that leaves us vulnerable to another problem: imagine we introduce a new section and/or a new key and forget to copy it over to the tmeplate. In order to avoid this we add a test case to `Tests`:
+However, that leaves us vulnerable to another problem: imagine we introduce a new section and/or a new key and forget to copy it over to the template. In order to avoid this we add a test case to `Tests`:
 
 ~~~
     ∇ R←Test_misc_01(stopFlag batchFlag);⎕TRAP;ini1;ini2
@@ -211,7 +211,6 @@ In the penultimate line `Run` calls `Export`, a private function in the `Make` c
 
 ~~~
 ...
-    ∇
     ∇ {r}←{flags}Export exeName;type;flags;resource;icon;cmdline;try;max;success
     ⍝ Attempts to export the application
       r←⍬
@@ -237,7 +236,7 @@ In the penultimate line `Run` calls `Export`, a private function in the `Make` c
 :EndClass
 ~~~
 
-`Export` automates what we've done so far by calling the "Export" command from the "File" menu. In case the "Bind" method fails it tries up to 50 times before it gives up. This is because from experience we know that depending on the OS and the machine and God knows what else sometimes the command fails several times before it finally succeeds. 
+`Export` automates what we've done so far by calling the "Export" command from the "File" menu. In case the "Bind" method fails it tries up to 50 times before giving up. This is because from experience we know that depending on the OS and the machine and God knows what else sometimes the command fails several times before it finally succeeds. 
 
 We specified `##.Constants.BIND_FLAGS.RUNTIME` as a default for `flags`, but that does not exist yet, so we add it to the `Constants` namespace:
 
@@ -259,7 +258,7 @@ Double-click `Make.dyapp`: a folder `MyApp` should appear in `Z:\code\v11` with,
 
 ## The tests
 
-Now that we have a way to automatically assemble all the necessary files our application will finally consist of we need to amend our tests. Double-click `MyApp.dyapp`. You don't need to execute the test cases right now because we are going to change them.
+Now that we have a way to automatically assemble all the necessary files required by our application we need to amend our tests. Double-click `MyApp.dyapp`. You don't need to execute the test cases right now because we are going to change them.
 
 We need to make a few changes:
 
@@ -289,9 +288,15 @@ Notes: `Initial` ...
 
 * ... now creates a global variable `∆ExeFilename` which will be used by the test cases.
 * ... loads the script `Make.dyalog` into `#`.
-* ... runs the function `Make.Run`. The `0` provided as right argument tell `Make.Run` to _not_ execute `⎕OFF`, something we would not appreciate at this stage.
+* ... runs the function `Make.Run`. The `0` provided as right argument tells `Make.Run` to _not_ execute `⎕OFF`, something we would not appreciate at this stage.
 
-In the next step replace the string `'MyApp.exe '` (note the trailing blank!) by ` ∆ExeFilename,' '` (note the leading and the trailing blank!) in the `Make` class. That makes sure that the EXE is created within the `MyApp` folder rather than in the current directory.
+In the next step replace the string `'MyApp.exe '` (note the trailing blank) by:
+
+~~~
+ ∆ExeFilename,' '
+~~~
+
+(note the leading blank) in the `Make` class. That makes sure that the EXE is created within the `MyApp` folder rather than in the current directory.
 
 Our last change: we add `⎕EX'∆ExeFilename'` to the `Cleanup` function in order to get rid of the global variable when the job is done.
 
@@ -300,13 +305,13 @@ Our last change: we add `⎕EX'∆ExeFilename'` to the `Cleanup` function in ord
 
 With the two DYAPPs and the BAT file, your development cycle now looks like this:
 
-1. Launch `MyApp.dyapp` and review test results. 
-2. Fix any errors and rerun `#.Tests.Run`. If you edit the test themselves, either rerun 
+1. Launch `MyApp.dyapp` and check the test results. 
+2. Fix any errors and rerun `#.Tests.Run` until it's fine. If you edit the test themselves, either rerun 
    
    ~~~
    `#,Tester.EstablishHelpersIn #.Tests` 
    ~~~
    
-   or simply close the session and relaunch Develop.dyapp.
+   or simply close the session and relaunch `MyApp.dyapp`.
    
-[WCU]: Worst Case User, also known as Dumbest Assumable User (DAU).
+[^WCU]: Worst Case User, also known as Dumbest Assumable User (DAU).

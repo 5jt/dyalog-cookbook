@@ -139,7 +139,7 @@ We create a new function `CreateConfig` for that:
 
 ~~~
 ∇ Config←CreateConfig dummy;myIni;iniFilename
-⍝ Instantiate the INI file and copy values over to a namespace `Config`.   
+⍝ Instantiate the INI file and copy values over to a namespace `Config`.
   Config←⎕NS''
   Config.⎕FX'r←∆List' 'r←{0∊⍴⍵:0 2⍴'''' ⋄ ⍵,[1.5]⍎¨⍵}'' ''~¨⍨↓⎕NL 2'
   Config.Debug←A.IsDevelopment
@@ -147,6 +147,7 @@ We create a new function `CreateConfig` for that:
   Config.Accents←'ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝ' 'AAAAAACDEEEEIIIINOOOOOOUUUUY'
   Config.LogFolder←'./Logs'
   Config.DumpFolder←'./Errors'
+  Config.Ride←0      ⍝ ≠0: the app accepts a Ride & treats Config.Ride as port number
   iniFilename←'expand'F.NormalizePath'MyApp.ini'
   :If F.Exists iniFilename
       myIni←⎕NEW ##.IniFiles(,⊂iniFilename)
@@ -155,6 +156,10 @@ We create a new function `CreateConfig` for that:
       Config.Accents←⊃Config.Accents myIni.Get'Config:Accents'
       Config.LogFolder←'expand'F.NormalizePath⊃Config.LogFolder myIni.Get'Folders:Logs'
       Config.DumpFolder←'expand'F.NormalizePath⊃Config.DumpFolder myIni.Get'Folders:Errors'
+      :If myIni.Exist'Ride'
+      :AndIf myIni.Get'Ride:Active'
+          Config.Ride←⊃Config.Ride myIni.Get'Ride:Port'
+      :EndIf
   :EndIf
   Config.LogFolder←'expand'F.NormalizePath Config.LogFolder
   Config.DumpFolder←'expand'F.NormalizePath Config.DumpFolder
@@ -169,7 +174,7 @@ What the function does:
 * It then creates a name for the INI file and checks whether such an INI file exists.
 * If that is the case then it instatiates the INI file and then copies all values it can find from the INI file to `Config`, overwriting the defaults.
 
-Notes 
+Notes:
 
 * The `Get` function requires a section and a key as right argument. They can be provided either as a two-item vector as in `'Config' 'debug'` or as a text vector with section and key separated by a colon as in `'Config:debug'`.
 
@@ -218,7 +223,7 @@ leanpub-end-insert
 ∇
 ~~~
 
-Note that we also changed what `Initial` returns: a vector of length two, the namespace `Config` but also the instance of the `MyLogger` class.
+Note that we also changed what `Initial` returns: a vector of length two, the namespace `Config` but also an instance of the `MyLogger` class.
 
 `Initial` was called within `StartFromCmdLine`, and we are not going to change this but we must change the call as such because now it returns something useful:
 
@@ -329,7 +334,7 @@ We have used the most important features of the `IniFiles` class, but it has mor
   FOLDERS  Errors                                       %LOCALAPPDATA%\MyApp\Log 
   FOLDERS  Logs                                         %LOCALAPPDATA%\MyApp\Log 
   RIDE     Active                                                              0 
-  RIDE     Port                     
+  RIDE     Port                                                             4502
          q.RIDE.Port
   4502       
   ~~~

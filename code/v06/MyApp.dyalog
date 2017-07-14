@@ -27,7 +27,7 @@
     ∇ rc←TxtToCsv fullfilepath;files;tbl;lines;target
    ⍝ Write a sibling CSV containing a frequency count of the letters in the input files(s).\\
    ⍝ `fullfilepath` can point to a file or a folder. In case it is a folder then all TXTs
-   ⍝ within that folder are processed. The resulting CSV holds the total frequency count. 
+   ⍝ within that folder are processed. The resulting CSV holds the total frequency count.
       (target files)←GetFiles fullfilepath
       :If 0∊⍴files
           MyLogger.Log'No files found to process'
@@ -106,10 +106,10 @@
     ⍝ Prepares the application.
       #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
       Config←CreateConfig ⍬
-      CheckForRide (0≠Config.Ride) Config.Ride
+      CheckForRide Config.Ride
       MyLogger←OpenLogFile Config.LogFolder
       MyLogger.Log'Started MyApp in ',F.PWD
-      MyLogger.Log #.GetCommandLine      
+      MyLogger.Log #.GetCommandLine
       MyLogger.Log↓⎕FMT Config.∆List
     ∇
 
@@ -140,26 +140,26 @@
       Config.DumpFolder←'expand'F.NormalizePath Config.DumpFolder
     ∇
 
-    ∇ {r}←{wait}CheckForRide (rideFlag ridePort);rc
+    ∇ {r}←{wait}CheckForRide ridePort;rc
      ⍝ Depending on what's provided as right argument we prepare
      ⍝ for a Ride or we don't.
-       r←1
-       wait←{0<⎕NC ⍵:⍎⍵ ⋄ 0}'wait'
-       :If rideFlag 
-           rc←3502⌶0
-           :If ~rc∊0 ¯1
-               11 ⎕SIGNAL⍨'Problem switching off Ride, rc=',⍕rc
-           :EndIf
-           rc←3502⌶'SERVE::',ridePort
-           :If 0≠rc
-               11 ⎕SIGNAL⍨'Problem setting the Ride connecion string to SERVE::',(⍕ridePort),', rc=',⍕rc
-           :EndIf
-           rc←3502⌶1
-           :If ~rc∊0 ¯1
-               11 ⎕SIGNAL⍨'Problem switching on Ride, rc=',⍕rc
-           :EndIf
-           {_←⎕DL ⍵ ⋄ ∇ ⍵}⍣(⊃wait)⊣⍬
-       :EndIf
-   ∇
+      r←1
+      wait←{0<⎕NC ⍵:⍎⍵ ⋄ 0}'wait'
+      :If 0≠ridePort
+          rc←3502⌶0
+          :If ~rc∊0 ¯1
+              11 ⎕SIGNAL⍨'Problem switching off Ride, rc=',⍕rc
+          :EndIf
+          rc←3502⌶'SERVE::',⍕ridePort
+          :If 0≠rc
+              11 ⎕SIGNAL⍨'Problem setting the Ride connecion string to SERVE::',(⍕ridePort),', rc=',⍕rc
+          :EndIf
+          rc←3502⌶1
+          :If ~rc∊0 ¯1
+              11 ⎕SIGNAL⍨'Problem switching on Ride, rc=',⍕rc
+          :EndIf
+          {}{_←⎕DL ⍵ ⋄ ∇ ⍵}⍣(⊃wait)⊣1
+      :EndIf
+    ∇
 
 :EndNamespace
