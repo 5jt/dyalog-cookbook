@@ -83,8 +83,7 @@ We jealously claim any errors as entirely our own work.
 Kai Jaeger & Stephen Taylor
 
 
-[^apltree]: _APLTree_ is the name of an Open Source library that offers robust, tested and well documented solutions to many every-day problems you will face when addressing the tasks discussed in this book. It also offers some powerful tools that support the development proccess.
-We will use this library extensively and discuss it in detail but if you are curious: <http://aplwiki.com/CategoryAplTree>.
+[^apltree]: _APLTree_ is the name of an Open Source library that offers robust, tested and well documented solutions to many every-day problems you will face when addressing the tasks discussed in this book. It also offers some powerful tools that support the development proccess. We will use this library extensively and discuss it in detail but if you are curious: <http://aplwiki.com/CategoryAplTree>.
 
 
 [^win]: Perhaps one day you would like it to ship on multiple platforms. Perhaps one day we'll write that book too. Meanwhile, Microsoft Windows. You will however find that whenever possible we keep the code platform independent. If we use platform dependent utilities we will mentioned it and explain why, and we might mention alternatives available on other platforms.
