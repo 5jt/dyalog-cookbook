@@ -89,6 +89,7 @@ We are going to create a DYAPP file `Make.dyapp` that performs the "Make". Howev
 "C:\Program Files\Dyalog\Dyalog APL{yourPreferredVersion}\Dyalog.exe" DYAPP="%~dp0Make.dyapp"
 @echo off
 if NOT ["%errorlevel%"]==["0"] (
+    echo Error %errorlevel%
     pause
     exit /b %errorlevel%
 )
@@ -105,7 +106,7 @@ You might want to add other parameters like `MAXWS=128MB` to the BAT file.
 Notes:
 
 * The expression `%~dp0` in a batch file will give you the full path -- with a trailing `\` -- of the folder that hosts the batch file. In other words, `"%~dp0Make.dyapp"` would result in a full path pointing to `MyApp.dyapp`, no matter where that is. You _must_ specify a full path because when the interpreter tries to find the DYAPP, the current directory is where the EXE lives, _not_ where the bat file lives.
-* Checking `errorlevel` makes sure that in case of an error the batch file pauses. That gets us around the nasty problem that when you double-click a BAT file, you see a black windows popping up for a split of a second and then it's gone, leaving you wondering whether it has worked alright or not. Now when an error occurs it will pause. In addition it will pass the value of `errorlevel` as return code of the batch script.
+* Checking `errorlevel` makes sure that in case of an error the batch file shows the return code and then pauses. That gets us around the nasty problem that when you double-click a BAT file, you see a black windows popping up for a split of a second and then it's gone, leaving you wondering whether it has worked alright or not. Now when an error occurs it will pause. In addition it will pass the value of `errorlevel` as return code of the batch script.
 
   However, this technique is suitable only for scripts that are supposed to be executed by a WCU [^WCU]; you don't want to have a pause in scripts that are called by other scripts.
 

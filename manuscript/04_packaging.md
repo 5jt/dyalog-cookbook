@@ -12,7 +12,7 @@ Copy all files in `z:\code\v02\` to `z:\code\v03\`. Alternatively you can downlo
 
 In a runtime interpreter or an EXE, there is no APL session, and output to the session which would have been visible in a development system will simply disappear. If we want the user to be able to view this output, we need to write it to a log file.
 
-But how do we find out where we need to make changes? We recommended that you think about this from the start, and make sure that all _intentional_ output is output through a "Log" function, or at least use an explicit `⎕←` so that output can be located in the source.
+But how do we find out where we need to make changes? We recommended that you think about this from the start, and make sure that all _intentional_ output goes through a "Log" function, or at least use an explicit `⎕←` so that output can easily be located in the source.
 
 A> ### Unwanted output to the session
 A>
@@ -38,7 +38,7 @@ I> Don't forget to clear the stack after `Catch` crashed because if you don't an
 
 ## Reading arguments from the command line 
 
-`TxtToCsv` needs an argument. The EXE must take it from the command line. We'll give `MyApp` a function `StartFromCmdLine`. We will also introduce `SetLX` in order to set `⎕LX`. The last line of the DYAPP will run it to set the workspace up to start corectly:
+`TxtToCsv` needs an argument. The EXE we are about to create must take it from the command line. We'll give `MyApp` a function `StartFromCmdLine`. We will also introduce `SetLX`: the last line of the DYAPP will run it to set `⎕LX`:
 
 ~~~
 Target #
@@ -53,31 +53,38 @@ In `MyApp.dyalog`:
 ~~~
 :Namespace MyApp
 
+(⎕IO ⎕ML ⎕WX ⎕PP ⎕DIV)←1 1 3 15 1
+
+leanpub-start-insert
     ∇r←Version
     ⍝ * 1.0.0
     ⍝   * Runs as a stand-alone EXE and takes parameters from the command line.
-      r←(⍕⎕THIS) '1.0.0' '2017-02-26'
+      r←(⍕⎕THIS) '1.0.0' 'YYYY-MM-DD'
     ∇
+leanpub-end-insert    
     ...
     ⍝ === VARIABLES ===
 
+leanpub-start-insert
     Accents←'ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝ' 'AAAAAACDEEEEIIIINOOOOOOUUUUY'
+leanpub-end-insert    
 
 ⍝ === End of variables definition ===
 
       CountLetters←{
+leanpub-start-insert      
           {⍺(≢⍵)}⌸⎕A{⍵⌿⍨⍵∊⍺}Accents map toUppercase ⍵
+leanpub-end-insert          
       }
     ...
+leanpub-start-insert    
     ∇ {r}←SetLX dummy
-    :Access Public Shared
     ⍝ Set Latent Expression (needed in order to export workspace as EXE)
      r←⍬
      ⎕LX←'#.MyApp.StartFromCmdLine #.MyApp.GetCommandLineArgs ⍬'
     ∇
 
     ∇ {r}←StartFromCmdLine arg
-    :Access Public Shared
     ⍝ Run the application; arg = usually command line parameters .
        r←⍬
        r←TxtToCsv arg~''''
@@ -86,7 +93,9 @@ In `MyApp.dyalog`:
     ∇ r←GetCommandLineArgs dummy
        r←⊃¯1↑1↓2 ⎕NQ'.' 'GetCommandLineArgs' ⍝ Take the last one
     ∇  
-    ...
+leanpub-end-insert    
+    
+:EndNamespace    
 ~~~
 
 Now MyApp is ready to be run from the Windows command line, with the name of the file to be processed following the command name. 
@@ -95,28 +104,25 @@ Notes:
 
 * By introducing a function `Version` we start to keep track of changes.
 
-* `Accents` is now a vector of text vectors (vtv). There is no point in making it a matrix when `CountLetters` (the only function that consumes `Accents`) requires a vtv anyway. We were able to simplify `CountLetters` as a consequence.
+* `Accents` is now a vector of text vectors (vtv). There is no point in making it a matrix when `CountLetters` (the only function that consumes `Accents`) requires a vtv anyway. We were able to simplify `CountLetters` as a bounty.
 
 * Functions should return a result, even `StartFromCmdLine` and `SetLX`. Always. Otherwise, by definition, they are not functions. 
 
   If there is nothing reasonable to return as a result, return `⍬` as a shy result as in `StartFromCmdLine`. Make this a habit. It makes life easier in the long run. One example is that you cannot call a "function" from a dfn that does not return a result. Another one is that you cannot provide it as an operand to the `⍣` (power) operator.
   
-* _Always_ make a function monadic rather than niladic even if it does not require an argument right now. 
+* _Always_ make a function monadic rather than niladic even if the function does not require an argument right now. 
 
   It is way easier to change a monadic function that has ignored its argument so far to one that actually requires an argument than to change a niladic function to a monadic one later on, especially when the function is called in many places, and this is something you _will_ run into; it's just a matter of time.
   
-* `GetCommandLineArgs` ignores its right argument. It makes that very clear by using the name "dummy". "ignored" would be fine as well. When you change this at one stage or another then of course you have to change that name to something meaningful.
+* `GetCommandLineArgs` ignores its right argument. It makes that very clear by using the name "dummy". ("ignored" would be fine as well while "to_be_ignored" would not because that might well be a list of objects to be ignored by the function) When you change this at one stage or another then of course you have to change that name to something meaningful.
   
 * Make sure that a `⎕LX` statement can be executed from anywhere. That requires the path to be fully qualified, therefore `#.MyApp` rather than `MyApp`. Make that a habit too. You won't regret it when later on you want to execute the statement:
-
-* By introducing a function `Version` we start to keep track of changes.
-
 
   ~~~
   ⍎⎕LX
   ~~~
   
-  while you are not in root.
+  when you are not in root.
 
 * You may wonder whether `#.MyApp.(StartFromCmdLine GetCommandLineArgs ⍬)` is better than `#.MyApp.StartFromCmdLine #.MyApp.GetCommandLineArgs ⍬` because it is shorter. Good point, but there is a drawback: you cannot <Shift+Enter> on either of the two functions within the shorter expression but you can with the longer one.
 
@@ -133,11 +139,13 @@ We're now nearly ready to export the first version of our EXE.
 7. Make sure that the "Console application" check box is not ticked.
 8. Click "Save". 
 
-You should see an alert message: _File Z:\\code\\v03\\MyApp.exe successfully created._ This occasionally fails for no obvious reason. If it does fail just try again and you should be fine. If it keeps failing then the by far most common reason is that the EXE is running - you cannot replace an EXE while it is running. 
+You should see a message: _File Z:\\code\\v03\\MyApp.exe successfully created._ This occasionally (rarely) fails for no obvious reason. If it does fail just try again and you should be fine. If it keeps failing then the by far most common reason is that the EXE is running - you cannot replace an EXE while it is running. 
 
 I> Although you cannot replace a running exe what you _can_ do is to rename it; that's possible. You can then create a new EXE with the original name.
 
-In case you wonder what a "Console application" actually is: apart from including the Dyalog runtime EXE included it also sets the `IMAGE_SUBSYSTEM_WINDOWS_CUI` flag in the header of the EXE. The effect is that, when called _on a command line_ (also known as the console), it will wait for the program to return; it also catches the return code and assigns it to the environment variable "ERRORLEVEL". Also, when double-clicked a console window pops up. When called in any other way you _can_ catch the return code
+In case you wonder what a "Console application" actually is: apart from including the Dyalog runtime EXE it also sets the `IMAGE_SUBSYSTEM_WINDOWS_CUI` flag in the header of the EXE. The effect is that, when called _on a command line_ (also known as the console), it will wait for the program to return; Also, when double-clicked a console window pops up. 
+
+Note that it catches the return code and assigns it to the environment variable "ERRORLEVEL" in any case.
 
 Note that you cannot really debug a console application with Ride; for details see the "Debugging a stand-alone EXE" chapter.
 
@@ -147,7 +155,7 @@ It is therefore recommended not to tick the "Console application" check box unle
 
 T> Use the *Version* button to bind to the EXE information about the application, author, version, copyright and so on. These pieces of information will show in the "Properties/Details" tab of the resulting EXE. Note that in order to use the cursor keys or "Home" or "End" _within_ a cell the "Version" dialog box requires you to enter "in-cell" mode by pressing F2.
 
-T> Specify an icon file to replace the Dyalog icon with one of your own. 
+T> You might specify an icon file to replace the Dyalog icon with your own one. 
 
 Let's run it. From a command line:
 

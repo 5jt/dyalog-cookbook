@@ -5,7 +5,7 @@
     ∇ r←Version
     ⍝ * 1.0.0
     ⍝   * Runs as an exe and takes parameters from the command line
-      r←(⍕⎕THIS)'1.0.0' '2017-02-26'
+      r←(⍕⎕THIS)'1.0.0' 'YYYY-MM-DD'
     ∇
 
 ⍝ === Aliases
@@ -52,14 +52,12 @@
     ∇
 
     ∇ {r}←SetLX dummy
-      :Access Public Shared
    ⍝ Set Latent Expression (needed in order to export workspace as EXE)
       r←⍬
       ⎕LX←'#.MyApp.StartFromCmdLine #.MyApp.GetCommandLineArg ⍬'
     ∇
 
     ∇ {r}←StartFromCmdLine arg
-      :Access Public Shared
    ⍝ Read command parameters, run the application
       r←⍬
       r←TxtToCsv arg~''''

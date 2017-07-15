@@ -24,7 +24,7 @@
       csv←'.csv'
       :Select C.NINFO.TYPE ⎕NINFO fullfilepath
       :Case C.TYPES.DIRECTORY
-          tgt←fullfilepath,'total',csv
+          tgt←fullfilepath,'\total',csv
           files←⊃(⎕NINFO⍠'Wildcard' 1)fullfilepath,'\*.txt'
       :Case C.TYPES.FILE
           (path stem)←2↑⎕NPARTS fullfilepath

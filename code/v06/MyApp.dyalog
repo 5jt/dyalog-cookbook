@@ -12,7 +12,7 @@
    ⍝   * Logging implemented.
    ⍝ * 1.0.0
    ⍝   * Runs as a stand-alone EXE and takes parameters from the command line.
-      r←(⍕⎕THIS)'1.2.0' '2017-02-26'
+      r←(⍕⎕THIS)'1.2.0' 'YYYY-MM-DD'
     ∇
 
 ⍝ === Aliases (referents must be defined previously)

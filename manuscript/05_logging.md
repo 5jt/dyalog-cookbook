@@ -12,17 +12,17 @@ We see an alert message: _This Dyalog APL runtime application has attempted to u
 
 `MyApp` failed because there is no file or folder `Z:\texts\Does_not_exist`. That triggered an error in the APL code. The interpreter tried to display an error message and looked for input from a developer from the session. But a runtime task has no session, so at that point the interpreter popped the alert message and `MyApp` died.   
 
-T> Prior to version 16.0, as soon as you close the message box a CONTINUE workspace was created as a sibling of the EXE. Such a CONTINUE WS can be loaded and investigated, making it easy to figure out what the problem is. However, this is only true if it is a single-threaded application since no workcpace can be saved with any threads running but the main one.
+T> Prior to version 16.0, as soon as you close the message box a CONTINUE workspace was created in the current directory. Such a CONTINUE WS can be loaded and investigated, making it easy to figure out what the problem is. However, this is only true if it is a single-threaded application since workspaces cannot be saved when more than one thread is running.
 T>
 T>With version 16.0 you can still force the interpreter to drop a CONTINUE workspace by enabling the old behaviour with `2704⌶ 1` while `2704⌶ 0` would disable it, but that's the default anyway.
 T> 
 T> Note that for analyzing purposes a CONTINUE workspace must be loaded in an already running instance of Dyalog. In other words: don't double-click a CONTINUE! The reason is that `⎕DM` and `⎕DMX` are overwritten in the process of booting SALT, meaning that you loose the error message. You _may_ be able to recreate them by re-executing the failing line but that might be dangerous, or fail in a different way when executed without the application having been initialised properly.
 
-The next version of `MyApp` could do better by having the program write a log file recording what happens.
+The next version of `MyApp` could do better by having the program recording what happens to a log file.
 
 Save a copy of `Z:\code\v03` as `Z:\code\v04` or copy `v04` from the Cookbook's website.
 
-We'll use the APLTree `Logger` class, which we'll now install in the workspace root. If you've not already done so, copy the APLTree library folder into `Z:\code`.[^apltree] Now edit `Z:\code\v04\MyApp.dyapp` to include some library code:
+We'll use the APLTree `Logger` class, which we'll now install in the workspace root. If you've not already done so, copy the APLTree library folder into `Z:\code\apltree`.[^apltree] Now edit `Z:\code\v04\MyApp.dyapp` to include some library code:
 
 ~~~
 Target #
@@ -46,15 +46,15 @@ A> ~~~
 A> ]ADoc APLTreeUtils
 A> ~~~
 A> 
-A> I> If the user command `]ADoc` is not available visit <https://www.dyalog.com/tools/user-commands.htm>.
+A> You'll find more information regarding `ADoc` in the chapter "Documentation – the Doc is in".
 
 The `Logger` class and its dependencies will now be included when we build `MyApp`: 
 
 * `APLTreeUtils` is a namespace that contains some functions needed by most applications. All members of the APLTree library depend on it.
-* `FilesAndDirs` is a class that offers method for handling files and directories.
+* `FilesAndDirs` is a class that offers methods for handling files and directories.
 * `OS` contains a couple of OS-independent methods for common tasks. `KillProcess` is just an example. `FilesAndDirs` needs `OS` under some circumstances.
 
-Let's get the program to log what it's doing. Within `MyApp`, some changes. Some aliases for the new code:
+Let's get the program to log what it's doing. Within `MyApp`, some changes. First we introduce some more aliases for the new modules:
 
 ~~~
 ⍝ === Aliases (referents must be defined previously)
@@ -271,7 +271,7 @@ Notes:
   
 * We could have written `A.WriteUtf8File target ({⍺,',',⍕⍵}/⊃{⍺(+/⍵)}⌸/↓[1]tbl)`, avoiding the local variable `lines`. We didn't because this variable might be helpful in case something goes wrong and we need to trace through the `TxtToCsv` function.
 
-* Note that `MyLogger` is a global variable, rather than being passed as an argument to `TxtToCsv`. We will discuss this issue in detail in the "Configuration settings" chapter.
+* Note that `MyLogger` is a global variable rather than being passed as an argument to `TxtToCsv`. We will discuss this issue in detail in the "Configuration settings" chapter.
 
 Finally we change `Version`:
 
@@ -366,14 +366,25 @@ to the more readable:
 
 ## Watching the log file with LogDog
 
-So far we have used modules from the APLTree project: classes and namespace scripts that might be usefull when implementing an application.
+So far we have used modules from the APLTree project: classes and namespace scripts that might be useful when implementing an application.
 
-APLTree also offers applications that support the programmer during her work without becoming part of the application. One of those applications is the LogDog. It purpose is simply to watch a log file and make sure that any changes are immediately reflected by the GUI. This is useful for us since now the log file is the major source of information about how the application is doing. 
+APLTree also offers applications that support the programmer during her work without becoming part of the application. One of those applications is the LogDog. Its purpose is simply to watch a log file and make sure that any changes are immediately reflected by the GUI. This is useful for us since now the log file is the major source of information about how the application is doing. 
 
 In order to use LogDog you first need to download it from <http://download.aplwiki.com>. We assume that you download it into the default download location. For a user "JohnDoe" that would be `C:\Users\JohnDoe\Downloads`.
 
-LogDog does not come with an installer. All you have to do is to copy it into a folder where you have the right to add, delete and change files. That means `C:\Proram Files` and `C:\Proram Files (x86)` are not an option. If you want to install the application just for your own user ID then   `"C:\Users\JohnDoe\AppData\Local\Programs\LogDog` is the right place. If you want to install it for all users on your PC than we suggest that you create a folder 
-`"C:\Users\All users\Local\Programs\LogDog`. Of course `C:\MyPrograms\LogDog` might be okay as well.
+LogDog does not come with an installer. All you have to do is to copy it into a folder where you have the right to add, delete and change files. That means `C:\Proram Files` and `C:\Proram Files (x86)` are not an option. If you want to install the application just for your own user ID then this is the right place:  
+
+~~~
+"C:\Users\JohnDoe\AppData\Local\Programs\LogDog
+~~~
+
+If you want to install it for all users on your PC then we suggest that you create this folder:
+
+~~~
+"C:\Users\All users\Local\Programs\LogDog
+~~~
+
+Of course `C:\MyPrograms\LogDog` might be okay as well.
 
 You start LogDog by double-clicking the EXE. You can then consult LogDog's help for how to open a log file. We recommend to go for the "Investigate folder" option. The reason is that every night at 24:00 a new log file with a new name is created. To put any new(er) log file on display you can issue the "Investigate folder" menu command again.
 
@@ -395,7 +406,10 @@ A> ### Destructors versus the Tracer
 A>
 A> When you trace through `TxtToCsv` the moment you leave the function the Tracer shows the function `Cleanup` of the `Logger` class. The function is declared as a destructor.
 A>
-A> In case you wonder why that is: a destructor (if any) is called when the instance of a class is destroyed (or very shortly thereafter). `MyLogger` is localized in the header of `TxtToCsv`, meaning that when `TxtToCsv` ends, this instance of the `Logger` class is destroyed and the destructor is invoked. Since the Tracer was up and running, the destructor makes an appearance in the Tracer.
+A> In case you wonder why that is: a destructor (if any) is called when the instance of a class is destroyed (or shortly thereafter). `MyLogger` is localized in the header of `TxtToCsv`, meaning that when `TxtToCsv` ends, this instance of the `Logger` class is destroyed and the destructor is invoked. Since the Tracer was up and running, the destructor makes an appearance in the Tracer.
 
-[^apltree]: You can download the complete APLTree library from the APL Wiki: <http://download.aplwiki.com/>
+
+[^apltree]: You can download all members of the APLTree library from the APL Wiki: <http://download.aplwiki.com/>
+
+
 [^bom]: Details regarding the BOM: <https://en.wikipedia.org/wiki/Byte_order_mark>

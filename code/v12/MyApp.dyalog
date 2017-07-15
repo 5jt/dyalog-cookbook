@@ -15,7 +15,7 @@
     ∇
 
     ∇ r←Version
-      r←(⍕⎕THIS)'1.6.0' '2017-02-26'
+      r←(⍕⎕THIS)'1.6.0' 'YYYY-MM-DD'
     ∇
 
     ∇ History      

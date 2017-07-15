@@ -46,6 +46,9 @@ Carries the name of the computer.
 ### ComSpec
 Defaults to "C:\\WINDOWS\\system32\\cmd.exe".
 
+### ERRORLEVEL
+This variable does not necessarily exist. If you execute `⎕OFF 123` in an APL application then this will set `ERRORLEVEL` to 123.
+
 ### HomePath
 Defaults to "\\Users\\{yourName}".
 

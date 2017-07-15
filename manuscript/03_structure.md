@@ -8,22 +8,14 @@ To follow this, we'll make a very simple program. It counts the frequency of let
 
 Let's assume you've done the convenient thing. Your code is in a workspace. Everything it needs to run is defined in the workspace. Maybe you set a latent expression, so the program starts when you load the workspace. 
 
-In this chapter, we shall convert a DWS (saved workspace) to some DYALOG scripts and a DYAPP script to assemble an active workspace from them. Using scripts to store your source code has many advantages: You can use a traditional source code management system rather than having your code and data stored in a binary blob. Changes that you make to your source code are saved immediately, rather than relying on your remembering to save the workspace at some suitable point in your work process. Finally, you don't need to worry about crashes in your code or externally called modules which might prevent your from saving your work - or even corruption of the active workspace which might prevent you from saving it.
+In this chapter, we shall convert a DWS (saved workspace) to some DYALOG scripts and introduce a DYAPP script to assemble an active workspace from them. Using scripts to store your source code has many advantages: You can use a traditional source code management system rather than having your code and data stored in a binary blob. Changes that you make to your source code are saved immediately, rather than relying on your remembering to save the workspace at some suitable point in your work process. Finally, you don't need to worry about crashes in your code or externally called modules and also any corruption of the active workspace which might prevent you from saving it.
 
-A> The _workspace_ (WS) is where the APL interpreter manages all code and all data in memory. The Dyalog tracer / debugger has extensive edit-and-continue capabilities, the downside is that these have occasionally been known to corrupt the workspace.
+A> ### Corrupted workspaces
 A> 
+A> The _workspace_ (WS) is where the APL interpreter manages all code and all data in memory. The Dyalog tracer / debugger has extensive edit-and-continue capabilities; the downside is that these have been known to occasionally corrupt the workspace.
 A> 
-A>The interpreter checks WS integrity every now and then; how often can be influenced by setting certain debug flags; see "The APL Command Line" in the documentation for details.
-A>
-A>When it finds that the WS is damaged it will create a dump file called "aplcore" and exit, in order to prevent your application from producing (or storing) incorrect results.
-A>
-A>Regularly rebuilding the workspace from source files removes the risk of accumulating damage to the binary workspace.
-A>
-A>Note that an aplcore is useful in two ways: 
-A>
-A>* You can copy from it. It's not a good idea to copy the whole thing though; something has been wrong with it after all. It may be fine to recover a particular object (or some objects) from it, although you would be advised to extract the source and rebuild recovered objects from the source, rather than using binary data recovered from an aplcore. Add a colon: `)copy aplcore. myObj`
-A>
-A>* Send the aplcore to Dyalog. It's kind of a dump, so they might be able to determine the cause of your problem.
+A>The interpreter checks WS integrity every now and then; how often can be influenced by setting certain debug flags; see the appendix "Workpace integrity, corruptions and aplcores" for details.
+
 
 ## How can you distribute your program?
 
@@ -61,17 +53,15 @@ We'll keep the program in manageable pieces – 'modules' – and keep those pie
 For this there are many _source-control management_ (SCM) systems and repositories available. Subversion, Git and Mercurial are presently popular. These SCMs support multiple programmers working on the same program, and have sophisticated features to help resolve conflicts between them. 
 
 A> ### Source code management with acre
-A> Some members of the APL community prefer to use a source code management system that is tailored to solve the needs of an APL programmer, or a team of APL programmers: acre. APL code is very compact, teams are typically small, and work on APL applications tends to be very oriented towards functions rather than modules. Other aspects of working in APL impact the importance of features of the SCM that you use. acre is an excellent alternative to Git etc., and it is available as Open Source; we will discuss acre in appendix 3.
+A> Some members of the APL community prefer to use a source code management system that is tailored to solve the needs of an APL programmer, or a team of APL programmers: acre. APL code is very compact, teams are typically small, and work on APL applications tends to be very oriented towards functions rather than modules. Other aspects of working in APL impact the importance of features of the SCM that you use. acre is an excellent alternative to Git etc., and it is available as Open Source; we will discuss acre in its own appendix.
 
-Whichever SCM you use (we used GitHub for writing this book and the code in it) your source code will comprise class and namespace scripts (DYALOGs) for the application. Test cases and the help system will be ordinary (= non-scripted) namespaces. We us a _build script_ (DYAPP) to assemble the application as well as the development environment.
+Whichever SCM you use (we used GitHub for writing this book and the code in it) your source code will comprise class and namespace scripts (DYALOGs) for the application. The help system will be an ordinary (= non-scripted) namespace. We us a _build script_ (DYAPP) to assemble the application as well as the development environment.
 
 You'll keep your local working copy in whatever folder you please. We'll refer to this _working folder_ as `Z:\` but it will of course be wherever suits you. 
 
 ## The LetterCount workspace
 
-We suppose you already have a workspace in which your program runs. We don't have your code to hand so we'll use ours. 
-
-We'll use a very small and simple program, so we can focus on packaging the code as an application, not on writing the application itself. Your application will of course be much more interesting.
+We suppose you already have a workspace in which your program runs. We don't have your code to hand so we'll use ours. We'll use a very small and simple program, so we can focus on packaging the code as an application, not on writing the application itself.
 
 So we'll begin with the LetterCount workspace. It's trivially simple (we'll extend a bit what it does as we go) but for now it will stand in for your code. You can download it from the [book's web site](cookbook.dyalog.com).
 
@@ -138,9 +128,9 @@ That amounts to five functions. Two of them are specific to the application: `Tx
 
 Note that we have some functions that start with lowercase characters while others start with uppercase characters. In a larger application you might want to be able to tell data from calls to functions and operators by introducing consistent naming conventions. Which one you settle for is less important then choosing something consistent. And don't forget to put it into a document any programmer joining the team is supposed to read first. 
 
-`toUppercase` uses the fast case-folding I-beam introduced in Dyalog 16.0 (also available in 14.0 & 14.1 from revision 27141 onwards).
+`toUppercase` uses the fast case-folding I-beam introduced in Dyalog 15.0 (also available in 14.0 & 14.1 from revision 27141 onwards).
 
-`TxtToCsv` uses the file-system primitives `⎕NINFO`, `⎕NGET`, and `⎕NPUT` introduced in Dyalog 16.0.
+`TxtToCsv` uses the file-system primitives `⎕NINFO`, `⎕NGET`, and `⎕NPUT` introduced in Dyalog 15.0.
 
 ### How to organise the code     
 
@@ -184,7 +174,7 @@ The object tree in the workspace might eventually look something like:
 
 I> `⍟` denotes a namespace, `○` a class. These are the characters (among others) you can use to tell the editor what kind of object you wish to create, so for a class `)ed ○ Foo`. Press F1 with the cursor on `)ed` in the session for details. 
 
-Note that we keep the user interface (`UI`) separate from the business logic. This is considered good practise because whatever you believe right now, you will almost certainly consider to exchange a particular type of UI (say .NET Windows forms) against a different one (say HTML+JavaScript). This is difficult in any case but much easier when you separate them right from the start.
+Note that we keep the user interface (`UI`) separate from the business logic. This is considered good practise because whatever you believe right now, you will almost certainly consider to exchange a particular type of UI (say .NET Windows forms) against a different one (say HTML+JavaScript). This is difficult in any case but much easier when you separate them right from the start. However, our application is so simple that we collect all its code in a namespace script `MyApp` in order to save one level in the namespace hirarchy. If this were to be a serious project then you would not do this even if the amount of code is small, because application tend to change and grow over time, sometimes significantly, so you would be better prepared to have, say, a namespace `MyApp` that contains, say, a namespace script `engine` with all the code.
 
 The objects in the root are 'public'. They comprise `MyApp` and objects other applications might use. (You might add another application that uses `#.Utilities`) Everything else is encapsulated within `MyApp`. Here's how to refer in the `MyApp` code to these different categories of objects. 
 
@@ -237,7 +227,9 @@ Some equivalents in Dyalog:
   status←(bar>3) #.Utilities.means 'ok' #.Utilities.else 'error'
   ~~~
 
-  We can improve it by defining aliases [^alias] within `#.MyApp`:
+  We can improve it by defining aliases within `#.MyApp`:
+  
+  I> We use the term "alias" her for a reference pointing to a particular script or namespace. In this context it is important to note that after executing `C←#.Constants` the alias `C` is _identical_ to `#.Constants`, therefore  ` 1 ←→ C≡#.Constants`.
 
   ~~~
   C←#.Constants ⋄ U←#.Utilities
@@ -249,7 +241,7 @@ Some equivalents in Dyalog:
   status←(bar>3) U.means 'ok' U.else 'error'
   ~~~
 
-What style you prefer is mainly a matter of personal taste, and indeed even the authors do not necessarily agree on this. There are however certain rules you should keep in mind:
+What style you prefer is mainly a matter of personal taste, and indeed even the authors do not necessarily agree on this. There are however certain rules you should keep in mind.
 
 #### Execution time
 
@@ -269,7 +261,7 @@ taxfree←(dob>19491231) U.means 35000 U.else 50000
 
 is easily readable despite it being formed of APL primitives and user defined functions. In an agile environment when the end user is supposed to discuss business logic with implementors this can be a big advantage.
 
-For classes however there is a better way to do this: include the namespace `#.Utilities`. In order to illustrate this let's assume for a moment that `MyApp` is not a namespace but a class.
+For classes however there is another way to do this: include the namespace `#.Utilities`. In order to illustrate this let's assume for a moment that `MyApp` is not a namespace but a class.
 
 ~~~
 :Clase MyApp
@@ -354,7 +346,9 @@ A>   is guaranteed to be executed as a unit. Depending on the circumstances this
 A>
 A> * Make multiple assignments on a single line as in `⎕IO←1 ⋄ ⎕ML←3 ⋄ ⎕PP←20`. Not for variable settings, just system stuff. 
 A> * Assignments to `⎕LX` as in `⎕LX←#.FileAndDirs.PolishCurrentDir ⋄ ⎕←Info`.
-A> * To make dfns more readable as in `{w←⍵ ⋄ ((w='a')/w)←'b' ⋄ ⍵}`. There is really no reason to make this a multi-line dfn.
+A> * To make dfns more readable as in `{w←⍵ ⋄ ((w='¯')/w)←'-' ⋄ ⍵}`. There is really no reason to make this a multi-line dfn.
+A>
+A>   (Note that from version 16 onwards you can achieve the same result with `{'-'@(⍸⍵='¯')⊣⍵}`)
 A> * You _cannot_ trace into a one-line dfn. This can be quite useful. For example, this function:
 A>
 A>    ~~~
@@ -377,7 +371,7 @@ Trying to resolve the names `means` and `else`, the interpreter would consult `�
 
 ### Convert the WS LetterCount into a single scripted namespace.
 
-If your own application is already using scripted namespaces then you can skip this, of course.
+If your own application is already using scripted namespaces and/or classes then you can skip this, of course.
 
 We assume you have downloaded the WS and saved it as `Z:\code\v00\LetterCount`.
 
@@ -392,7 +386,7 @@ Note that all the stuff in that WS lives in the root (`#`). We have to change th
    This makes sure that we really use the same values for important system variables as the WS by copying their values into the namespace `#.MyApp`. 
 1. Execute `]save #.MyApp Z:\code\v01\MyApp -makedir -noprompt` 
 
-The last step will save the contents of the namespace `#.MyApp` into `Z:\code\v01\MyApp.dyalog`. In case the folder `v01` (or both `code` and `v01` etc.) does not yet exist the `]save` command will create it on our behalf due to the `-makedir` option. `-noprompt` makes sure that `]save` does not ask any questions.
+The last step will save the contents of the namespace `#.MyApp` into `Z:\code\v01\MyApp.dyalog`. In case the folder `v01` (or any of its parents) does not yet exist the `]save` command will create it on our behalf due to the `-makedir` option. `-noprompt` makes sure that `]save` does not ask any questions.
 
 This is how the script would look like:
 
@@ -451,7 +445,7 @@ Accents←2 28⍴'ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝAAAAAA
 :EndNamespace 
 ~~~
 
-There might be minor differences depending on which version of the `]save` user command and which version of SALT you are actually using.
+There might be minor differences depending on the version of the `]save` user command and the version of SALT you are actually using.
 
 This is the easiest way to convert any ordinary workspace into one or more scripted namespaces.
 
@@ -481,7 +475,7 @@ z:/texts/en/wizardoz.txt
 
 We'll first make `MyApp` a simple 'engine' that does not interact with the user. Many applications have functions like this at their core. Let's enable the user to call this engine from the command line with appropriate parameters. By the time we give it a user interface, it will already have important capabilities, such as logging errors and recovering from crashes. 
 
-Our engine will be based on the `TxtToCsv` function. It will take one parameter, a fully-qualified filepath for a folder or file. If a file, it will write a sibling CSV. If a folder, it will read any TXT files in the folder, count the letter frequencies and write them as a CSV file sibling to that folder. Simple enough. Here we go. 
+Our engine will be based on the `TxtToCsv` function. It will take one parameter, a fully qualified filepath for a folder or file. If it is a file it will write a sibling CSV. If it is a folder it will read all TXT files in the folder, count the letter frequencies and write them as a CSV file sibling to that folder. Simple enough. Here we go. 
 
 ## Building from a DYAPP
 
@@ -504,7 +498,7 @@ Here's how the object tree will look:
 
 We've saved the very first version as `z:\code\v01\MyApp.dyalog`. Now we take a copy of that and save it as `z:\code\v02\MyApp.dyalog`. Alternatively you can download version 2 from the book's website of course.
 
-Note that compared with version 1 we improve in several ways:
+Note that compared with version 1 we will improve in several ways:
 
 * We create a DYAPP which will assemble the workspace for us.
 * We define all constants we need in a scripted namespace `Constants` which has a sub-namespace `NINFO` which in turn has a sub-namespace `TYPES`.
@@ -587,7 +581,7 @@ Finally the `MyApp.dyalog` script:
 
 ⍝ === Aliases
 
-    U←##.Utilities ⋄ C←##.Constants  ⍝ must be defined previously
+    U←##.Utilities ⋄ C←##.Constants
 
 ⍝ === VARIABLES ===
 
@@ -601,7 +595,7 @@ Finally the `MyApp.dyalog` script:
 
     ∇ noOfBytes←TxtToCsv fullfilepath;csv;stem;path;files;lines;nl;enc;tgt;tbl
    ⍝ Write a sibling CSV of the TXT located at fullfilepath,
-   ⍝ containing a frequency count of the letters in the file text
+   ⍝ containing a frequency count of the letters in the file text.
       fullfilepath~←'"'
       csv←'.csv'
       :Select C.NINFO.TYPE ⎕NINFO fullfilepath
@@ -651,7 +645,7 @@ This version comes with a number of improvements. Let's discuss them in detail:
     
     In short: way more often than not it is a good idea to move loops (`:For`, `:Repeat`, `:While`) into their own function (or operator) doing just the loop.
     
-* `ProcessFile` is an operator rather than a function. Currently it takes the function `CountLetters` as operand, but it could by any other function that's supposed to do something useful with the contents of those files. Therefore having `ProcessFiles` as an operator is more general.
+* `ProcessFile` is an operator rather than a function. Currently it takes the function `CountLetters` as operand, but it could be any other function that's supposed to do something useful with the contents of those files. Therefore having `ProcessFiles` as an operator is more general.
   
 * Because of `enc` and `nl` we have to have two lines anyway, but if we weren't interested in `enc` and `nl` a one-liner would do: `tbl⍪←CountLetters ⊃⎕NGET file`. Is this a good idea?
 
@@ -703,5 +697,3 @@ We have reached our goal:
 * Along the way we have improved the quality of the code, making it more readable and easier to debug.
 
 [^csv]: With version 16.0 Dyalog has introduced a system function `⎕CSV` for both importing from and exporting to CSV files.
-
-[^alias]: We use the term "alias" her for a reference pointing to a particular script or namespace. In this context it is important to note that after executing `C←#.Constants` the alias `C` is _identical_ to `#.Constants`, therefore  ` 1 ←→ C≡#.Constants`.

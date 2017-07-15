@@ -2,20 +2,18 @@
 
 # Configuration settings
 
-We are going to want our logging and error handling to be configurable. In fact, we will soon have lots of state settings: folders for log files and crashes, debug flag, flag for switching off error trapping, email address to report to in case of an error. The time has come to discuss configuration settings.
- 
-Thinking more widely, an application's configuration includes all kinds of state: e.g., folders for log files and crashes, debug flag, a flag for switching off error trapping, email address to report to in case of an error, window positions, recent filepaths, GUI themes...
+We are going to want our logging and error handling to be configurable. In fact, we will soon have lots of state settings; thinking more widely, an application's configuration includes all kinds of state: e.g., folders for log files and crashes, a debug flag, a flag for switching off error trapping, an email address to report to, you name it.
 
 A variety of mechanisms for permanently storing configuration settings exists: Under Microsoft Windows we have the Windows Registry, and there are a number of cross-platform file formats to consider: XML, JSON - and good old INI files. We will discuss these in detail.
 
 
 ## Using the Windows Registry
 
-The Windows Registry is held in memory, so it is fast to read. It has been widely used to store configuration settings. Many would say _abused_. For quite some time it was considered bad to have application-specific config files. Everything was expected to go into the Windows Registry. The pendulum started to swing back the other way now for several years, and we see application-specific config files becoming ever more common. We follow a consensus opinion that it is well to minimise use of the Registry. 
+The Windows Registry is held in memory, so it is fast to read. It has been widely used to store configuration settings; some would say abused. However, for quite some time it was considered bad to have application-specific config files. Everything was expected to go into the Windows Registry. The pendulum started to swing back the other way now for several years, and we see application-specific config files becoming ever more common. We follow a consensus opinion that it is well to minimise use of the Registry. 
 
 Settings needed by Windows itself _have_ to be stored in the Registry. For example, associating a file extension with your application, so that double clicking on its icon launches your application. 
 
-The APLTree classes [WinRegSimple](http://aplwiki.com/WinReg) and [WinReg](http://aplwiki.com/WinReg) provide methods for handling the Windows Registry. 
+The APLTree classes [WinRegSimple](http://aplwiki.com/WinReg) and [WinReg](http://aplwiki.com/WinReg) provide methods for handling the Windows Registry.  We will discuss them in their own chapter.
 
 MyApp doesn't need the Windows Registry at this point. We'll store its configurations in configuration files.
 
@@ -55,7 +53,7 @@ For invocation when the application is launched.
 : We could look in the command line arguments for an INI.
 
 As part of the user's profile
-: The Windows environment variable `APPDATA` points to the individual user's roaming profile, so we might look there for a `MyApp\MyApp.ini` file. "Roaming" means that no matter which computer a user logs on to in a Windows Domain [^domain] her personal settings, preferences, desktop etc. roams with her. The Windows environment variable `LOCALAPPDATA` on the other hand defines a folder that is saved just locally. Typically `APPDAATA` points to something like `C:\Users\{username}\AppData\Roaming` and `LOCALAPPDATA` to `C:\Users\{username}\AppData\Local`.
+: The Windows environment variable `APPDATA` points to the individual user's roaming profile, so we might look there for a `MyApp\MyApp.ini` file. "Roaming" means that no matter which computer a user logs on to in a Windows Domain [^windomain] her personal settings, preferences, desktop etc. roams with her. The Windows environment variable `LOCALAPPDATA` on the other hand defines a folder that is saved just locally. Typically `APPDAATA` points to something like `C:\Users\{username}\AppData\Roaming` and `LOCALAPPDATA` to `C:\Users\{username}\AppData\Local`.
 
 I> Note that when a user logs on to another computer all the files in `APPDATA` are syncronized first. Therefore it is not too good an idea to save a logfile in `APPDATA` that will eventually grow large -- that should go into `LOCALAPPDATA`.
 
@@ -63,7 +61,8 @@ From the above we get a general pattern for configuration settings:
 
 1. Defaults in the program code
 2. Overwrite from ALLUSERSPROFILE if any
-3. If INI in command line, overwrite from it; else overwrite from USERPROFILE
+3. Overwrite from USERPROFILE 
+4. Overwrite from INI in command line, if any
 
 However, for the Cookbook we keep things simple: we look for an INI file that is a sibling of the DYAPP or the EXE for now but will allow this to be overwritten via the command line with something like `INI='C:\MyAppService\MyApp.ini`. We need this when we make MyApp a Windows Scheduled Task, or run it as a Windows Service.
 
@@ -86,9 +85,10 @@ and run the DYAPP to recreate the `MyApp` workspace.
 
 You can read `IniFiles`'s documentation in a browser with `]ADoc #.IniFiles`.
 
+
 ## The INI file
 
-This is the contents of `code\v05\MyApp.ini`:
+This is the contents of the newly introduced `code\v05\MyApp.ini`:
 
 ~~~
 localhome = '%LOCALAPPDATA%\MyApp'
@@ -114,13 +114,13 @@ If you have not copied `v05` from the website make sure you create an INI file w
 
 Notes:
 
-* The `IniFiles` class offers some features that are uncommon. Those are discussed below. This is however by no means a violation of the standard because for INI files there is no such thing.
+* The `IniFiles` class offers some unique features. Those are discussed below. This is by no means a violation of the standard because for INI files there is no such thing.
 
 * Assignments above the first section -- which is `[Config]` -- are variables local to the INI file. We can refer to them by putting curlies (`{}`) around their names as with `{localhome}` but they have no other purpose. You can see that `localhome` is referred to twice in the `[Folders]` section, and why that is useful.
 
 * `IniFiles` supports two data types: character and number. Everything between two quotes is character, everything that is not is expected to be a number.
 
-* `Debug` is set to ¯1 -- it is indeed going to be a numeric value because there are no quotes involved. `debug` defines whether the application runs in debug mode or not. Most importantly `debug←1` will switch off global error trapping, something we will soon introduce. `¯1` means that the INI file does not set the flag. Therefore it will latter in the application default to 1 in a development environment and to 0 in a runtime evenvironment. By setting this to either 1 or 0 in the INI file you can overwrite this.
+* `Debug` is set to ¯1 -- it is indeed going to be a numeric value because there are no quotes involved. `debug` defines whether the application runs in debug mode or not. Most importantly `debug←1` will switch off global error trapping, something we will soon introduce. `¯1` means that the INI file does not set the flag. Therefore it will later in the application default to 1 in a development environment and to 0 in a runtime evenvironment. By setting this to either 1 or 0 in the INI file you can force it to be a particular value.
 
 * `Trap` can be used to switch off error trapping globally. It will be used in statements like `:Trap Config.Traps/0`. What `Config` is we will discuss in a minute.
 
@@ -168,17 +168,16 @@ We create a new function `CreateConfig` for that:
 
 What the function does:
 
-* First it creates an unnamed namespace and assigns it to `Config`.
-* It then fixes a function `∆List` inside `Config`.
-* It then populates `Config` with the defaults for all the settings we are going to use. Remember, we might not find an INI file.
-* It then creates a name for the INI file and checks whether such an INI file exists.
-* If that is the case then it instatiates the INI file and then copies all values it can find from the INI file to `Config`, overwriting the defaults.
+* It creates an unnamed namespace and assigns it to `Config`.
+* It fixes a function `∆List` inside `Config`.
+* It populates `Config` with the defaults for all the settings we are going to use. Remember, we might not find an INI file.
+* It creates a name for the INI file and checks whether it exists. If that's the case then it instatiates the INI file and then copies all values it can find from the INI file to `Config`, overwriting the defaults.
 
 Notes:
 
 * The `Get` function requires a section and a key as right argument. They can be provided either as a two-item vector as in `'Config' 'debug'` or as a text vector with section and key separated by a colon as in `'Config:debug'`.
 
-* `Get` requires a given section to exist, otherwise it will throw an error. It is tolerant in case a given key does not exist in case a left argument is provided: in that case the left argument is considered a default and returned by `Get`. In case no left argument was specified an error is thrown.
+* `Get` requires a given section to exist, otherwise it will throw an error. It is tolerant in case a given key does not exist in case a left argument is provided: in that case the left argument is considered a default and returned by `Get`. In case the key does not exist _and_ no left argument was specified an error is thrown.
 
 * In case you cannot be sure whether a section/key combination exists (a typical problem when after an update a newer version of an application hits an old INI file) you can check with the `Exist` method.
   
@@ -197,9 +196,7 @@ Now that we have moved `Accents` to the INI file we can get rid of these lines i
 
 ~~~
 ⍝ === VARIABLES ===
-
     Accents←'ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝ' 'AAAAAACDEEEEIIIINOOOOOOUUUUY'
-
 ⍝ === End of variables definition ===
 ~~~
 
@@ -357,9 +354,12 @@ We need to change the `Version` function:
 ~~~
 
 And finally we create a new standalone EXE as before and run it to make sure that everything keeps working. (Yes, we need test cases)
+
  
-[^domain]: <https://en.wikipedia.org/wiki/Windows_domain>
+[^windomain]: <https://en.wikipedia.org/wiki/Windows_domain>
+
 
 [^semi]: So-called _semi-globals_ are variables to be read or set by functions to which they are not localised. They are _semi-globals_ rather than globals because they are local to either a function or a namespace. From the point of view of the functions that do read or set them, they are indistinguishable from globals -- they are just mysteriously 'around'. 
 
-[^fire]: FiRe stands for _Find and Replace_. It is a powerful tool for both search and replace operations in the workspace. It is also a member of the APLTree Open Source Library. For details see <http://http://aplwiki.com/Fire>.
+
+[^fire]: FiRe stands for _Find and Replace_. It is a powerful tool for both search and replace operations in the workspace. It is also a member of the APLTree Open Source Library. For details see <http://http://aplwiki.com/Fire>. Fire is discussed in the chapter "Useful user commands".
