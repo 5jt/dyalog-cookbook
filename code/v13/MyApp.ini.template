@@ -13,6 +13,8 @@ Accents     ,='AAAAAACDEEEEIIIINOOOOOOUUUUY'
 Logs        = '{localhome}\Log'
 Errors      = '{localhome}\Errors'
 
+Watch       = ''
+
 [Ride]
 Active      = 0
 Port        = 4502

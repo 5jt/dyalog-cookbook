@@ -1,21 +1,38 @@
 ﻿:Namespace MyApp
+⍝ Counting letter frequencies in text.\\
+⍝ Can do one of:
+⍝ * calculate the letters in a given document.
+⍝ * calculate the letters in all documents in a given folder.
+⍝
+⍝ Sample application used by the Dyalog Cookbook.\\
+⍝ Authors: Kai Jaeger & Stephen Taylor.
+⍝ For more details see <http://cookbook.dyalog.com>
 
     ⎕IO←1 ⋄ ⎕ML←1 ⋄ ⎕WX←3 ⋄ ⎕PP←15 ⋄ ⎕DIV←1
 
+    ∇ Z←Copyright
+      Z←'The Dyalog Cookbook, Kai Jaeger & Stephen Taylor 2017'
+    ∇
+
     ∇ r←Version
-   ⍝ * 1.4.0:
-   ⍝   * Handles errors with a global trap.
-   ⍝   * Returns an exit code to calling environment.
-   ⍝ * 1.3.0:
-   ⍝   * MyApp gives a Ride now, INI settings permitted.
-   ⍝ * 1.2.0:
-   ⍝   * The application now honours INI files.
-   ⍝ * 1.1.0:
-   ⍝   * Can now deal with non-existent files.
-   ⍝   * Logging implemented.
-   ⍝ * 1.0.0
-   ⍝   * Runs as a stand-alone EXE and takes parameters from the command line.
-      r←(⍕⎕THIS)'1.4.0' 'YYYY-MM-DD'
+      r←(⍕⎕THIS)'1.5.0' 'YYYY-MM-DD'
+    ∇
+
+    ∇ History      
+      ⍝ * 1.5.0:
+      ⍝   * MyApp is now ADOCable (function PublicFns).
+      ⍝ * 1.4.0:
+      ⍝   * Handles errors with a global trap.
+      ⍝   * Returns an exit code to calling environment.
+      ⍝ * 1.3.0:
+      ⍝   * MyApp gives a Ride now, INI settings permitted.
+      ⍝ * 1.2.0:
+      ⍝   * The application now honours INI files.
+      ⍝ * 1.1.0:
+      ⍝   * Can now deal with non-existent files.
+      ⍝   * Logging implemented.
+      ⍝ * 1.0.0
+      ⍝   * Runs as a stand-alone EXE and takes parameters from the command line.
     ∇
 
 ⍝ === Aliases (referents must be defined previously)
@@ -255,6 +272,10 @@
       #.ErrorParms.windowsEventSource←'MyApp'
       #.ErrorParms.addToMsg←' --- Something went terribly wrong'
       trap←force ##.HandleError.SetTrap'#.ErrorParms'
+    ∇
+
+    ∇ r←PublicFns
+      r←'StartFromCmdLine' 'TxtToCsv' 'SetLX' 'GetCommandLineArg'
     ∇
 
 :EndNamespace

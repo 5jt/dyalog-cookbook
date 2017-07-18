@@ -41,8 +41,8 @@
     ∇
 
     ∇ (target files)←GetFiles fullfilepath;csv;target;path;stem
-    ⍝ Investigates `fullfilepath` and returns a list with files
-    ⍝ may contain zero, one or many filenames.
+    ⍝ Investigates `fullfilepath` and returns a list with files.
+    ⍝ May return zero, one or many filenames.
       fullfilepath~←'"'
       csv←'.csv'
       :If F.Exists fullfilepath

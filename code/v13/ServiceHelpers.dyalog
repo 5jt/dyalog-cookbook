@@ -15,8 +15,9 @@
 
       cmd←⊂'sc delete MyAppService'
       cmd,←⊂'@echo off'
-      cmd,←⊂'if NOT ["%errorlevel%"]==["0"] ('
-      cmd,←⊂'pause'
+      cmd,←⊂'    echo Error %errorlevel%'      
+      cmd,←⊂'    if NOT ["%errorlevel%"]==["0"] ('
+      cmd,←⊂'    pause'
       cmd,←⊂'exit /b %errorlevel%'
       cmd,←⊂')'
       #.APLTreeUtils.WriteUtf8File(path,'\Uninstall_Service.bat')cmd

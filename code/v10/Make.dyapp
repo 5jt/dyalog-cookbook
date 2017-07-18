@@ -9,7 +9,7 @@ Load ..\AplTree\EventCodes
 Load Constants
 Load Utilities
 Load MyApp
-Run #.MyApp.SetLXForApplication #.MyApp.GetCommandLineArg ⍬
+Run #.MyApp.SetLX ⍬
 
 Load Make
 Run #.Make.Run 1

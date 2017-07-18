@@ -47,7 +47,7 @@
    ⍝ within that folder are processed. The resulting CSV holds the total frequency count.\\
    ⍝ Returns one of the values defined in `EXIT`.
       (rc target files)←GetFiles fullfilepath
-      {⍵:⍎'. ⍝ Deliberate error (INI flag "ForceError")'}Config.ForceError
+      {~⍵:r←⍬ ⋄ 'Deliberate error (INI flag "ForceError"'⎕SIGNAL 11}Config.ForceError
       :If rc=EXIT.OK
           :If 0∊⍴files
               MyLogger.Log'No files found to process'
@@ -71,7 +71,7 @@
     ∇
 
     ∇ (rc target files)←GetFiles fullfilepath;csv;target;path;stem;isDir
-   ⍝ Checks argument and returns liast of files (or single file).
+    ⍝ Checks argument and returns a list of files (or a single file).
       fullfilepath~←'"'
       files←target←''
       :If 0∊⍴fullfilepath
@@ -87,7 +87,7 @@
       :Else
           :If isDir
               target←F.NormalizePath fullfilepath,'\total',csv
-              files←⊃F.Dir fullfilepath,'/*.txt'
+              files←⊃F.Dir fullfilepath,'\*.txt'
           :Else
               (path stem)←2↑⎕NPARTS fullfilepath
               target←path,stem,csv
@@ -151,7 +151,7 @@
     ⍝ Prepares the application.
       #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
       Config←CreateConfig ⍬
-      CheckForRide (0≠Config.Ride) Config.Ride
+      CheckForRide Config.(Ride WaitForRide)
       MyLogger←OpenLogFile Config.LogFolder
       MyLogger.Log'Started MyApp in ',F.PWD
       MyLogger.Log #.GetCommandLine      
@@ -159,6 +159,7 @@
     ∇
 
     ∇ Config←CreateConfig dummy;myIni;iniFilename
+    ⍝ Instantiate the INI file and copy values over to a namespace `Config`.
       Config←⎕NS''
       Config.⎕FX'r←∆List' 'r←{0∊⍴⍵:0 2⍴'''' ⋄ ⍵,[1.5]⍎¨⍵}'' ''~¨⍨↓⎕NL 2'
       Config.Debug←A.IsDevelopment
@@ -167,6 +168,7 @@
       Config.LogFolder←'./Logs'
       Config.DumpFolder←'./Errors'
       Config.Ride←0      ⍝ If this is not 0 the app accepts a Ride & treats Config.Ride as port number
+      Config.WaitForRide←0 ⍝ If 1 `CheckForRide` will enter an endless loop.
       Config.ForceError←0
       iniFilename←'expand'F.NormalizePath'MyApp.ini'
       :If F.Exists iniFilename
@@ -180,23 +182,23 @@
           :If myIni.Exist'Ride'
           :AndIf myIni.Get'Ride:Active'
               Config.Ride←⊃Config.Ride myIni.Get'Ride:Port'
+              Config.WaitForRide←⊃Config.Ride myIni.Get'Ride:Wait'
           :EndIf
       :EndIf
       Config.LogFolder←'expand'F.NormalizePath Config.LogFolder
       Config.DumpFolder←'expand'F.NormalizePath Config.DumpFolder
     ∇
 
-    ∇ {r}←{wait}CheckForRide (rideFlag ridePort);rc
-    ⍝ Depending on what's provided as right argument we prepare
-    ⍝ for a Ride or we don't.
+    ∇ {r}←CheckForRide (ridePort waitFlag);rc
+     ⍝ Depending on what's provided as right argument we prepare for a Ride 
+     ⍝ or we don't. In case `waitFlag` is 1 we enter an endless loop.
       r←1
-      wait←{0<⎕NC ⍵:⍎⍵ ⋄ 0}'wait'
-      :If rideFlag 
+      :If ridePort
           rc←3502⌶0
           :If ~rc∊0 ¯1
               11 ⎕SIGNAL⍨'Problem switching off Ride, rc=',⍕rc
           :EndIf
-          rc←3502⌶'SERVE::',ridePort
+          rc←3502⌶'SERVE::',⍕ridePort
           :If 0≠rc
               11 ⎕SIGNAL⍨'Problem setting the Ride connecion string to SERVE::',(⍕ridePort),', rc=',⍕rc
           :EndIf
@@ -204,7 +206,7 @@
           :If ~rc∊0 ¯1
               11 ⎕SIGNAL⍨'Problem switching on Ride, rc=',⍕rc
           :EndIf
-          {_←⎕DL ⍵ ⋄ ∇ ⍵}⍣(⊃wait)⊣⍬
+          {}{_←⎕DL ⍵ ⋄ ∇ ⍵}⍣(⊃waitFlag)⊣1
       :EndIf
     ∇
 

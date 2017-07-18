@@ -16,7 +16,7 @@ At first glance you might think we can get away with splitting the DYAPP into tw
 * We need to make sure that the help system -- which we will introduce soon -- is properly compiled and configured.
 * Soon we need an installer that produces an EXE we can send to the customer for installing the software.
 
-We resume, as usual, by saving a copy of `Z:\code\v10` as `Z:\code\v11`. Now delete `MyApp.exe` from `Z:\code\v11`: from now on we will create the EXE somewhere else.
+We resume, as usual, by saving a copy of `Z:\code\v09` as `Z:\code\v10`. Now delete `MyApp.exe` from `Z:\code\v11`: from now on we will create the EXE somewhere else.
 
 
 ## The development environment

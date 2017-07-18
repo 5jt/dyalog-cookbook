@@ -72,8 +72,10 @@
       R←∆Failed
       ##.MyApp.(Config MyLogger)←##.MyApp.Initial ⍬
       rc←##.MyApp.TxtToCsv'This_file_does_not_exist'
-      →FailsIf ##.MyApp.EXIT.SOURCE_NOT_FOUND≢rc
+      →GoToTidyUp rc≢##.MyApp.EXIT.SOURCE_NOT_FOUND
       R←∆OK
+     ∆TidyUp:
+      ##.MyApp.Cleanup ⍬
     ∇
 
     ∇ R←Test_misc_01(stopFlag batchFlag);⎕TRAP;ini1;ini2
@@ -91,7 +93,7 @@
       r←##.Tester.EstablishHelpersIn ⎕THIS
     ∇
 
-    ∇ {r}←Cleanup dummy
+    ∇ {r}←Cleanup
       r←⍬
       :If 0<⎕NC'∆Path'
           ##.FilesAndDirs.RmDir ∆Path

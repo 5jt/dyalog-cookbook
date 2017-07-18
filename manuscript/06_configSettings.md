@@ -104,10 +104,6 @@ Accents     ,='AAAAAACDEEEEIIIINOOOOOOUUUUY'
 [Folders]
 Logs        = '{localhome}\Log'
 Errors      = '{localhome}\Errors'
-
-[Ride]
-Active      = 0
-Port        = 4502
 ~~~
 
 If you have not copied `v05` from the website make sure you create an INI file with this contents as a sibling of the DYAPP.
@@ -130,8 +126,6 @@ Notes:
 
 * `Errors` defines the folder were MyApp will save crash information later on when we establish global error handling.
 
-* The `[Ride]` section is useful when a stand-alone EXE does not do what it's expected to do but everything works fine in the development version of Dyalog. In that case you have only one option: to debug your EXE, and Ride will help you in doing this. We will discuss this topic in the next chapter.
-
 
 ## Initialising the workspace
 
@@ -147,7 +141,6 @@ We create a new function `CreateConfig` for that:
   Config.Accents←'ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝ' 'AAAAAACDEEEEIIIINOOOOOOUUUUY'
   Config.LogFolder←'./Logs'
   Config.DumpFolder←'./Errors'
-  Config.Ride←0      ⍝ ≠0: the app accepts a Ride & treats Config.Ride as port number
   iniFilename←'expand'F.NormalizePath'MyApp.ini'
   :If F.Exists iniFilename
       myIni←⎕NEW ##.IniFiles(,⊂iniFilename)
@@ -156,10 +149,6 @@ We create a new function `CreateConfig` for that:
       Config.Accents←⊃Config.Accents myIni.Get'Config:Accents'
       Config.LogFolder←'expand'F.NormalizePath⊃Config.LogFolder myIni.Get'Folders:Logs'
       Config.DumpFolder←'expand'F.NormalizePath⊃Config.DumpFolder myIni.Get'Folders:Errors'
-      :If myIni.Exist'Ride'
-      :AndIf myIni.Get'Ride:Active'
-          Config.Ride←⊃Config.Ride myIni.Get'Ride:Port'
-      :EndIf
   :EndIf
   Config.LogFolder←'expand'F.NormalizePath Config.LogFolder
   Config.DumpFolder←'expand'F.NormalizePath Config.DumpFolder
@@ -239,6 +228,10 @@ leanpub-end-insert
 
 Although both `MyLogger` as well as `Config` are kind of global and not passed as arguments it helps to assign them this way rather then hide the statement that creates them somewhere down the stack. This way it's easy to see where they are coming from. 
 
+A> ### Specifying an INI file on the command line
+A>
+A> We could pass the command line parameters as arguments to `Initial` and investigate whether it carries any `INI=` statement. If so the INI file specified this way should take precedence over any other INI file. However, we keep it simple here.
+
 We now need to think about how to access `Config` from within `TxtToCsv`.
 
 ## What we think about when we think about encapsulating state
@@ -288,9 +281,6 @@ We have used the most important features of the `IniFiles` class, but it has mor
  FOLDERS                                                                        
           Logs                                         %LOCALAPPDATA%\MyApp\Log 
           Errors                                       %LOCALAPPDATA%\MyApp\Log 
- RIDE                                                                           
-          Active                                                              1 
-          Port                                                             4502 
   ~~~
   
   `Get` returns a matrix with three columns:
@@ -329,14 +319,12 @@ We have used the most important features of the `IniFiles` class, but it has mor
   CONFIG   Debug                                                              ¯1 
   CONFIG   Trap                                                                1 
   FOLDERS  Errors                                       %LOCALAPPDATA%\MyApp\Log 
-  FOLDERS  Logs                                         %LOCALAPPDATA%\MyApp\Log 
-  RIDE     Active                                                              0 
-  RIDE     Port                                                             4502
-         q.RIDE.Port
-  4502       
+  FOLDERS  Logs                                         %LOCALAPPDATA%\MyApp\Log   
+         q.RIDE.Debug
+  ¯1
   ~~~
 
-## Final steps for version 5
+## Final steps
 
 We need to change the `Version` function:
 

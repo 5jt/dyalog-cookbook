@@ -6,8 +6,7 @@ Load ..\AplTree\IniFiles
 Load ..\AplTree\OS
 Load ..\AplTree\Logger
 Load ..\AplTree\EventCodes
-Load ..\AplTree\MarkAPL
-'Markdown2Help' #.⎕CY '..\apltree\Markdown2Help\Markdown2Help.dws'
+Load ..\AplTree\ServiceState
 Load Constants
 Load Utilities
 Load MyApp
@@ -15,6 +14,7 @@ Load ..\AplTree\Tester
 Load ..\AplTree\Execute
 Load Tests
 Load DevHelpers
-Run #.MyApp.SetLX #.MyApp.GetCommandLineArg ⍬
+Load ServiceHelpers
+Run #.MyApp.SetLXForApplication #.MyApp.GetCommandLineArg ⍬
 Run #.Tester.EstablishHelpersIn #.Tests
 Run #.DevHelpers.RunTests 0

@@ -15,10 +15,12 @@
     ∇
 
     ∇ r←Version
-      r←(⍕⎕THIS)'1.5.0' 'YYYY-MM-DD'
+      r←(⍕⎕THIS)'1.6.0' 'YYYY-MM-DD'
     ∇
 
-    ∇ History      
+    ∇ History
+      ⍝ * 1.6.0:
+      ⍝   * Method `RunAsService` added.
       ⍝ * 1.5.0:
       ⍝   * MyApp is now ADOCable (function PublicFns).
       ⍝ * 1.4.0:
@@ -88,6 +90,72 @@
       :EndIf
     ∇
 
+    ∇ {r}←RunAsService(earlyRide ridePort);⎕TRAP;MyLogger;Config;∆FileHashes
+    ⍝ Main function when app is running as a Windows Service.
+    ⍝ `earlyRide`: flag that allows a very early Ride.
+    ⍝ `ridePort`: Port number used by Ride.
+      r←⍬
+      #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
+      1 CheckForRide earlyRide ridePort
+      #.FilesAndDirs.PolishCurrentDir
+      ⎕TRAP←#.HandleError.SetTrap ⍬
+      (Config MyLogger)←Initial 1
+      ⎕TRAP←(Config.Debug=0)SetTrap Config
+      Config.ControlFileTieNo←CheckForOtherInstances ⍬
+      ∆FileHashes←0 2⍴''
+      :If #.ServiceState.IsRunningAsService
+          {MainLoop ⍵}&ridePort
+          ⎕DQ'.'
+      :Else
+          MainLoop ridePort
+      :EndIf
+      Cleanup ⍬
+      Off EXIT.OK
+    ∇
+
+    ∇ {r}←MainLoop port;S
+      r←⍬
+      MyLogger.Log'"MyApp" server started'
+      S←#.ServiceState
+      :Repeat
+          CheckForRide 0 port
+          LoopOverFolder ⍬
+          :If (MyLogger.Log S.CheckServiceMessages)S.IsRunningAsService
+              MyLogger.Log'"MyApp" is about to shut down...'
+              :Leave
+          :EndIf
+          ⎕DL 2
+      :Until 0
+     ⍝Done
+    ∇
+
+    ∇ {r}←LoopOverFolder dummy;folder;files;hashes;noOf;rc
+      r←⍬
+      :For folder :In Config.WatchFolders
+          files←#.FilesAndDirs.ListFiles folder,'\*.txt'
+          hashes←GetHash¨files
+          (files hashes)←(~hashes∊∆FileHashes[;2])∘/¨files hashes
+          :If 0<noOf←LoopOverFiles files hashes
+              MyLogger.Log(⍕noOf),' file(s) processed'
+              :If EXIT.OK=rc←TxtToCsv folder
+                  MyLogger.Log'Totals.csv updated'
+              :Else
+                  LogError rc('Could not update Totals.csv, RC=',EXIT.GetName rc)
+              :EndIf
+          :EndIf
+      :EndFor
+    ∇
+
+    ∇ noOf←LoopOverFiles(files hashes);file;hash;rc
+      noOf←0
+      :For file hash :InEach files hashes
+          :If EXIT.OK=rc←TxtToCsv file
+              ∆FileHashes⍪←file hash
+              noOf+←1
+          :EndIf
+      :EndFor
+    ∇
+
     ∇ (rc target files)←GetFiles fullfilepath;csv;target;path;stem;isDir
    ⍝ Checks argument and returns liast of files (or single file).
       fullfilepath~←'"'
@@ -130,10 +198,18 @@
       :EndFor
     ∇
 
-    ∇ {r}←SetLX dummy
+    ∇ {r}←SetLXForApplication dummy
    ⍝ Set Latent Expression (needed in order to export workspace as EXE)
       r←⍬
       ⎕LX←'#.MyApp.StartFromCmdLine #.MyApp.GetCommandLineArg ⍬'
+    ∇
+
+    ∇ {r}←SetLXForService(earlyRide ridePort)
+   ⍝ Set Latent Expression (needed in order to export workspace as EXE)
+   ⍝ `earlyRide` is a flag. 1 allows a Ride.
+   ⍝ `ridePort`  is the port number to be used for a Ride.
+      r←⍬
+      ⎕LX←'#.MyApp.RunAsService ',(⍕earlyRide),' ',(⍕ridePort)
     ∇
 
     ∇ {r}←StartFromCmdLine arg;MyLogger;Config;rc;⎕TRAP
@@ -142,7 +218,7 @@
       ⎕WSID←'MyApp'
       ⎕TRAP←#.HandleError.SetTrap ⍬
       #.⎕SHADOW'ErrorParms'
-      (Config MyLogger)←Initial ⍬
+      (Config MyLogger)←Initial 0
       ⎕TRAP←(Config.Debug=0)SetTrap Config
       rc←TxtToCsv arg~''''
       Cleanup ⍬
@@ -166,19 +242,25 @@
       instance←⎕NEW ##.Logger(,⊂logParms)
     ∇
 
-    ∇ (Config MyLogger)←Initial dummy
+    ∇ (Config MyLogger)←Initial isService;parms
     ⍝ Prepares the application.
       #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
-      Config←CreateConfig ⍬
+      Config←CreateConfig isService
       Config.ControlFileTieNo←CheckForOtherInstances ⍬
       CheckForRide (0≠Config.Ride) Config.Ride
       MyLogger←OpenLogFile Config.LogFolder
       MyLogger.Log'Started MyApp in ',F.PWD
-      MyLogger.Log #.GetCommandLine
+      MyLogger.Log 2 ⎕NQ'#' 'GetCommandLine'
       MyLogger.Log↓⎕FMT Config.∆List
+      :If isService
+          parms←#.ServiceState.CreateParmSpace
+          parms.logFunction←'Log'
+          parms.logFunctionParent←MyLogger
+          #.ServiceState.Init parms
+      :EndIf
     ∇
 
-    ∇ Config←CreateConfig dummy;myIni;iniFilename
+    ∇ Config←CreateConfig isService;myIni;iniFilename
       Config←⎕NS''
       Config.⎕FX'r←∆List' 'r←{0∊⍴⍵:0 2⍴'''' ⋄ ⍵,[1.5]⍎¨⍵}'' ''~¨⍨↓⎕NL 2'
       Config.Debug←A.IsDevelopment
@@ -195,7 +277,11 @@
           Config.Debug{¯1≡⍵:⍺ ⋄ ⍵}←myIni.Get'Config:debug'
           Config.Trap←⊃Config.Trap myIni.Get'Config:trap'
           Config.Accents←⊃Config.Accents myIni.Get'Config:Accents'
-          Config.LogFolder←'expand'F.NormalizePath⊃Config.LogFolder myIni.Get'Folders:Logs'
+          :If 0=isService
+              Config.LogFolder←'expand'F.NormalizePath⊃Config.LogFolder myIni.Get'Folders:Logs'
+          :Else
+              Config.WatchFolders←⊃myIni.Get'Folders:Watch'
+          :EndIf
           Config.DumpFolder←'expand'F.NormalizePath⊃Config.DumpFolder myIni.Get'Folders:Errors'
           :If myIni.Exist'Ride'
           :AndIf myIni.Get'Ride:Active'
@@ -207,8 +293,8 @@
     ∇
 
     ∇ {r}←{wait}CheckForRide (rideFlag ridePort);rc
-    ⍝ Depending on what's provided as right argument we prepare
-    ⍝ for a Ride or we don't.
+     ⍝ Depending on what's provided as right argument we prepare
+     ⍝ for a Ride or we don't.
       r←1
       wait←{0<⎕NC ⍵:⍎⍵ ⋄ 0}'wait'
       :If rideFlag 
@@ -306,10 +392,16 @@
       r←⍬
       ⎕FUNTIE Config.ControlFileTieNo
       Config.ControlFileTieNo←⍬
-    ∇  
+      '#'⎕WS'Event' 'ServiceNotification' 0
+    ∇
 
     ∇ r←PublicFns
-      r←'StartFromCmdLine' 'TxtToCsv' 'SetLX' 'GetCommandLineArg'
+      r←'StartFromCmdLine' 'TxtToCsv' 'SetLXForApplication' 'SetLXForService' 'GetCommandLineArg' 'RunAsService'
     ∇
+
+      GetHash←{
+      ⍝ Get hash for file ⍵
+          ⊣2 ⎕NQ'#' 'GetBuildID'⍵
+      }
 
 :EndNamespace

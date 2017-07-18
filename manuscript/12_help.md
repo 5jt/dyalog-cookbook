@@ -21,7 +21,7 @@ While CHM files are Windows specific, `Markdown2Help` allows you to export the h
 
 ## Getting ready
 
-It's time to save a copy of `Z:\code\v11` as `Z:\code\v12`. 
+It's time to save a copy of `Z:\code\v10` as `Z:\code\v11`. 
 
 In order to use `Markdown2Help` you need to download it from <http://download.aplwiki.com/>. We suggest creating a folder `Markdown2Help` within the folder `Z:\code\APLTree`. Copy the contents of the zip file you've just downloaded into `Z:\code\APLTree\Markdown2Help`:
 

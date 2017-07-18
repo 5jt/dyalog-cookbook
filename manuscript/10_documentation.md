@@ -128,7 +128,7 @@ How might ADOC help us? Start by seeing what ADOC has to say about `MyApp` as it
 
 ADOC has found and displayed all the functions within the `MyApp` namespace. If `MyApp` would contain any operators and/or variables you would find them in the document as well.
 
-We can improve this in a number of ways. Time for a new version of MyApp. Make a copy of `Z:\code\v09` as `Z:\code\v10`.
+We can improve this in a number of ways. Time for a new version of MyApp. Make a copy of `Z:\code\v08` as `Z:\code\v09`.
 
 ### Leading comments: basic information
 

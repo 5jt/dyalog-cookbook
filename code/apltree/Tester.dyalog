@@ -77,7 +77,8 @@
 ⍝ | `∆LinuxOrMacOnly`    | Not executed because runs Linux/Mac OS only.
 ⍝ | `∆LinuxOrWindowsOnly`| Not executed because runs Linux/Windows only.
 ⍝ | `∆MacOrWindowsOnly`  | Not executed because runs Mac OS/Windows only.
-⍝ | `∆NoAcreTests`       | No acre-related testsa are executed.
+⍝ | `∆NoAcreTests`       | No acre-related tests are executed.
+⍝ | `∆NotApplicable`     | This test is not applicable here and now.
 ⍝
 ⍝ Using the functions rather than numeric constants does not only improve readability
 ⍝ but makes searching easier as well.
@@ -102,13 +103,13 @@
 ⍝ ## INI files
 ⍝ When running any of the `Run*` methods they check for INI files in the current
 ⍝ directory:
-⍝ * First they try to find "testcase\_{computername}.ini"
-⍝ * If no such file exists they try to find "testcase.ini"
+⍝ * First they try to find "testcase.ini"
+⍝ * Then it tries to find "testcase\_{computername}.ini"
 ⍝
-⍝ If one of those files exists a namespace `Ini` is created within the
-⍝ namespace where your test cases live. This means that your test functions can
-⍝ access this since it is a true global variable. This namespace is populated with
-⍝ the contents of the INI file found.\\
+⍝ If one of those files exists a namespace `INI` is created within the
+⍝ namespace where your test cases live. This namespace is populated with
+⍝ the contents of the INI file or INI files found. Note that in case of a name
+⍝ conflict the more specific one ("testcase\_{computername}.ini") wins.\\
 ⍝ After executing the test cases this namespace is deleted.
 ⍝
 ⍝ ## Helpers
@@ -138,6 +139,7 @@
 ⍝ ∆OK                       Constant; used as result of a test function
 ⍝ ∆Failed                   Constant; used as result of a test function
 ⍝ ∆NoBatchTest              Constant; used as result of a test function
+⍝ ∆NotApplicable            Constant; used as result of a test function
 ⍝ ∆Inactive                 Constant; used as result of a test function
 ⍝ ∆NoAcreTests              Constant; used as result of a test function
 ⍝ ∆WindowsOnly              Constant; used as result of a test function
@@ -159,11 +161,17 @@
 
     ∇ r←Version
       :Access Public shared
-      r←(Last⍕⎕THIS)'3.3.0' '2017-05-19'
+      r←(Last⍕⎕THIS)'3.5.0' '2017-07-16'
     ∇
 
     ∇ History
       :Access Public shared
+      ⍝ * 3.5.0
+      ⍝   * Change in policy regarding INI files: `Tester` now looks for both INI files, "testcase\_{computername}.ini"
+      ⍝     as well as "testcase.ini". If both exist they are both taken into account. In case of a name conflict the
+      ⍝     more specific one ("testcase\_{computername}.ini") wins.
+      ⍝ * 3.4.0
+      ⍝   * New constant `∆NotApplicable` added.
       ⍝ * 3.3.0
       ⍝   * `RunThese` had a problem with groups under certain circumstances.
       ⍝   * acre 3.x is now supported (function `RenameTestFnsTo`).
@@ -174,14 +182,6 @@
       ⍝     * When `EstablishHelpersIn` was called from a namespace that was not a child of root it did not work.
       ⍝     * Sorting of test function is now case insensitive.
       ⍝   * Project is now managed by acre 3.
-      ⍝ * 3.2.1
-      ⍝   * Bug fix: reporting information to the session was inconsistent. Same was true for `log`.
-      ⍝ * 3.2.0
-      ⍝   * `Tester` is now reporting:
-      ⍝     * It's version and date
-      ⍝     * Whether it found (and instantiated) any INI file or not.
-      ⍝     * Whether it found (and executed) a function `Initial` or not.
-      ⍝     * Whether it found (and executed) a function `Cleanup` or not.
     ∇
 
     ∇ {(rc log)}←Run refToTestNamespace;flags
@@ -348,6 +348,7 @@
     :Field Private Shared ReadOnly ∆LinuxOrWindowsOnly←¯21
     :Field Private Shared ReadOnly ∆MacOrWindowsOnly←¯22
     :Field Private Shared ReadOnly ∆NoAcreTests←¯30
+    :Field Private Shared ReadOnly ∆NotApplicable←¯31
 
     ∇ {(rc log)}←ref Run__(trapFlag debugFlag batchFlag stopAt testCaseNos);ps
     ⍝ Run all test cases to be found in "ref"
@@ -404,39 +405,36 @@
       log←ps.log
     ∇
 
-    ∇ ref←ProcessIniFiles(ref ps);iniFilename;counter
+    ∇ ref←ProcessIniFiles(ref ps);iniFilenames;iniFilename
+      iniFilenames←''
       :If 9=##.⎕NC'IniFiles'
-          counter←0
-          iniFilename←'testcases_',(2 ⎕NQ'#' 'GetEnvironment' 'Computername'),'.ini'
-          ps.log,←⊂'Searching for INI file ',iniFilename
-          ¯1 ShowLog ps.log
-          :If ⎕NEXISTS iniFilename
-              ref.INI←'flat'(⎕NEW ##.IniFiles(,⊂iniFilename)).Convert ⎕NS''
-              ps.log,←⊂'  INI file "',iniFilename'" found and instantiated as INI in ',⍕ref
-              ¯1 ShowLog ps.log
-              counter+←1
-          :Else
-              ps.log,←⊂'  ...not found'
-              ¯1 ShowLog ps.log
-          :EndIf
           iniFilename←'Testcases.ini'
           ps.log,←⊂'Searching for INI file ',iniFilename
           ¯1 ShowLog ps.log
           :If ⎕NEXISTS iniFilename
-              ref.INI←'flat'(⎕NEW ##.IniFiles(,⊂iniFilename)).Convert ⎕NS''
-              ps.log,←⊂'  INI file "',iniFilename'" found and instantiated as INI in ',⍕ref
-              ¯1 ShowLog ps.log
-              counter+←1
+              iniFilenames,←⊂iniFilename
           :Else
               ps.log,←⊂'  ...not found'
               ¯1 ShowLog ps.log
           :EndIf
-          :If 0<counter
-              ps.log,←⊂(⍕counter),' INI file',((1<counter)/'s'),' instantiated'
+          iniFilename←'testcases_',(2 ⎕NQ'#' 'GetEnvironment' 'Computername'),'.ini'
+          ps.log,←⊂'Searching for INI file ',iniFilename
+          ¯1 ShowLog ps.log
+          :If ⎕NEXISTS iniFilename
+              iniFilenames,←⊂iniFilename
+          :Else
+              ps.log,←⊂'  ...not found'
+              ¯1 ShowLog ps.log
+          :EndIf
+          :If ~0∊⍴iniFilenames
+              ref.INI←'flat'(⎕NEW ##.IniFiles (iniFilenames 1)).Convert ⎕NS''
+              ps.log,←⊂'  INI file(s) "',(↑{⍺,',',⍵}/iniFilenames),'" found and instantiated as INI in ',⍕ref
+              ¯1 ShowLog ps.log
+              ps.log,←⊂(⍕⍴iniFilenames),' INI file',((1<⍴iniFilenames)/'s'),' instantiated'
               ¯1 ShowLog ps.log
           :EndIf
       :Else
-          ps.log,←⊂'Could not find the class "IniFiles" in ',(⍕##.⎕THIS),'; therefore no INI files were processed'
+          ps.log,←⊂'Could not find the class "IniFiles" in ',(⍕##.⎕THIS),'; therefore no INI file was processed'
           ¯1 ShowLog ps.log
       :EndIf
     ∇
@@ -605,6 +603,9 @@
           :If ∆NoAcreTests∊ps.returnCodes
               log,←⊂'  ',(⍕∆NoAcreTests+.=ps.returnCodes),' test cases not executed because they are acre-related'
           :EndIf
+          :If ∆NotApplicable∊ps.returnCodes
+              log,←⊂'  ',(⍕∆NotApplicable+.=ps.returnCodes),' test cases not executed because they were not applicable'
+          :EndIf
       :EndIf
       :If ~ps.batchFlag
           ⎕←,[1.5](-4+~0∊⍴ps.returnCodes)↑log
@@ -682,28 +683,32 @@
           r←flag/label
         ∇
 
-        ∇ {r}←Run
+        ∇ {r}←Run;ref
 ⍝ Run all test cases
-          r←#.Tester.Run ⎕THIS
+          ref←{9=#.⎕NC ⍵:# ⋄ 9=(↑⎕RSI).⎕NC ⍵:↑⎕RSI ⋄ 9=##.⎕NC ⍵:## ⋄ 'Cannot find "Tester"'⎕SIGNAL 6}'Tester'
+          r←ref.Tester.Run ⎕THIS
         ∇
 
-        ∇ {r}←RunDebug debugFlag
+        ∇ {r}←RunDebug debugFlag;ref
 ⍝ Run all test cases with DEBUG flag on
 ⍝ If `debugFlag` is 1 then `RunDebug` stops just before executing any specific test case.
-          r←debugFlag #.Tester.RunDebug ⎕THIS
+          ref←{9=#.⎕NC ⍵:# ⋄ 9=(↑⎕RSI).⎕NC ⍵:↑⎕RSI ⋄ 9=##.⎕NC ⍵:## ⋄ 'Cannot find "Tester"'⎕SIGNAL 6}'Tester'
+          r←debugFlag ref.Tester.RunDebug ⎕THIS
         ∇
 
-        ∇ {r}←RunBatchTestsInDebugMode
+        ∇ {r}←RunBatchTestsInDebugMode;ref
 ⍝ Run all batch tests in debug mode (no error trapping) and with stopFlag←1.
-          r←0 1 #.Tester.RunBatchTests ⎕THIS
+          ref←{9=#.⎕NC ⍵:# ⋄ 9=(↑⎕RSI).⎕NC ⍵:↑⎕RSI ⋄ 9=##.⎕NC ⍵:## ⋄ 'Cannot find "Tester"'⎕SIGNAL 6}'Tester'
+          r←0 1 ref.Tester.RunBatchTests ⎕THIS
         ∇
 
-        ∇ {r}←RunBatchTests
+        ∇ {r}←RunBatchTests;ref
 ⍝ Run all batch tests
-          r←#.Tester.RunBatchTests ⎕THIS
+          ref←{9=#.⎕NC ⍵:# ⋄ 9=(↑⎕RSI).⎕NC ⍵:↑⎕RSI ⋄ 9=##.⎕NC ⍵:## ⋄ 'Cannot find "Tester"'⎕SIGNAL 6}'Tester'
+          r←ref.Tester.RunBatchTests ⎕THIS
         ∇
 
-        ∇ {r}←RunThese ids
+        ∇ {r}←RunThese ids;ref
 ⍝ Run just the specified tests.
 ⍝
 ⍝ `ids` can be one of:
@@ -717,7 +722,8 @@
 ⍝ If negative numbers are used then they would still idendify the test cases but
 ⍝ `Tester` would stop just before any test case it actually executed,
 ⍝ allowing the user to investigate.
-          r←ids #.Tester.RunTheseIn ⎕THIS
+          ref←{9=#.⎕NC ⍵:# ⋄ 9=(↑⎕RSI).⎕NC ⍵:↑⎕RSI ⋄ 9=##.⎕NC ⍵:## ⋄ 'Cannot find "Tester"'⎕SIGNAL 6}'Tester'
+          r←ids ref.Tester.RunTheseIn ⎕THIS
         ∇
 
         ∇ {list}←E list
@@ -887,7 +893,7 @@
           list←'Run' 'RunDebug' 'RunThese' 'RunBatchTests' 'RunBatchTestsInDebugMode' 'E' 'L' 'G' 'FailsIf' 'PassesIf'
           list,←'GoToTidyUp' 'RenameTestFnsTo' 'ListHelpers' '∆OK' '∆Failed' '∆NoBatchTest' '∆Inactive' '∆NoAcreTests'
           list,←'∆WindowsOnly' '∆LinuxOnly' '∆MacOnly' '∆LinuxOrMacOnly' '∆LinuxOrWindowsOnly'
-          list,←'∆MacOrWindowsOnly' 'FindSpecialString'
+          list,←'∆MacOrWindowsOnly' 'FindSpecialString' '∆NotApplicable'
           list←,¨list
           :If 'Tester.Helpers'≢{⍵↑⍨-+/∧\2>+\⌽'.'=⍵}⍕⊃⎕RSI
               list/⍨←force∨0<⊃∘⎕NC¨list   ⍝ List only those that are around
@@ -905,7 +911,7 @@
           :Access Public Shared
 ⍝ Returns a list of **all** helper functions.
 ⍝ These are defined as all private functions of the sub class `Helpers`.
-
+         
 ⍝ ↓↓↓↓ Circumvention of Dyalog bug <01154> (⎕nl 3 does NOT list the private functions of `Helpers`!)
           r←(ListHelpers 1)[;1]
         ∇
@@ -914,18 +920,18 @@
 ⍝ Model for a test function.
           ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
           R←∆Failed
-
+         
 ⍝ Preconditions...
 ⍝ ...
-
+         
           →PassesIf 1≡1
           →FailsIf 1≢1
           →GoToTidyUp 1≢1
           R←∆OK
-
+         
          ∆TidyUp: ⍝ Clean up after this label
           ⍝ ...
-
+         
         ∇
 
         ∇ r←∆OK
@@ -981,6 +987,10 @@
         ∇ r←∆NoAcreTests
         ⍝ Constant; used as result of a test function
           r←¯30
+        ∇
+
+        ∇ r←∆NotApplicable
+          r←¯31
         ∇
 
     :EndClass

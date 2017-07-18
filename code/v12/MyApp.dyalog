@@ -15,12 +15,10 @@
     ∇
 
     ∇ r←Version
-      r←(⍕⎕THIS)'1.6.0' 'YYYY-MM-DD'
+      r←(⍕⎕THIS)'1.5.0' 'YYYY-MM-DD'
     ∇
 
     ∇ History      
-      ⍝ * 1.6.0:
-      ⍝   * MyApp has now its own help system.
       ⍝ * 1.5.0:
       ⍝   * MyApp is now ADOCable (function PublicFns).
       ⍝ * 1.4.0:
@@ -49,6 +47,7 @@
         SOURCE_NOT_FOUND←112
         UNABLE_TO_READ_SOURCE←113
         UNABLE_TO_WRITE_TARGET←114
+        ALREADY_RUNNING←115
           GetName←{
               l←' '~¨⍨↓⎕NL 2
               ind←({⍎¨l}l)⍳⍵
@@ -146,6 +145,7 @@
       (Config MyLogger)←Initial ⍬
       ⎕TRAP←(Config.Debug=0)SetTrap Config
       rc←TxtToCsv arg~''''
+      Cleanup ⍬
       Off rc
     ∇
 
@@ -170,7 +170,8 @@
     ⍝ Prepares the application.
       #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
       Config←CreateConfig ⍬
-      CheckForRide Config
+      Config.ControlFileTieNo←CheckForOtherInstances ⍬
+      CheckForRide (0≠Config.Ride) Config.Ride
       MyLogger←OpenLogFile Config.LogFolder
       MyLogger.Log'Started MyApp in ',F.PWD
       MyLogger.Log #.GetCommandLine
@@ -225,7 +226,7 @@
           :EndIf
           {_←⎕DL ⍵ ⋄ ∇ ⍵}⍣(⊃wait)⊣⍬
       :EndIf
-    ∇    
+    ∇
 
     ∇ Off exitCode
       :If 0<⎕NC'MyLogger'
@@ -275,7 +276,38 @@
       #.ErrorParms.addToMsg←' --- Something went terribly wrong'
       trap←force ##.HandleError.SetTrap'#.ErrorParms'
     ∇
-       
+
+    ∇ {tno}←CheckForOtherInstances dummy;filename;listOfTiedFiles;ind
+    ⍝ Attempts to tie the file "MyApp.dcf" exclusively and returns the tie number.
+    ⍝ If that is not possible than an error is thrown because we can assume that the
+    ⍝ application is already running.\\
+    ⍝ Notes:
+    ⍝ * In case the file is already tied it is untied first.
+    ⍝ * If the file does not exist it is created.
+      filename←'MyAppCtrl.dcf'
+      :If 0=F.IsFile filename
+          tno←filename ⎕FCREATE 0
+      :Else
+          :If ~0∊⍴⎕FNUMS
+              listOfTiedFiles←A.dtb↓⎕FNAMES
+              ind←listOfTiedFiles⍳⊂filename
+          :AndIf ind≤⍴⎕FNUMS
+              ⎕FUNTIE ind⊃⎕FNUMS
+          :EndIf
+          :Trap 24
+              tno←filename ⎕FTIE 0
+          :Else
+              'Application is already running'⎕SIGNAL EXIT.ALREADY_RUNNING
+          :EndTrap
+      :EndIf
+    ∇
+
+    ∇ {r}←Cleanup dummy
+      r←⍬
+      ⎕FUNTIE Config.ControlFileTieNo
+      Config.ControlFileTieNo←⍬
+    ∇  
+
     ∇ r←PublicFns
       r←'StartFromCmdLine' 'TxtToCsv' 'SetLX' 'GetCommandLineArg'
     ∇

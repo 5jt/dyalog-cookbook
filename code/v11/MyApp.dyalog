@@ -15,10 +15,12 @@
     ∇
 
     ∇ r←Version
-      r←(⍕⎕THIS)'1.5.0' 'YYYY-MM-DD'
+      r←(⍕⎕THIS)'1.6.0' 'YYYY-MM-DD'
     ∇
 
     ∇ History      
+      ⍝ * 1.6.0:
+      ⍝   * MyApp has now its own help system.
       ⍝ * 1.5.0:
       ⍝   * MyApp is now ADOCable (function PublicFns).
       ⍝ * 1.4.0:
@@ -138,9 +140,8 @@
     ∇ {r}←StartFromCmdLine arg;MyLogger;Config;rc;⎕TRAP
    ⍝ Needs command line parameters, runs the application.
       r←⍬
+      ⎕WSID←'MyApp'
       ⎕TRAP←#.HandleError.SetTrap ⍬
-      ⎕WSID←⊃⊣2⎕nq # 'GetCommandLineArgs'
-      #.FilesAndDirs.PolishCurrentDir
       #.⎕SHADOW'ErrorParms'
       (Config MyLogger)←Initial ⍬
       ⎕TRAP←(Config.Debug=0)SetTrap Config
@@ -169,7 +170,7 @@
     ⍝ Prepares the application.
       #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
       Config←CreateConfig ⍬
-      CheckForRide Config.Ride
+      CheckForRide Config
       MyLogger←OpenLogFile Config.LogFolder
       MyLogger.Log'Started MyApp in ',F.PWD
       MyLogger.Log #.GetCommandLine
@@ -204,12 +205,12 @@
       Config.DumpFolder←'expand'F.NormalizePath Config.DumpFolder
     ∇
 
-    ∇ {r}←{wait}CheckForRide ridePort;rc
+    ∇ {r}←{wait}CheckForRide (rideFlag ridePort);rc
     ⍝ Depending on what's provided as right argument we prepare
     ⍝ for a Ride or we don't.
       r←1
       wait←{0<⎕NC ⍵:⍎⍵ ⋄ 0}'wait'
-      :If 0≠ridePort
+      :If rideFlag 
           rc←3502⌶0
           :If ~rc∊0 ¯1
               11 ⎕SIGNAL⍨'Problem switching off Ride, rc=',⍕rc
@@ -274,7 +275,7 @@
       #.ErrorParms.addToMsg←' --- Something went terribly wrong'
       trap←force ##.HandleError.SetTrap'#.ErrorParms'
     ∇
-
+       
     ∇ r←PublicFns
       r←'StartFromCmdLine' 'TxtToCsv' 'SetLX' 'GetCommandLineArg'
     ∇

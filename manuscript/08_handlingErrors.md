@@ -9,7 +9,7 @@
 
 1. Other problems are foreseeable. The file system is a rich source of ephemeral problems and displays. Many of these are caught and handled by the APLTree utilities. They might make several attempts to read or write a file before giving up and signalling an error. Hooray. We need to handle the events signalled when the utilities give up. 
 
-2. The MyApp EXE terminates with an all-OK zero exit code even when it has caught and handled an error. It would be a better Windows citizen if it returned custom exit codes, letting a calling program know how it terminated..
+2. The MyApp EXE terminates with an all-OK zero exit code even when it has caught and handled an error. It would be a better Windows citizen if it returned custom exit codes, letting a calling program know how it terminated.
 
 3. By definition, unforeseen problems haven't been foreseen. But we foresee there will be some! A mere typo in the code could break execution. We need a master trap to catch any events that would break execution, save them for analysis, and report them in an orderly way. 
 
@@ -35,9 +35,7 @@ but only if you ticked the check box "Console application" in the "Export" dialo
 
 Copy `Z:\code\06` to `Z:\code\07`.
 
-For the implementation of global error handling we need APLTree's `HandleError` class. For calling the exported EXE we need the `Execute` class.
-
-Edit `Z:\code\v07\MyApp.dyapp`:
+For the implementation of global error handling we need APLTree's `HandleError` class. For calling the exported EXE we need the `Execute` class. Therefore we add both to the DYAPP. Edit `Z:\code\v07\MyApp.dyapp`:
 
 ~~~
 Target #
@@ -130,7 +128,7 @@ We modify `GetFiles` so that it checks its arguments and the intermediary result
 ~~~
 leanpub-start-insert
 ∇ (rc target files)←GetFiles fullfilepath;csv;target;path;stem;isDir
-⍝ Checks argument and returns liast of files (or single file).
+⍝ Checks argument and returns a list of files (or a single file).
 leanpub-end-insert
    fullfilepath~←'"'
 leanpub-start-insert   
@@ -207,7 +205,7 @@ In the line with the `:Trap` we call a niladic function (exception to the rule!)
 ∇    
 ~~~
 
-Doesn't that contradict our policy to avoid meaningless constants in the code? It does indeed. Let's fix this. There is a class `EventCodes` available that contains symbolic names for all these error numbers. The symbolic names are taken from the help page you get when you press `F1` on `⎕TRAP`. Add this class to your DYAPP file:
+Doesn't that contradict our policy to avoid meaningless constants in the code? It does indeed. Let's fix this. There is a class `EventCodes` available on the APLTree that contains symbolic names for all these error numbers. The symbolic names are taken from the help page you get when you press `F1` on `⎕TRAP`. Add this class to your DYAPP file:
 
 ~~~
 ...
@@ -221,7 +219,7 @@ Load MyApp
 Run #.MyApp.SetLX #.MyApp.GetCommandLineArg ⍬
 ~~~
 
-The `EventCodes` class comes with a method `GetName` that, when fed with an integer, returns the symbolic name. We can use that to convert return codes to meaningful names:
+The `EventCodes` class comes with a method `GetName` that, when fed with an integer, returns the corresponding symbolic name. We can use that to convert return codes to meaningful names:
 
 ~~~
       #.EventCodes.GetName¨ #.MyApp.FileRelatedErrorCodes
@@ -273,7 +271,7 @@ A> Well, for a very good reason: trapping everything includes such basic things 
 A> 
 A> That being said, if you really have to trap _all_ errors (occasionally this makes sense) then make sure that you can switch it off with a global flag as in `:Trap trapFlag/0`: if `trapFlag` is 1 then the trap is active, otherwise it is not.
 
-Back to `ProcessFiles`. Note that in this context the `:Trap` structure has an advantage over `⎕TRAP`. When it fires, and control advances to its `:Else` fork, the trap is immediately cleared. So there is no need explicitly to reset the trap to avoid an open loop.  But be careful when you call other functions: in case they crash the `:Trap` would catch the error!
+Back to `ProcessFiles`. Note that in this context the `:Trap` structure has an advantage over `⎕TRAP`. When it fires, and control advances to its `:Else` fork, the trap is immediately cleared. So there is no need to reset the trap to avoid an open loop.  But be careful when you call other functions: in case they crash the `:Trap` would catch the error!
 
 The handling of error codes and messages can easily obscure the rest of the logic. Clarity is not always easy to find, but is well worth working for. This is particularly true where there is no convenient test for an error, only a trap for when it is encountered. 
 
@@ -336,7 +334,7 @@ leanpub-end-insert
     ...
 ~~~
 
-A> 104? Why not 4, the standard Windows code for a crashed application? The distinction is useful. An exit code of 104 will tell us  MyApp's trap caught and reported the crash. An exit code of 4 tells you even the trap failed!
+I> 104? Why not 4, the standard Windows code for a crashed application? The distinction is useful. An exit code of 104 will tell us  MyApp's trap caught and reported the crash. An exit code of 4 tells you even the trap failed!
 
 We want to establish general error trapping as soon as possible, but we also need to know where to save crash files etc. That means we start right after having instantiated the INI file, because that's where we get this kind of information from. For establishing error trapping we need to set `⎕TRAP`. Because we want to make sure that any function down the stack can pass a certain error up to the next definition of `⎕TRAP` (see the `⎕TRAP` help, options "C" and "N") it is vitally important not only set to set but also to _localyze_ `⎕TRAP` in `StartFromCmdLine`
 
@@ -381,10 +379,10 @@ Notes:
   * The return code.
   * What function to use for logging information.
   * Name of the source to be used when reporting the problem to the Windows Event Log (empty=no reporting at all).
-  * Additonal message to be added to the report send to the Windows Event Log.
+  * Additional message to be added to the report send to the Windows Event Log.
 * We specify `ErrorParms` as a global named namespace for two reasons:
   * Any function might crash, and we need to "see" the namespace with the parameters needed in case of a crash, so it has to be a global in `#`.
-  * The `⎕TRAP` statement allows us to call a function and to pass parameters but no references, so it has to be a named namespace.
+  * The `⎕TRAP` statement allows us to call a function and to pass parameters except references, so it has to be a named namespace.
  
  Let's investigate how this will work; trace into `#.MyApp.StartFromCmdLine ''`. When you reach line 4 `Config` exists, so now you can call `MyApp.SetTrap` with different left arguments:
 
@@ -418,7 +416,7 @@ Notes:
 
 ### Test the global trap
 
-We can test this: we could insert a line with a full stop[^stop] into, say, `CountLettersIn`. But that is awkward: we don't really want to change our source code in order to test error trapping. Therefore we invent an additional setting in the INI file:
+We can test this: we could insert a line with a full stop[^stop] into, say, `CountLettersIn`. But that is awkward: we don't really want to change our source code in order to test error trapping; many applications crashed in production because a programmer forgot to remove a break point  before going live. Therefore we invent an additional setting in the INI file:
 
 ~~~
 [Config]
@@ -456,12 +454,12 @@ We change `TxtToCsv` so that it crashes in case `Config.ForceError` equals 1:
    MyLogger.Log'Source: ',fullfilepath
    (rc target files)←GetFiles fullfilepath
 leanpub-start-insert     
-   {⍵:⍎'. ⍝ Deliberate error (INI flag "ForceError")'}Config.ForceError
+   {~⍵:r←⍬ ⋄ 'Deliberate error (INI flag "ForceError"'⎕SIGNAL 11}ForceError
 leanpub-end-insert  
 ...   
 ~~~
 
-The dfns `{⍵:.}` uses a guard to execute a full stop if `⍵` is true and do nothing at all otherwise. In order to test error trapping we don't even need to create and execute a new EXE; instead we just set `ForceError←1` and then call `#.MyApp.StartFromCmdLine` from within the WS:
+The dfns `{~⍵:r←⍬ ⋄ ...` uses a guard to signal an error in case `⍵` is true and does nothing at all but return a shy result otherwise. In order to test error trapping we don't even need to create and execute a new EXE; instead we just set `ForceError` to 1 and then call `#.MyApp.StartFromCmdLine` from within the WS:
 
 ~~~
       #.MyApp.StartFromCmdLine 'Z:\texts\ulysses.txt'
@@ -486,6 +484,8 @@ That's all we see in the session, but when you check the folder `#.ErrorParms.er
 
 * Any open edit or trace window
 * More than one thread was running at the moment of the crash.
+
+A> This is not strictly true. When `HandleError` detects multiple threads it tries to kill all of them. By definition that won't work because a) it cannot kill the main thread (0) and b) it cannot kill its own thread. However, if it happens to run in the main thread at that very moment it will get rid of all other running threads and be able to save a crash workspace afterwards as a result.
 
 Because we've defined a source for the Windows Event Log `HandleError` has reported the error accordingly:
 
@@ -606,7 +606,7 @@ The State Indicator shows the workspace captured at the moment the HandleError o
 #.MyApp.StartFromCmdLine[6]
 ~~~
 
-You can clear `HandleError` off the stack with a naked branch arrow. When you do so, you'll find the original global trap restored. Disable it. Otherwise any error you produce while running code will trigger `HandleError` again! 
+You can clear `HandleError` off the stack with a naked branch arrow; note the `*` on the first and third line. When you do so, you'll find the original global trap restored. Disable it. Otherwise any error you produce while running code will trigger `HandleError` again! 
 
 ~~~
       →

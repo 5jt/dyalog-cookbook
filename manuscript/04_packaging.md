@@ -136,14 +136,18 @@ We're now nearly ready to export the first version of our EXE.
 4. From the list "Save as type" pick "Standalone Executable". 
 5. Set the "File name" as `MyApp`.
 6. Check the "Runtime application" check box 
-7. Make sure that the "Console application" check box is not ticked.
+7. Make sure that the "Console application" check box is _not_ ticked.
 8. Click "Save". 
 
 You should see a message: _File Z:\\code\\v03\\MyApp.exe successfully created._ This occasionally (rarely) fails for no obvious reason. If it does fail just try again and you should be fine. If it keeps failing then the by far most common reason is that the EXE is running - you cannot replace an EXE while it is running. 
 
 I> Although you cannot replace a running exe what you _can_ do is to rename it; that's possible. You can then create a new EXE with the original name.
 
-In case you wonder what a "Console application" actually is: apart from including the Dyalog runtime EXE it also sets the `IMAGE_SUBSYSTEM_WINDOWS_CUI` flag in the header of the EXE. The effect is that, when called _on a command line_ (also known as the console), it will wait for the program to return; Also, when double-clicked a console window pops up. 
+In case you wonder what a "Console application" actually is: 
+
+* It sets the `IMAGE_SUBSYSTEM_WINDOWS_CUI` flag in the header of the EXE. The effect is that, when called _on a command line_ (also known as the console), it will wait for the program to return.  
+* You can access the variable `ERRORLEVEL`. Yes, this implies that without ticking the check box "Console application" you _cannot_ access this environment variable.
+* When double-clicked a console window pops up. 
 
 Note that it catches the return code and assigns it to the environment variable "ERRORLEVEL" in any case.
 

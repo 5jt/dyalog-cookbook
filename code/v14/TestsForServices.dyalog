@@ -31,7 +31,7 @@
      
       (rc more)←∆Execute_SC_Cmd'start'
       →FailsIf 0≠rc
-      ∆Pause 2 
+      ∆Pause 2
       (rc more)←∆Execute_SC_Cmd'query'
       →FailsIf 0≠rc
       →FailsIf 0=∨/'STATE : 4 RUNNING'⍷#.APLTreeUtils.dmb more
@@ -66,8 +66,7 @@
      
       (rc more)←∆Execute_SC_Cmd'start'
       →FailsIf 0≠rc
-      →FailsIf 0=∨/'STATE : 4 RUNNING'⍷A.dmb more
-      ∆Pause 2
+      ∆Pause 1
       (rc more)←∆Execute_SC_Cmd'query'
       →FailsIf 0=∨/'STATE : 4 RUNNING'⍷A.dmb more
      
@@ -78,7 +77,7 @@
       noOfCSVs←⍴F.ListFiles ∆Path,'\input\en\*.csv'
       (success more list)←(∆Path,'\texts')F.CopyTree ∆Path,'\input\'  ⍝ All of them
       {1≠⍵:.}success
-      ∆Pause 2
+      ∆Pause 5
       newTotal←↑{','A.Split ⍵}¨A.ReadUtf8File ∆Path,'\input\en\total.csv'
       →PassesIf(noOfCSVs+6)=⍴F.ListFiles ∆Path,'\input\en\*.csv'
       →PassesIf oldTotal≢newTotal
@@ -91,6 +90,33 @@
       ∆Pause 2
       (rc more)←∆Execute_SC_Cmd'query'
       →FailsIf 0=∨/'STATE : 1 STOPPED'⍷A.dmb more
+     
+      R←∆OK
+    ∇
+
+    ∇ R←Test_03(stopFlag batchFlag);⎕TRAP;MyWinLog;noOfRecords;more;rc;records;buff
+      ⍝ Start & stop the service, then check the Windows Event Log.
+      ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+      R←∆Failed
+     
+      MyWinLog←⎕NEW #.WindowsEventLog(,⊂'MyAppService')
+      noOfRecords←MyWinLog.NumberOfLogEntries
+     
+      (rc more)←∆Execute_SC_Cmd'start'
+      →FailsIf 0≠rc
+      ∆Pause 1
+      (rc more)←∆Execute_SC_Cmd'query'
+      →FailsIf 0=∨/'STATE : 4 RUNNING'⍷#.APLTreeUtils.dmb more
+      ∆Pause 2
+     
+      (rc more)←∆Execute_SC_Cmd'stop'
+      →FailsIf 0≠rc
+      ∆Pause 2
+     
+      records←(noOfRecords-10)+⍳(MyWinLog.NumberOfLogEntries+10)-noOfRecords
+      buff←↑MyWinLog.ReadThese records
+      →PassesIf∨/,'"MyApp" server started '⍷buff
+      →PassesIf∨/,'Shutting down MyApp'⍷buff
      
       R←∆OK
     ∇

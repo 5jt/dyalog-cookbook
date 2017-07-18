@@ -2,15 +2,18 @@ Target #
 Load ..\AplTree\APLTreeUtils
 Load ..\AplTree\FilesAndDirs
 Load ..\AplTree\HandleError
-Load ..\AplTree\Execute
 Load ..\AplTree\IniFiles
 Load ..\AplTree\OS
 Load ..\AplTree\Logger
-Load ..\AplTree\Tester
 Load ..\AplTree\EventCodes
+Load ..\AplTree\MarkAPL
 Load Constants
-Load Tests
 Load Utilities
 Load MyApp
+Load ..\AplTree\Tester
+Load ..\AplTree\Execute
+Load Tests
+Load DevHelpers
 Run #.MyApp.SetLX #.MyApp.GetCommandLineArg ⍬
 Run #.Tester.EstablishHelpersIn #.Tests
+Run #.DevHelpers.RunTests 0
