@@ -1,6 +1,6 @@
 frontmatter.txt
-mainmatter.txt
 01_toc.md
+mainmatter.txt
 02_intro.md
 03_structure.md
 04_packaging.md
@@ -16,6 +16,7 @@ mainmatter.txt
 14_Services.md
 15_WindowsEventLog.md
 16_WindowsRegistry.md
+backmatter.txt
 Z01_Windows_Environment_Variables.md
 Z02_UserCommands.md
 Z03_acre.md
