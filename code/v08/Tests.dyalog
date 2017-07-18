@@ -8,7 +8,7 @@
       'Create!'F.CheckPath ∆Path
       list←⊃F.Dir'..\..\texts\en\*.txt'
       rc←list F.CopyTo ∆Path,'\'
-      :If ~R←0∨.≠⊃rc
+      :If ~R←0∧.=⊃rc
           ⎕←'Could not create ',∆Path
       :EndIf
     ∇
@@ -80,7 +80,8 @@
       r←##.Tester.EstablishHelpersIn ⎕THIS
     ∇
 
-    ∇ Cleanup
+    ∇ {R}←Cleanup dummy
+      R←⍬
       ⎕EX¨'AFU'
       :If 0<⎕NC'∆Path'
           ##.FilesAndDirs.RmDir ∆Path

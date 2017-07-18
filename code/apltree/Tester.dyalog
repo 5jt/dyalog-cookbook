@@ -92,12 +92,14 @@
 ⍝ Use this to initialise an environment all your test cases need.
 ⍝
 ⍝ The function may or may not return a result. If it does it must be a Boolean
-⍝ indicating whether initializing was sucessful (1) or not (0).
+⍝ indicating whether initializing was successful (1) or not (0).
 ⍝
 ⍝ ## "Cleanup" function
 ⍝ If a function `Cleanup` exists in the namespace hosting the test cases
 ⍝ it is executed automatically after the test cases have been executed.
 ⍝ Use this to clean up any leftovers.\\
+⍝ Such a function must be either niladic or monadic in which case the right argument will be ignored.
+⍝ The function may or may not return a result; if it does the result will be ignored.
 ⍝ It might be a good idea to call this in line 1 of `Initial`.
 ⍝
 ⍝ ## INI files
@@ -106,10 +108,11 @@
 ⍝ * First they try to find "testcase.ini"
 ⍝ * Then it tries to find "testcase\_{computername}.ini"
 ⍝
-⍝ If one of those files exists a namespace `INI` is created within the
-⍝ namespace where your test cases live. This namespace is populated with
+⍝ If one of those files exists a namespace `Ini` is created within the
+⍝ namespace where your test cases live. This means that your test functions can
+⍝ access this since it is a true global variable. This namespace is populated with
 ⍝ the contents of the INI file or INI files found. Note that in case of a name
-⍝ conflict the more specific one ("testcase\_{computername}.ini") wins.\\
+⍝ conflict the more specific one wins: "testcase\_{computername}.ini".\\
 ⍝ After executing the test cases this namespace is deleted.
 ⍝
 ⍝ ## Helpers
@@ -161,11 +164,13 @@
 
     ∇ r←Version
       :Access Public shared
-      r←(Last⍕⎕THIS)'3.5.0' '2017-07-16'
+      r←(Last⍕⎕THIS)'3.6.0' '2017-07-??'
     ∇
 
     ∇ History
       :Access Public shared
+      ⍝ * 3.6.0
+      ⍝   * `Cleanup` may now also be a monadic function.
       ⍝ * 3.5.0
       ⍝   * Change in policy regarding INI files: `Tester` now looks for both INI files, "testcase\_{computername}.ini"
       ⍝     as well as "testcase.ini". If both exist they are both taken into account. In case of a name conflict the
@@ -427,7 +432,7 @@
               ¯1 ShowLog ps.log
           :EndIf
           :If ~0∊⍴iniFilenames
-              ref.INI←'flat'(⎕NEW ##.IniFiles (iniFilenames 1)).Convert ⎕NS''
+              ref.INI←'flat'(⎕NEW ##.IniFiles(iniFilenames 1)).Convert ⎕NS''
               ps.log,←⊂'  INI file(s) "',(↑{⍺,',',⍵}/iniFilenames),'" found and instantiated as INI in ',⍕ref
               ¯1 ShowLog ps.log
               ps.log,←⊂(⍕⍴iniFilenames),' INI file',((1<⍴iniFilenames)/'s'),' instantiated'
@@ -466,7 +471,7 @@
               11 ⎕SIGNAL⍨'The "Initial" function in ',(⍕ref),' has an invalid signature: it''s neither monadic nor niladic'
           :EndSelect
           :If r
-              ps.log,←⊂'  "Initial" found and sucessfully executed'
+              ps.log,←⊂'  "Initial" found and successfully executed'
           :Else
               ps.log,←⊂'  "Initial" found and executed but it signalled failure!'
           :EndIf
@@ -623,9 +628,13 @@
       ps.log,←⊂'Looking for a function "Cleanup"...'
       ¯1 ShowLog ps.log
       :If 3=ref.⎕NC'Cleanup'
-          ref.Cleanup
-          ps.log,←⊂'  Function "Cleanup" found and sucessfully executed.'
-          ¯1 ShowLog ps.log
+          :If 0=1 2⊃⎕AT'#._Tester.TestCases.Cleanup'
+              ref.Cleanup
+              ps.log,←⊂'  Function "Cleanup" found and executed.'
+              ¯1 ShowLog ps.log
+          :Else
+              ref.Cleanup ⍬
+          :EndIf
       :Else
           ps.log,←⊂'  ...not found'
           ¯1 ShowLog ps.log

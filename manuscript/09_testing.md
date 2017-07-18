@@ -82,7 +82,7 @@ Time for a new version of MyApp. Make a copy of `Z:\code\v07` as `Z:\code\v08`.
 
 We'll need the `Tester` class from the APLTree library. And a namespace of tests, which we'll dub `#.Tests`. 
 
-Write `Z:\code\v08\Tests.dyalog`:
+Create `Z:\code\v08\Tests.dyalog`:
 
 ~~~
     :Namespace Tests
@@ -90,7 +90,7 @@ Write `Z:\code\v08\Tests.dyalog`:
     :EndNamespace
 ~~~	
 
-and include both scripts in the DYAPP:
+Save this as `Z:\code\v08\Tests.dyalog` and include both scripts in the DYAPP:
 
 ~~~
     Target #
@@ -264,7 +264,7 @@ The template covers all possibilities, and we will discuss all of them. However,
   U←##.Utilities ⋄ F←##.FilesAndDirs ⋄ A←##.APLTreeUtils
 ∇
 ∇ R←Test_001(stopFlag batchFlag);⎕TRAP
- ⍝ Check the length of the left argument
+ ⍝ Is the length of the left argument of the `map` function checked?
   ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
   R←∆Failed     
   :Trap 5
@@ -278,7 +278,7 @@ The template covers all possibilities, and we will discuss all of them. However,
 ∇ {r}←GetHelpers
   r←##.Tester.EstablishHelpersIn ⎕THIS
 ∇
-∇ Cleanup
+∇ Cleanup dummy
   ⎕EX¨'AFU'
 ∇
 :EndNamespace
@@ -314,26 +314,28 @@ Let's call our test case. We do this by running the `Run` method first:
 
 ~~~
 Run
---- Test framework "Tester" version 3.5.0 from 2017-07-16 ----------------------------------------------------------------------------------------------------------------
+--- Test framework "Tester" version 3.5.0 from 2017-07-16 ---------------------------------
 Searching for INI file Testcases.ini
   ...not found
 Searching for INI file testcases_APLTEAM2.ini
   ...not found
 Looking for a function "Initial"...
   "Initial" found and successfully executed
---- Tests started at YYYY-MM-DD hh:mm:ss on #.Tests ----------------------------------------------------------------------------------------------------------------------
-# Test_001 (1 of 1) : Check the length of the left argument
- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
-   1 test case executed                                                                                                                                                    
-   0 test cases failed                                                                                                                                                     
-   1 test case broken                                                                                                                                                      
+--- Tests started at YYYY-MM-DD hh:mm:ss on #.Tests ---------------------------------------
+# Test_001 (1 of 1) : Is the length of the left argument of the `map` function checked?
+ ------------------------------------------------------------------------------------------
+   1 test case executed
+   0 test cases failed
+   1 test case broken
 Time of execution recorded on variable #.Tests.TestCasesExecutedAt in: YYYY-MM-DD hh:mm:ss
 Looking for a function "Cleanup"...
-  Function "Cleanup" found and successfully executed.
+  Function "Cleanup" found and executed.
 *** Tests done
 ~~~
 
 That's what we expect. 
+
+I> Note that there are INI files mentioned. Ignore this for the time being; we will discuss this later on.
 
 A> ### What is a test case?!
 A> You might wonder how `Run` established what is a test case and what isn't: that's achieved by naming conventions. Any test function _must_ start their name with `Test_`. After that there are two possibilities:
@@ -345,13 +347,13 @@ What if we want to look into a broken or failing test case? Of course in our cur
 
 ~~~
 RunDebug 0
---- Test framework "Tester" version 3.2.0 from 2017-03-24 -------
+--- Test framework "Tester" version 3.6.0 from  -------
 Searching for INI file testcases_{computername}.ini
   ...not found
 Searching for INI file Testcases.ini
   ...not found
 Looking for a function "Initial"...
-  ...not found
+  "Initial" found and successfully executed
 --- Tests started at YYYY-MM-DD hh:mm:ss on #.Tests -------------
 SYNTAX ERROR
       . ⍝ Deliberate error
@@ -366,8 +368,6 @@ SYNTAX ERROR
 #.Tests.RunDebug[3]
 ~~~
 
-I> Note that there are INI files mentioned. Ignore this for the time being; we will discuss this later on.
-
 It stopped in line 6. Obviously the call to `FailsIf` has something to do with this, and so has the `⎕TRAP` setting, because apparently that's where the "Deliberate error" comes from. Indeed this is the case: all three flow control functions, `FailIf`, `PassesIf` and `GoToTidyUp` check whether they are running in debug mode and if that is the case then rather returning a result that indicates a failing test case they `⎕SIGNAL 999` which is then caught by the `⎕TRAP` which in turn first prints `⍝ Deliberate error` to the session and then hands over control to the user. You can now investigate variables or start the Tracer etc. in order to investigate why the test case failed.
 
 The difference between `Run` and `RunDebug` is the setting of the first of the two flags provided as right argument to the test function: `stopFlag`. This is `0` when `Run` executes the test cases, but it is `1` when `RunDebug` is in charge. The three flow control functions `FailsIf`, `PassesIf` and `GoToTidyUp` all honour `stopFlag` - that's how it works.
@@ -376,14 +376,14 @@ Now sometimes you don't want the test function to go to the point where the erro
 
 ~~~
       RunDebug 1
---- Test framework "Tester" version 3.2.0 from 2017-03-24 -------
+--- Test framework "Tester" version 3.6.0 from YYYY-MM-DD -------
 Searching for INI file Testcases.ini
   ...not found
 Searching for INI file testcases_APLTEAM2.ini
   ...not found
 Looking for a function "Initial"...
   "Initial" found and successfully executed
---- Tests started at YYYY-MM-DD hh:mm:ss on #.Tests ----------------------------------
+--- Tests started at YYYY-MM-DD hh:mm:ss on #.Tests -------------
 
 ExecuteTestFunction[6]
       )si
@@ -397,14 +397,14 @@ ExecuteTestFunction[6]
 You could now trace into `Test_001` and investigate. Instead enter `→0`. You should see something like this: 
 
 ~~~
-* Test_001 (1 of 1) : Check the length of the left argument
+* Test_001 (1 of 1) : Is the length of the left argument of the `map` function checked?
  ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
    1 test case executed                                                                                                                                                    
    1 test case failed                                                                                                                                                      
    0 test cases broken                                                                                                                                                     
 Time of execution recorded on variable #.Tests.TestCasesExecutedAt in: YYYY-MM-DD hh:mm:ss
 Looking for a function "Cleanup"...
-  Function "Cleanup" found and successfully executed.
+  Function "Cleanup" found and executed.
 *** Tests done
 ~~~
 
@@ -439,22 +439,22 @@ Now what if you've executed, say, not one but 300 test cases with `Run`, and jus
 
 ~~~
       RunThese 1
---- Test framework "Tester" version 3.5.0 from 2017-07-16 ----------------------------------------------------------------------------------------------------------------
+--- Test framework "Tester" version 3.5.0 from 2017-07-16 --------------------------------
 Searching for INI file Testcases.ini
   ...not found
 Searching for INI file testcases_APLTEAM2.ini
   ...not found
 Looking for a function "Initial"...
   "Initial" found and successfully executed
---- Tests started at YYYY-MM-DD hh:mm:ss on #.Tests ----------------------------------------------------------------------------------------------------------------------
+--- Tests started at YYYY-MM-DD hh:mm:ss on #.Tests --------------------------------------
   Test_001 (1 of 1) : Process a single file with .\MyApp.exe
- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
-   1 test case executed                                                                                                                                                    
-   0 test cases failed                                                                                                                                                     
-   0 test cases broken                                                                                                                                                     
-Time of execution recorded on variable #.Tests.TestCasesExecutedAt in: 2017-07-18 06:49:01
+ -----------------------------------------------------------------------------------------
+   1 test case executed
+   0 test cases failed
+   0 test cases broken
+Time of execution recorded on variable #.Tests.TestCasesExecutedAt in: YYYY-MM-DD hh:mm:ss
 Looking for a function "Cleanup"...
-  Function "Cleanup" found and successfully executed.
+  Function "Cleanup" found and executed.
 *** Tests done
 ~~~
 
@@ -502,18 +502,20 @@ Namespace Tests
 ...
 ~~~	
 
+I> Note how using the references `U` and `A` here simplifies the code greatly.
+
 Now we try to execute this test cases:
 
 ~~~
       #.Tests.GetHelpers
       RunThese 2
---- Test framework "Tester" version 3.2.0 from 2017-03-24 ----------------
+--- Test framework "Tester" version 3.6.0 from YYYY-MM-DD ----------------
 Searching for INI file testcases_{computername}.ini
   ...not found
 Searching for INI file Testcases.ini
   ...not found
 Looking for a function "Initial"...
-  ...not found
+  "Initial" found and successfully executed
 --- Tests started at YYYY-MM-DD hh:mm:ss on #.Tests ----------------------
   Test_002 (1 of 1) : Check whether `map` works fine with appropriate data
  -------------------------------------------------------------------------
@@ -523,8 +525,6 @@ Looking for a function "Initial"...
 ~~~
 
 Works fine. Excellent.
-
-I> Note how using the references `U` and `A` here simplifies the code greatly.
 
 Now let's make sure that the work horse is doing okay; for this we add another test case:
 
@@ -582,7 +582,7 @@ Let's try again:
 
 ~~~
       RunThese 3
---- Test framework "Tester" version 3.2.0 from 2017-03-24 -------------------------
+--- Test framework "Tester" version 3.6.0 from YYYY-MM-DD -------------------------
 Searching for INI file testcases_{computername}.ini
   ...not found
 Searching for INI file Testcases.ini
@@ -595,9 +595,9 @@ Looking for a function "Initial"...
    1 test case executed
    0 test cases failed
    0 test cases broken
-Time of execution recorded on variable #.Tests.TestCasesExecutedAt: yyyy-mm-dd hh:mm:ss
+Time of execution recorded on variable #.Tests.TestCasesExecutedAt: YYYY-MM-DD hh:mm:ss
 Looking for a function "Cleanup"...
-  Function "Cleanup" found and successfully executed.
+  Function "Cleanup" found and executed.
 ~~~
 
 Clearly we need to have one test case for every result the function `TxtToCsv` might return but we leave that as an exercise to you. We have more important test cases to write: we want to make sure that whenever we create a new version of the EXE it will keep working.
@@ -628,7 +628,7 @@ leanpub-start-insert
    'Create!'F.CheckPath ∆Path
    list←⊃F.Dir'..\..\texts\en\*.txt'
    rc←list F.CopyTo ∆Path,'\'
-   :If ~R←0∨.≠⊃rc
+   :If ~R←0∧.=⊃rc
        ⎕←'Could not create ',∆Path
    :EndIf
 leanpub-end-insert   
@@ -647,7 +647,7 @@ What we do in `Initial` apart from creating the references:
 * We then create it.
 * We ask for a list of all text files in the `texts\en\` folder.
 * We copy all those files over to our temporary test folder.
-* Finally we check the return code of the copy operation; `R` gets 0 (indicating success) only in case they were successful.
+* Finally we check the return code of the copy operation; `R` gets 1 (indicating success) only in case they were successful.
 
 A> ### Machine-dependent initialisation
 A> 
@@ -665,13 +665,13 @@ Now we are ready to test the EXE; create it from scratch. Our first test case wi
       ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
       R←∆Failed
      ⍝ Precautions:
-      ##.FilesAndDirs.DeleteFile⊃##.FilesAndDirs.Dir ∆Path,'\*.csv'
+      F.DeleteFile⊃F.Dir ∆Path,'\*.csv'
       rc←##.Execute.Application'MyApp.exe ',∆Path,'\ulysses.txt'
       →GoToTidyUp ##.MyApp.EXIT.OK≠⊃rc
-      →GoToTidyUp~##.FilesAndDirs.Exists ∆Path,'\ulysses.csv'
+      →GoToTidyUp~F.Exists ∆Path,'\ulysses.csv'
       R←∆OK
      ∆TidyUp:
-      ##.FilesAndDirs.DeleteFile⊃##.FilesAndDirs.Dir ∆Path,'\*.csv'
+      F.DeleteFile⊃F.Dir ∆Path,'\*.csv'
     ∇
 ...
 ~~~
@@ -689,7 +689,7 @@ Let's run our new test case:
 ~~~
       GetHelpers
       RunThese 'exe'
---- Test framework "Tester" version 3.2.0 from 2017-03-24 -----
+--- Test framework "Tester" version 3.6.0 from YYYY-MM-DD -----
 Searching for INI file testcases_{computername}.ini
   ...not found
 Searching for INI file Testcases.ini
@@ -702,9 +702,9 @@ Looking for a function "Initial"...
    1 test case executed
    0 test cases failed
    0 test cases broken
-Time of execution recorded on variable #.Tests.TestCasesExecutedAt in: yyyy-mm-dd hh:mm:ss
+Time of execution recorded on variable #.Tests.TestCasesExecutedAt in: YYYY-MM-DD hh:mm:ss
 Looking for a function "Cleanup"...
-  Function "Cleanup" found and successfully executed.
+  Function "Cleanup" found and executed.
 ~~~
 
 We need one more test case:
@@ -737,26 +737,26 @@ This one will process _all_ TXT files in `∆Path` and create a file `total.csv`
 ~~~
       GetHelpers
       ⎕←⊃Run
---- Test framework "Tester" version 3.2.0 from 2017-03-24 ----------------------------
+--- Test framework "Tester" version 3.6.0 from YYYY-MM-DD ----------------------------
 Searching for INI file testcases_{computername}.ini
   ...not found
 Searching for INI file Testcases.ini
   ...not found
 Looking for a function "Initial"...
   "Initial" found and successfully executed
---- Tests started at 2017-03-22 20:16:26 on #.Tests ---------------------------------------
+--- Tests started at YYYY-MM-DD hh:mm:dd on #.Tests ---------------------------------------
   Test_TxtToCsv_03 (1 of 5) : Test whether `TxtToCsv` handles a non-existing file correctly
   Test_exe_01 (2 of 5)      : Process a single file with .\MyApp.exe
   Test_exe_02 (3 of 5)      : Process all TXT files in a certain directory
-  Test_map_01 (4 of 5)      : Check the length of the left argument
+  Test_map_01 (4 of 5)      : Is the length of the left argument of the `map` function checked?
   Test_map_02 (5 of 5)      : Check whether `map` works fine with appropriate data  
  ------------------------------------------------------------------------------------------
    5 test cases executed
    0 test cases failed
    0 test cases broken
-Time of execution recorded on variable #.Tests.TestCasesExecutedAt in: yyyy-mm-dd hh:mm:ss
+Time of execution recorded on variable #.Tests.TestCasesExecutedAt in: YYYY-MM-DD hh:mm:ss
 Looking for a function "Cleanup"...
-  Function "Cleanup" found and successfully executed.
+  Function "Cleanup" found and executed.
 0   
 ~~~
 
@@ -773,7 +773,7 @@ Although we have been careful and made sure that every single test case cleans u
 ~~~
 :Namespace Tests
 ...
-∇ Cleanup
+∇ Cleanup dummy
   ⎕EX¨'AFU'
 leanpub-start-insert      
   :If 0<⎕NC'∆Path'
@@ -786,7 +786,7 @@ leanpub-start-insert
 :EndNamespace
 ~~~
 
-This function now checks whether a global `∆Path` exists. If that's the case then the directory it is pointing to is removed and the global variable deleted. The `Tester` framework checks whether there is a function `Cleanup`. If that's the case the function is executed after the test case has been executed. The function must be niladic and either return a shy result or no result at all.
+This function now checks whether a global `∆Path` exists. If that's the case then the directory it is pointing to is removed and the global variable deleted. The `Tester` framework checks whether there is a function `Cleanup`. If that's the case the function is executed after the last test case has been executed. The function must be either monadic or niladic; in case it is a monadic function the right argument will be `⍬`. It must either return a shy result (ignored) or no result at all.
 
 
 ### Markers
@@ -805,7 +805,7 @@ TxtToCsv
       L''
  Test_exe_01       Process a single file with .\MyApp.exe                      
  Test_exe_02       Process all TXT files in a certain directory                  
- Test_map_01       Check the length of the left argument                         
+ Test_map_01       Is the length of the left argument of the `map` function checked?                         
  Test_map_02       Check whether `map` works fine with appropriate data          
  Test_TxtToCsv_01  Test whether `TxtToCsv` handles a non-existing file correctly 
       L'ex'
@@ -826,7 +826,7 @@ We have now a test suite available that allows us at any stage to call it in ord
 
 ## The sequence of tests
 
-Please note that there is always the possibility of test cases being dependent on another, even if you try to avoid that. That might be by mistake or an unnoticed side effect. That doesn't mean that you shouldn't aim for making all test cases completely independent from one another. Watch out: a future version of `Tester` might come with an option that shuffles the test cases before executing them.
+Please note that there is always the possibility of test cases being dependent on another, even if you try to avoid that. That might be by mistake or due to an unnoticed side effect. That doesn't mean that you shouldn't aim for making all test cases completely independent from one another. Watch out: a future version of `Tester` might come with an option that shuffles the test cases before executing them.
 
 
 ## Testing in different versions of Windows 
@@ -858,9 +858,6 @@ Pro
 
 Contra
 : We cannot know whether those test cases cover the same environment(s) (different versions of Windows, different versions of Dyalog, domain-managed network or not, network drives or not, multi-threaded versus single-threaded, you name it) our application will run in. 
-
-`⍝TODO⍝` `↓↓↓` 
-That's only true for most but not for all modules: some need files, a special environment etc.. We need to think about this when we consider the future role of GitHub for the APLTree project.
 
 That clearly means that we should incorporate the tests those modules come with into our own test suite, although we are sure that not too many people/companies using modules from the APLTree library are actually doing this. 
 
