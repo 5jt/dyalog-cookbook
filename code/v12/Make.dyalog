@@ -1,12 +1,14 @@
 ﻿:Class Make
 ⍝ Puts the application `MyApp` together:
-⍝ * Remove folder `Source\` in the current directory
-⍝ * Create folder `Source\` in the current directory
-⍝ * Copy icon to `Source\`
-⍝ * Copy the INI file template over to `DESTINATION`
-⍝ * Creates `MyApp.exe` within `Source\`
+⍝ 1. Remove folder `DESTINATION\` in the current directory
+⍝ 2. Create folder `DESTINATION\` in the current directory
+⍝ 3. Copy icon to `DESTINATION\`
+⍝ 4. Copy the INI file template over to `DESTINATION`
+⍝ 5. Creates `MyApp.exe` within `DESTINATION\`
     ⎕IO←1 ⋄ ⎕ML←1
+    
     DESTINATION←'MyApp'
+    
     ∇ {filename}←Run offFlag;rc;en;more;successFlag;F;msg
       :Access Public Shared
       F←##.FilesAndDirs

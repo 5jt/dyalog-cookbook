@@ -23,5 +23,12 @@
           r←#.Tests.RunDebug 0
       :EndIf
     ∇
+    
+    ∇{r}←LoadHelp dummy;parms
+    parms←#.Markdown2Help.CreateParms ⍬
+    parms.saltFolder←#.FilesAndDirs.PWD,'\Help\files'
+    parms.source←'#.MyHelp'
+    {}#.Markdown2Help.LoadHelpWithSalt parms
+    ∇
 
 :EndNamespace

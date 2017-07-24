@@ -16,7 +16,7 @@ Scheduled Tasks -- like Services -- are perfect for background tasks. Examples a
 
 * Take a backup once a week
 * Check the availability of your website once every hour
-* Send a test email to all your email addresses once a day
+* Send a test email to all your email addresses once a week
 
 Scheduled Tasks cannot interact with the user: when you try to put up a GUI and ask a question then nothing will appear on the screen: you just can't do this.
 
@@ -37,8 +37,6 @@ The former is clearly a candidate for a Scheduled Task while the latter is a can
 
 You need either a saved workspace with `⎕LX` set or an EXE created from a workspace. Unless you need to make sure that your code cannot be looked at, an EXE has no advantages over a simple saved workspace; it just adds complexity and therefore should be avoided if there aren't any advantages. However, if you cannot be sure whether the required version of Dyalog is installed on the target machine then you have no choice: it has to be a stand-alone EXE.
 
-Note that 
-
 We have already taken care of handling errors and writing to log files, which are the only sources of information in general, and in particular for analyzing any problems that pop up when a Scheduled Task runs, or crashes. In other words, we are ready to go.
 
 Our application does not suggest itself as a Scheduled Task; it's obviously a candidate for running as a Service, but that does not mean it cannot run as a Scheduled Task, so let's start.
@@ -57,7 +55,7 @@ In order to force the application to run only once at any given time we add a fu
 ~~~
 ∇ {tno}←CheckForOtherInstances dummy;filename;listOfTiedFiles;ind
  ⍝ Attempts to tie the file "MyAppCtrl.dcf" exclusively and returns the tie number.
- ⍝ If that is not possible than an error is thrown because we can assume that the
+ ⍝ If that is not possible then an error is thrown because we can assume that the
  ⍝ application is already running.\\
  ⍝ Notes:
  ⍝ * In case the file is already tied it is untied first.
@@ -85,7 +83,7 @@ Notes:
 
 * First we check whether the file `MyAppCtrl.dcf` exists. If it doesn't we create it and the job is done: creating a file always implies an exclusive tie.
 * If it does exist we check whether it is tied by itself, in case we are developing and have restarted the application without having closed it down properly. We then untie the file.
-* Finally we attempt to tie the file exclusively but trap error 24 - that's "FILE TIED". If that's the case we throw an error `Constants,APP_STATUS.ALREADY_RUNNING`.
+* Finally we attempt to tie the file exclusively but trap error 24 - that's "FILE TIED". If that's the case we throw an error `Constants.APP_STATUS.ALREADY_RUNNING`.
 * The file is expected (or will be created) in the current directory. 
 
 Since this function will throw an error `Constants.APP_STATUS.ALREADY_RUNNING` we need to add this to the `EXIT` namespace in `MyApp`:
@@ -111,7 +109,7 @@ We change `Initial` so that it calls this new function:
 leanpub-start-insert   
    Config.ControlFileTieNo←CheckForOtherInstances ⍬
 leanpub-end-insert   
-   (0≠Config.Ride) Config.Ride
+   CheckForRide Config.(Ride WaitForRide)
 ...
 ∇
 ~~~

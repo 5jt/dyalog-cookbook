@@ -628,7 +628,7 @@
       ps.log,←⊂'Looking for a function "Cleanup"...'
       ¯1 ShowLog ps.log
       :If 3=ref.⎕NC'Cleanup'
-          :If 0=1 2⊃⎕AT'#._Tester.TestCases.Cleanup'
+          :If 0=1 2⊃ref.⎕AT'Cleanup'
               ref.Cleanup
               ps.log,←⊂'  Function "Cleanup" found and executed.'
               ¯1 ShowLog ps.log

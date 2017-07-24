@@ -215,8 +215,9 @@
     ∇ {r}←StartFromCmdLine arg;MyLogger;Config;rc;⎕TRAP
    ⍝ Needs command line parameters, runs the application.
       r←⍬
-      ⎕WSID←'MyApp'
       ⎕TRAP←#.HandleError.SetTrap ⍬
+      ⎕WSID←⊃⊣2⎕nq # 'GetCommandLineArgs'
+      #.FilesAndDirs.PolishCurrentDir
       #.⎕SHADOW'ErrorParms'
       (Config MyLogger)←Initial 0
       ⎕TRAP←(Config.Debug=0)SetTrap Config
@@ -247,7 +248,7 @@
       #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
       Config←CreateConfig isService
       Config.ControlFileTieNo←CheckForOtherInstances ⍬
-      CheckForRide (0≠Config.Ride) Config.Ride
+      CheckForRide Config.(Ride WaitForRide)
       MyLogger←OpenLogFile Config.LogFolder
       MyLogger.Log'Started MyApp in ',F.PWD
       MyLogger.Log 2 ⎕NQ'#' 'GetCommandLine'

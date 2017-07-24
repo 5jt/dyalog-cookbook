@@ -50,7 +50,7 @@ The only place worth writing documentation is in the code itself. Maintaining do
 
 Header comments
 
-: A block of comments at the top of a function serves as an abstract, describing argument/s and result and the relationship between them. If the function reads external variables, list them. If the function has side effects (ie writes files or sets external variables) list them.
+: A block of comments at the top of a function serves as an abstract, describing argument/s and result and the relationship between them.
 
 Heading comments
 
@@ -94,7 +94,7 @@ Lists the methods and fields of a class. (Requires no comments.)
       Version
 ~~~      
 
-For a more detailed list with arguments and results specify `]ADoc #.HandleError -summary -full`.
+For a more detailed list with arguments and results specify `]ADoc #.HandleError -summary=full`.
 
 
 ### Get it all
@@ -105,7 +105,7 @@ For a more detailed list with arguments and results specify `]ADoc #.HandleError
 
 ![Using ADOC to browse the HandleError class](images/adoc_handleerror.png)
 
-Composes in HTML a documentation page and displays it in your default browser. 
+Composes a documentation page in HTML and displays it in your default browser. 
 
 
 ### Getting help
@@ -168,7 +168,7 @@ Let's define the public functions at the bottom of the script:
 
 ### Reserved names
 
-ADOC honors several functions in a special way. If any such function exists, its result is treated in a special way. In the rare circumstances that you have a name conflict and **don't** want ADOC to treat some of those names in any special way then you have to instruct ADOC accordingly with a parameter spaces. Refer to the ADOC documentation for details regarding `ignoreVersion`, `ignoreCopyright` and `ignoreHistory`.
+ADOC honors four functions in a special way if they exist: `Copyright`, `History`, `Version` and `ADOC_Doc`. If they exist when they (or rather their results) will be treated in a special way.
 
 
 #### Version
@@ -189,7 +189,7 @@ If `Copyright` is niladic and returns either a simple text vector or a vector of
 
 #### History
 
-If `History` is niladic and should not return a result. Instead it should carry comments with information about the history of the script.
+`History` is expected to be a niladic function that does not return a result. Instead it should carry comments with information about the history of the script.
 
 We had already a function `Version` in place, and so far we've added comments regarding the different versions to it. Those should go into `History` instead. Therefore we reaplace the existing `Version` function by these three functions:
 
@@ -199,12 +199,12 @@ We had already a function `Version` in place, and so far we've added comments re
 ∇
 
 ∇ r←Version
-  r←(⍕⎕THIS)'1.5.0' '2017-02-26'
+  r←(⍕⎕THIS)'1.5.0' 'YYYY-MM-DD'
 ∇
 
 ∇ History      
   ⍝ * 1.5.0:
-  ⍝   * MyApp is now ADOCable (function PublicFns).
+  ⍝   * MyApp is now ADOCable (function Public.
   ⍝ * 1.4.0:
   ⍝   * Handles errors with a global trap.
   ⍝   * Returns an exit code to calling environment.
@@ -220,7 +220,7 @@ We had already a function `Version` in place, and so far we've added comments re
 ∇
 ~~~
 
-This gives us more prominent copyright and version notices as well as information about the most recent changes.
+This gives us more prominent copyright and version notices as well as information about the most recent changes. Note that `History` is not expected to carry a  history of all changes but rather the most recent ones.
 
 Finally we need to address the problem that the variables inside `EXIT` are essential for using `MyApp`; they should be part of the documentation. ADOC has ignored the namespace EXIT but we can change this by specifying it explicitly:
 
@@ -237,11 +237,11 @@ When you scroll down (or click at "Exit" in the top-left corner) then you get to
 
 #### ADOC_Doc
 
-There is one more reserved name: `ADOC_Doc`. This is useful when you want to document an unscripted (ordinary) namespace. Just add a niladic function that returns no or a shy result with comments. Those comments are processed in exactly the same way leading comments in scripts are processed.
+There is one more reserved name: `ADOC_Doc`. This is useful when you want to document an unscripted (ordinary) namespace. Just add a niladic function carrying comments that returns no or a shy resul. Those comments are then processed in exactly the same way leading comments in scripts are processed.
 
 That will do for now.
 
-[^faq]: Compile those from questions actually asked by users. It's a common mistake to make the list up as "Question we would like our users to ask".
+[^faq]: Compile those from questions actually asked by users. It's a common mistake to put together "Question we would like our users to ask".
 
 [^ocd]: Thanks to Roger Hui for this term.
 

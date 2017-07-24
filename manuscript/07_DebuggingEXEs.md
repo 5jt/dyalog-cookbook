@@ -1,5 +1,4 @@
-    ⍝ Investigates `fullfilepath` and returns a list with files.
-    ⍝ May return zero, one or many filenames.{:: encoding="utf-8" /}
+{:: encoding="utf-8" /}
 
 # Debugging a stand-alone EXE
 
@@ -97,7 +96,7 @@ We add a function `CheckForRide`:
  ⍝ Depending on what's provided as right argument we prepare for a Ride 
  ⍝ or we don't. In case `waitFlag` is 1 we enter an endless loop.
   r←1
-  :If 0≠ridePort
+  :If 0<ridePort
       rc←3502⌶0
       :If ~rc∊0 ¯1
           11 ⎕SIGNAL⍨'Problem switching off Ride, rc=',⍕rc

@@ -13,10 +13,10 @@ At first glance you might think we can get away with splitting the DYAPP into tw
   even if for the time being there is just one version installed on our machine.
 * We might want to convert any Markdown documents -- like README.MD -- into HTML documents. While the MD is the source, 
   the HTML will become part of the final product.
-* We need to make sure that the help system -- which we will introduce soon -- is properly compiled and configured.
+* We need to make sure that the help system -- which we will introduce soon -- is properly compiled and configured by the "make" utility.
 * Soon we need an installer that produces an EXE we can send to the customer for installing the software.
 
-We resume, as usual, by saving a copy of `Z:\code\v09` as `Z:\code\v10`. Now delete `MyApp.exe` from `Z:\code\v11`: from now on we will create the EXE somewhere else.
+We resume, as usual, by saving a copy of `Z:\code\v09` as `Z:\code\v10`. Now delete `MyApp.exe` from `Z:\code\v10`: from now on we will create the EXE somewhere else.
 
 
 ## The development environment
@@ -69,6 +69,28 @@ leanpub-end-insert
 Now a developer who double-clicks the DYAPP in order to assemble the workspace will always be reminded of running all test cases before she starts working on the application. Experience tells us that this is a good thing.
 
 
+## MyApp.dyalog
+
+One minor thing needs our attention: because we create `MyApp.exe` now in a folder `MyApp` simply setting `⎕WSID` to `MyApp` does not do any more. Therefore we need to make a change to the `StartFromCmdLine` function in `MyApp.dyalog`:
+
+~~~
+...
+∇ {r}←StartFromCmdLine arg;MyLogger;Config;rc;⎕TRAP
+   ⍝ Needs command line parameters, runs the application.
+      r←⍬
+      ⎕TRAP←#.HandleError.SetTrap ⍬
+leanpub-start-insert      
+      ⎕WSID←⊃⊣2⎕nq # 'GetCommandLineArgs'
+leanpub-end-insert      
+      #.FilesAndDirs.PolishCurrentDir
+...      
+~~~
+
+This change makes sure that the `⎕WSID` will be correct. Under the current circumstances it will be `MyApp\MyApp.dws`.
+
+Note that we access `GetCommandLineArgs` as a function call with `⎕NQ` rather than referring to `#.GetCommandLineArgs`; over the years that has proven to be more reliable.
+
+
 ## "Make" the application
 
 I> In most programming languages the process of compiling the source code and putting together an application is done by a utility that's called "Make"; therefore we use the same term.
@@ -105,12 +127,10 @@ You might want to add other parameters like `MAXWS=128MB` to the BAT file.
 
 Notes:
 
-* The expression `%~dp0` in a batch file will give you the full path -- with a trailing `\` -- of the folder that hosts the batch file. In other words, `"%~dp0Make.dyapp"` would result in a full path pointing to `MyApp.dyapp`, no matter where that is. You _must_ specify a full path because when the interpreter tries to find the DYAPP, the current directory is where the EXE lives, _not_ where the bat file lives.
+* The expression `%~dp0` in a batch file will give you the full path -- with a trailing `\` -- of the folder that hosts the batch file. In other words, `"%~dp0Make.dyapp"` would result in a full path pointing to `MyApp.dyapp`, no matter where that is as long as it is a sibling of the BAT file. You _must_ specify a full path because when the interpreter tries to find the DYAPP, the current directory is where the EXE lives, _not_ where the BAT file lives.
 * Checking `errorlevel` makes sure that in case of an error the batch file shows the return code and then pauses. That gets us around the nasty problem that when you double-click a BAT file, you see a black windows popping up for a split of a second and then it's gone, leaving you wondering whether it has worked alright or not. Now when an error occurs it will pause. In addition it will pass the value of `errorlevel` as return code of the batch script.
 
   However, this technique is suitable only for scripts that are supposed to be executed by a WCU [^WCU]; you don't want to have a pause in scripts that are called by other scripts.
-
-I> _Warning:_ Note that at the time of writing (2017-05) you _must_ write "dyapp" in lowercase characters - DYAPP would _not_ work!
 
 A> ### The current directory
 A> 
@@ -150,7 +170,9 @@ The upper part (until the blank line) is identical with `MyApp.dyapp` except tha
 ⍝ * Copy the INI file template over to `DESTINATION`
 ⍝ * Creates `MyApp.exe` within `DESTINATION\`
     ⎕IO←1 ⋄ ⎕ML←1
+    
     DESTINATION←'MyApp'
+    
     ∇ {filename}←Run offFlag;rc;en;more;successFlag;F;msg
       :Access Public Shared
       F←##.FilesAndDirs
@@ -167,13 +189,13 @@ The upper part (until the blank line) is identical with `MyApp.dyapp` except tha
       :If offFlag
           ⎕OFF
       :EndIf
-    ∇
+      ∇
 :EndClass
 ~~~
 
-Note that the function executes a full stop in a dfn in case its right argument is a `1`. This is an easy way to make the function stop when something goes wrong. There is no point in doing anything but stopping the code from continuing since it is called by a programmer, and when it fails she wants to investigate straight away. And things can go wrong quite easily; for example, the attempt to remove `DESTINATION` may fail simply because somebody is looking with the Windows Explorer into `DESTINATION` at the same time.
+Note that the function executes a full stop in a dfn in case `⍵` is `1`. This is an easy way to make the function stop when something goes wrong. There is no point in doing anything but stopping the code from continuing since it is called by a programmer, and when it fails she wants to investigate straight away. And things can go wrong quite easily; for example, the attempt to remove `DESTINATION` may fail simply because somebody is looking with the Windows Explorer into `DESTINATION` at the same time.
 
-First we create the folder `DESTINATION` from scratch and then we copy everything that's needed to the folder `DESTINATION` is pointing to: the application icon and the INI file. Whether the function executes `⎕OFF` or not depends on the right argument `offFlag`. Why that is needed will become apparent soon.
+First we create the folder `DESTINATION` from scratch and then we copy everything that's needed to the folder `DESTINATION`: the application icon and the INI file. Whether the function executes `⎕OFF` or not depends on the right argument `offFlag`. Why that is needed will become apparent soon.
 
 We don't copy `MyApp.ini` into `DESTINATION` but `MyApp.ini.template`; therefore we must create this file: copy `MyApp.ini` to `MyApp.ini.template` and then check its settings: in particular these settings are important:
 
@@ -208,7 +230,7 @@ However, that leaves us vulnerable to another problem: imagine we introduce a ne
 
 The test simply checks whether the two INI files have the same sections and the same keys; that's sufficient to notify us in case we forgot something.
 
-In the penultimate line `Run` calls `Export`, a private function in the `Make` class that does not yet exist:
+`Run` then calls `Export`, a private function in the `Make` class that does not yet exist:
 
 ~~~
 ...
@@ -254,7 +276,7 @@ leanpub-end-insert
 :EndNamespace
 ~~~
 
-Double-click `Make.dyapp`: a folder `MyApp` should appear in `Z:\code\v11` with, among other files, `MyApp.exe`.
+Double-click `Make.dyapp`: a folder `MyApp` should appear in `Z:\code\v10` with, among other files, `MyApp.exe`.
 
 
 ## The tests
@@ -267,20 +289,23 @@ We need to make a few changes:
 :Namespace Tests
     ⎕IO←1 ⋄ ⎕ML←1
     ∇ Initial;list;rc
-      ∆Path←##.FilesAndDirs.GetTempPath,'\MyApp_Tests'
+      U←##.Utilities ⋄ F←##.FilesAndDirs ⋄ A←##.APLTreeUtils
+      ∆Path←F.GetTempPath,'\MyApp_Tests'      
 leanpub-start-insert      
       ∆ExeFilename←'MyApp.exe'
 leanpub-end-insert      
-      #.FilesAndDirs.RmDir ∆Path
-      'Create!'#.FilesAndDirs.CheckPath ∆Path
-      list←⊃#.FilesAndDirs.Dir'..\..\texts\en\*.txt'
-      rc←list #.FilesAndDirs.CopyTo ∆Path,'\'
-      ⍎(0∨.≠⊃rc)/'.'
+      F.RmDir ∆Path
+      'Create!'F.CheckPath ∆Path     
+      list←⊃F.Dir'..\..\texts\en\*.txt'
+      rc←list F.CopyTo ∆Path,'\'
+      :If ~R←0∧.=⊃rc
+          ⎕←'Could not create ',∆Path
+      :EndIf
 leanpub-start-insert      
-      ⎕SE.UCMD'Load ',#.FilesAndDirs.PWD,'\Make.dyalog -target=#'
+      ⎕SE.UCMD'Load ',F.PWD,'\Make.dyalog -target=#'
       #.Make.Run 0      
 leanpub-end-insert      
-    ∇
+    ∇   
  ...
 :EndNamespace      
 ~~~
@@ -310,7 +335,7 @@ With the two DYAPPs and the BAT file, your development cycle now looks like this
 2. Fix any errors and rerun `#.Tests.Run` until it's fine. If you edit the test themselves, either rerun 
    
    ~~~
-   `#,Tester.EstablishHelpersIn #.Tests` 
+   `#.Tester.EstablishHelpersIn #.Tests` 
    ~~~
    
    or simply close the session and relaunch `MyApp.dyapp`.
