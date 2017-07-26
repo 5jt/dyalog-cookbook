@@ -39,9 +39,9 @@ If you use several versions of Dyalog in parallel then you are advised _not_ to 
 
 ## Name clashes
 
-⍝TODO⍝  
+If two user commands share the same name the last definition wins. You can achieve thuis only by having a user command "Foo" in two different scripts in different folders _with the same group, or no group at all!_
 
-At the time of writing a name clash between two user commands in different folders makes them _both unavailable_! This was reported as bug <01391> in 2017-07-04 to Dyalog.
+In other words, the real name of a user command is compiled by the group name (say "foo") and the user comand name (say "goo"): `]foo.goo`. Not specifying the group name works fine as long as no other user command uses the same name.
 
 
 ## Updates

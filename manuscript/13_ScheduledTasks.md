@@ -208,7 +208,7 @@ Running with highest privileges
 
 : If your user account has no admin rights but your Scheduled Task needs to run with highest privileges then you need to specify a different user id / password after clicking the "Change user or group" button.
 
-: Whether your application needs to run with higgest privileges or not is impossible to say. Experience shows that sometimes something that does not work when -- and only when -- the application is running as a Scheduled Task will work fine with highest privileges although it is by no means clear what those rights are required for.
+: Whether your application needs to run with highest privileges or not is impossible to say. Experience shows that sometimes something that does not work when -- and only when -- the application is running as a Scheduled Task will work fine with highest privileges although it is by no means clear what those rights are required for.
 
 Configure for
 : Generally you should select the OS the task is running on.
@@ -252,7 +252,7 @@ The tab does not carry any mysteries.
 
 Unless you have a very good reason not to you should "Allow task to be run on demand" which means you have the "Run" command available on the context menu.
 
-Note that you may specify restart parameters in case the task fails. Whether that makes any sense at all depends on the application.
+Note that you may specify restart parameters in case the task fails. Whether that makes any sense depends on the application.
 
 The combo box at the bottom allows you to select "Stop the existing instance" which can be quite useful while debugging the application.
 
@@ -305,7 +305,7 @@ Once you have executed the "Run" command from the context menu the GUI changes t
 
 ### Re-make "MyApp"
 
-In case you've found a bug and execute `MyApp`'s `Make.bat` again keep in mind that this means the INI file will be overwritten. So in case you've changed, say, Ride's `Active` flag in the INI file from `0` to `1`, it will be `0` again after the call too `Make.bat`, so any attempt to Ride into the EXE will fail. That's something easy to forget.
+In case you've found a bug and execute `MyApp`'s `Make.bat` again keep in mind that this means the INI file will be overwritten. So in case you've changed, say, Ride's `Active` flag in the INI file from `0` to `1`, it will be `0` again after the call to `Make.bat`, so any attempt to Ride into the EXE will fail. That's something easy to forget.
 
 
 ### MyApp crashes with rc=32
@@ -314,7 +314,7 @@ You most probably forgot to copy over the DLLs needed by Ride [^ride] itself. Th
 
 A> ### Windows return codes
 A> 
-A> In case you want to translate a Windows return code like 32 into a more meaningful piece of information you might consider downloading the user command `GetMsg`. Once installed properly you can do this:
+A> In case you want to translate a Windows return code like 32 into a more meaningful piece of information you might consider downloading the user command `GetMsg` from the APL wiki. Once installed properly you can do this:
 A> 
 A> ~~~
 A>       ]GetMsgFrom 32

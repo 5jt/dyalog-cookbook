@@ -42,7 +42,7 @@
       R←∆Failed
       ##.MyApp.(Config MyLogger)←##.MyApp.Initial ⍬
       rc←##.MyApp.TxtToCsv'This_file_does_not_exist'
-      →FailsIf ##.MyApp.EXIT.SOURCE_NOT_FOUND≢rc
+      →FailsIf rc≢##.MyApp.EXIT.SOURCE_NOT_FOUND
       R←∆OK
     ∇
 
@@ -85,7 +85,7 @@
       ⎕EX¨'AFU'
       :If 0<⎕NC'∆Path'
           ##.FilesAndDirs.RmDir ∆Path
-          ⎕EX '∆Path'
+          ⎕EX'∆Path'
       :EndIf
     ∇
 

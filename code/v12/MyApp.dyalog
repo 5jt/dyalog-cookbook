@@ -15,10 +15,12 @@
     ∇
 
     ∇ r←Version
-      r←(⍕⎕THIS)'1.5.0' 'YYYY-MM-DD'
+      r←(⍕⎕THIS)'1.6.0' 'YYYY-MM-DD'
     ∇
 
     ∇ History      
+      ⍝ * 1.6.0:
+      ⍝   * MyApp has now its own help system.
       ⍝ * 1.5.0:
       ⍝   * MyApp is now ADOCable (function PublicFns).
       ⍝ * 1.4.0:
@@ -278,7 +280,22 @@
       #.ErrorParms.windowsEventSource←'MyApp'
       #.ErrorParms.addToMsg←' --- Something went terribly wrong'
       trap←force ##.HandleError.SetTrap'#.ErrorParms'
-    ∇
+    ∇   
+
+    ∇{r}←ShowHelp pagename;ps
+     ps←#.Markdown2Help.CreateParms ⍬
+     ps.source←#.MyHelp     
+     ps.foldername←'Help'
+     ps.helpAbout←'MyApp''s help system by John Doe'
+     ps.helpCaption←'MyApp Help'
+     ps.helpIcon←'file://',##.FilesAndDirs.PWD,'\images\logo.ico'
+     ps.helpVersion←'1.0.0'
+     ps.helpVersionDate←'YYYY-MM-DD'
+     ps.page←pagename
+     ps.regPath←'HKCU\Software\MyApp'
+     ps.noClose←1
+     r←#.Markdown2Help.New ps
+   ∇
 
     ∇ {tno}←CheckForOtherInstances dummy;filename;listOfTiedFiles;ind
     ⍝ Attempts to tie the file "MyApp.dcf" exclusively and returns the tie number.
@@ -312,7 +329,7 @@
     ∇  
 
     ∇ r←Public
-      r←'StartFromCmdLine' 'TxtToCsv' 'SetLX' 'GetCommandLineArg'
+      r←'StartFromCmdLine' 'TxtToCsv' 'SetLX' 'ShowHelp'
     ∇
 
 :EndNamespace
