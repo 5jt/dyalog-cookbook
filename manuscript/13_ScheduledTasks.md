@@ -46,7 +46,7 @@ Our application does not suggest itself as a Scheduled Task; it's obviously a ca
 
 When dealing with Scheduled Tasks then usually you don't want more than one instance of the application running at the same time. When there is a problem with a Scheduled Task then one of the most common reasons why getting to the bottom of the problem turns out to be difficult is that you fire up another instance when there is already one running. For example, you try to Ride into it but the port used by Ride is already occupied by an instance that was started earlier without you being aware of this. For that reason we are going to prevent this from happening.
 
-A> Even in the rare circumstances when you want an application managed by the Task Scheduler to run in parallel more than once you should establish a mechanism that allows you to enforce having just one instance running if this is needed for debugging purposes. Make it an INI entry (like "AllowMultipleInstances") and document it appropriately.
+A> Even in the rare circumstances when you want an application managed by the Task Scheduler to run in parallel more than once you should establish a mechanism that allows you to enforce having just one instance running if only for debugging purposes. Make it an INI entry (like "AllowMultipleInstances") and document it appropriately.
 
 We resume, as usual, by saving a copy of `Z:\code\v11` as `Z:\code\v12`.
 
@@ -169,9 +169,13 @@ We can learn some lessons from the failure of those two test cases:
 
 1. Obviously the sequence in which the test cases are executed can have an impact on whether tests fail or not. If `Test_TxtToCsv` would have been the last test case the problem would have slipped through undetected.
 
-1. That a test suite runs through OK does not necessarily mean it will keep doing so when you execute it again.
+1. That a test suite runs through OK does not necessarily mean it will keep doing so when you execute it again. If `Test_TxtToCsv` would have been the very last test case the test suite would have passed without a problem but an attempt to run it again would fail because now the control file would have been tied, and `Test_exe_01` would therefore fail.
 
-In our specific case it was actually a problem in the test cases, _not_ in `MyApp`, but the conclusion holds true in any case.
+In our specific case it was actually a problem in the test cases, _not_ in `MyApp`, but the conclusion holds true anyway.
+
+A> ### Shuffle test cases
+A>
+A> At the time of writing (2017-07) the sequence of the test cases relied on alphabetical order and is therefore predictable. On the to-do list for the `Tester` class is a topic "Add option that makes the test framework shuffle the test cases so that the order of execution is not predictable anymore".
 
 
 ## Create a Scheduled Task
