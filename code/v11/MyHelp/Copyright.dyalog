@@ -4,4 +4,4 @@
 <array><shape>0</shape><string></string></array>
 <array><shape>11</shape><string># Copyright</string></array>
 <array><shape>0</shape><string></string></array>
-<array><shape>22</shape><string>(c) Copyright 2017 xyz</string></array></array>
+<array><shape>68</shape><string>(c) Copyright 2017 Kai Jaeger &amp; Stephen Taylor ⋄ The Dyalog Cookbook</string></array></array>

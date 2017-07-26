@@ -45,7 +45,7 @@ A> ~~~
 A> ViewHelp.exe -page=Sub.Foo
 A> ~~~
 A>
-A> However, all these details are discussed in Markdown2Help's own help system.
+A> However, all these details are discussed in `Markdown2Help`'s own help system.
 
 
 `Markdown2Help` is an ordinary (non-scripted) namespace. We therefore need to copy it from its workspace. We also need the script `MarkAPL` which is used to convert the help pages (which are written in Markdown) to HTML. You know by now how to download scripts from the APLTree library. Modify `MyApp.dyapp` so that it loads the module `MarkAPL` and also copies `Markdown2Help`:
@@ -75,17 +75,20 @@ parms.folderName←'Z:\code\v11\Help\Files'
 parms #.Markdown2Help.CreateStub '#.MyHelp'
 ~~~
 
+`CreateStub` will create some pages and a node (or folder) for us; that's what you should see:
+
+![Download target](images/MyFirstHelpPage.png)
+
 Notes:
 
 * In our example the name of `saltFolder` and the help system are the same. That is not a requirement but certainly not a bad idea either.
 * `folderName` is the folder the compiled help system will be saved into. That's the stuff that needs to be installed at your customers machine in order to be able to view the help system.
 * The right argument must be a valid and unused APL name. `CreateStub` will create a namespace with that name for us.
-* If a simple (not fully qualified) name is specified that namespace will be created in the namespace the function `CreateStub` was called from. Instead you can also specify a fully qualified name like `#.Foo.Goo.Help`. Note that `Foo` and `Goo` must both exist but `Help` must not.
+
+  If a simple (not fully qualified) name is specified that namespace will be created in the namespace the function `CreateStub` was called from. Instead you can also specify a fully qualified name like `#.Foo.Goo.Help`. Note that `Foo` and `Goo` must both exist but `Help` must not.
 * `CreateStub` will check the callback associated with the `Fix` event. If that happens to be a SALT function `CreateStub` will check the `saltFolder` parameter. If that's not empty the help system will use SALT for saving the nodes (namespaces), help pages (variables) and functions that resemble a help system.  
 * `CreateStub` will return a reference pointing to the help system but normally you don't need to assign that.
-* When the help system is manages by SALT you will find a namespace `SALT_Var_Data` in the root. Ignore this; it is used by SALT to manage meta data.
-
-`CreateStub` will create some pages and a node (or folder) for us.
+* When the help system is managed by SALT you will find a namespace `SALT_Var_Data` in the root. Ignore this; it is used by SALT to manage meta data.
 
 
 ## Behind the scenes
@@ -118,7 +121,7 @@ Make some changes, for example add another paragraph `Go to →[Overview]`, and 
 
 Note also that `→[Overview]` is a link. "Overview" must be the name of a page. If the title of the page is different from the name, the title is going to be shown as link text in the help page.
 
-Even if you are familiar with Markdown you should read `Markdown2Help`'s own help file before you start using Markdown2Help seriously. Some Markdown features are not supported by the help system, and internal links are implemented in a simplified way.
+Even if you are familiar with Markdown you should read `Markdown2Help`'s own help file before you start using `Markdown2Help` seriously. Some Markdown features are not supported by the help system, and internal links are implemented in a simplified way.
 
 
 ## Changing title and sequence
@@ -183,7 +186,7 @@ The context menu offers plenty of commands. Note that the first three commands a
 
 ![The context menu](images/ContextMenu.png)
 
-As a developer you should have no problem to master these commands.
+As a developer you should have no problem mastering these commands.
 
 
 ## Compiling the help system
@@ -203,11 +206,11 @@ What we actually mean by that is for example editing a variable with a double-cl
 
 The reason is simple: when you change a help system via the context menu then all necessary steps are carried out for you. An example is when you have a `∆TopicProperties` function in a perticular node and you want to add a new help page to that node. You have to right-click on a page and select the "Inject new help page (stub)" command from the context menu. You will then be prompted for a valid name and finally the new help page is injected after the page you have clicked at. But there is more to it than just that: the page is also added for you to the `∆TopicProperties` function. That's one reason why you are advised to perform all changes via the context menu rather than manipulating the help system directly.
 
-Maybe even more important: Markdown2Help also executes the necessary steps in order to keep the files and folders in `saltFolder` in sync with the help system _and_ will automaticall re-compile the help system for you.
+Maybe even more important: `Markdown2Help` also executes the necessary steps in order to keep the files and folders in `saltFolder` in sync with the help system _and_ will automaticall re-compile the help system for you.
 
 The only exception is when you change your mind about the structure of a help system. If that involves moving around namespaces or plenty of pages between namespaces then it is indeed better to do it in the Workspace Explorer and, when you are done, to check all the `∆TopicProperties` functions within your help system and finally recompile the help system; unless somebody implements drag-and-drop for the TreeView of the help system one day...
 
-However, in that case you must make sure that the help system is saved properly. That means that you have to invoke the `SaveHelpSystemWithSalt` method yourself. You also nee to call the `Markdown2Help.CompileHelpFileInto` method in order to compile the help system from the source.
+However, in that case you must make sure that the help system is saved properly. That means that you have to invoke the `SaveHelpSystemWithSalt` method yourself. You also nee to call the `Markdown2Help.CompileHelpFileInto` method in order to compile the help system from the source. Refer to `Markdown2Help`'s own help for details.
 
   
 ## The "Developers" menu
@@ -256,7 +259,7 @@ And a page regarding copyright:
 
 ## How to view the  help system
 
-We want to make sure that we can call the help system from within our application. For that we need a new function, and the obvious name for this function is `ShowHelp`. The function accepts a right argument which might be an empty vector but can be a page name instead. If a page name is provided then of course `Markdown2Help` does not show the first page of the help system but the page specified. The function goes into the `MyApp.dyalog` script:
+We want to make sure that we can call the help system from within our application. For that we need a new function, and the obvious name for this function is `ShowHelp`. The function accepts a right argument which might be an empty vector but can be a page name instead. If a page name is provided then of course `Markdown2Help` does not show the first page of the help system but the page specified. It returns an instance of the help system. The function goes into the `MyApp.dyalog` script:
 
 ~~~
 :Namespace MyApp
@@ -276,7 +279,7 @@ leanpub-start-insert
   ps.page←pagename
   ps.regPath←'HKCU\Software\MyApp'
   ps.noClose←1
-  MyHelpInstance←#.Markdown2Help.New ps
+  r←#.Markdown2Help.New ps
 ∇
 leanpub-end-insert       
 
@@ -323,7 +326,7 @@ Therefore we could re-write the function `ShowHelp`:
   ps.regPath←'HKCU\Software\MyApp'
   ps.noClose←1
   ps←#.Markdown2Help.CreateParms ps     
-  MyHelpInstance←#.Markdown2Help.New ps
+  r←#.Markdown2Help.New ps
 ∇
 ~~~
 
@@ -332,7 +335,7 @@ This version of `ShowHelp` would produce exactly the same result.
 
 ## Calling the help system from your application
 
-* Start the help system by calling the `New` function as soon as the user presses F1 or select "Help" from the menubar or requests a particular help page by other means. Catch the result and assign it to a meaningful name: this represents your help system. We use the name `MyHelpInstance`.
+* Start the help system by calling the `New` function as soon as the user presses F1 or selects "Help" from the menubar or requests a particular help page by other means. Catch the result and assign it to a meaningful name: this represents your help system. We use the name `MyHelpInstance`.
 * Specify `noClose←1`. This means that when the user attempts to close the help system with a click into the close box or by selecting the "Quit" command from the "File" menu or by pressing Alt+F4 or Ctrl+W then the help system is not really closed down, it just makes itself invisible.
 * When the user later requests again a help page use this:
 
@@ -340,11 +343,16 @@ This version of `ShowHelp` would produce exactly the same result.
   1 #.Markdown2Help.Display MyHelpInstance 'Misc'
   ~~~
   
-  * The `1` provided as left argument forces the GUI to make itself visible, no matter whether it is visible right now or not: the user might have "closed" the help system since she requested a help page.
+  * The `1` provided as left argument forces the GUI to make itself visible, no matter whether it is visible right now or not: the user might have "closed" the help system since she requested a help page earlier on.
   * `MyHelpInstance` represents the help system. 
   * "Misc" is the name of the page to be displayed. Can also be empty (`⍬`) in which case the first page is shown.
   
-  Note that the overhead of bringing the help system back this way is pretty close to zero. If you _really_ want to get rid of the help system just delete the reference.
+  Note that the overhead of bringing the help system back this way is pretty close to zero. If you _really_ want to get rid of the help system call the `Close` method before deleting the reference:
+  
+  ~~~
+  MyHelpInstance.Close
+  )erase MyHelpInstance
+  ~~~
 
 
 ## Adding the help system to "MyApp.dyapp"

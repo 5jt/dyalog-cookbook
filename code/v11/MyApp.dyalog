@@ -291,11 +291,11 @@
      ps.page←pagename
      ps.regPath←'HKCU\Software\MyApp'
      ps.noClose←1
-     MyHelpInstance←#.Markdown2Help.New ps
+     r←#.Markdown2Help.New ps
    ∇
        
     ∇ r←Public
-      r←'StartFromCmdLine' 'TxtToCsv' 'SetLX' 'GetCommandLineArg' 'ShowHelp'
+      r←'StartFromCmdLine' 'TxtToCsv' 'SetLX' 'ShowHelp'
     ∇
 
 :EndNamespace
