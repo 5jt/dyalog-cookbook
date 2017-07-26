@@ -1,3 +1,3 @@
-![Download target](images/adoc_handleerror_orig.png)
+![Download target](images/adoc_handleerror.png)
 
 ![Download target](images/AAA.jpg)
