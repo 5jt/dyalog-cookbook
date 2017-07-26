@@ -2,4 +2,4 @@ Target #
 Load Constants
 Load Utilities
 Load MyApp
-Run #.MyApp.SetLX #.MyApp.GetCommandLineArg ⍬
+Run #.MyApp.SetLX ⍬

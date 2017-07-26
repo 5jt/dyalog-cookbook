@@ -160,7 +160,7 @@ Let's define the public functions at the bottom of the script:
 ~~~
 ...
 ∇ r←Public
-  r←'StartFromCmdLine' 'TxtToCsv' 'SetLX' 'GetCommandLineArg'
+  r←'StartFromCmdLine' 'TxtToCsv' 'SetLX'
 ∇
 :EndNamespace
 ~~~

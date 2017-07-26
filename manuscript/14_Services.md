@@ -393,8 +393,7 @@ This disconnects the handler from the "ServiceNotification" event.
 ~~~
  ∇ r←PublicFns
 leanpub-start-insert 
-   r←'StartFromCmdLine' 'TxtToCsv' 'SetLXForApplication' 'SetLXForService' 
-   r,←'GetCommandLineArg' 'RunAsService'
+   r←'StartFromCmdLine' 'TxtToCsv' 'SetLXForApplication' 'SetLXForService' 'RunAsService'
 leanpub-end-insert   
  ∇
 ~~~
@@ -501,11 +500,12 @@ Notes:
 That obviously requires the class `MakeService` to be introduced:
 
 ~~~
+⍝TODO⍝  ⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹
 :Class MakeService
 ⍝ Creates a workspace "MyAppService" which can then run as a service.
-⍝ * Re-create folder DESTINATION in the current directory
-⍝ * Copy the INI file template over to DESTINATION\
-⍝ * Save the workspace within DESTINATION
+⍝ 1. Re-create folder DESTINATION in the current directory
+⍝ 2. Copy the INI file template over to DESTINATION\
+⍝ .3 Save the workspace within DESTINATION
     ⎕IO←1 ⋄ ⎕ML←1
     DESTINATION←'MyAppService'
 

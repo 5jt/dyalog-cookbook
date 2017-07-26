@@ -216,7 +216,7 @@ leanpub-end-insert
 Load Constants
 Load Utilities
 Load MyApp
-Run #.MyApp.SetLX #.MyApp.GetCommandLineArg ⍬
+Run #.MyApp.SetLX ⍬
 ~~~
 
 The `EventCodes` class comes with a method `GetName` that, when fed with an integer, returns the corresponding symbolic name. We can use that to convert return codes to meaningful names:

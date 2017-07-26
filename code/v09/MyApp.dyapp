@@ -12,5 +12,5 @@ Load Constants
 Load Tests
 Load Utilities
 Load MyApp
-Run #.MyApp.SetLX #.MyApp.GetCommandLineArg ⍬
+Run #.MyApp.SetLX ⍬
 Run #.Tester.EstablishHelpersIn #.Tests

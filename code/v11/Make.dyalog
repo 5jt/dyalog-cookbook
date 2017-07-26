@@ -5,7 +5,8 @@
 ⍝ 3. Copy icon to `DESTINATION\`
 ⍝ 4. Copy the INI file template over to `DESTINATION`
 ⍝ 5. Creates `MyApp.exe` within `DESTINATION\`
-⍝ 6. Compile the Help system into `DESTINATION\Help\files`
+⍝ 6. Copy the Help system into `DESTINATION\Help\files`
+⍝ 7. Copy the stand-alone Help viewer into `DESTINATION\Help`
     ⎕IO←1 ⋄ ⎕ML←1
 
     DESTINATION←'MyApp'
@@ -21,7 +22,8 @@
       {⍵:.}1≠successFlag
       (rc more)←'MyApp.ini.template'F.CopyTo DESTINATION,'\MyApp.ini'
       {⍵:.}0≠rc
-      CompileHelpSystem DESTINATION,'\Help\files'
+      (successFlag more)←2↑'Help\files'F.CopyTree DESTINATION,'\Help\files'
+      {⍵:.}1≠successFlag
       (rc more)←'..\apltree\Markdown2Help\help\ViewHelp.exe'F.CopyTo DESTINATION,'\Help\'
       {⍵:.}0≠rc
       Export'MyApp.exe'
@@ -30,6 +32,7 @@
           ⎕OFF
       :EndIf
     ∇
+    
     ∇ {r}←{flags}Export exeName;type;flags;resource;icon;cmdline;try;max;success
     ⍝ Attempts to export the application
       r←⍬
@@ -53,11 +56,4 @@
       :EndIf
     ∇
 
-    ∇ {R}←CompileHelpSystem path;parms
-      R←⍬
-      parms←#.Markdown2Help.CreateParms ⍬
-      parms.source←#.MyHelp
-      parms.folderName←path
-      #.Markdown2Help.CompileHelpFile parms
-    ∇
 :EndClass

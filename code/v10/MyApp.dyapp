@@ -14,6 +14,6 @@ Load ..\AplTree\Tester
 Load ..\AplTree\Execute
 Load Tests
 Load DevHelpers
-Run #.MyApp.SetLX #.MyApp.GetCommandLineArg ⍬
+Run #.MyApp.SetLX ⍬
 Run #.Tester.EstablishHelpersIn #.Tests
 Run #.DevHelpers.RunTests 0

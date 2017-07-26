@@ -26,8 +26,9 @@
     
     ∇{r}←LoadHelp dummy;parms
     parms←#.Markdown2Help.CreateParms ⍬
-    parms.saltFolder←#.FilesAndDirs.PWD,'\Help\files'
+    parms.saltFolder←#.FilesAndDirs.PWD,'\MyHelp'
     parms.source←'#.MyHelp'
+    parms.folderName←#.FilesAndDirs.PWD,'\Help\Files'
     {}#.Markdown2Help.LoadHelpWithSalt parms
     ∇
 

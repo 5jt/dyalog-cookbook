@@ -176,7 +176,7 @@ Some of the helpers (`G`, `L` and `ListHelpers`) are just helpful while others, 
 
 ~~~
 ...
-Run #.MyApp.SetLX #.MyApp.GetCommandLineArg ⍬
+Run #.MyApp.SetLX ⍬
 leanpub-start-insert
 Run #.Tester.EstablishHelpersIn #.Tests  
 leanpub-end-insert
