@@ -19,8 +19,10 @@
     ∇
 
     ∇ History
+      ⍝ * 1.7.0:
+      ⍝   * Method `RunAsService` added. 
       ⍝ * 1.6.0:
-      ⍝   * Method `RunAsService` added.
+      ⍝   * MyApp has now its own help system.
       ⍝ * 1.5.0:
       ⍝   * MyApp is now ADOCable (function PublicFns).
       ⍝ * 1.4.0:
@@ -270,6 +272,7 @@
       Config.LogFolder←'./Logs'
       Config.DumpFolder←'./Errors'
       Config.Ride←0      ⍝ If this is not 0 the app accepts a Ride & treats Config.Ride as port number
+      Config.WaitForRide←0 ⍝ If 1 `CheckForRide` will enter an endless loop.
       Config.ForceError←0
       iniFilename←'expand'F.NormalizePath'MyApp.ini'
       :If F.Exists iniFilename
@@ -287,23 +290,23 @@
           :If myIni.Exist'Ride'
           :AndIf myIni.Get'Ride:Active'
               Config.Ride←⊃Config.Ride myIni.Get'Ride:Port'
+              Config.WaitForRide←⊃Config.Ride myIni.Get'Ride:Wait'
           :EndIf
       :EndIf
       Config.LogFolder←'expand'F.NormalizePath Config.LogFolder
       Config.DumpFolder←'expand'F.NormalizePath Config.DumpFolder
     ∇
 
-    ∇ {r}←{wait}CheckForRide (rideFlag ridePort);rc
-     ⍝ Depending on what's provided as right argument we prepare
-     ⍝ for a Ride or we don't.
+    ∇ {r}←CheckForRide (ridePort waitFlag);rc
+     ⍝ Depending on what's provided as right argument we prepare for a Ride 
+     ⍝ or we don't. In case `waitFlag` is 1 we enter an endless loop.
       r←1
-      wait←{0<⎕NC ⍵:⍎⍵ ⋄ 0}'wait'
-      :If rideFlag 
+      :If 0<ridePort
           rc←3502⌶0
           :If ~rc∊0 ¯1
               11 ⎕SIGNAL⍨'Problem switching off Ride, rc=',⍕rc
           :EndIf
-          rc←3502⌶'SERVE::',ridePort
+          rc←3502⌶'SERVE::',⍕ridePort
           :If 0≠rc
               11 ⎕SIGNAL⍨'Problem setting the Ride connecion string to SERVE::',(⍕ridePort),', rc=',⍕rc
           :EndIf
@@ -311,7 +314,7 @@
           :If ~rc∊0 ¯1
               11 ⎕SIGNAL⍨'Problem switching on Ride, rc=',⍕rc
           :EndIf
-          {_←⎕DL ⍵ ⋄ ∇ ⍵}⍣(⊃wait)⊣⍬
+          {}{_←⎕DL ⍵ ⋄ ∇ ⍵}⍣(⊃waitFlag)⊣1
       :EndIf
     ∇
 
@@ -364,6 +367,21 @@
       trap←force ##.HandleError.SetTrap'#.ErrorParms'
     ∇
 
+    ∇{r}←ShowHelp pagename;ps
+     ps←#.Markdown2Help.CreateParms ⍬
+     ps.source←#.MyHelp     
+     ps.foldername←'Help'
+     ps.helpAbout←'MyApp''s help system by John Doe'
+     ps.helpCaption←'MyApp Help'
+     ps.helpIcon←'file://',##.FilesAndDirs.PWD,'\images\logo.ico'
+     ps.helpVersion←'1.0.0'
+     ps.helpVersionDate←'YYYY-MM-DD'
+     ps.page←pagename
+     ps.regPath←'HKCU\Software\MyApp'
+     ps.noClose←1
+     r←#.Markdown2Help.New ps
+   ∇
+
     ∇ {tno}←CheckForOtherInstances dummy;filename;listOfTiedFiles;ind
     ⍝ Attempts to tie the file "MyApp.dcf" exclusively and returns the tie number.
     ⍝ If that is not possible than an error is thrown because we can assume that the
@@ -397,7 +415,7 @@
     ∇
 
     ∇ r←PublicFns
-      r←'StartFromCmdLine' 'TxtToCsv' 'SetLXForApplication' 'SetLXForService' 'GetCommandLineArg' 'RunAsService'
+      r←'StartFromCmdLine' 'TxtToCsv' 'SetLXForApplication' 'SetLXForService' 'RunAsService'
     ∇
 
       GetHash←{

@@ -27,6 +27,8 @@ That means that in case you don't want to expose your code you have a problem. T
   
 All three solutions share the disadvantage that they add a level of complexity without any gain but hiding the code, but at least there are several escape routes available.
 
+We resume, as usual, by saving a copy of `Z:\code\v12` as `Z:\code\v13`.
+
 
 ## The ServiceState namespace
 

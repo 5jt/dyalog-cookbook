@@ -1,10 +1,12 @@
 ﻿:Class Make
 ⍝ Puts the application `MyApp` together:
-⍝ * Remove folder `Source\` in the current directory
-⍝ * Create folder `Source\` in the current directory
-⍝ * Copy icon to `Source\`
-⍝ * Copy the INI file template over to `DESTINATION`
-⍝ * Creates `MyApp.exe` within `Source\`
+⍝ 1. Remove folder `DESTINATION\` in the current directory
+⍝ 2. Create folder `DESTINATION\` in the current directory
+⍝ 3. Copy icon to `DESTINATION\`
+⍝ 4. Copy the INI file template over to `DESTINATION`
+⍝ 5. Creates `MyApp.exe` within `DESTINATION\`
+⍝ 6. Copy the Help system into `DESTINATION\Help\files`
+⍝ 7. Copy the stand-alone Help viewer into `DESTINATION\Help`
     ⎕IO←1 ⋄ ⎕ML←1
     DESTINATION←'MyApp'
     ∇ {filename}←Run offFlag;rc;en;more;successFlag;F;msg
@@ -18,12 +20,17 @@
       {⍵:.}1≠successFlag
       (rc more)←'MyApp.ini.template'F.CopyTo DESTINATION,'\MyApp.ini'
       {⍵:.}0≠rc
+      (successFlag more)←2↑'Help\files'F.CopyTree DESTINATION,'\Help\files'
+      {⍵:.}1≠successFlag
+      (rc more)←'..\apltree\Markdown2Help\help\ViewHelp.exe'F.CopyTo DESTINATION,'\Help\'
+      {⍵:.}0≠rc
       Export'MyApp.exe'
       filename←DESTINATION,'\MyApp.exe'
       :If offFlag
           ⎕OFF
       :EndIf
     ∇
+    
     ∇ {r}←{flags}Export exeName;type;flags;resource;icon;cmdline;try;max;success
     ⍝ Attempts to export the application
       r←⍬
@@ -46,4 +53,5 @@
           . ⍝ Deliberate error; allows investigation
       :EndIf
     ∇
+
 :EndClass

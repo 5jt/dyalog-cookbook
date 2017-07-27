@@ -187,7 +187,7 @@ Press the <Win> key and type Scheduler. Select "Task Scheduler" form the list. T
 
 ![The Windows Task Scheduler](images/scheduler_01.png)
 
-First thing to check is that the contents of the black rectangle in the "Actions" pane on the right reads "Disable All Tasks History" - if it does not you won't be able to get any details regarding any Scheduled Task.
+First thing to check is whether the fifth pointin the "Actions" pane on the right reads "Disable All Tasks History" - if it does not you won't be able to get  any details regarding a Scheduled Task.
 
 The arrow points to the "Create Task" command - click it.
 
