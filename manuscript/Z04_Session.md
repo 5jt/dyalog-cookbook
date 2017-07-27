@@ -138,7 +138,7 @@ Defining function keys is of course not exactly a challenge. Implementing it in 
       ⎕SHADOW⊃list←'LL' 'DB' 'DI' 'ER' 'LC' 'DC' 'UC' 'RD' 'RL' 'RC' 'Rl' 'Ll' 'CP' 'PT' 'BH'
       ⍎¨{⍵,'←⊂''',⍵,''''}¨list
       r⍪←'F01'('')('(Reserved for help)')
-      r⍪←'F02'(')WSID',ER)(')wsid')
+      r⍪←'F02'(')WSID',ER)(')wsid')
       r⍪←'F03'('')('Show next hit')                  ⍝ Reserved for NX
       r⍪←'F04'('⎕SE.Display ')('Call "Display"')
       r⍪←'F05'(LL,'→⎕LC+1 ⍝ ',ER)('→⎕LC+1')
@@ -162,7 +162,7 @@ If you always run just one instance of the interpreter you can safely ignore thi
 
 If on the other hand you run occasionally (let alone often) more than one instance of Dyalog in parallel then you are familiar with how it feels when all of a sudden an unexpected dialog box pops up, be it an aplcore or a message box asking "Are you sure?" when you have no idea what you are expected to be sure about, or which instance has just crashed. There is a way to get around this. With version 14.0 windows captions became configurable. This is a screenshot from the online help:
 
-![Dyalog's help on window captions](images\WindowsCaptions.png)
+![Dyalog's help on window captions](images\HelpOnWindowCaptions.png)
 
 A> ### Help - online versus offline
 A>

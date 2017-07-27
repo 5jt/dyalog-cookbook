@@ -427,22 +427,22 @@ leanpub-end-insert
 
     DESTINATION←'MyApp'
 
-    ∇ {filename}←Run offFlag;rc;en;more;successFlag;F;msg
+    ∇ {filename}←Run offFlag;rc;en;more;successFlag;F;U;msg
       :Access Public Shared
-      F←##.FilesAndDirs
+      (F U)←##.(FilesAndDirs Utilities)
       (rc en more)←F.RmDir DESTINATION
-      {⍵:.}0≠rc
+      U.Assert 0=rc
       successFlag←'Create!'F.CheckPath DESTINATION
-      {⍵:.}1≠successFlag
+      U.Assert successFlag
       (successFlag more)←2↑'images'F.CopyTree DESTINATION,'\images'
-      {⍵:.}1≠successFlag
+      U.Assert successFlag
       (rc more)←'MyApp.ini.template'F.CopyTo DESTINATION,'\MyApp.ini'
-      {⍵:.}0≠rc
+      U.Assert 0=rc
 leanpub-start-insert           
       (successFlag more)←2↑'Help\files'F.CopyTree DESTINATION,'\Help\files'
-      {⍵:.}1≠successFlag
+      U.Assert successFlag
       (rc more)←'..\apltree\Markdown2Help\help\ViewHelp.exe'F.CopyTo DESTINATION,'\Help\'
-      {⍵:.}0≠rc
+      U.Assert 0=rc
 leanpub-end-insert           
       Export'MyApp.exe'
       filename←DESTINATION,'\MyApp.exe'

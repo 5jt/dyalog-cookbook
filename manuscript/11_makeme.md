@@ -173,17 +173,17 @@ The upper part (until the blank line) is identical with `MyApp.dyapp` except tha
     
     DESTINATION←'MyApp'
     
-    ∇ {filename}←Run offFlag;rc;en;more;successFlag;F;msg
+    ∇ {filename}←Run offFlag;rc;en;more;successFlag;F;U;msg
       :Access Public Shared
-      F←##.FilesAndDirs
+      F←##.FilesAndDirs ⋄ U←##.Utilities
       (rc en more)←F.RmDir DESTINATION
-      {⍵:.}0≠rc
+      U.Assert 0≠rc
       successFlag←'Create!'F.CheckPath DESTINATION
-      {⍵:.}1≠successFlag
+      U.Assert 1≠successFlag
       (successFlag more)←2↑'images'F.CopyTree DESTINATION,'\images'
-      {⍵:.}1≠successFlag
+      U.Assert 1≠successFlag
       (rc more)←'MyApp.ini.template'F.CopyTo DESTINATION,'\MyApp.ini'
-      {⍵:.}0≠rc
+      U.Assert 0≠rc
       Export'MyApp.exe'
       filename←DESTINATION,'\MyApp.exe'
       :If offFlag
@@ -193,7 +193,26 @@ The upper part (until the blank line) is identical with `MyApp.dyapp` except tha
 :EndClass
 ~~~
 
-Note that the function executes a full stop in a dfn in case `⍵` is `1`. This is an easy way to make the function stop when something goes wrong. There is no point in doing anything but stopping the code from continuing since it is called by a programmer, and when it fails she wants to investigate straight away. And things can go wrong quite easily; for example, the attempt to remove `DESTINATION` may fail simply because somebody is looking with the Windows Explorer into `DESTINATION` at the same time.
+The function `Assert` does not exist yet in `Utilities`:
+
+~~~
+:Namespace Utilities
+      map←{
+          (,2)≢⍴⍺:'Left argument is not a two-element vector'⎕SIGNAL 5
+          (old new)←⍺
+          nw←∪⍵
+          (new,nw)[(old,nw)⍳⍵]
+      }      
+leanpub-start-insert      
+      Assert←{
+          ⍵:.
+          1:r←⍬
+      }
+leanpub-end-insert      
+:EndNamespace
+~~~
+
+Note that `Assert` executes a full stop in case `⍵` is `1` but returns `⍬` as a shy (!) result in case ⍵ is `0`. This is an easy way to make the calling function stop when something goes wrong. There is no point in doing anything but stopping the code from continuing since it is called by a programmer, and when it fails she wants to investigate straight away. And things can go wrong quite easily; for example, the attempt to remove `DESTINATION` may fail simply because somebody is looking with the Windows Explorer into `DESTINATION` at the same time.
 
 First we create the folder `DESTINATION` from scratch and then we copy everything that's needed to the folder `DESTINATION`: the application icon and the INI file. Whether the function executes `⎕OFF` or not depends on the right argument `offFlag`. Why that is needed will become apparent soon.
 
