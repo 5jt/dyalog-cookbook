@@ -1,7 +1,7 @@
 ﻿:Namespace TestsForServices
 ⍝ Installs a service "MyAppService" in a folder within the Windows Temp directory with
 ⍝ a randomly chosen name. The tests then start, pause, continue and stop the service.\\
-⍝ It also checks whether the application produces the expected results.
+⍝ They also check whether the application produces the expected results.
 
     ⎕IO←1 ⋄ ⎕ML←1
 
@@ -12,7 +12,7 @@
       ∆ServiceName←'MyAppService'
       r←0
       :If 0=#.WinSys.IsRunningAsAdmin
-          ⎕←'Sorry, but you need admin rights to run this test suite successfully!'
+          ⎕←'Sorry, but you need admin rights to run this test suite!'
           :Return
       :EndIf
       ∆CreateFolderStructure ⍬
@@ -25,7 +25,7 @@
     ∇
 
     ∇ R←Test_01(stopFlag batchFlag);⎕TRAP;rc;more
-     ⍝ Start, pause and continue the service.
+     ⍝ Start, pause, continue and stop the service.
       ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
       R←∆Failed
      
@@ -52,7 +52,7 @@
       (rc more)←∆Execute_SC_Cmd'stop'
       →FailsIf 0≠rc
       ∆Pause 2
-      (rc more)←∆Execute_SC_Cmd'query'○
+      (rc more)←∆Execute_SC_Cmd'query'
       →FailsIf 0=∨/'STATE : 1 STOPPED'⍷#.APLTreeUtils.dmb more
      
       R←∆OK
@@ -66,7 +66,6 @@
      
       (rc more)←∆Execute_SC_Cmd'start'
       →FailsIf 0≠rc
-      →FailsIf 0=∨/'STATE : 4 RUNNING'⍷A.dmb more
       ∆Pause 2
       (rc more)←∆Execute_SC_Cmd'query'
       →FailsIf 0=∨/'STATE : 4 RUNNING'⍷A.dmb more

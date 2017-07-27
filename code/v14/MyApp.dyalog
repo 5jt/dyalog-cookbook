@@ -15,7 +15,7 @@
     ∇
 
     ∇ r←Version
-      r←(⍕⎕THIS)'1.7.0' 'YYYY-MM-DD'
+      r←(⍕⎕THIS)'1.8.0' 'YYYY-MM-DD'
     ∇
 
     ∇ History
@@ -100,10 +100,10 @@
     ⍝ `ridePort`: Port number used by Ride.
       r←⍬
       #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
-      1 CheckForRide earlyRide ridePort
+      CheckForRide earlyRide ridePort
       #.FilesAndDirs.PolishCurrentDir
       ⎕TRAP←#.HandleError.SetTrap ⍬
-      (Config MyLogger MyWinEventLog)←Initial 1
+      (Config MyLogger)←Initial #.ServiceState.IsRunningAsService
       ⎕TRAP←(Config.Debug=0)SetTrap Config
       Config.ControlFileTieNo←CheckForOtherInstances ⍬
       ∆FileHashes←0 2⍴''
@@ -221,7 +221,7 @@
       ⎕WSID←'MyApp'
       ⎕TRAP←#.HandleError.SetTrap ⍬
       #.⎕SHADOW'ErrorParms'
-      (Config MyLogger)←Initial 0
+      (Config MyLogger)←Initial #.ServiceState.IsRunningAsService
       ⎕TRAP←(Config.Debug=0)SetTrap Config
       rc←TxtToCsv arg~''''
       Cleanup ⍬
@@ -245,7 +245,7 @@
       instance←⎕NEW ##.Logger(,⊂logParms)
     ∇
 
-    ∇ r←Initial isService;parms;Config;MyLogger;MyWinEventLog
+    ∇ (Config MyLogger)←Initial isService;parms
     ⍝ Prepares the application.
       #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
       Config←CreateConfig isService
@@ -287,9 +287,6 @@
           Config.Accents←⊃Config.Accents myIni.Get'Config:Accents'
           :If isService
               Config.WatchFolders←⊃myIni.Get'Folders:Watch'
-              Config.WriteToWindowsEventLog←myIni.Get'WINDOWSEVENTLOG:write'
-          :Else
-              Config.LogFolder←'expand'F.NormalizePath⊃Config.LogFolder myIni.Get'Folders:Logs'
               Config.WriteToWindowsEventLog←0
           :EndIf
           Config.DumpFolder←'expand'F.NormalizePath⊃Config.DumpFolder myIni.Get'Folders:Errors'

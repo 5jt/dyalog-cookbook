@@ -15,7 +15,8 @@ Load ..\AplTree\Tester
 Load ..\AplTree\Execute
 Load Tests
 Load DevHelpers
+Run DevHelpers.LoadHelp ⍬
 Load ServiceHelpers
-Run #.MyApp.SetLXForApplication #.MyApp.GetCommandLineArg ⍬
+Run #.MyApp.SetLXForApplication ⍬
 Run #.Tester.EstablishHelpersIn #.Tests
 Run #.DevHelpers.RunTests 0

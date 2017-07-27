@@ -15,12 +15,12 @@
     ∇
 
     ∇ r←Version
-      r←(⍕⎕THIS)'1.6.0' 'YYYY-MM-DD'
+      r←(⍕⎕THIS)'1.7.0' 'YYYY-MM-DD'
     ∇
 
     ∇ History
       ⍝ * 1.7.0:
-      ⍝   * Method `RunAsService` added. 
+      ⍝   * Method `RunAsService` added.
       ⍝ * 1.6.0:
       ⍝   * MyApp has now its own help system.
       ⍝ * 1.5.0:
@@ -98,10 +98,10 @@
     ⍝ `ridePort`: Port number used by Ride.
       r←⍬
       #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
-      1 CheckForRide earlyRide ridePort
+      CheckForRide earlyRide ridePort
       #.FilesAndDirs.PolishCurrentDir
       ⎕TRAP←#.HandleError.SetTrap ⍬
-      (Config MyLogger)←Initial 1
+      (Config MyLogger)←Initial #.ServiceState.IsRunningAsService
       ⎕TRAP←(Config.Debug=0)SetTrap Config
       Config.ControlFileTieNo←CheckForOtherInstances ⍬
       ∆FileHashes←0 2⍴''
@@ -218,10 +218,10 @@
    ⍝ Needs command line parameters, runs the application.
       r←⍬
       ⎕TRAP←#.HandleError.SetTrap ⍬
-      ⎕WSID←⊃⊣2⎕nq # 'GetCommandLineArgs'
+      ⎕WSID←⊃⊣2 ⎕NQ #'GetCommandLineArgs'
       #.FilesAndDirs.PolishCurrentDir
       #.⎕SHADOW'ErrorParms'
-      (Config MyLogger)←Initial 0
+      (Config MyLogger)←Initial #.ServiceState.IsRunningAsService
       ⎕TRAP←(Config.Debug=0)SetTrap Config
       rc←TxtToCsv arg~''''
       Cleanup ⍬
@@ -264,6 +264,7 @@
     ∇
 
     ∇ Config←CreateConfig isService;myIni;iniFilename
+    ⍝ Instantiate the INI file and copy values over to a namespace `Config`.
       Config←⎕NS''
       Config.⎕FX'r←∆List' 'r←{0∊⍴⍵:0 2⍴'''' ⋄ ⍵,[1.5]⍎¨⍵}'' ''~¨⍨↓⎕NL 2'
       Config.Debug←A.IsDevelopment
@@ -274,6 +275,7 @@
       Config.Ride←0      ⍝ If this is not 0 the app accepts a Ride & treats Config.Ride as port number
       Config.WaitForRide←0 ⍝ If 1 `CheckForRide` will enter an endless loop.
       Config.ForceError←0
+      Config.IsService←isService
       iniFilename←'expand'F.NormalizePath'MyApp.ini'
       :If F.Exists iniFilename
           myIni←⎕NEW ##.IniFiles(,⊂iniFilename)
@@ -297,8 +299,8 @@
       Config.DumpFolder←'expand'F.NormalizePath Config.DumpFolder
     ∇
 
-    ∇ {r}←CheckForRide (ridePort waitFlag);rc
-     ⍝ Depending on what's provided as right argument we prepare for a Ride 
+    ∇ {r}←CheckForRide(ridePort waitFlag);rc
+     ⍝ Depending on what's provided as right argument we prepare for a Ride
      ⍝ or we don't. In case `waitFlag` is 1 we enter an endless loop.
       r←1
       :If 0<ridePort
@@ -367,20 +369,20 @@
       trap←force ##.HandleError.SetTrap'#.ErrorParms'
     ∇
 
-    ∇{r}←ShowHelp pagename;ps
-     ps←#.Markdown2Help.CreateParms ⍬
-     ps.source←#.MyHelp     
-     ps.foldername←'Help'
-     ps.helpAbout←'MyApp''s help system by John Doe'
-     ps.helpCaption←'MyApp Help'
-     ps.helpIcon←'file://',##.FilesAndDirs.PWD,'\images\logo.ico'
-     ps.helpVersion←'1.0.0'
-     ps.helpVersionDate←'YYYY-MM-DD'
-     ps.page←pagename
-     ps.regPath←'HKCU\Software\MyApp'
-     ps.noClose←1
-     r←#.Markdown2Help.New ps
-   ∇
+    ∇ {r}←ShowHelp pagename;ps
+      ps←#.Markdown2Help.CreateParms ⍬
+      ps.source←#.MyHelp
+      ps.foldername←'Help'
+      ps.helpAbout←'MyApp''s help system by John Doe'
+      ps.helpCaption←'MyApp Help'
+      ps.helpIcon←'file://',##.FilesAndDirs.PWD,'\images\logo.ico'
+      ps.helpVersion←'1.0.0'
+      ps.helpVersionDate←'YYYY-MM-DD'
+      ps.page←pagename
+      ps.regPath←'HKCU\Software\MyApp'
+      ps.noClose←1
+      r←#.Markdown2Help.New ps
+    ∇
 
     ∇ {tno}←CheckForOtherInstances dummy;filename;listOfTiedFiles;ind
     ⍝ Attempts to tie the file "MyApp.dcf" exclusively and returns the tie number.

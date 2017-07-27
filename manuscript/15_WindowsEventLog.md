@@ -16,7 +16,9 @@ Similarly Scheduled Tasks are expected to do the same, although some don't, or r
 
 ## Is the Windows Event Log important?
 
-On a server all applications run either as Windows Services (most likely all of them) or as Windows Scheduled Tasks. Since no human is sitting in front of a server we need a way to detect problems on servers automatically. That can be achieved by using software that constantly scans the Windows Event Logs of all given computers. It can email or text admins when an application that's supposed to run doesn't, or when an application goes astray, drawing attention to that server.
+On a server all applications run either as Windows Services (most likely all of them) or as Windows Scheduled Tasks. Since no human is sitting in front of a server we need a way to detect problems on servers automatically. That can be achieved by using software that constantly scans the Windows Event Log. It can email or text admins when an application that's supposed to run doesn't, or when an application goes astray, drawing attention to that server.
+
+In large companies, which usually run some to many servers, it is common to use a software which checks on the Windows Event Logs of _all_ those servers.
 
 So yes, the Windows Event Log is indeed really important.
 
@@ -35,19 +37,19 @@ From the Microsoft documentation: "Each log in the Eventlog key contains subkeys
 
 ## Application log versus custom log
 
-The vast majority of applications that write to the Windows Event Log write into "Windows Logs\Application", but if you wish you can create your own log under "Applications and services logs". However, be aware that for creating a custom log you need admin rights. Therefore creating a custom log is something that is usually done by the installer installing your software since that needs admin rights by definition anyway.
+The vast majority of applications that write to the Windows Event Log write into "Windows Logs\\Application", but if you wish you can create your own log under "Applications and services logs". However, be aware that for creating a custom log you need admin rights. Therefore creating a custom log is something that is usually done by the installer installing your software since that needs admin rights by definition anyway.
 
 We keep it simple here and write to the "Application" log.
 
 
 ## Let's do it
 
-Copy `Z:\code\v14` to `Z:\code\v15`.
+Copy `Z:\code\v13` to `Z:\code\v14`.
 
 
 ### Loading WindowsEventLog
 
-We are going to enable `MyApp` to write to the Windows Event Log only when it runs as a Service. Therefore we need to load the module `WindowsEventLog` from within `MakeService.dyapp` (but not `MyApp.dyapp`):
+We are going to make `MyApp` writing to the Windows Event Log only when it runs as a Service. Therefore we need to load the module `WindowsEventLog` from within `MakeService.dyapp` (but not `MyApp.dyapp`):
 
 ~~~
 ...
@@ -68,7 +70,8 @@ We need to add a flag to the INI file that allows us to toggle writing to the Wi
 ...
 [Ride]
 Active      = 0
-Port        = 4502
+Port        = 4599
+wait        = 1
 
 leanpub-start-insert  
 [WindowsEventLog]
@@ -148,9 +151,9 @@ We also introduce a function `LogError`:
 ∇
 ~~~
 
-Note that the `Logger` class traps any errors that might occur. The `WindowsEventClass` does not do this, and the calls to `WriteInfo` and `WriteError` might fail for all sorts of reasons: invalid data type, invalid depth, lack of rights, you name it. Therefore both `Log` and `LogError` trap any errors and write to the log file in case something goes wrong. Note also that in this particular case it's okay to trap all possible errors (0) because we cannot possibly foresee what might go wrong.
+Note that the `Logger` class traps any errors that might occur. The `WindowsEventClass` does not do this, and the calls to `WriteInfo` and `WriteError` might fail for all sorts of reasons: invalid data type, invalid depth, lack of rights, you name it. Therefore both `Log` and `LogError` trap any errors and write to the log file in case something goes wrong. Note also that in this particular case it's okay to trap all possible errors (0) because we cannot possibly foresee what might go wrong. In a real-world application you still want to be able to switch this kind of error trapping of via an INI entry etc.
 
-In case of an error we now want the function `LogError` to be called, so `SetTrap` needs an adjustment:
+In case of an error we now want the function `LogError` to be called, so we change `SetTrap` accordingly:
 
 ~~~
 ∇ trap←{force}SetTrap Config
@@ -267,7 +270,7 @@ Ideally the test cases should pass.
 Now it's time to run the test cases for the Service:
 
 1. Open a console window with admin rights.
-1. Navigate to the `v14\` folder.
+1. Navigate to the `v13\` folder.
 1. Call `MakeService.dyapp`.
 1. Execute `TestsForServices.GetHelpers`.
 1. Call `TestsForServices.RunDebug 0`.
@@ -336,13 +339,13 @@ No doubt you feel now confident with the Windows Event Log, right? Well, keep re
 
   `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\EventLog\`
   
-  and delete the key(s) (=children) you want to get rid of. It's not a bad idea to create a system restore point [^restore] before you do that. By the way, if you never payed attention to System Restore Points you really need to follow the link because under Windows 10 System Restore Points are not generated automaticelly by default any more; you have to switch them on explicitly.
+  and delete the key(s) (=children) you want to get rid of. It's not a bad idea to create a system restore point [^restore] before you do that. By the way, if you never payed attention to System Restore Points you really need to follow the link because under Windows 10 System Restore Points are not generated automaticelly by default any more; they need to be switched on explicitly, and they really should.
   
 * Once you have written events to a source and then deleted the log the source pretends to belong to, the events remain saved anyway. They are just not visible anymore. That can be proven by re-creating the log: all the events make a come-back and show up again as they did before. 
 
   If you really want to get rid of the logs then you have to select the "Clear log" command from the context menu in the Event Viewer (tree only!) before you delete the log.
 
-* If you want to analyze the contents of a log in APL you will find the instance methods `Read` (which reads the whole log) and `ReadThese` (which takes line numbers and reads just them) useful. 
+* If you want to analyze the contents of a log in APL you will find the instance methods `Read` (which reads the whole log) and `ReadThese` (which takes line numbers and reads just those specified) useful. 
  
 
 [^winlog]: Microsoft on the Windows Event Log: <https://msdn.microsoft.com/en-us/library/windows/desktop/aa363648(v=vs.85).aspx>

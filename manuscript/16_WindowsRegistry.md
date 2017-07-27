@@ -8,18 +8,20 @@ We cannot say it any better than the Wikipedia [^wikipedia]:
 > 
 > In simple terms, The Registry or Windows Registry contains information, settings, options, and other values for programs and hardware installed on all versions of Microsoft Windows operating systems. For example, when a program is installed, a new subkey containing settings like a program's location, its version, and how to start the program, are all added to the Windows Registry.
 
-The Windows Registry is the subject of heated discussion among programmers. Most hate it, some like it, but whatever your opinion is: you cannot ignore it. 
+The Windows Registry is still subject of heated discussions among programmers. Most hate it, some like it, but whatever your opinion is: you cannot ignore it. 
 
-Originally Microsoft designed the database as _the_ source for any configuration parameters, be it for the operating system, users or applications. The Windows Registry will certainly remain to be the source for any OS-related pieces of information, but for applications we have seen a comeback of the old-fashioned configuration file, be at as an INI file, and XML file or a JSON file.
+Originally Microsoft designed the database as _the_ source for any configuration parameters, be it for the operating system, users or applications. The Windows Registry will certainly remain to be the source for any OS-related pieces of information, but for applications we have seen a comeback of the old-fashioned configuration file, be at as an INI, an XML or a JSON file.
 
 Even if you go for configuration files in order to configure your own application, you must be able to read and occasionally also to write to the Windows Registry, if only to configure Dyalog APL in order to make it suit your needs.
 
-The Windows Registry might be the perfect place for any application to store user specific data. For example, if you want to save the current position and size of the main form of your application for every user in order to be able to restore both position and size next time the application is started then the Windows Registry is the prefect place to store theses pieces of information. The key suggests itself:
+The Windows Registry can be useful for any application to store user specific data. For example, if you want to save the current position and size of the main form of your application for every user in order to be able to restore both position and size next time the application is started then the Windows Registry is the prefect place to store theses pieces of information. The key suggests itself:
 
 ~~~
 HKCU\Software\MyApplication\MainForm\Posn
 HKCU\Software\MyApplication\MainForm\Size
 ~~~
+
+Note that `HKCU` is a short cut for "HKey Current User". There are others, and we will discuss them.
 
 ## Terminology
 
@@ -41,15 +43,15 @@ We can get rid of "Computer" if it is the local machine, and we can shorten "HKE
 HKCU\Software\Dyalog\Dyalog APL/W-64 16.0 Unicode\maxws
 ~~~
 
-That looks pretty much like a file path, doesn't it? So what about calling the different parts to the left of `maxws` folders? Well, that would be logical, therefore Microsoft did not do that. Instead they call `HKCU` a _key_, although the top level ones are sometimes called _root keys_. The other bits and pieces but `maxws` are called subkeys.
+That looks pretty much like a file path, doesn't it? So what about calling the different parts to the left of `maxws` folders? Well, that would be logical, therefore Microsoft did not do that. Instead they call `HKCU` a _key_, although the top level ones are sometimes called _root keys_. The other bits and pieces but `maxws` are called subkeys but sometimes just keys.
 
-Okay, what's `maxws` then? Well it holds a value, so why not call it key? Ups, that's been taken already, but maybe name or ID? Well, Microsoft calls it a _value_. That's a strange name because is _has_ as value, in our example the string `'64000'`.
+Okay, what's `maxws` then? Well it holds a value, so why not call it _key_? Ups, that's been taken already, but maybe "name" or "ID"? Well, Microsoft calls it a _value_. That's a strange name because is _has_ as value, in our example the string `'64000'`.
 
 To repeat: any given path to a particular piece of data stored in the Windows Registry consists of a key, one or more subkeys and a value that is associated with data.
 
 There are a couple of things you should know:
 
-* Keys and subkeys must not contain a backslash character (`\`) but values and data may.
+* Keys and subkeys must not contain a backslash character (`\`) but values (!) and data may.
 * A subkey may or may not have a _default value_. This is a piece of data that is associated with the subkey, not with a particular value.
 * The Microsoft documentation clearly defines the word _key_ for the top level only but later uses _key_ and _subkey_ interchangeably.
 * According to the Microsoft documentation both keys and subkeys are case insensitive. That seems to imply that values are case sensitive but they are case insensitive, too.
@@ -92,7 +94,7 @@ Any Windows Registry has just 5 root keys:
 
 From an application programmers point of view the HKCU and the HKLM are the most important ones, and usually the only ones they might actually write to.
 
-With the knowledge you have accumulated by now you can probably get away for the rest of your life as a programmer. If you want to know all the details we recommend the Microsoft documentation [^microsoft].
+With the knowledge you have accumulated by now you can probably get away for the rest of your life as an application programmer. If you want to know all the details we recommend the Microsoft documentation [^microsoft].
 
 
 ## The class "WinRegSimple"
@@ -149,7 +151,7 @@ APL is great
 
 ![Default values](images/WinReg_DefaultValue.png)
 
-Note that whether `Write` writes REG_SZ or a REG_DWORD depends on the data: a text vector becomes "REG_SZ" while a 32-bit integer becomes "REG_DWORD" though Booleans as well as smaller integers are converted to a 32-bit integer. Any other data types are rejected.
+Note that whether `Write` writes REG_SZ or a REG_DWORD depends on the data: a text vector becomes "REG_SZ" while a 32-bit integer becomes "REG_DWORD" though Booleans as well as smaller integers are converted to a 32-bit integer. Other data types are rejected.
 
 
 If the `WinRegSimple` class does not suit your needs then have a look at the `WinReg` class. This class is much larger but has virtually no limitations at all.
@@ -251,21 +253,21 @@ Let's check the current status:
 ~~~
       dyalogVersions←AllVersionsOfDyalog ''
       ⍪{#.WinReg.GetValue 'HKCU\Software\Dyalog\',⍵,'\SALT\CommandFolder'}¨dyalogVersions
- C:\Program Files (x86)\Dyalog\Dyalog APL 14.1 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\
- C:\Program Files (x86)\Dyalog\Dyalog APL 15.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\                                             
- C:\Program Files (x86)\Dyalog\Dyalog APL 16.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\                                             
+ C:\...\Dyalog APL 14.1 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\
+ C:\...\Dyalog APL 15.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\                                             
+ C:\...\Dyalog APL 16.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\                                             
 ... 
       'C:\MyUserCommands'∘Add¨dyalogVersions
       ⍪{#.WinReg.GetValue 'HKCU\Software\Dyalog\',⍵,'\SALT\CommandFolder'}¨dyalogVersions
-C:\Program Files (x86)\Dyalog\Dyalog APL 14.1 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands                                             
-C:\Program Files (x86)\Dyalog\Dyalog APL 15.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands                                             
-C:\Program Files (x86)\Dyalog\Dyalog APL 16.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands                                                   
+C:\..\Dyalog APL 14.1 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands                                             
+C:\...\Dyalog APL 15.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands                                             
+C:\...\Dyalog APL 16.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands                                                   
 ...
       'C:\MyUserCommands'∘Add¨dyalogVersions
       ⍪{#.WinReg.GetValue 'HKCU\Software\Dyalog\',⍵,'\SALT\CommandFolder'}¨dyalogVersions
-C:\Program Files (x86)\Dyalog\Dyalog APL 14.1 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands                                             
-C:\Program Files (x86)\Dyalog\Dyalog APL 15.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands                                             
-C:\Program Files (x86)\Dyalog\Dyalog APL 16.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands                                                   
+C:\...\Dyalog APL 14.1 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands                                             
+C:\...\Dyalog APL 15.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands                                             
+C:\...\Dyalog APL 16.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands                                                   
 ~~~
 
 Note that although we called `Add` twice the folder `C:\MyUserCommands` makes an appearance only once. This is because we carefully removed it before adding it.
@@ -281,18 +283,18 @@ HKCU\Software\Dyalog\Dyalog APL/W-64 16.0 Unicode\Captions
 
 If that subkey exists (after an installation it doesn't) then it is supposed to contain particular values defining the captions for all dialog boxes that might make an appearance when running an instance of Dyalog. So in order to configure all these window captions you have to add the subkey `Chapter` and the required values in one way or another. This is a list of values honoured by version 16.0:
 
-| Editor
-| Event_Viewer
-| ExitDialog
-| Explorer
-| FindReplace
-| MessageBox
-| Rebuild_Errors
-| Refactor
-| Session
-| Status
-| SysTray
-| WSSearch
+| Editor |
+| Event_Viewer |
+| ExitDialog |
+| Explorer |
+| FindReplace |
+| MessageBox |
+| Rebuild_Errors |
+| Refactor |
+| Session |
+| Status |
+| SysTray |
+| WSSearch |
 
 Although it is not a big deal to add these values with the Registry Editor we do not recommend this, if only because when the next version of Dyalog comes along then you have to do it again.
 
@@ -344,28 +346,28 @@ We can now write `captionValues` to all versions:
       rk←'HKCU\Software\Dyalog\Dyalog APL/W-64 16.0 Unicode\Captions'
       #.WinReg.GetTreeWithValues rk
 0  HKCU\...\Captions\                                                                                     
-1  HKCU\...\Captions\Editor          {PID} {TITLE} {WSID}-{NSID} {Chars} {Ver_A}.{VER_B}.{VER_C} {BITS}   
-1  HKCU\...\Captions\Event_Viewer    {PID} {WSID} {PRODUCT}                                               
-1  HKCU\...\Captions\ExitDialog      {PID} {WSID} {PRODUCT}                                               
-1  HKCU\...\Captions\Explorer        {PID} {WSID} {PRODUCT}                                               
-1  HKCU\...\Captions\FindReplace     {PID} {WSID}-{SNSID} {Chars} {Ver_A}.{VER_B}.{VER_C} {BITS}          
-1  HKCU\...\Captions\MessageBox      {PID} {WSID} {PRODUCT}                                               
-1  HKCU\...\Captions\Rebuild_Errors  {PID} {WSID} {PRODUCT}                                               
-1  HKCU\...\Captions\Refactor        {PID} {WSID}-{SNSID} {Chars} {Ver_A}.{VER_B}.{VER_C} {BITS}          
-1  HKCU\...\Captions\Session         {PID} {WSID}-{NSID} {Chars} {Ver_A}.{VER_B}.{VER_C} {BITS}           
-1  HKCU\...\Captions\Status          {PID} {WSID} {PRODUCT}                                               
-1  HKCU\...\Captions\SysTray         {PID} {WSID}                                                         
-1  HKCU\...\Captions\WSSearch        {PID} {WSID} {PRODUCT}                                               
+1  HKCU\...\Editor          {PID} {TITLE} {WSID}-{NSID} {Chars} {Ver_A}.{VER_B}.{VER_C} {BITS}   
+1  HKCU\...\Event_Viewer    {PID} {WSID} {PRODUCT}                                               
+1  HKCU\...\ExitDialog      {PID} {WSID} {PRODUCT}                                               
+1  HKCU\...\Explorer        {PID} {WSID} {PRODUCT}                                               
+1  HKCU\...\FindReplace     {PID} {WSID}-{SNSID} {Chars} {Ver_A}.{VER_B}.{VER_C} {BITS}          
+1  HKCU\...\MessageBox      {PID} {WSID} {PRODUCT}                                               
+1  HKCU\...\Rebuild_Errors  {PID} {WSID} {PRODUCT}                                               
+1  HKCU\...\Refactor        {PID} {WSID}-{SNSID} {Chars} {Ver_A}.{VER_B}.{VER_C} {BITS}          
+1  HKCU\...\Session         {PID} {WSID}-{NSID} {Chars} {Ver_A}.{VER_B}.{VER_C} {BITS}           
+1  HKCU\...\Status          {PID} {WSID} {PRODUCT}                                               
+1  HKCU\...\SysTray         {PID} {WSID}                                                         
+1  HKCU\...\WSSearch        {PID} {WSID} {PRODUCT}                                               
 ~~~
 
 
-[^wikipedia]: The Wikipedia on the Windows Registry:
+[^wikipedia]: The Wikipedia on the Windows Registry:  
 <https://en.wikipedia.org/wiki/Windows_Registry>
 
 
-[^microsoft]: Microsoft on the Windows Registry:
+[^microsoft]: Microsoft on the Windows Registry:  
 <https://msdn.microsoft.com/en-us/library/windows/desktop/ms724946(v=vs.85).aspx>
 
 
-[^wsh]: The Wikipedia on the Windows Scripting Host:
+[^wsh]: The Wikipedia on the Windows Scripting Host:  
 <https://en.wikipedia.org/wiki/Windows_Script_Host>

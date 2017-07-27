@@ -7,23 +7,26 @@ Most developers insist of twisting the development environment in one way or ano
 * Make your favourite utilities available from within `⎕SE`.
 * Add a menu to the session with often used commands.
 * Define some function keys carrying out often used commands (not applicable with Ride).
+* ...
 
 There are several ways to achieve that:
 
 1. Modify and save a copy of the default session file (by default `def_{counntryCode}.dse` in the installation directory) and twist the configuration so that this new DSE is loaded. 
 1. Modify and save a copy of the build workspace (typically something like `"C:\Program Files\Dyalog\...\ws\buildse.dws"`) and use it to create your own tailored version of a DSE.
 
-Both have their own problems, the most obvious being that with a new version of Dyalog you start from scratch. However, there is a better way: save a function `Setup` in either `C:\Users\{UserName}\Documents\MyUCMDs\setup.dyalog` or one of the SALT work directories and it will be executed when...
+Both approaches have their own problems, the most obvious being that with a new version of Dyalog you start from scratch. However, there is a better way: save a function `Setup` in either `C:\Users\{UserName}\Documents\MyUCMDs\setup.dyalog` or one of the SALT work directories and it will be executed when...
+
 * a new instance of Dyalog is fired up as part of the SALT boot process. 
 
   Note that the SALT boot process will be carried out even when the "Enable SALT callbacks" checkbox on the "SALT" tab of the "Configuration" dialog box is not ticked.
+  
 * the user command `]usetup` is issued. 
 
   This means that you can execute the function at will at any time in order to re-initialise your environment.
 
 The function may be saved in that file either on its own or as part of a namespace.
 
-I> You might expect that saving a class script "Setup.dyalog" with a public shared function `Setup` would work as well but it wouldn't.
+I> You might expect that saving a class script "Setup.dyalog" with a public shared function `Setup` would work as well but that's not the case.
 
 A> ### SALT work directories
 A>
@@ -114,10 +117,10 @@ What this handler does depends on what extension the file has:
 
   If the current namespace is not `#` but, say, `Foo` then a `-target=Foo` is added.
 * For `.dws` it writes an )XLOAD statement to the session.
-* If the filename contains the string `aplcore` then it writes a )COPY statement for that aplcore to the session.
+* If the filename contains the string `aplcore` then it writes a )COPY statement for that aplcore with a trailing dot to the session.
 * For any other files the fully qualified filename is written to the session.
 
-I> When you start Dyalog with Admin rights then it's not possible to drop files onto the status bar. That's because Microsoft considers drag'n drop too dangerous for admins. Funny; one would think it's a better strategyy to leave the dangerous stuff to the admins.
+I> When you start Dyalog with admin rights then it's not possible to drop files onto the status bar. That's because Microsoft considers drag'n drop too dangerous for admins. Funny; one would think it's a better strategyy to leave the dangerous stuff to the admins.
 
 How you configure your development environment is of course very much a matter of personal preferences. However, you might consider to load a couple of scripts into `⎕SE` from within `Setup.dyalog`; the obvious candidates for this are `APLTreeUtils`, `FilesAndDirs`, `OS`, `WinSys`, `WinRegSimple` and `Events`. That would allow you to write user commands that can reference them with, say, `⎕SE.APLTreeUtils.Split`.
 
@@ -157,7 +160,7 @@ A definition like `LL,'→⎕LC ⍝',ER` reads as follows:
 
 If you always run just one instance of the interpreter you can safely ignore this. 
 
-If on the other hand you run occasionally (let alone often) more than one instance of Dyalog in parallel then you are familiar with how it feels when all of a sudden an unexpected dialog box pops up, be it an aplcore or a message box asking "Are you sure?" when you have no idea what you are expected to be sure about, or which instance has just crashed. There is a way to get around this. With version 14.0 windows captions became configurable [^DyalogCaptions]. We suggest to you configure Windows captions in a particular way in order to overcome this problem.
+If on the other hand you run occasionally (let alone often) more than one instance of Dyalog in parallel then you are familiar with how it feels when all of a sudden an unexpected dialog box pops up, be it an aplcore or a message box asking "Are you sure?" when you have no idea what you are expected to be sure about, or which instance has just crashed. There is a way to get around this. With version 14.0 windows captions became configurable [^DyalogCaptions]. We suggest you configure Windows captions in a particular way in order to overcome this problem.
 
 The following screen shot shows the definitions for all windows captions in the Windows Registry for version 16 in case you follow our suggestions:
 
@@ -169,11 +172,14 @@ Notes:
 * All definitions contain `{WSID}` which stands for the workspace ID.
 * `{PRODUCT}` tells all about the version of Dyalog: version number, 32/64 and Classic/Unicode.
 
-The other pieces of information are less important. For details refer to [^DyalogCaptions]. These definitions make sure that literally any dialog box can be allocated to a particular Dyalog session with ease. This is just an example:
+  You might not be interested in this in case you use just one version of Dyalog.
+
+The other pieces of information are less important. For details refer to [^dyalogcaptions]. These definitions make sure that literally any dialog box can be allocated to a particular Dyalog session with ease. This is just an example:
 
 ![A typical dialog box](images/WindowsCaptionsDialogBox.png)
 
-However, this cannot be configured in any way, you need to add subkeys and values to the Windows Registry. We do _not_ suggest that you add or modify those caption with the Registry Editor. It is a better idea to write them by program, even if you deal with just one version of Dyalog at a time because soon there will be a new version coming along requiring you to carry out the same actions again. See the chapter "The Windows Registry" for how to solve this once and for all.
+However, this cannot be configured in any way, you need to add subkeys and values to the Windows Registry. We do _not_ suggest that you add or modify those caption with the Registry Editor. It is a better idea to write them by program, even if you deal with just one version of Dyalog at a time because soon there will be a new version coming along requiring you to carry out the same actions again. See the chapter "The Windows Registry" for how to solve this; that chapters uses this scenario as an example.
 
-[^DyalogCaptions]: Dyalog's windows captions are configurable:
+
+[^dyalogcaptions]: Dyalog's windows captions are configurable:  
 <http://help.dyalog.com/16.0/Content/UserGuide/Installation%20and%20Configuration/Window%20Captions.htm>

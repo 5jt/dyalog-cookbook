@@ -1,7 +1,7 @@
 ﻿:Class MakeService
 ⍝ Creates a workspace "MyAppService" which can then run as a service.
 ⍝ * Re-create folder DESTINATION in the current directory
-⍝ * Copy the INI file template over to DESTINATION\
+⍝ * Copy the INI file template over to DESTINATION\ as MyApp.ini
 ⍝ * Save the workspace within DESTINATION
     ⎕IO←1 ⋄ ⎕ML←1
     DESTINATION←'MyAppService'

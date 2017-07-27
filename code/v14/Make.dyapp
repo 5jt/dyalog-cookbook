@@ -6,10 +6,12 @@ Load ..\AplTree\IniFiles
 Load ..\AplTree\OS
 Load ..\AplTree\Logger
 Load ..\AplTree\EventCodes
+Load ..\APLTree\WinReg
+Run 'Markdown2Help' #.⎕CY '..\apltree\Markdown2Help\Markdown2Help.dws'  
 Load Constants
 Load Utilities
 Load MyApp
-Run #.MyApp.SetLXForApplication #.MyApp.GetCommandLineArg ⍬
+Run #.MyApp.SetLXForApplication ⍬
 
 Load Make
 Run #.Make.Run 1

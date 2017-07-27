@@ -17,7 +17,7 @@ Notes:
 
 ## Outdated?!
 
-Some consider environment variables an outdated technology. We don't want to get involved into a religious argument here but we insist that enviroment variables will be round for a very long time, and that Windows relies on them.
+Some consider environment variables an outdated technology. We don't want to get involved into a religious argument here but we insist that enviroment variables will be round for a very long time, and that Windows relies on them. Also, they are standard in Linux and Mac OS.
 
 ## The variables
 
@@ -55,7 +55,7 @@ Defaults to "\\Users\\{yourName}".
 ### LocalAppData
 Defaults to "C:\\Users\\{yourName}\\AppData\\Local".
 
-Use this to store application specific data the is **not** supposed to roam [^roaming] with the user. A log file might be an example. The reason is that when a user logs in on all the data stored in %APPDATA% is copied over. A large log file might take significant time to be copied over with very little benefit.
+Use this to store application specific data the is **not** supposed to roam [^roaming] with the user. A log file might be an example. The reason is that when a user logs in all the data stored in %APPDATA% is copied over. A large log file might take significant time to be copied over with very little benefit.
 
 See also **[AppData](#)**.
 

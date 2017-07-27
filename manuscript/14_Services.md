@@ -5,7 +5,7 @@
 
 ## What is a Windows Service
 
-While the Windows Task Manager just starts any ordinary application, any application that runs as a Windows Service must be specifically designed in order to meet a number of requirements. In particular services are expected to communicate by exchanging messages with the Windows Service Control Manager (SCM). Commands can be issued by the `SC.exe` (Service Controller) [^scm] application or interactively via the "Services" application. This allows the user to not only start but also to pause, continue (also called resume) and stop a Windows Service. 
+While the Windows Task Manager just starts any ordinary application, any application that runs as a Windows Service must be specifically designed in order to meet a number of requirements. In particular services are expected to communicate by exchanging messages with the Windows Service Control Manager (SCM). Commands can be issued by the `SC.exe` (Service Controller) application or interactively via the "Services" application. This allows the user to not only start but also to pause, continue (also called resume) and stop a Windows Service. 
 
 
 ## The Window Event Log
@@ -73,7 +73,7 @@ and you are done.
 
 A> ### Pitfalls when installing / uninstalling Windows Services
 A>
-A> Be warned that when you have opened the "Services" GUI while installing or uninstalling a Windows Service then you must press F5 on the GUI in order to update it. The problem is not that the GUI does not update itself, though this can be quite annoying; it can get much worse: you might end up with a Service marked in the GUI as "disabled", and the only thing you can do by then it rebooting the machine. This will happen when you try to perform an action on the GUI when it is not in sync of the Service's current state.
+A> Be warned that when you have opened the "Services" GUI while installing or uninstalling a Windows Service then you must press F5 on the GUI in order to update it. The problem is not that the GUI does not update itself, though this can be quite annoying; it can get much worse: you might end up with a Service marked in the GUI as "disabled", and the only thing you can do by then is rebooting the machine. This will happen when you try to perform an action on the GUI when it is not in sync with the Service's current state.
 
 A> ### SC: Service Control
 A>
@@ -176,10 +176,10 @@ If that's not suitable then consider passing the directory that will host the "L
 
 #### Windows event log
 
-In the next chapter we will discuss how and why to use the Windows Event Log, in particular when it comes to Services.
+In the next chapter we will discuss why and how to use the Windows Event Log, in particular when it comes to Services.
 
 
-## How to implement this
+## How to implement it
 
 
 ### Setting the latent expression
@@ -214,10 +214,10 @@ Next we need the main function for the service:
     ⍝ `ridePort`: Port number used by Ride.
       r←⍬
       #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
-      1 CheckForRide earlyRide ridePort
+      CheckForRide earlyRide ridePort
       #.FilesAndDirs.PolishCurrentDir
       ⎕TRAP←#.HandleError.SetTrap ⍬
-      (Config MyLogger)←Initial 1
+      (Config MyLogger)←Initial #.ServiceState.IsRunningAsService
       ⎕TRAP←(Config.Debug=0)SetTrap Config
       Config.ControlFileTieNo←CheckForOtherInstances ⍬
       ∆FileHashes←0 2⍴''
@@ -235,8 +235,8 @@ Next we need the main function for the service:
 Notes:
 
 * This function allows a Ride very early indeed.
-* It calls the function `Initial` and passes a 1 as right argument. The 1 stands for "running as a service". We will discuss `Initial` next.
-* We create a global variable `∆FileHashes` which we use to collect the hashes of all files that we have processed. This gives us an easy and fast way to check whether any of the files we've already processes got changed.
+* It calls the function `Initial` and passes the result of the function `#.ServiceState.IsRunningAsService` as right argument. We will discuss `Initial` next.
+* We create a global variable `∆FileHashes` which we use to collect the hashes of all files that we have processed. This gives us an easy and fast way to check whether any of the files we've already processed got changed.
 * We call `MainLoop` (a function that has not been established yet) in different ways depending on whether the function is running as a Windows Service or not for the simple reason that it is much easier to debug an application that runs in a single thread.
 
 
@@ -368,12 +368,12 @@ The function `LoopOverFiles`:
 
 This function finally calls `TxtToCsv`.
 
-Because of the change we've made to the right argument of `Initial` we need  to change `StartFromCmdLine`; The function `Initial` needs a 0 as right argument now, indicating that it is _not_ running as a Service:
+Because of the change we've made to the right argument of `Initial` we need  to change `StartFromCmdLine`; Here the function `Initial` needs to be told that it is _not_ running as a Service:
 
 ~~~
 ∇ {r}←StartFromCmdLine arg;MyLogger;Config;rc;⎕TRAP
 ...
-   (Config MyLogger)←Initial 0
+   (Config MyLogger)←Initial #.ServiceState.IsRunningAsService
 ...    
 ~~~
 
@@ -391,6 +391,8 @@ leanpub-end-insert
 ~~~ 
 
 This disconnects the handler from the "ServiceNotification" event.
+
+Finally we redefine what's a public function:
  
 ~~~
  ∇ r←PublicFns
@@ -444,13 +446,7 @@ Notes:
 
 * The install BAT will use the version of Dyalog used to create the BAT file, and it will call the runtime EXE.
 * In case you are not familiar with `%~dp0`: this stand for "the directory this BAT file was loaded from". In other words: as long as the workspace `MyAppService.DWS` (which we have not created yet) is a sibling of the BAT file it will work.
-* The un-install BAT file will check the `errorlevel` variable. If it detects an error it will pause so that one can actually see the error message even when we have just double-clicked the BAT file.
-
-A> When one double-clicks a BAT file in the Windows Explorer a console windows pops up for a split of a second and then disappears, no matter what the circumstances are. In other worse, when something goes wrong, one would not know what.
-A>
-A> Checking the global variable `%ERRORLEVEL%` allows the BAT to execute a `Pause`, allowing us to investigate the error message.
-A>
-A> Whether that makes sense for BATs that are expected to run under program control depends on the circumstances. If it does not make sense then the BAT should  return an error code to the calling environment rather than stopping.
+* The un-install BAT file will check the `errorlevel` variable. If it detects an error it will pause so that one can actually see the error message even when we have just double-clicked the BAT file. We've discussed this in the chapter "Handling errors".
 
 
 ### "Make" for the Service
@@ -484,7 +480,7 @@ Load ServiceHelpers
 leanpub-start-insert 
 Run #.ServiceHelpers.CreateBatFiles ⍬
 Run '#.⎕EX''ServiceHelpers'''
-Run #.MyApp.SetLXForService 0 4512   ⍝ [1|0]: Ride/no Ride, [n] Ride port number
+Run #.MyApp.SetLXForService 0 4599   ⍝ [1|0]: Ride/no Ride, [n] Ride port number
 
 Load MakeService
 Run #.MakeService.Run 0
@@ -495,19 +491,18 @@ Notes:
 
 * We need some more APLTree modules: `Tester`, `Execute` and `WinSys`.
 * We make sure that the two BAT files for installing and un-installing the service are written to the disk.
-* We delete the class `ServiceHelpers`: it is not needed for running the Service.
+* We delete the class `ServiceHelpers`: it is not needed for running the Service any more once we've created the BAT files.
 * We set `⎕LX` by calling `SetLXForService`.
 * We load the class `MakeService` and run `MakeService.Run`.
 
 That obviously requires the class `MakeService` to be introduced:
 
 ~~~
-⍝TODO⍝  ⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹
 :Class MakeService
 ⍝ Creates a workspace "MyAppService" which can then run as a service.
 ⍝ 1. Re-create folder DESTINATION in the current directory
-⍝ 2. Copy the INI file template over to DESTINATION\
-⍝ .3 Save the workspace within DESTINATION
+⍝ 2. Copy the INI file template over to DESTINATION\ as MyApp.ini
+⍝ 3. Save the workspace within DESTINATION
     ⎕IO←1 ⋄ ⎕ML←1
     DESTINATION←'MyAppService'
 
@@ -549,7 +544,7 @@ A> In case you wonder how it is possible that the function `MakeService.Run` del
 A>
 A> APL code (functions, operators and scripts) that is about to be executed is copied onto the stack. You can investigate the stack at any given moment with  `)si` and `)sinl`; for details type the command in question into the session and then press F1.
 A>
-A> Even if the code of a class executes `⎕EX ⍕⎕THIS` or a function or operator `⎕EX ⊃⎕SI` the code keeps running because the copy on the stack will exist until the script or function or operator quits.
+A> Even if the code of a class executes `⎕EX ⍕⎕THIS` or a function or operator `⎕EX ⊃⎕SI` the code keeps running because the copy on the stack will exist until the function or operator quits. Scripts might even live longer: only when the last reference pointing to a script is deleted does the script cease to exist.
 
 
 ## Testing the Service
@@ -564,7 +559,7 @@ We start be creating a new script `TestsForServices` which we save alongside the
 :Namespace TestsForServices
 ⍝ Installs a service "MyAppService" in a folder within the Windows Temp directory with 
 ⍝ a randomly chosen name. The tests then start, pause, continue and stop the service.\\
-⍝ It also checks whether the application produces the expected results.
+⍝ They also check whether the application produces the expected results.
 
     ⎕IO←1 ⋄ ⎕ML←1
 
@@ -581,7 +576,7 @@ We now discuss the functions we are going to add one after the other. Note that 
    ∆ServiceName←'MyAppService'
    r←0
    :If 0=#.WinSys.IsRunningAsAdmin
-       ⎕←'Sorry, but you need admin rights to run this test suite successfully!'
+       ⎕←'Sorry, but you need admin rights to run this test suite!'
        :Return
    :EndIf
    ∆CreateFolderStructure ⍬
@@ -623,7 +618,7 @@ After having executed the test suite we want to clean up, so we create a functio
 ∇
 ~~~
 
-Another example:
+We also need `∆Pause`:
 
 ~~~
 ∇ {r}←∆Pause seconds
@@ -637,7 +632,7 @@ We could discuss all the sub functions called by these two functions but it woul
 
 ~~~
 ∇ R←Test_01(stopFlag batchFlag);⎕TRAP;rc;more
-  ⍝ Start, pause and continue the service.
+  ⍝ Start, pause, continue and stop the service.
   ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
   R←∆Failed
  
@@ -678,14 +673,14 @@ In order to understand the `→FailsIf` statements it is essential to have a loo
 328
       ≡more
 1
-      #.APLTreeUtils.dmb      more
+      #.APLTreeUtils.dmb more
 SERVICE_NAME: MyAppService TYPE : 10 WIN32_OWN_PROCESS STATE : 4 RUNNING (STOPPABLE, PAUSABLE, ACCEPTS_SHUTDOWN) WIN32_EXIT_CODE : 0 (0x0) SERVICE_EXIT_CODE
        : 0 (0x0) CHECKPOINT 
 ~~~
 
 Note that we have removed multiple blanks here in order to increase readability. The reason is that the result carries plenty of them.
 
-This test simply starts, pauses, continues and finally stops the Service.
+This test starts, pauses, continues and finally stops the Service after having processed some files:
 
 ~~~
 ∇ R←Test_02(stopFlag batchFlag);⎕TRAP;rc;more;noOfCSVs;success;oldTotal;newTotal;A;F
@@ -707,7 +702,7 @@ This test simply starts, pauses, continues and finally stops the Service.
    noOfCSVs←⍴F.ListFiles ∆Path,'\input\en\*.csv'
    (success more list)←(∆Path,'\texts')F.CopyTree ∆Path,'\input\'  ⍝ All of them
    {1≠⍵:.}success
-   ∆Pause 5
+   ∆Pause 2
    newTotal←↑{','A.Split ⍵}¨A.ReadUtf8File ∆Path,'\input\en\total.csv'
    →PassesIf(noOfCSVs+6)=⍴F.ListFiles ∆Path,'\input\en\*.csv'
    →PassesIf oldTotal≢newTotal
@@ -736,7 +731,7 @@ A>
 A> The best way to start a console window with admin rights:
 A>
 A> 1. Press the Windows key.
-A> 1. Type "cmd"; if you are tempted to ask "what shall I type this into" then don't - just type.
+A> 1. Type "cmd"; if you are tempted to ask "where shall I type this into" then don't - just type.
 A> 1. Right-click on "Command prompt" and select "Run as administrator".
 
 A Dyalog instance is started. In the session you should see something similar to this:
@@ -769,7 +764,7 @@ Finally run `#.TestsForServices.RunDebug 0`. You should see something like this:
 
 ~~~
 #.TestsForServices.RunDebug 0
---- Test framework "Tester" version 3.3.0 from 2017-05-19 -----------------------------
+--- Test framework "Tester" version 3.3.0 from YYYY-MM-DD -----------------------------
 Searching for INI file testcases_APLTEAM2.ini
   ...not found
 Searching for INI file Testcases.ini
@@ -777,7 +772,7 @@ Searching for INI file Testcases.ini
 Looking for a function "Initial"...
 *** Service MyAppService successfully installed
   "Initial" found and sucessfully executed
---- Tests started at 2017-05-28 19:11:49 on #.TestsForServices ------------------------
+--- Tests started at YYYY-MM-DD hh:mm:dd on #.TestsForServices ------------------------
    Pausing for 2 seconds...
    Pausing for 2 seconds...
    Pausing for 2 seconds...
@@ -791,7 +786,7 @@ Looking for a function "Initial"...
    2 test cases executed
    0 test cases failed
    0 test cases broken
-Time of execution recorded on variable #.TestsForServices.TestCasesExecutedAt in: 2017-05-28 19:12:04
+Time of execution recorded on variable #.TestsForServices.TestCasesExecutedAt in: YYYY-MM-DD hh:mm:ss
 Looking for a function "Cleanup"...
   Function "Cleanup" found and sucessfully executed.
 *** Tests done

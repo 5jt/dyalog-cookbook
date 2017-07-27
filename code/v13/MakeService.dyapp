@@ -19,7 +19,7 @@ Load ServiceHelpers
 
 Run #.ServiceHelpers.CreateBatFiles ⍬
 Run '#.⎕EX''ServiceHelpers'''
-Run #.MyApp.SetLXForService 0 4512   ⍝ [1|0]: Ride/no Ride, [n] Ride port number
+Run #.MyApp.SetLXForService 0 4599   ⍝ [1|0]: Ride/no Ride, [n] Ride port number
 
 Load MakeService
 Run #.MakeService.Run 0

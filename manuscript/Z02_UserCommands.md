@@ -3,9 +3,9 @@
 
 ## Overview
 
-User commands are a great way to make utilities available to the developer without cluttering the workspace. Since its introduction they have proven to be be indispensable.
+User commands are a great way to make utilities available to the developer without cluttering the workspace. They also allow you to have one code base for several Dyalog installations. Since its introduction they have proven to be be indispensable.
 
-Whether you want to write your own user commands or to make use of any third-party user commands like those avaiable from the APL wiki for download (<http://aplwiki.com/CategoryDyalogUserCommands>), you need to consider your options how to integrate non-Dyalog user commands into your development environment.
+Whether you want to write your own user commands or to make use of any third-party user commands like those available from the APL wiki for download [^wiki], you need to consider your options how to integrate non-Dyalog user commands into your development environment.
 
 The default folder depends on your version of Dyalog of course, but you can always find out from a running instance of Dyalog APL:
 
@@ -14,7 +14,7 @@ The default folder depends on your version of Dyalog of course, but you can alwa
 "C:\Program Files\Dyalog\Dyalog APL-64 16.0 Unicode\SALT\spice\"
 ~~~
 
-The above is the default folder for the 64-bit Unicode version of Dyalog 16.0 for all Dyalog user commands.
+The above is the default folder for the 64-bit Unicode version of Dyalog 16.0 for all Dyalog user commands available within that version.
 
 
 ## Using the default folder
@@ -24,13 +24,13 @@ If you want to keep life simple the obvious choice seems to be this folder: you 
 Simple may it be, but this is _not_ recommended:
 
 * When a new version of Dyalog comes along you need to copy your own stuff over.
-* Because of Microsoft's security measures, writing to that folder requires admin rights.
 * When you use more than one version of Dyalog in parallel you have to maintain several copies of your user commands.
+* Because of Microsoft's security measures, writing to that folder requires admin rights.
 
 For these reasons you are advised to use a different folder.
 
 
-## Use your own dedicated folder for your user commands
+## Use your own dedicated folder
 
 Let's assume that you have a folder `C:\MyUserCommands` that's supposed to hold all non-Dyalog user commands. Via the "Options > Configure" command you can select the "User Commands" tab and add that folder to the search path; don't forget to press the "Add" button once you have browsed to the right directory.
 
@@ -41,7 +41,7 @@ If you use several versions of Dyalog in parallel then you are advised _not_ to 
 
 If two user commands share the same name the last definition wins. You can achieve this only by having a user command "Foo" in two different scripts in different folders _with the same group name, or no group name at all!_
 
-In other words, the full name of a user command is compiled by the group name (say "foo") and the user comand name (say "goo"): `]foo.goo`. As long as there is only one user command `goo` however this will do nicely:
+In other words, the full name of a user command is compiled by the group name (say "foo") and the user comand name (say "goo"): `]foo.goo`. However, as long as there is only one user command `goo` this will do nicely:
 
 ~~~
       ]goo
@@ -126,3 +126,7 @@ Notes:
 * We have implemented the user command as a namespace. It could have been a class instead but in this case that does not offer any benefits since all functions are public anyway.
 
 The workspace `Goo` can be tested independently from the user command framework, and the workspace `Goo` might well hold test cases for the functions in ` Foo`.
+
+
+[^wiki]:Dyalog user commands from the APL wiki  
+<http://aplwiki.com//CategoryDyalogUserCommands>

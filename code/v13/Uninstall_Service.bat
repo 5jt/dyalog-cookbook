@@ -1,7 +1,7 @@
 sc delete MyAppService
 @echo off
-if NOT ["%errorlevel%"]==["0"] (
     echo Error %errorlevel%
+    if NOT ["%errorlevel%"]==["0"] (
     pause
-    exit /b %errorlevel%
+exit /b %errorlevel%
 )
