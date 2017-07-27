@@ -254,20 +254,20 @@ Let's check the current status:
       dyalogVersions←AllVersionsOfDyalog ''
       ⍪{#.WinReg.GetValue 'HKCU\Software\Dyalog\',⍵,'\SALT\CommandFolder'}¨dyalogVersions
  C:\...\Dyalog APL 14.1 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\
- C:\...\Dyalog APL 15.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\                                             
- C:\...\Dyalog APL 16.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\                                             
+ C:\...\Dyalog APL 15.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\
+ C:\...\Dyalog APL 16.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\
 ... 
       'C:\MyUserCommands'∘Add¨dyalogVersions
       ⍪{#.WinReg.GetValue 'HKCU\Software\Dyalog\',⍵,'\SALT\CommandFolder'}¨dyalogVersions
-C:\..\Dyalog APL 14.1 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands                                             
-C:\...\Dyalog APL 15.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands                                             
-C:\...\Dyalog APL 16.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands                                                   
+      C:\..\Dyalog APL 14.1 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands
+C:\...\Dyalog APL 15.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands
+C:\...\Dyalog APL 16.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands
 ...
       'C:\MyUserCommands'∘Add¨dyalogVersions
       ⍪{#.WinReg.GetValue 'HKCU\Software\Dyalog\',⍵,'\SALT\CommandFolder'}¨dyalogVersions
-C:\...\Dyalog APL 14.1 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands                                             
-C:\...\Dyalog APL 15.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands                                             
-C:\...\Dyalog APL 16.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands                                                   
+C:\...\Dyalog APL 14.1 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands
+C:\...\Dyalog APL 15.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands
+C:\...\Dyalog APL 16.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands
 ~~~
 
 Note that although we called `Add` twice the folder `C:\MyUserCommands` makes an appearance only once. This is because we carefully removed it before adding it.
@@ -345,19 +345,19 @@ We can now write `captionValues` to all versions:
       ⍝ Let's check:
       rk←'HKCU\Software\Dyalog\Dyalog APL/W-64 16.0 Unicode\Captions'
       #.WinReg.GetTreeWithValues rk
-0  HKCU\...\Captions\                                                                                     
-1  HKCU\...\Editor          {PID} {TITLE} {WSID}-{NSID} {Chars} {Ver_A}.{VER_B}.{VER_C} {BITS}   
-1  HKCU\...\Event_Viewer    {PID} {WSID} {PRODUCT}                                               
-1  HKCU\...\ExitDialog      {PID} {WSID} {PRODUCT}                                               
-1  HKCU\...\Explorer        {PID} {WSID} {PRODUCT}                                               
-1  HKCU\...\FindReplace     {PID} {WSID}-{SNSID} {Chars} {Ver_A}.{VER_B}.{VER_C} {BITS}          
-1  HKCU\...\MessageBox      {PID} {WSID} {PRODUCT}                                               
-1  HKCU\...\Rebuild_Errors  {PID} {WSID} {PRODUCT}                                               
-1  HKCU\...\Refactor        {PID} {WSID}-{SNSID} {Chars} {Ver_A}.{VER_B}.{VER_C} {BITS}          
-1  HKCU\...\Session         {PID} {WSID}-{NSID} {Chars} {Ver_A}.{VER_B}.{VER_C} {BITS}           
-1  HKCU\...\Status          {PID} {WSID} {PRODUCT}                                               
-1  HKCU\...\SysTray         {PID} {WSID}                                                         
-1  HKCU\...\WSSearch        {PID} {WSID} {PRODUCT}                                               
+0  HKCU\...\Captions\
+1  HKCU\...\Editor          {PID} {TITLE} {WSID}-{NSID} {Chars} {Ver_A}.{VER_B}.{VER_C} {BITS}
+1  HKCU\...\Event_Viewer    {PID} {WSID} {PRODUCT}
+1  HKCU\...\ExitDialog      {PID} {WSID} {PRODUCT}
+1  HKCU\...\Explorer        {PID} {WSID} {PRODUCT}
+1  HKCU\...\FindReplace     {PID} {WSID}-{SNSID} {Chars} {Ver_A}.{VER_B}.{VER_C} {BITS}
+1  HKCU\...\MessageBox      {PID} {WSID} {PRODUCT}
+1  HKCU\...\Rebuild_Errors  {PID} {WSID} {PRODUCT}
+1  HKCU\...\Refactor        {PID} {WSID}-{SNSID} {Chars} {Ver_A}.{VER_B}.{VER_C} {BITS}
+1  HKCU\...\Session         {PID} {WSID}-{NSID} {Chars} {Ver_A}.{VER_B}.{VER_C} {BITS}
+1  HKCU\...\Status          {PID} {WSID} {PRODUCT}
+1  HKCU\...\SysTray         {PID} {WSID}
+1  HKCU\...\WSSearch        {PID} {WSID} {PRODUCT}
 ~~~
 
 

@@ -160,9 +160,19 @@ A definition like `LL,'→⎕LC ⍝',ER` reads as follows:
 
 If you always run just one instance of the interpreter you can safely ignore this. 
 
-If on the other hand you run occasionally (let alone often) more than one instance of Dyalog in parallel then you are familiar with how it feels when all of a sudden an unexpected dialog box pops up, be it an aplcore or a message box asking "Are you sure?" when you have no idea what you are expected to be sure about, or which instance has just crashed. There is a way to get around this. With version 14.0 windows captions became configurable [^DyalogCaptions]. We suggest you configure Windows captions in a particular way in order to overcome this problem.
+If on the other hand you run occasionally (let alone often) more than one instance of Dyalog in parallel then you are familiar with how it feels when all of a sudden an unexpected dialog box pops up, be it an aplcore or a message box asking "Are you sure?" when you have no idea what you are expected to be sure about, or which instance has just crashed. There is a way to get around this. With version 14.0 windows captions became configurable. This is a screenshot from the online help:
 
-The following screen shot shows the definitions for all windows captions in the Windows Registry for version 16 in case you follow our suggestions:
+![Dyalog's help on window captions](images\WindowsCaptions.png)
+
+A> ### Help - online versus offline
+A>
+A> There are pros and cons:
+A>
+A> * Pressing F1 on something you need help with opens the offline help at the time of writing (2017-07).
+A> * The online help is frequently updated by Dyalog.
+
+
+We suggest you configure Windows captions in a particular way in order to overcome this problem. The following screen shot shows the definitions for all windows captions in the Windows Registry for version 16 in case you follow our suggestions:
 
 ![Windows Registry entries for "Window captions"](images/WindowsCaptions.png)
 
@@ -179,7 +189,3 @@ The other pieces of information are less important. For details refer to [^dyalo
 ![A typical dialog box](images/WindowsCaptionsDialogBox.png)
 
 However, this cannot be configured in any way, you need to add subkeys and values to the Windows Registry. We do _not_ suggest that you add or modify those caption with the Registry Editor. It is a better idea to write them by program, even if you deal with just one version of Dyalog at a time because soon there will be a new version coming along requiring you to carry out the same actions again. See the chapter "The Windows Registry" for how to solve this; that chapters uses this scenario as an example.
-
-
-[^dyalogcaptions]: Dyalog's windows captions are configurable:  
-<http://help.dyalog.com/16.0/Content/UserGuide/Installation%20and%20Configuration/Window%20Captions.htm>
