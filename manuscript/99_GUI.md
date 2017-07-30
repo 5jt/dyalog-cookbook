@@ -12,6 +12,8 @@ HTML/JS and WPF have a high learning threshold. There is much to be mastered bef
 
 You have an alternative. The GUI tools native to Dyalog support perfectly workmanlike GUIs. They exploit and extend your existing knowledge of Dyalog. If you are producing high-value software for a few users, rather than software for casual use by millions, a native Dyalog GUI might be your best platform.
 
+You can still run your application from within a browser if you wish to: Amazon offers the "AppStream" [^appstream] service allowing exactly that.
+
 Creating a GUI form in Dyalog could hardly be simpler:
 
 ~~~
@@ -21,77 +23,52 @@ Creating a GUI form in Dyalog could hardly be simpler:
 
 ![Hello world form](images/form_01.png)
 
-To the form we add controls, set callback functions to run when certain events occur, and invoke the form's `Wait` method. See the _Dyalog for Microsoft Windows Interface Guide_ for details and tutorials. 
+To the form we add controls, set callback functions to run when certain events occur, and invoke the form's `Wait` method or invoke `⎕DQ`. See the _Dyalog for Microsoft Windows Interface Guide_ for details and tutorials. 
 
-## Navigating the UI
 
-Embedding a form into an application raises more difficult questions. Chief among them is where to put the form. 
+## A sample Form
 
-It is common for a callback to read or set other controls in the UI. The question is: how to find them? Callback functions always receive in their arguments a reference to the UI control that triggered the callback. How to navigate the UI's hierarchy (tree) of controls? 
+We are going to implement a sample form that looks like this:
 
-Keep in mind the following common practices we'll want to accommodate.
+![Hello world form](images/gui_example.png)
 
-* A single callback function is often used to handle an event or events for several controls. 
-* It is common during development or maintenance to redesign parts of the UI. If you think of the UI as a tree rooted in its form, redesign can move or relocate entire branches of the tree. 
-* We might want multiple instances of the same form. For example, if the form allows us to browse a customer record, we might want two records open at the same time. 
+We keep this separate from the application we have developed so far, and we are not using scripts
 
-Here are some strategies for embedding and navigating the UI tree. 
+### Collecting controls
 
-### Use absolute names 
+We are not using a designer for that, we use APL code. We start with a container that will collect the names of most if not all the controls we are about to create. That container is a namespace. We suggest to use a short name, because you will refer to this name very often. Let's name it `n` like "names" as in `n←⎕NS ''`. We do this because the hierarchy of the controls is not of much interest to us, we are happy to refer to them by a simple name. 
 
-This is the method used above: `UI←#.⎕NEW⊂'Form'`. The object `UI` is a child of the workspace root. It's the strategy implied by the interface tutorials. It's easy to read and understand:
+We will create the different controls in dedicated functions. Experience has shown that this is more readable and easier to maintain (in case a re-design of the GUI is needed) than any other approach. Before we start to produce code we create a namespace `GUI` in the root that will hold all forms, and each form will have its own sub namespace:
 
 ~~~
-        UI.(MB←⎕NEW⊂'Menubar')
-        UI.MB.(MenuFile←⎕NEW⊂'Menu'('Caption' '&File'))
-~~~        
+      'GUI. #.⎕NS''
+      'Sample_01' #.GUI.⎕NS ''
+      )cs #.GUI.Sample_01
+~~~
 
-Notice that the `⎕NEW` that creates each control is executed within its parent. This constructs the UI tree. Notice too that the control is given a name within its parent. So, for example, we can refer to the File menu as `UI.MB.MenuFile`. This is clear enough, but it embeds the structure of the UI into the name of each control. So if we want to move a branch of the UI tree we have to find and edit every reference to controls in that branch. 
+Let's start with a function that creates the whole form. Since we have already jumped into `#.GUI.Sample_01` we can create this function "locally":
 
-If we want multiple instances of the form, we will need to pass our code _references_ to forms, not _names_ of forms.
+~~~
+∇ n←CreateGUI dummy
+  n←⎕NS ''
+  n←CreateMainForm n
+  n←CreateSearch n
+  n←CreateReplace n
+  n←CreateOptionGroup n
+  n←CreateScanGroup n
+  n←CreateRegExGroup n
+  n←CreatePushButtons n
+∇
+~~~
 
-
-### Navigate relative paths 
-
-A callback can navigate the UI tree starting at the control that called it. `obj.##` gives it a reference to the `obj`'s parent. Much as you construct relative filepaths, you can construct relative paths to other controls. 
-
-This strategy sacrifices a little clarity (you need the UI tree clearly in mind in order to read the path) but by avoiding absolute names it supports multiple instances. 
-
-It also reduces the editing required when you move a branch of the UI tree. Relative paths entirely within the moved branch continue to work as before. Only paths that cross into or out of the branch require editing. 
-
-
-### Navigate by searching the UI tree 
-
-Relative paths support multiple instances and are more robust than absolute paths under changes to the UI, but they still bind the callbacks quite tightly to a particular structure of the tree. 
-
-This binding can be loosened by searching the UI tree. For example, a callback from a button could (use a utility function to) find the button's closest ancestor SubForm and thence a Grid object that is a child of the Subform. 
-
-A search could start from anywhere in the UI tree. 
-
-If you have worked on Web interfaces, you might wish to write utility functions that would implement the CSS-style selector syntax used by JQuery. 
+For the time being we create the `n` namespace with `⎕NS`. Later we will introduce a class that lives in `#.GUI` which not only creates a newnamespace but populates that namepsace with some useful methods.
 
 
-### Assign unique names to controls
+~~~
 
-Continuing the line of thought above, writers of JQuery interfaces know the simplest (and fastest) way to identify a control is to use its unique ID. We recommend a similar method for native Dyalog UIs.[^Mansour]
+~~~
 
-In this strategy: 
 
-* The function that launches a form (of which the UI might contain many) creates, as a local variable, an empty namespace. Call this the _UI namespace_.
-* The form -- and all its child controls -- is created in this namespace.
-* As each control is created, it has a name assigned to it in the namespace. 
-* As each control is created, it has embedded in it a reference to the UI namespace itself. 
-
-The resulting UI namespace contains 
-
-* The UI object tree
-* A uniquely-named reference to each control 
-
-Suppose the reference to the UI namespace is embedded in each control as its `ui` attribute. A callback on control `obj` can thus refer to another control `Foo` simply as `obj.ui.Foo` regardless of the structure of the UI tree. 
-
-This depends on every control being created with a `ui` property referring back to the UI namespace. We can protect against failure to define this property. A utility function `GetRef2ui` can search up the UI tree until it finds an ancestor object with this `ui` property defined. 
-
-We'll use this approach to build a simple user interface for MyApp. How simple? We'll have a menu bar, from which the language can be selected, and an Edit field onto which files and/or folder can be dropped. Analysis results or error messages get displayed in the edit. That simple. 
 
 
 ## A simple UI with native Dyalog forms
@@ -288,3 +265,6 @@ Most of the UI functions can be written as Dfns and some writers prefer this for
 
 
 [^Mansour]: Thanks to Paul Mansour, the first person we know to describe this strategy. 
+
+
+[^appstream]: <https://aws.amazon.com/appstream2/>
