@@ -1,11 +1,5 @@
 # Regular expressions with Dyalog
 
-One: -
-
-Two: --
-
-Three: ---
-
 
 ## Overview
 
@@ -40,17 +34,17 @@ Dyalog is using the PCRE implementation of regular expressions. This library att
 
 A> ### The right operand and the right argument
 A>
-A> `⎕S` is, like `⎕R`, an _operator_. An operator takes a left operand (monadic) and left and right operand (dyadic) and form a so-called derived function. For example, the operator `/` when fed with a left operand `+` forms the derived function "sum".
+A> `⎕S` is, like `⎕R`, an _operator_. An operator takes either just a left operand (monadic) or a left and right operand (dyadic) and forms a so-called derived function. For example, the operator `/` when fed with a left operand `+` forms the derived function "sum".
 A>
-A> In the example the `0` is the right operand. With `⎕S` the right operand can be one to many of 0, 1, 2 and 3. They are called transformation codes. 
+A> In the example the `0` is the right operand. With `⎕S` the right operand can be one to many of 0, 1, 2 and 3 (those are called transformation codes) or a user defined function which is explained later.
 A>
 A> * `0` stands for: offset from the start of the line to the start of the match.
 A> * `1` stands for: length of the match.
 A>
 A>
-A> Note that `2` and `3` will be discussed later.
+A> Note that the transformation codes `2` and `3` will be discussed later.
 A>
-A> The right argument provided to the derived function is the string `the cat sat on the medallion`. The operand and the string are separated by the `⊣` function. Instead we could have used paranthesis with exactly the same result: `('notfound' ⎕s 0) 'the cat sat on the medallion'`.
+A> The right argument provided to the derived function is the string `'the cat sat on the medallion'`. The operand and the string are separated by the `⊣` function. Instead we could have used paranthesis with exactly the same result: `('notfound' ⎕s 0) 'the cat sat on the medallion'`.
 
 In the first expression the result is empty because the string `notfound` was not found. In the second expression `cat` was actually found. That means that we could say:
 
@@ -66,7 +60,7 @@ That was easy, wasn't it. Obviously regular expressions are nothing to be afraid
  8 12
 ~~~
 
-That gives us the offset of the two double quotes, but what if we want to have the offset and the length of any string found _between_ double quotes? For that we need to introduce the _meta character_ `.` which has a special meaning in a regular expression: it represents _any_ character (not strictly true but we will discuss the exception, the NewLine character, soon). So we try:
+That gives us the offset of the two double quotes, but what if we want to have the offset and the length of any string found _between_ (and including) the double quotes? For that we need to introduce the _meta character_ dot (`.`) which has a special meaning in a regular expression: it represents _any_ character (not strictly true but we will discuss the exception, the NewLine character, soon). So we try:
 
 ~~~
       '"."' ⎕S 0 1 ⊣ 'He said "Yes"'
@@ -75,7 +69,7 @@ That gives us the offset of the two double quotes, but what if we want to have t
 
 Opps - no hit. 
 
-In order to understand this we have to know what exactly the regular expression engine did:
+In order to understand this we have to know _exactly_ what the regular expression engine did:
 
 1. Start at the beginning of the string; that is actually one to the left off the initial "t"! That position can only match to the meta character `^` which represents the start of a line. 
 1. If there is no match the engine forgets about it and moves one character forward. This is called "consuming" the position the engine has looked at. 
@@ -88,56 +82,64 @@ In order to understand this we have to know what exactly the regular expression 
 
 You can now see why it does not report any hit - it would work on `'He said "Y"'` or more generally, on any single character that is embraced by two double quotes.
 
-What we need is a way to tell the engine that it should try to match the `.` more than once. There is a general way of doing this and two shortcuts that cover most cases. For example, in order to match zero to a maximum of three white space characters:
+What we need is a way to tell the engine that it should try to match the `.` more than once. There is a general way of doing this and two shortcuts that cover most cases. For example, in order to match a minimum of one to a maximum of three white space characters:
+
+~~~
+      '\s{1,3}' ⎕S 0 ⊢' one two   three    four'
+0 4 8 16 19
+~~~
+
+It is actually easier to check the result by replacing the hits with something outstanding:
 
 ~~~
       '\s{1,3}' ⎕R '⌹' ⊢' one two   three    four'
 ⌹one⌹two⌹three⌹⌹four  
 ~~~
 
+A> ### The right operand 
+A>
+A> `⎕R` takes one or more replace strings or a user defined function (discussed later) as the right operand.
+
 The backslash character (`\`) gives the `s` a special meaning: `\s` stands for a single white space character: a space or a tab (`\t`) or a new line (`\n`) or a carriage return (`\r`). 
 
-The curlies (`{}`) define how many of those are required as minimum and maximum. This is called a quantifier.
+What's between the curlies (`{}`) -- which are meta characters as well -- define how many are required as minimum and maximum. This is called a quantifier.
 
 * `{x,y}` means a min of x and a max of y.
 * `{,y}` is the same as `{0,y}`.
 * `{x,}` means a min of x with no max limit.
 * `{x}` means exactly x.
 
-These quantifiers are greedy, so repeating y times is tried before reducing the repetition to x times. You can make them lazy by adding a trailing `?`.
+These quantifiers are greedy rather than lazy, so repeating y times is tried before reducing the repetition to x times. You can make them lazy by adding a trailing `?`. If you have no idea what greedy and lazy means: don't worry, we will discuss these concepts soon in detail.
 
 * The star (`*`) is a shortcut for `{0,y}` and `{,y}`.
-* The plus (`+`) is a shortcut for `{1,}`.
+* The plus (`+`) is a shortcut for `{1}`.
 
 Therefore:
 
 ~~~
-      '".*"' ⎕S 0 1 ⊣ 'He said "Yes"!'
- 8 5
+      '".*"' ⎕R '⌹' ⊣ 'He said "Yes"!'
+He said ⌹!
 ~~~
 
 Seems to work perfectly, right. Well, keep reading:
-
-~~~
-      '".*"' ⎕S 0 1 ⊣ 'He said "Yes" and "No"!'
- 8 14 
-~~~
-
-It is easier to check the result by replacing the hits with something very obvious:
 
 ~~~
       '".*"' ⎕R '⌹' ⊣ 'He said "Yes" and "No"!'
 He said ⌹!
 ~~~
 
-Just one hit, and that has a length of 14?! That's because by default the engine is greedy: it carries on and tries to match the `.` against as many characters as it can. That means it will stop only after it reached the end of the line, because all characters found are a match. It would then go back until it finds a `"` and then stop because it found a match.
+Just one hit, and that hit spans `"Yes" and "No"`?! That's because by default the engine is greedy: it carries on and tries to match the `.` against as many characters as it can. That means it will stop only after it reached the end of the line, because all characters found are a match. It would then go back until it finds a `"` and then stop because it found a match.
 
 What we need instead is a lazy search, therefore:
 
 ~~~
-      '".*"' ⎕S 0 1⍠('Greedy' 0) ⊣ 'He said "Yes" and "No"'
- 8 5  18 4 
+      '".*"' ⎕R '⌹' ⍠('Greedy' 0) ⊣ 'He said "Yes" and "No"!'
+He said ⌹ and ⌹!
 ~~~
+
+A> ### Options
+A>
+A> Between the right operand and the right argument you may specify options. They are marked by the `⍠` operator. Thy can 
 
 We actually think that it would be better having this as the default. That way it would become apparent straight away what works and what doesn't. With "greedy" being the default it would appear to work if there is either no hit at all or only a single hit but it would not work with more than one hit. However, all implementations come with "greedy" being the default.
 
@@ -163,10 +165,10 @@ This example highlights a potential problem with input strings: many regular exp
 
 A> ### Regular expressions and HTML
 A>
-A> There are claims that you _cannot_ parse HTML with regular expression because a regular expression engine is a Finite Automata while HTML can be nested indefinitely. This is partly wrong and partly misleading
+A> There are claims that you _cannot_ parse HTML with regular expression because a regular expression engine is a Finite Automata while HTML can be nested indefinitely. This is partly wrong and partly misleading.
 A> 
-A> * It is wrong because today's regular expressions come with features (back referencing) that are clearly beyond the feature set of a Finite Automata.
-A> * It is misleading because it ignores what is meant by "HTML". Regular expressions are clearly incapable of processing a complex HTML page, but they are perfectly capable of processing a small piece of HTML that is known to be syntactically correct.
+A> * It is wrong because today's regular expression engines come with features (back referencing) that are clearly beyond the feature set of a Finite Automata.
+A> * It is misleading because it ignores that regular expression engines are perfectly capable of processing small pieces of HTML that are known to be syntactically correct.
 
 How many special characters, also called meta characters, do we have to deal with? Well, quite a lot:
 
@@ -185,7 +187,7 @@ How many special characters, also called meta characters, do we have to deal wit
 | Opening square bracket | `[` |
 | Opening curly brace | `{` |
 
-In order to really master regular expressions you have to know all of them. That will not only enable you to use them properly, it will also prevent you from advertising yourself as a non-skilled RegEx user: those tend to escape pretty much everything that is not a letter or a digit because they don't know what they are doing.
+In order to really master regular expressions you have to know all of them. That will not only enable you to use them properly, it will also prevent you from advertising yourself as a non-skilled RegEx user: those tend to escape pretty much everything that is not a letter or a digit because they don't know what they are doing. Even if you don't care, it also reduces readability significantly, so we have good reasons to escape only characters that need to be escaped.
 
 
 ### Example 2 - numbers in a string
@@ -206,7 +208,7 @@ The same but shorter:
 It ⌹⌹.⌹⌹ plus ⌹⌹.⌹⌹.
 ~~~
 
-Note that the `-` is treated as a special character here: in our example it means "0 to 9".
+Note that the `-` is treated as a meta character here: in our example it means "0 to 9".
 
 Even shorter:
 
@@ -215,23 +217,23 @@ Even shorter:
 It ⌹⌹.⌹⌹ plus ⌹⌹.⌹⌹.
 ~~~
 
-Note that the backslash character (`\` ) is used for two different purposes:
+Note that the meta character backslash (`\` ) is used for two different purposes:
 
 * To escape any of the RegEx meta characters so that they are stripped of their special meaning and taken literally.
-* To give the next character a special meaning.
+* To give the next character a special meaning in case it is an ordinary ASCII letter.
 
 So `\*` takes away the special meaning from the `*` and takes it literally while `\d` gives the `d` the special meaning "all digits".
 
-We take the opportunity to add the `.` and the `-` to the character class. Note that the `-` is not escaped; from the context the regular expression egine can work out that here the `-` cannot have the from-to meaning, so it take it literally.
+We take the opportunity to add the `.` and the `-` to the character class. Note that the `-` is not escaped; from the context the regular expression egine can work out that here the `-` cannot have the from-to meaning, so it takes it literally.
 
 ~~~
       '[\d.-]'⎕R '⌹' ⊣ 'It 23.45 plus -99.12.'
 It ⌹⌹⌹⌹⌹ plus ⌹⌹⌹⌹⌹⌹⌹
 ~~~
 
-Here we have another problem: we want the `.` only to be a match when there is a digit to both the left and the right of the `.`. We will tackle this problem soon with look-ahead and look-behind.
+Here we have another problem: we want the `.` only to be a match when there is a digit to both the left and the right of the `.`. Our search pattern is not dealing with this, therefore the trailing `.` is a match. We will tackle this problem soon with look-ahead and look-behind.
 
-Character classes work for characters as well:
+Character classes work for letters as well:
 
 ~~~
       '[a-zA-Z]'⎕R '⌹' ⊣'It 23.45 plus 99.12.'
@@ -244,6 +246,8 @@ Finally we can negate it with `^`:
     '[^a-zA-Z]'⎕R '⌹' ⊣'It 23.45 plus 99.12.'
 It⌹⌹⌹⌹⌹⌹⌹plus⌹⌹⌹⌹⌹⌹⌹
 ~~~
+
+I> Many problem can be solved in more than one way with regular expressions. For example, our earlier problem to find everything between (and including) double quotes can be solved with this expression as well: `'"[^"]*"' ⎕R '⌹' ⊣ 'He said "Yes", she said "No".'`. It matches a doube quote, then as many characters as possible that are _not_ a double quote and finally the closing double quote. This expression has the advantage of working just fine with `(Greedy' 1)` as well as with `(Greedy' 0)`.
 
 Negate with digits and dots:
 
@@ -321,7 +325,18 @@ As far as we know this feature is specific to Dyalog, but then we have limited e
 
 Note that the `,¨` in `,¨'&&⌹'` is essential because otherwise  ....`⍝TODO⍝`  Bug report <01406>
 
-However, this is still not perfect since it would work on `boofoogoo` as well:
+A> ### Greedy and lazy
+A>
+A> Note that using the option (`⍠('Greedy' 0)`) has a disadvantage: it makes the whole expression lazy. There might be cases when you want part of your search pattern to be lazy and other parts greedy. Luckily this can be achieved with the meta chcracter question mark (`?`):
+A> 
+A> ~~~
+A>       '".*?"'⎕R '⌹' ⊣is
+A> He said ⌹ and ⌹
+A> ~~~
+A>
+A> Since "Greedy" is the engine's default just need to specify the `?` only for those parts of your search pattern you want to be lazy.
+
+Our search pattern is still not perfect since it would work on `boofoogoo` as well:
 
 ~~~
       '''.*''' '⍝.*$' 'foo'⎕R(,¨'&&⌹')⍠('Greedy' 0)⊣'This boofoogoo is found as well'
@@ -330,7 +345,16 @@ This boo⌹goo is found as well
 
 To solve this we need to introduce look-ahead and look-behind. The names make it pretty previous what this is about but we want to emphasize that all matching attempts we've introduced so far have been "consuming". Look-ahead as well as look-behind are _not_ consuming. That means that whether they are successful or not they won't change the position the engine is currently investigating. They are also called zero-length assertions.
 
-However, before we tackle our probelem 
+However, before we tackle our problem we need to introduce the concept of both word boundaries and anchors. We've already met one anchor, the caret (`^`) which matches the beginning of a line. There is also the dollar (`$`) which matches the end of a line. And there is `\b` which matches a "word boundary". All these characters are zero-length matches.
+
+To put it simply, `\b` allows you to perform a "whole word only" search. Prior to version 8 of PCRE (and 16.0 of Dyalog) this was true only for ASCII characters. Now you can set the "UCP" options to 1 if you want Unicode character to be taken into account:
+
+~~~
+       ⍴'\bger\b'⎕S 0 ⊣'Kai Jägerßabc'
+1
+      ⍴'\bger\b'⎕S 0 ⍠('UCP' 1)⊣'Kai Jägerßabc'
+0
+~~~
 
 A look-behind is expressed by `(?<!f)/b`
 
