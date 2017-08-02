@@ -263,7 +263,13 @@ Finally we can negate it with `^`:
 It⌹⌹⌹⌹⌹⌹⌹plus⌹⌹⌹⌹⌹⌹⌹
 ~~~
 
-I> Many problem can be solved in more than one way with regular expressions. For example, our earlier problem to find everything between (and including) double quotes can be solved with this expression as well: `'"[^"]*"' ⎕R '⌹' ⊣ 'He said "Yes", she said "No".'`. It matches a double quote, then as many characters as possible that are _not_ a double quote and finally the closing double quote. This expression has the advantage of working just fine with `(Greedy' 1)` as well as with `(Greedy' 0)`.
+Notes:
+
+* The `^` has a different meaning in a character class definition. Outside character classes it stands for "Start of line" as mentioned earlier.
+* Only at the beginning of a chcracter class definition has the caret the meaning "negate". Therefore you could also say that `[^` means "negate" while, say, `[1^2]` means "Match for one of: 1,^2.
+* For APLers the caret is a bit tricky because it can easily be confused with the logical AND (`∧`) function. Only next to each other it becomes apparent what it what: `^∧`: the caret is a bit higher than the logical AND.
+
+I> Many problems can be solved in more than one way with regular expressions. For example, our earlier problem to find everything between (and including) double quotes can be solved with this expression as well: `'"[^"]*"' ⎕R '⌹' ⊣ 'He said "Yes", she said "No".'`. It matches a double quote, then as many characters as possible that are _not_ a double quote and finally the closing double quote. This expression has the advantage of working just fine with `(Greedy' 1)` as well as with `(Greedy' 0)`.
 
 Negate with digits and dots:
 
