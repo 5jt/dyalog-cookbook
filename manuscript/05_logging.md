@@ -141,7 +141,7 @@ We then modify those where the defaults don't match our needs and use the parame
 
 Notes:
 
-* We need to make sure that the current directory contains a `Logs` folder. That's what the method `FilesAndDirs.CheckPath` will ensure when the left argument is the string `'Create!'`.
+* We need to make sure that the current directory contains a sub-directory `Logs`. That's what the method `FilesAndDirs.CheckPath` will ensure when the left argument is the string `'Create!'`.
 
 * We change the default encoding -- that's "ANSI" -- to "UTF-8". Note that this has pros and cons: it allows us to write APL characters to
   the log file but it will also cause potential problems with any third-party tools dealing with log files, because many of them 
@@ -152,7 +152,7 @@ Notes:
   with the need for having APL characters in the log file.
   
 * Since we have not changed either `autoReOpen` (1) or `filenameType` ("DATE") it tells the `Logger` class that it should automatically 
-  close a log file and re-open a new one each day at 24:00. It also defines (together with `filenamePrefix`) the name of the log file.
+  close a log file and re-open a new one each day at 23:59:59. It also defines (together with `filenamePrefix`) the name of the log file.
 
 * If we would run `OpenLogFile` and allow it to return its result to the session window then something similar to this would appear:
 
@@ -210,7 +210,7 @@ Now we have to make sure that `Initial` is called from `StartFromCmdLine`:
 ∇
 ~~~
 
-Note that we add the opportunity here to log the full command line. In an application that receives its parameters from the command line this is an important thing to do.
+Note that we now log the full command line. In an application that receives its parameters from the command line this is an important thing to do.
 
 We take the opportunity to move code from `TxtToCsv` to a new function `GetFiles`. This new function will take the command line argument and return a list of files which may contain zero, one or many filenames:
 
@@ -372,7 +372,7 @@ APLTree also offers applications that support the programmer during her work wit
 
 In order to use LogDog you first need to download it from <http://download.aplwiki.com>. We assume that you download it into the default download location. For a user "JohnDoe" that would be `C:\Users\JohnDoe\Downloads`.
 
-LogDog does not come with an installer. All you have to do is to copy it into a folder where you have the right to add, delete and change files. That means `C:\Proram Files` and `C:\Proram Files (x86)` are not an option. If you want to install the application just for your own user ID then this is the right place:  
+LogDog does not come with an installer. All you have to do is to copy it into a folder where you have the right to add, delete and change files. That means `C:\Program Files` and `C:\Program Files (x86)` are not an option. If you want to install the application just for your own user ID then this is the right place:  
 
 ~~~
 "C:\Users\JohnDoe\AppData\Local\Programs\LogDog
@@ -392,7 +392,7 @@ Once you have started LogDog on the `MyApp` log file you will see something like
 
 ![LogDog GUI](images/LogDog.png)
 
-Note that LogDog comes with an auto-scroll features, meaning that the latest entries at the bottom of the file are always visible. If you don't want this for any reason just tick the "Freeze" check box.
+Note that LogDog comes with an auto-scroll feature, meaning that the latest entries at the bottom of the file are always visible. If you don't want this for any reason just tick the "Freeze" check box.
 
 From now on we will assume that you have LogDog always up and running, so that you will get immediate feedback on what is going on when `MyApp.exe` runs.
 
@@ -410,6 +410,5 @@ A> In case you wonder why that is: a destructor (if any) is called when the inst
 
 
 [^apltree]: You can download all members of the APLTree library from the APL Wiki: <http://download.aplwiki.com/>
-
 
 [^bom]: Details regarding the BOM: <https://en.wikipedia.org/wiki/Byte_order_mark>

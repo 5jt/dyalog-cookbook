@@ -1,1 +1,0 @@
-![Download target](images/adoc_handleerror.png)

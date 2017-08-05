@@ -49,7 +49,7 @@ Later on we'll introduce some professional writing techniques that might make ma
   
   See _Dyalog Programmer's Reference Guide_ for an introduction. 
   
-* Internet access. Not necessarily all the time but probably most of the time. Not only because it gives you access to the [APL wiki](http://aplwiki.com) and the Dyalog forum (see below) but mainly for acessing the APLTree tools and the web site that is associated with [this book](http://cookbook.dyalog.com).
+* Internet access. Not necessarily all the time but probably most of the time. Not only because it gives you access to the [APL wiki](http://aplwiki.com) and the Dyalog forum (see below) but mainly for acessing the APLTree tools and the web site that is associated with this book: <https://cookbook.dyalog.com>.
 
   However, we also tried to write the book in a way so that you can just read it if that's what you prefer.
   

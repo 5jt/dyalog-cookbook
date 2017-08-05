@@ -24,6 +24,12 @@ A>The interpreter checks WS integrity every now and then; how often can be influ
 
 Could not be simpler. If your user has a Dyalog interpreter, she can also save and send you the crash workspace if your program hits an execution error. But she will also be able to read your code -- which might be more than you wish for. 
 
+A> ### Crash workspaces
+A>
+A> A crash workspace is a workspace that was saved by a function what was initiated by error trapping, typically by a setting of `⎕TRAP`. It's a snapshot of the workspace at the moment an unforseen problem triggered error trapping to take over. It's usually very useful to analyze such problems.
+A>
+A> Note that a workspace cannot be saved when more than one thread is running.
+
 If she doesn't have an interpreter, and you are not worried about her someday getting one and reading your code, and you have a Run-Time Agreement with Dyalog, you can send her the Dyalog Run-Time interpreter with the workspace. The Run-Time interpreter will not allow the program to suspend, so when the program breaks the task will vanish, and your user won't see your code. All right so far. But she will also not have a crash workspace to send you. 
 
 If your application uses multiple threads, the thread states can't be saved in a crash workspace anyway. 
@@ -55,7 +61,7 @@ For this there are many _source-control management_ (SCM) systems and repositori
 A> ### Source code management with acre
 A> Some members of the APL community prefer to use a source code management system that is tailored to solve the needs of an APL programmer, or a team of APL programmers: acre. APL code is very compact, teams are typically small, and work on APL applications tends to be very oriented towards functions rather than modules. Other aspects of working in APL impact the importance of features of the SCM that you use. acre is an excellent alternative to Git etc., and it is available as Open Source; we will discuss acre in its own appendix.
 
-Whichever SCM you use (we used GitHub for writing this book and the code in it) your source code will comprise class and namespace scripts (DYALOGs) for the application. The help system will be an ordinary (= non-scripted) namespace. We us a _build script_ (DYAPP) to assemble the application as well as the development environment.
+Whichever SCM you use (we used GitHub for writing this book and the code in it) your source code will comprise class and namespace scripts (DYALOGs) for the application. The help system will be an ordinary --- non-scripted --- namespace. We us a _build script_ (DYAPP) to assemble the application as well as the development environment.
 
 You'll keep your local working copy in whatever folder you please. We'll refer to this _working folder_ as `Z:\` but it will of course be wherever suits you. 
 
@@ -63,7 +69,7 @@ You'll keep your local working copy in whatever folder you please. We'll refer t
 
 We suppose you already have a workspace in which your program runs. We don't have your code to hand so we'll use ours. We'll use a very small and simple program, so we can focus on packaging the code as an application, not on writing the application itself.
 
-So we'll begin with the LetterCount workspace. It's trivially simple (we'll extend a bit what it does as we go) but for now it will stand in for your code. You can download it from the [book's web site](cookbook.dyalog.com).
+So we'll begin with the LetterCount workspace. It's trivially simple (we'll extend a bit what it does as we go) but for now it will stand in for your code. You can download it from the book's web site: <https://cookbook.dyalog.com>.
 
 A> ### On encryption
 A> 
@@ -74,7 +80,7 @@ A> We recommend _The Code Book: The secret history of codes & code-breaking_ by 
 
 ## Versions
 
-In real life you will produce successive versions of your program, each better than the last. In an ideal world, all your users will have and use the latest version. In that ideal world, you have only one version to maintain: the latest. In the real world, your users will have and use multiple versions. If you charge for upgrading to a newer version, this will surely happen. And even in your ideal world, you have to maintain at least two versions: the latest and the next. 
+In real life you will produce successive versions of your program, each better than the last. In an ideal world, all your users will have and use the current version. In that ideal world, you have only one version to maintain: the latest. In the real world, your users will have and use multiple versions. If you charge for upgrading to a newer version, this will surely happen. And even in your ideal world, you have to maintain at least two versions: the current and the next. 
 
 What does it mean to maintain a version? At the very minimum, you keep the source code for it, so you could recreate its EXE from scratch, exactly as it was distributed. There will be things you want to improve, and perhaps bugs you must fix. Those will all go into the next version, of course. But some you may need to put into the released version and re-issue it to current users as a patch. 
 
@@ -116,6 +122,8 @@ P 1
 Y 1
 ~~~
 
+I> Note that we use a variable `∆` here. Not exactly a memorable or self-explaining name. However, we use `∆` whenever we collect data for temporary use.
+
 `CountLetters` returns a table of the letters in `⎕A` and the number of times each is found in the text. The count is insensitive to case and ignores accents, mapping accented to unaccented characters:
 
 ~~~
@@ -136,11 +144,13 @@ Note that we have some functions that start with lowercase characters while othe
 
 To expand this program into distributable software we're going to add features, many of them drawn from the APLTree library. To facilitate that we'll first organise the existing code into script files, and write a _build script_ to assemble a workspace from them.  
 
-Start at the root. We're going to be conservative about defining names in the root of the workspace. Why? Right now the program stands by itself and can do what it likes in the workspace. But in the future your program might become part of a larger APL system. In that case it will share the workspace root with other objects you don't know anything about right now. 
+I> The APLTree library is an open source project hosted in the APL wiki. It attempts to provide solutions for many every-day problems a Dyalog APL programmer might run into. In the Cookbook we will use many of its members. For details see <http://aplwiki.com/CategoryAplTree>.
 
-So your program will be a self-contained object in the workspace root. Give it a distinctive name, not a generic name such as `Application` or `Root`. From here on we'll call it `MyApp`. (We know: almost as bad.) 
+Start at the root namespace (`#`). We're going to be conservative about defining names in `#`. Why? Right now the program stands by itself and can do what it likes in the workspace. But in the future your program might become part of a larger APL system. In that case it will share `#` with other objects you don't know anything about right now. 
 
-But there _are_ other objects you might define in the root. If you're using classes or namespaces that other systems might also use, define them in the root. For example, if `MyApp` should one day become a module of some larger system, it would make no sense for each module to have its own copy of, say, the APLTree class `Logger`. 
+So your program will be a self-contained object in `#`. Give it a distinctive name, not a generic name such as `Application` or `Root`. From here on we'll call it `MyApp`. (We know: almost as bad.) 
+
+But there _are_ other objects you might define in `#`. If you're using classes or namespaces that other systems might also use, define them in `#`. For example, if `MyApp` should one day become a module of some larger system, it would make no sense for each module to have its own copy of, say, the APLTree class `Logger`. 
 
 With this in mind, let's distinguish some categories of code, and how the code in `MyApp` will refer to them.
 
@@ -154,7 +164,7 @@ Tools and utility functions specific to `MyApp`
 : These might include your own extensions to Dyalog namespaces or classes. Define them inside the app object, eg `#.MyApp.Utils`.
 
 Your own language extensions and syntax sweeteners
-: For example, you might like to use functions `means` and `else` as simple conditionals. These are effectively your local _extensions_ to APL, the functions you expect always to be around. Define your collection of such functions into a namespace in the root, eg `#.Utilities`. 
+: For example, you might like to use functions `means` and `else` as simple conditionals. These are effectively your local _extensions_ to APL, the functions you expect always to be around. Define your collection of such functions into a namespace in `#`, eg `#.Utilities`. 
 
 The object tree in the workspace might eventually look something like: 
 
@@ -174,16 +184,23 @@ The object tree in the workspace might eventually look something like:
 
 I> `⍟` denotes a namespace, `○` a class. These are the characters (among others) you can use to tell the editor what kind of object you wish to create, so for a class `)ed ○ Foo`. Press F1 with the cursor on `)ed` in the session for details. 
 
-Note that we keep the user interface (`UI`) separate from the business logic. This is considered good practise because whatever you believe right now, you will almost certainly consider to exchange a particular type of UI (say .NET Windows forms) against a different one (say HTML+JavaScript). This is difficult in any case but much easier when you separate them right from the start. However, our application is so simple that we collect all its code in a namespace script `MyApp` in order to save one level in the namespace hirarchy. If this were to be a serious project then you would not do this even if the amount of code is small, because application tend to change and grow over time, sometimes significantly, so you would be better prepared to have, say, a namespace `MyApp` that contains, say, a namespace script `engine` with all the code.
+Note that we keep the user interface (`UI`) separate from the business logic. This is considered good practise because whatever you believe right now, you will almost certainly consider to exchange a particular type of UI (say .NET Windows forms) against a different one (say HTML+JavaScript). This is difficult in any case but much easier when you separate them right from the start. However, our application is so simple that we collect all its code in a namespace script `MyApp` in order to save one level in the namespace hirarchy. 
 
-The objects in the root are 'public'. They comprise `MyApp` and objects other applications might use. (You might add another application that uses `#.Utilities`) Everything else is encapsulated within `MyApp`. Here's how to refer in the `MyApp` code to these different categories of objects. 
+If this were to be a serious project then you would not do this even if the amount of code is small: application tend to change and grow over time, sometimes significantly. Therefore you would be better prepared to have, say, a namespace `MyApp` that contains, say, a namespace script `engine` with all the code.
+
+The objects in `#` are 'public'. They comprise `MyApp` and objects other applications might use; you might add another application that uses `#.Utilities`. Everything else is encapsulated within `MyApp`. Here's how to refer in the `MyApp` code to these different categories of objects. 
 
 1. `log←⎕NEW #.Logger` 
 2. `queue←⎕NEW TaskQueue`
 3. `tbl←Engine.CountLetters txt`
 4. `status←(bar>3) #.Utilities.means 'ok' #.Utilities.else 'error'`
 
-The last one is pretty horrible. It needs some explanation. 
+⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹ ⍝TODO⍝
+Andy made a good point here that this is a diversion he was not happy with. 
+Maybe this should be moved elsewhere?
+⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹
+
+The last one is pretty horrible. It needs some explanation.
 
 Many languages offer a short-form syntax for if/else, eg (JavaScript, PHP, C...) 
 
@@ -241,7 +258,7 @@ Some equivalents in Dyalog:
   status←(bar>3) U.means 'ok' U.else 'error'
   ~~~
 
-What style you prefer is mainly a matter of personal taste, and indeed even the authors do not necessarily agree on this. There are however certain rules you should keep in mind.
+What style you prefer is mainly a matter of personal taste, and indeed even the authors do not necessarily agree on this. There are however certain rules you should keep in mind:
 
 #### Execution time
 
@@ -375,7 +392,7 @@ If your own application is already using scripted namespaces and/or classes then
 
 We assume you have downloaded the WS and saved it as `Z:\code\v00\LetterCount`.
 
-Note that all the stuff in that WS lives in the root (`#`). We have to change that so that all the stuff lives in a single namespace `MyApp`. In order to achieve that execute the following steps:
+Note that all the stuff in that WS lives in `#`. We have to change that so that all the stuff lives in a single namespace `MyApp`. In order to achieve that execute the following steps:
 
 1. Start an instance of Dyalog
 1. Execute `)ns MyApp` in order to create a namespace `MyApp` in the workspace.
@@ -386,7 +403,7 @@ Note that all the stuff in that WS lives in the root (`#`). We have to change th
    This makes sure that we really use the same values for important system variables as the WS by copying their values into the namespace `#.MyApp`. 
 1. Execute `]save #.MyApp Z:\code\v01\MyApp -makedir -noprompt` 
 
-The last step will save the contents of the namespace `#.MyApp` into `Z:\code\v01\MyApp.dyalog`. In case the folder `v01` (or any of its parents) does not yet exist the `]save` command will create it on our behalf due to the `-makedir` option. `-noprompt` makes sure that `]save` does not ask any questions.
+The last step will save the contents of the namespace `#.MyApp` into `Z:\code\v01\MyApp.dyalog`. In the case that the folder `v01` or any of its parents do not already exist the –makedir option will cause them to be created. `-noprompt` makes sure that `]save` does not ask any questions.
 
 This is how the script would look like:
 
@@ -626,13 +643,13 @@ Finally the `MyApp.dyalog` script:
 
 This version comes with a number of improvements. Let's discuss them in detail:
 
-* We address `Utilities` as well as `Constants` with "`##.`": that works as long as they are siblings of `MyApp`. "`#.`" would of course work as well but is inferior. For example, one day you might want to convert this application into a user command; then `##.` will continue to work while `#.` might or might not work, depending on what happens to be in the workspace at the time of execution. Same for making it an ASP.NET application: those have no concept of a "root" at all.
+* We address `Utilities` as well as `Constants` with "`##.`": that works as long as they are siblings of `MyApp`. "`#.`" would of course work as well but is inferior. For example, one day you might want to convert this application into a user command; then `##.` will continue to work while `#.` might or might not work, depending on what happens to be in the workspace at the time of execution. The same would be true if making it a ASP.NET application: those have no concept of a "root" at all.
 
 * We have changed the assignment of the `Accents` variable so that we don't need to know the length of it any more.     
 
 * It is good programming practise to _not_ use any numeric constants in your code. `TxtToCsv` tried to avoid this to some extend by assigning descriptive names at the start and using those. That's not too bad, but if every function did the same, we risk multiple definitions of the same constant, breaching the [DRY principle](https://en.wikipedia.org/wiki/Don't_repeat_yourself) -- don't repeat yourself. (And open to errors: _A man with two watches never knows what time it is._) 
 
-   We can do better by defining all the Dyalog constants we want to use in a single namespace in the root. We have also replaced the remaining integers in the `:Case` statements by references to symbolic variables in `Constants.NINFO.Type`.
+   We can do better by defining all the Dyalog constants we want to use in a single namespace in `#`. We have also replaced the remaining integers in the `:Case` statements by references to symbolic variables in `Constants.NINFO.Type`.
 
 * We have replaced the line `(txt enc nl)←{(⊃,/1⊃¨⍵)(1 2⊃⍵)(1 3⊃⍵)}⎕NGET¨files` by a `:For` loop and moved the code into `ProcessFiles`. Why?
 
@@ -659,7 +676,7 @@ This version comes with a number of improvements. Let's discuss them in detail:
   
   It is therefore safer - and strongly recommended - to make sure that the setting is well-defined. We will come back to this later.
 
-W> If you see any namespaces `SALT_Data` ignore them. They are part of how SALT manages meta data for scripted objects.
+W> If you see any namespaces called `SALT_Data` ignore them. They are part of how SALT manages meta data for scripted objects.
 
 We have converted the saved workspace to a bunch of text files, and invented a DYAPP that assembles the workspace from the DYALOGs. But we have not saved a workspace; we will always assemble a workspace from scripts. 
 
@@ -695,5 +712,6 @@ We have reached our goal:
 * Everything is now stored in text files
 * With a double-click on `MyApp.dyapp` we can assemble the WS.
 * Along the way we have improved the quality of the code, making it more readable and easier to debug.
+
 
 [^csv]: With version 16.0 Dyalog has introduced a system function `⎕CSV` for both importing from and exporting to CSV files.

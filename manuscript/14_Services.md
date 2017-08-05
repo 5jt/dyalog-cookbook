@@ -8,7 +8,7 @@
 While the Windows Task Manager just starts any ordinary application, any application that runs as a Windows Service must be specifically designed in order to meet a number of requirements. In particular services are expected to communicate by exchanging messages with the Windows Service Control Manager (SCM). Commands can be issued by the `SC.exe` (Service Controller) application or interactively via the "Services" application. This allows the user to not only start but also to pause, continue (also called resume) and stop a Windows Service. 
 
 
-## The Window Event Log
+## Windows Services and the Window Event Log
   
 Our application is already prepared to write log files and save information in case of a crash, but that's not sufficient: while applications started by the Windows Task Scheduler _might_ write to the Windows Event Log, applications running as a Windows Service are _expected_ to do that, and for good reasons: when running on a server one cannot expect anybody to be around for keeping an eye on log or crash files. In large organisations running server farms it is common to have a software in place that frequently checks the Windows Event Logs of all those servers, and raise an alarm in one way or another (TCP messages, text messages, emails, whatever) in case it finds any problems.
 

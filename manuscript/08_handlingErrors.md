@@ -100,6 +100,8 @@ leanpub-end-insert
 ∇
 ~~~
 
+I> In case you wonder about `⎕OFF`: that's actually a niladic function. Being able to provide a "right argument" is therefore kind of cheating because there can't be any. This is a special case in the Dyalog parser.
+
 Note that in this particular case we invent a local variable `rc` although strictly speaking this is not necessary. We learned from experience that you should not call several functions on a single line with the left-most being `Off`. If you do this anyway you will regret it one day, it's just a matter of time.
 
 Now we have to introduce a function `Off`:
@@ -270,6 +272,8 @@ A>
 A> Well, for a very good reason: trapping everything includes such basic things like a VALUE ERROR, which is most likely introduced by a typo or by removing a function or an operator in the false believe that it is not called anywhere. We don't want to trap those, really. The sooner they come to light the better. For that reason we restrict the errors to be trapped to whatever might pop up when it comes to dealing with files and directories.
 A> 
 A> That being said, if you really have to trap _all_ errors (occasionally this makes sense) then make sure that you can switch it off with a global flag as in `:Trap trapFlag/0`: if `trapFlag` is 1 then the trap is active, otherwise it is not.
+A>
+A> It's a different story when you try to catch any possible error at a very early stage of an application. That scenario will be discussed soon.
 
 Back to `ProcessFiles`. Note that in this context the `:Trap` structure has an advantage over `⎕TRAP`. When it fires, and control advances to its `:Else` fork, the trap is immediately cleared. So there is no need to reset the trap to avoid an open loop.  But be careful when you call other functions: in case they crash the `:Trap` would catch the error!
 
@@ -297,7 +301,7 @@ leanpub-end-insert
                   A.WriteUtf8File target lines
                   success←1
               :Case
-                  MyLogger.LogError'Writing to <',target,'> failed, rc=',(⍕⎕EN),'; ',⊃⎕DM
+                  MyLogger.LogError'Writing to <',target,'> failed, rc=',(⍕⎕EN),'; ',⊃⎕DMX
                   rc←EXIT.UNABLE_TO_WRITE_TARGET
                   success←0
               :EndTrap
@@ -312,7 +316,16 @@ leanpub-end-insert
     ∇
 ~~~
 
-Note that the exit code is tested against `EXIT.OK`. Testing `0=exit` would work and read as well, but relies on `EXIT.OK` being 0. The point of defining the codes in `EXIT` is to make the functions relate to the exit codes only by their names.  
+Note that the exit code is tested against `EXIT.OK`. Testing `0=exit` would work and read as well, but relies on `EXIT.OK` being 0. The point of defining the codes in `EXIT` is to make the functions relate to the exit codes only by their names.
+
+A> ### Logging file related errors
+A>
+A> Logging errors related to files in a real-world application requires more attention to detail: `⎕DMX` provides more information that can be very useful:
+A>
+A> * `Message`
+A> * `OSErrors`
+A> * `InternalLocation`
+
 
 ## Unforeseen errors
 
@@ -377,9 +390,9 @@ Notes:
 * We then overwrite some of the defaults:
   * Where to save crash information.
   * The return code.
-  * What function to use for logging information.
+  * What function to use for logging purposes.
   * Name of the source to be used when reporting the problem to the Windows Event Log (empty=no reporting at all).
-  * Additional message to be added to the report send to the Windows Event Log.
+  * Additional message to be added to the report send to the Windows Event Log. If you don't know anything about the Windows Event Log yet: it's going to be discussed in its own chapter.
 * We specify `ErrorParms` as a global named namespace for two reasons:
   * Any function might crash, and we need to "see" the namespace with the parameters needed in case of a crash, so it has to be a global in `#`.
   * The `⎕TRAP` statement allows us to call a function and to pass parameters except references, so it has to be a named namespace.
@@ -490,6 +503,10 @@ A> This is not strictly true. When `HandleError` detects multiple threads it tri
 Because we've defined a source for the Windows Event Log `HandleError` has reported the error accordingly:
 
 ![Windows Event Log](images\MyAppEventViewer.png)
+
+As mentioned earlier, the Windows Event Log is discussed in a later chapter.
+
+As already mentioned, the Windows Event Log will be discussed in its own chapter.
 
 We also find evidence in the log file that something broke; see LogDog:
 

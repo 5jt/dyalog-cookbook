@@ -5,7 +5,7 @@
 
 Now we will make some adjustments in order to make `MyApp` ready for being packaged as an EXE. It will run from the command line and it will run 'headless' -- without a user interface (UI).
 
-Copy all files in `z:\code\v02\` to `z:\code\v03\`. Alternatively you can download version 3 from the book's website.
+Copy all files in `z:\code\v02\` to `z:\code\v03\`. Alternatively you can download version 3 from <https://cookbook.dyalog.com>.
 
 
 ## Output to the session log
@@ -98,13 +98,15 @@ leanpub-end-insert
 :EndNamespace    
 ~~~
 
+Changes are emphasized.
+
 Now MyApp is ready to be run from the Windows command line, with the name of the file to be processed following the command name. 
 
 Notes:
 
 * By introducing a function `Version` we start to keep track of changes.
 
-* `Accents` is now a vector of text vectors (vtv). There is no point in making it a matrix when `CountLetters` (the only function that consumes `Accents`) requires a vtv anyway. We were able to simplify `CountLetters` as a bounty.
+* `Accents` is now a vector of text vectors (vtv). There is no point in making it a matrix when `CountLetters` (the only function that consumes `Accents`) requires a vtv anyway. We were able to simplify `CountLetters` as a bonus.
 
 * Functions should return a result, even `StartFromCmdLine` and `SetLX`. Always. Otherwise, by definition, they are not functions. 
 
@@ -128,11 +130,11 @@ Notes:
 
 * Currently we allow only one file (or folder) to be specified. That's supposed to be the last parameter specified on the command line. We'll improve on this later.
 
-We're now nearly ready to export the first version of our EXE. 
+We're now nearly ready to create the first version of our EXE. Note that in Dyalog's "File" menu this is called "Export" for some reason.
 
 1. Double-click the DYAPP in order to create the WS.
-2. From the File menu pick "Export". 
-3. Pick `Z:\code\v03` as the destination folder. 
+2. From the "File" menu pick "Export". 
+3. Pick `Z:\code\v03` as the destination folder [^folder]. 
 4. From the list "Save as type" pick "Standalone Executable". 
 5. Set the "File name" as `MyApp`.
 6. Check the "Runtime application" check box 
@@ -168,3 +170,5 @@ Z:\code\v03\MyApp.exe texts\en
 ~~~
 
 Looking in Windows Explorer at `Z:\texts\en.csv`, we see its timestamp just changed. Our EXE works! 
+
+[^folder]: Note that in the Cookbook the words "folder" and "directory" are used interchangeably. 

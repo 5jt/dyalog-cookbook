@@ -17,7 +17,7 @@ The APLTree classes [WinRegSimple](http://aplwiki.com/WinReg) and [WinReg](http:
 
 MyApp doesn't need the Windows Registry at this point. We'll store its configurations in configuration files.
 
-I> Note that the Windows Registry is still an excellent choice for saving user-specific stuff like preferences, themes, recent files etc.
+I> Note that the Windows Registry is still an excellent choice for saving user-specific stuff like preferences, themes, recent files etc. However, you have to make sure that your user has permission to write to the Windows Registry - that's by no means a certainty.
 
 
 ## INI, JSON, or XML configuration files? 
@@ -38,7 +38,9 @@ By using the APLTree class `IniFiles` we get as a bonus additional features:
 We will discuss all these features as we go along.
 
 
-## Where to save an INI file
+## INI files it is!
+
+### Where to save an INI file
 
 In the chapter on Logging, we considered the question of where to keep application logs. The answer depends in part on what kind of application you are writing. Will there be single or multiple instances? For example, while a web browser might have several windows open simultaneously, it is nonetheless a single instance of the application. Its user wants to run just one version of it, and for it to remember her latest preferences and browsing history. But a machine may have many users, and each user needs her own preferences and history remembered. 
 
@@ -62,12 +64,13 @@ From the above we get a general pattern for configuration settings:
 1. Defaults in the program code
 2. Overwrite from ALLUSERSPROFILE if any
 3. Overwrite from USERPROFILE 
-4. Overwrite from INI in command line, if any
+4. Overwrite from an INI specified in command line, if any
+5. Overwrite with the command line
 
 However, for the Cookbook we keep things simple: we look for an INI file that is a sibling of the DYAPP or the EXE for now but will allow this to be overwritten via the command line with something like `INI='C:\MyAppService\MyApp.ini`. We need this when we make MyApp a Windows Scheduled Task, or run it as a Windows Service.
 
 
-## Let's start
+### Let's start
 
 Save a copy of `Z:\code\v04` as `Z:\code\v05` or copy `v05` from the Cookbook's website. We add one line to `MyApp.dyapp`:
 
@@ -86,7 +89,7 @@ and run the DYAPP to recreate the `MyApp` workspace.
 You can read `IniFiles`'s documentation in a browser with `]ADoc #.IniFiles`.
 
 
-## The INI file
+### Our INI file
 
 This is the contents of the newly introduced `code\v05\MyApp.ini`:
 
@@ -112,9 +115,9 @@ Notes:
 
 * The `IniFiles` class offers some unique features. Those are discussed below. This is by no means a violation of the standard because for INI files there is no such thing.
 
-* Assignments above the first section -- which is `[Config]` -- are variables local to the INI file. We can refer to them by putting curlies (`{}`) around their names as with `{localhome}` but they have no other purpose. You can see that `localhome` is referred to twice in the `[Folders]` section, and why that is useful.
+* Assignments above the first section -- which is `[Config]` -- are variables local to the INI file. We can refer to them by putting curly brackets (`{}`) around their names as with `{localhome}` but they have no other purpose. You can see that `localhome` is referred to twice in the `[Folders]` section, and why that is useful.
 
-* `IniFiles` supports two data types: character and number. Everything between two quotes is character, everything that is not is expected to be a number.
+* `IniFiles` supports two data types: character and number. Everything between two quotes is character, everything else is assumed to be a number.
 
 * `Debug` is set to ¯1 -- it is indeed going to be a numeric value because there are no quotes involved. `debug` defines whether the application runs in debug mode or not. Most importantly `debug←1` will switch off global error trapping, something we will soon introduce. `¯1` means that the INI file does not set the flag. Therefore it will later in the application default to 1 in a development environment and to 0 in a runtime evenvironment. By setting this to either 1 or 0 in the INI file you can force it to be a particular value.
 
@@ -127,7 +130,7 @@ Notes:
 * `Errors` defines the folder were MyApp will save crash information later on when we establish global error handling.
 
 
-## Initialising the workspace
+### Initialising the workspace
 
 We create a new function `CreateConfig` for that:
 
@@ -234,7 +237,7 @@ A> We could pass the command line parameters as arguments to `Initial` and inves
 
 We now need to think about how to access `Config` from within `TxtToCsv`.
 
-## What we think about when we think about encapsulating state
+### What we think about when we think about encapsulating state
 
 The configuration parameters, including `Accents`, are now collected in the namespace `Config`.  That namespace is not passed explicitly to `TxtToCsv` but is needed by `CountLetters` which is called by `TxtToCsv`. We have two options here: we can pass a reference to `Config` to `TxtToCsv`, for example as left argument, and `TxtToCsv` in turn can pass it to `CountLetters`. The other option is that `CountLetters` just assumes the `Config` is around and has a variable `Accents` in it:
 
@@ -262,7 +265,7 @@ Sometimes it's only after writing many lines of code that it becomes apparent th
 
 We share these musings here so you can see what we think about when we think about encapsulating state; and also that there is often no clear right answer. Think hard, make your best choices, and be ready to unwind and remake them later if necessary. 
 
-## The IniFiles class
+### The IniFiles class
 
 We have used the most important features of the `IniFiles` class, but it has more to offer. We just want to mention some major topics here.
 
@@ -324,7 +327,7 @@ We have used the most important features of the `IniFiles` class, but it has mor
   ¯1
   ~~~
 
-## Final steps
+### Final steps
 
 We need to change the `Version` function:
 
@@ -350,4 +353,4 @@ And finally we create a new standalone EXE as before and run it to make sure tha
 [^semi]: So-called _semi-globals_ are variables to be read or set by functions to which they are not localised. They are _semi-globals_ rather than globals because they are local to either a function or a namespace. From the point of view of the functions that do read or set them, they are indistinguishable from globals -- they are just mysteriously 'around'. 
 
 
-[^fire]: FiRe stands for _Find and Replace_. It is a powerful tool for both search and replace operations in the workspace. It is also a member of the APLTree Open Source Library. For details see <http://http://aplwiki.com/Fire>. Fire is discussed in the chapter "Useful user commands".
+[^fire]: Fire stands for _Find and Replace_. It is a powerful tool for both search and replace operations in the workspace. It is also a member of the APLTree Open Source Library. For details see <http://aplwiki.com/Fire>. Fire is discussed in the chapter "Useful user commands".

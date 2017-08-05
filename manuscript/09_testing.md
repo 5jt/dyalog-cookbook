@@ -41,7 +41,7 @@ If you are modifying an existing function, write new tests for the new things it
 
 ## Readability
 
-Reading and understanding APL code is more difficult than in other programming language due to the higher abstraction level and the power of APL's primitives. However, as long as you have an example were the function is fed with correct data it's always possible to decipher the code. Things can become very nasty indeed if an application crashes because inappropriate data arrives at your function. However, before you can figure out whether the data is appropriate or not you need to understand the code - a hen-egg problem.
+Reading and understanding APL code is more difficult than in other programming language due to the higher abstraction level and the power of APL's primitives. However, as long as you have an example were the function is fed with correct data it's always possible to decipher the code. Things can become very nasty indeed if an application crashes because inappropriate data arrives at your function. However, before you can figure out whether the data is appropriate or not you need to understand the code - a chicken-egg problem.
 
 That's when test cases can be very useful as well, because they demonstrate which data a function is expected to process. It also emphasizes why it is important to have test cases for all the different types of data (or parameters) a function is supposed to process. In this respect test cases should be exhaustive.
 
@@ -526,7 +526,7 @@ Looking for a function "Initial"...
 
 Works fine. Excellent.
 
-Now let's make sure that the work horse is doing okay; for this we add another test case:
+Now let's make sure that the workhorse is doing okay; for this we add another test case:
 
 ~~~
 :Namespace Tests
@@ -636,7 +636,9 @@ leanpub-end-insert
 ...
 ~~~
 
-`Initial` does not have to return a result but if it does it must be a Boolean. For "success" it should return a `1` and otherwise a `0`. If it does return `0` then no test cases are executed but if there is a function `Cleanup` it will be executed. Therefore `Cleanup` should be ready to clean up in case `Initial` was only partly or not at all successful. We have changed `Initial` so that it now returns a result because copying the files over might fail for all sorts of reasons, and we cannot do without.
+`Initial` does not have to return a result but if it does it must be a Boolean. For "success" it should return a `1` and otherwise a `0`. If it does return `0` then no test cases are executed but if there is a function `Cleanup` it will be executed. Therefore `Cleanup` should be ready to clean up in case `Initial` was only partly or not at all successful. 
+
+We have changed `Initial` so that it now returns a result because copying the files over might fail for all sorts of reasons, and we cannot do without.
 
 `Initial` may or may not accept a right argument. If it does it will be fed with a namespace that holds all the parameters.
 
@@ -653,9 +655,11 @@ A> ### Machine-dependent initialisation
 A> 
 A> What if you need to initialise something (say a database connection) but it is somehow different depending on what machine the tests are executed on (IP address, user-id, password...)?
 A> The test framework tries to find two different INI files in the current directory:
-A> First it looks for `testcase.INI`. It then tries to find `testcase_{computername}.INI`. If it finds any of them (or both) it instantiates the `IniFile` class as `INI` on these INI files within the namespace that hosts your test cases. In case of a name clash the setting in `testcase_{computername}.INI` will win because it is the last one.
+A> First it looks for `testcase.ini`. It then tries to find `testcase_{computername}.ini`. "computername" is what you get when you execute `⊣ 2 ⎕nq # 'GetEnvironment' 'Computername'`.
+A>
+A> If it finds any of them (or both) it instantiates the `IniFile` class as `INI` on these INI files within the namespace that hosts your test cases. In case of a name clash the setting in `testcase_{computername}.ini` will win because it is the last one.
 
-Now we are ready to test the EXE; create it from scratch. Our first test case will process "Ulysses":
+Now we are ready to test the EXE; create it from scratch. Our first test case will process the file "ulysses.txt":
 
 ~~~
 :Namespace Tests
@@ -679,9 +683,9 @@ Now we are ready to test the EXE; create it from scratch. Our first test case wi
 Notes:
 
 * First we make sure that there are no CSV files in `∆Path`.
-* Then we call the EXE and pass the filename of "Ulysses" as a command line parameter.
+* Then we call the EXE and pass the filename of "ulysses" as a command line parameter.
 * We check the return code and jump to `∆TidyUp` in case it's not what we expect.
-* We then check whether there is now a file "Ulysses.cvs" in `∆Path`.
+* We then check whether there is now a file "ulysses.cvs" in `∆Path`.
 * Finally we clean up and delete (again) all CSV files in `∆Path`.
 
 Let's run our new test case:
