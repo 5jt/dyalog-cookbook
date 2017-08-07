@@ -551,7 +551,7 @@ InternalLocation:	parse.c 1739
 Message:	
 OSError:   0 0
 Current Dir:	...code\v07
-Command line:	"...\Dyalog\Dyalog APL-64 16.0 Unicode\dyalog.exe" DYAPP="...code\v07\MyApp.dyapp"
+Command line:	"...\Dyalog\...\dyalog.exe" DYAPP="...code\v07\MyApp.dyapp"
 Stack:
 
 #.HandleError.Process[22]
