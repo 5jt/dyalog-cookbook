@@ -117,11 +117,9 @@ It is actually easier to check the result by replacing the hits with something o
 _one⌹two⌹three⌹_four
 ~~~
 
-As you can see 
-
 A> ### The right operand 
 A>
-A> `⎕R` takes one or more replace strings or a user defined function (discussed later) as the right operand.
+A> `⎕R` takes one or more replace strings _or_ a user defined function (discussed later) as the right operand; you cannot mix replace strings with user defined functions.
 
 What's between the curlies (`{}`) -- which are meta characters as well -- defines how many are required as minimum and maximum. This is called a quantifier.
 
@@ -147,7 +145,7 @@ Seems to work perfectly, right? Well, keep reading:
 He said ⌹!
 ~~~
 
-Just one hit, and that hit spans `"Yes" and "No"`?! That's because by default the engine is _greedy_ as opposed to _lazy_: it carries on and tries to match the `.` against as many characters as it can. That means it will stop only after it reached the end of the line, because all characters found are a match. It would then go back until it finds a `"` (coming from the right!) and then stop because it's done the job.
+Just one hit, and that hit spans `"Yes" and "No"`?! That's because by default the engine is _greedy_ as opposed to _lazy_: it carries on and tries to match the `.` against as many characters as it can. That means that in our example it will stop only after it reached the end of the line, because all characters found are a match. It would then go back until it finds a `"` (coming from the right!) and then stop because it's done the job.
 
 The same is true for the `{x,y}` quantifiers: by default they are all _greedy_ rather than _lazy_, so repeating `y` times is tried before reducing the repetition to `x` times.
 
@@ -170,8 +168,10 @@ A> In this chapter we won't discuss all these options but "IC", "Mode", "DotAll"
 
 Let's repeat our findings because this is so important:
 
-* Greedy means match longest possible string.
-* Lazy means match shortest possible string.
+* Greedy means match _longest_ possible string.
+* Lazy means match _shortest_ possible string.
+
+### Garbage in, garbage out
 
 Let's modify the input string: 
 
@@ -197,8 +197,8 @@ A> * It is misleading because it ignores that regular expression engines are per
 
 By now we've met quite a number of meta characters; how many do we have to deal with? Well, quite a lot:
 
-| Meta character                   | Symbol | |
-|---|------------------------------|--------|-|-----------------------------|
+|   | Meta character               | Symbol | |Meaning
+|---|------------------------------|--------|-|-----------------------------
 |1. | Backslash                    | `\`    |✔| Escape character
 |2. | Caret                        | `^`    |✔| Start of line
 |3. | Dollar sign                  | `$`    | | End of line
@@ -212,14 +212,14 @@ By now we've met quite a number of meta characters; how many do we have to deal 
 |11.| Opening square bracket       | `[`    |✔| Start character set
 |12.| Opening curly brace          | `{`    |✔| Start min/max quantifier
 
-By now we have already discussed six of them.
+By now we have already discussed six of them; they carry a check mark.
 
 Note that both `}` and `]` are considered meta characters only after an opening `{` or `[`. Without the opening counterpart they are taken literally; that's why they did not make it into the list of meta characters.
 
 
-### Example 2 - numbers in a string
+### Example 2 - digits in a string
 
-Let's assume we want to match all numbers in a string:
+Let's assume we want to match all digits in a string:
 
 ~~~
       '[0123456789]'⎕R '⌹' ⊣ 'It''s 23.45 plus 99.12.'
@@ -267,7 +267,7 @@ Character classes work for letters as well:
 ⌹⌹'⌹ 23.45 ⌹⌹⌹⌹ 99.12.
 ~~~
 
-Finally we can negate it with `^`:
+We can negate with `^` right after the opening `[`:
 
 ~~~
     '[^a-zA-Z]'⎕R '⌹' ⊣'It''s 23.45 plus 99.12.'
@@ -353,9 +353,9 @@ This needs some explanation:
 
 1. `'''.*'''` catches all text, and for that text `&` is specified as replacement. Now `&` stands for the matching text, therefore nothing will change at all but the matching text _won't participate in any further actions!_ In other words: everything between quotes is left alone.
 
-1. `'⍝.*$'` catches everything from a lamp (`⍝`) to the end of the line (`$`) and replaces it by itself (`&`). Again nothing changes but the comments will not be affected by anything that follows.
+1. `'⍝.*$'` catches everything from a lamp (`⍝`) to the end of the line (`$`) and replaces it by itself (`&`). Again nothing changes but the comment will not be affected by anything that follows. Since the first expression has already masked eveything within (and including) quotes the first `⍝` does not cause problems.
 
-1. Finally `foo` catches the string "foo" in the remaining part, and that is what we are interested in. 
+1. Finally `foo` catches the string "foo" in the remaining part, and that is what we are interested in.
 
 As a result `foo` is found within the code but neither within the text nor as part of the comment.
 
@@ -363,16 +363,18 @@ As far as we know this feature is specific to Dyalog, but then we have limited e
 
 Note that the `,¨` in `,¨'&&⌹'` is essential because otherwise  ....`⍝TODO⍝`  Bug report <01406>
 
-A> ### Greedy and lazy
-A>
-A> Note that using the option (`⍠('Greedy' 0)`) has a disadvantage: it makes the _whole search pattern_ lazy. There might be cases when you want part of your search pattern to be lazy and other parts greedy. Luckily this can be achieved with the meta character question mark (`?`):
-A> 
-A> ~~~
-A>       '".*?"'⎕R '⌹' ⊣ is
-A> He said ⌹ and ⌹
-A> ~~~
-A>
-A> Since "Greedy" is the engine's default you need to specify the `?` only for those parts of your search pattern you want to be lazy.
+⍝TODO⍝
+
+⍝A> ### Greedy and lazy
+⍝A>
+⍝A> Note that using the option (`⍠('Greedy' 0)`) has a disadvantage: it makes the _whole search pattern_ lazy. There might be cases when you want part of your search pattern to be lazy and other parts greedy. Luckily this can be achieved with the meta character question mark (`?`):
+⍝A> 
+⍝A> ~~~
+⍝A>       '".*?"'⎕R '⌹' ⊣ is
+⍝A> He said ⌹ and ⌹
+⍝A> ~~~
+⍝A>
+⍝A> Since "Greedy" is the engine's default you need to specify the `?` only for those parts of your search pattern you want to be lazy.
 
 Our search pattern is still not perfect since it would work on `boofoogoo` as well:
 
@@ -381,7 +383,7 @@ Our search pattern is still not perfect since it would work on `boofoogoo` as we
 This boo⌹goo is found as well
 ~~~
 
-To solve this we need to introduce look-ahead and look-behind. The names make it pretty obvious what this is about but we want to emphasize that all matching attempts we've introduced so far have been "consuming". Look-ahead as well as look-behind are _not_ consuming. That means that no matter whether they are successful or not they won't change the position the engine is currently investigating. They are also called zero-length assertions.
+To solve this we need to introduce look-ahead and look-behind. The names make it pretty obvious what they do. We want to emphasize that all matching attempts we've introduced so far have been "consuming". Look-ahead as well as look-behind are _not_ consuming. That means that no matter whether they are successful or not they won't change the position the engine is currently investigating. They are also called zero-length assertions.
 
 However, before we tackle our problem we need to introduce the concept of both word boundaries and anchors. We've already met one anchor: the caret (`^`), which matches the beginning of a line. There is also the dollar (`$`) which matches the end of a line. And there is `\b` which matches a "word boundary". All these characters are zero-length matches.
 
@@ -394,7 +396,7 @@ To put it simply, `\b` allows you to perform a "whole word only" search. Prior t
 0
 ~~~
 
-This uses both, look-ahead and look-behind for making sure that "ger" stands on its own:
+The following uses both, look-ahead and look-behind for making sure that "ger" stands on its own:
 
 ~~~
       ss←'ger :ger ger! Jaeger Jägerßabc'
@@ -402,18 +404,20 @@ This uses both, look-ahead and look-behind for making sure that "ger" stands on 
 ⌹ :⌹ ⌹! Jaeger Jä⌹ßabc
 ~~~
 
+Both look-ahead and look behind start with `(?`. A look behind then needs a `<` while the look-ahead doesn't. Both then need either a `=` for "equal" or a `!` for not equal" followed by the search token and finally a closing `)`. Hence `(?<=\b)` for the look-behind and `(?=\b)` for the look-ahead.
+
 What the engine does:
 
 * Since the search pattern starts with a look-behind the engine checks whether there is a word boundary _to the left of the current position_. 
-* That's successful, so the engine then checks whether the current position matches a "g". 
+* It's the beginning of the line, so that's successful, and the engine then checks whether the current position matches a "g". 
 * That's successful, so the engine moves forward and tries to match the "e" with the current position.
 * That's successful too, so the engine moves forward again and tries to match the "r" with the current position.
 * That a match as well, so the engine performs a look-ahead: _without moving forward_ it tries the match the character _after_ the current one to be a word boundary. A space character qualifies as a word boundary.
-* Thats a success, to, so the "ger" is replaced by a single `⌹`.
+* Thats a success, too, so the "ger" is replaced by a single `⌹`.
 
 I> What is important to realize is that the current position does not change when a look-behind or a look-ahead is performed (though the current position might change as a result of a failing test); that's why they are called zero-length assertions.
 
-In the same way the following two appearances of "ger" are replaced by `⌹` as well because both `!` and `.` qualify as word boundaries as well. The "ger" in "Jaeger" was not replaced beecaus the look-behind failed: "e" is not a word boundary. Same for the last one: neither "ä" nor "ß" qualify as word boundaries because they are non-ASCII characters.
+In the same way the following two appearances of "ger" are replaced by `⌹` because both `!` and `.` qualify as word boundaries as well. The "ger" in "Jaeger" was not replaced beecaus the look-behind failed: "e" is not a word boundary. Same for the last one: neither "ä" nor "ß" qualify as word boundaries because they are non-ASCII characters.
 
 That makes word boundaries pretty useless for other languages then English! Luckily with version 16.0 Dyalog was able to start using version 8 of the PCRE engine which now supports the Unicode definition of word boundaries. To take advantage of this feature we have to specify the "UCP" option:
 
@@ -555,9 +559,9 @@ Let's do some tests:
 He said: ⌹ She answered: ⌹       
 ~~~
 
-Note that in order to specify `('DotAll' 1)` it is necessary to set `('Mode' 'M')`. `('Mode' 'D')` would have worked in the same way. However, when it comes to `^` and `$` then the different settings make a big difference:
+Note that in order to specify `('DotAll' 1)` it is necessary to set `('Mode' 'M')`. `('Mode' 'D')` would have worked in the same way. However, when it comes to `^` and `$` then it makes a big difference:
 
-* In line mode (`('Mode' 'L')`) `^` finds the start of the line and `$` finds the end of the end.
+* In line mode (`('Mode' 'L')`) `^` finds the start of the line and `$` finds the end of the line.
 * In mixed mode (`('Mode' 'M')`) `^` finds the start of each block and `$` finds the end of each block.
 * In document mode (`('Mode' 'D')`) `^` finds the start of the document and `$` finds the end of the document.
 
@@ -569,13 +573,13 @@ Note that rather than specifying ⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹�
 
 ### Tests
 
-Given that complex regular expressions are hard to read and maintain you should document intensively. The best way to document them is to write exhaustive test cases. Therefore we highly recommond that you write test cases at least for the the more complex regular expressions.
+Given that complex regular expressions are hard to read and maintain you should document intensively. The best way to document them is to write exhaustive test cases. Therefore we highly recommond that you write test cases at least for the more complex regular expressions.
 
 ### Performance
 
-Don't expect regular expressions to be faster than a taylored APL solutions. Instead expect them to be slightly slower than a taylored APL expression.
+Don't expect regular expressions to be faster than a taylored APL solutions; instead expect them to be slightly slower.
 
-However, many expressions like finding a simple string in another simple string (`⍷`) or uppercasing or lowercasing characters (`⌶ 819`) are converted by the interpreter into a native (=faster) APL expression.
+However, many regular expressions like finding a simple string in another simple string or uppercasing or lowercasing characters are converted by the interpreter into a native (=faster) APL expression (`⍷` and (`⌶ 819`).
 
 
 ### Helpful stuff
