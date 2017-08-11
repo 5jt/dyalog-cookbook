@@ -152,7 +152,12 @@ Before we can actually try to Ride into
 
 Now you can start Ride, enter "localhost" and the port number as parameters, connect to the interpreter or stand-alone EXE etc. and then select "Strong interrupt" from the "Actions" menu in order to interrupt the endless loop; you can then start debugging the application. Note that this does not require the development EXE to be involved: it may well be a runtime EXE. However, of course you need a development license in order to be legally entitled to Ride into an application run by the RunTime EXE (DyalogRT.exe).
 
-T> Prior to version 16.0 one had to copy the files "ride27_64.dll" (or "ride27_32.dll") and "ride27ssl64.dll" (or "ride27ssl32.dll") so that they are siblings of the EXE. From 16.0 onward you must copy the Conga DLLs instead. Failure in doing that will make `3502⌶1` fail. Note that "2.7" refers to the version of Conga, not Ride. Prior to version 3.0 of Conga every application (interpreter, Ride, etc.) needed to have their own copy of the Conga DLLs, with a different name. Since 3.0 Conga can serve several applications in parallel. We suggest that you copy the 32-bit and the 64-bit DLLs over to where your EXE lives.
+A> ### DLLs required by Ride
+A>
+A> Prior to version 16.0 one had to copy the files "ride27_64.dll" (or "ride27_32.dll") and "ride27ssl64.dll" (or "ride27ssl32.dll") so that they are siblings of the EXE. From 16.0 onward you must copy the Conga DLLs instead. Failure in doing that will make `3502⌶1` fail. Note that "2.7" refers to the version of Conga, not Ride. Prior to version 3.0 of Conga every application (interpreter, Ride, etc.) needed to have their own copy of the Conga DLLs, with a different name. Since 3.0 Conga can serve several applications in parallel. We suggest that you copy the 32-bit and the 64-bit DLLs over to where your EXE lives.
+A>
+A> In case you forgot to copy "ride27ssl64.dll" and/or "ride27ssl32.dll" then you will see an error "Can't find Conga DLL". This is because the OS does not bother to tell you about dependencies. You need a tool like DependencyWalker for finding out what's really missing. Note that we said "OS" because this is _not_ a Windows-only problem.
+
 
 A> ### Restartable functions
 A> 

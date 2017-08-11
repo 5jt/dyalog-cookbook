@@ -168,7 +168,7 @@ Let's define the public functions at the bottom of the script:
 
 ### Reserved names
 
-ADOC honors four functions in a special way if they exist: `Copyright`, `History`, `Version` and `ADOC_Doc`. If they exist when they (or rather their results) will be treated in a special way.
+ADOC honours five functions in a special way if they exist: `Copyright`, `History`, `Version`, `Public` and `ADOC_Doc`. If they exist when they (or rather their results) will be treated in a special way.
 
 
 #### Version
@@ -233,6 +233,10 @@ Finally we need to address the problem that the variables inside `EXIT` are esse
 When you scroll down (or click at "Exit" in the top-left corner) then you get to the part of the document where `EXIT` is documented:
 
 ![Browsing the revised MyApp namespace](images/adoc_myapp_03.png)
+
+#### Public
+
+This function was already discussed; see "Public interface".
 
 
 #### ADOC_Doc

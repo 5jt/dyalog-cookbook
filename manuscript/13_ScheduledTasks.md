@@ -35,7 +35,12 @@ The former is clearly a candidate for a Scheduled Task while the latter is a can
 
 ## Preconditions for a Scheduled Task
 
-You need either a saved workspace with `⎕LX` set or an EXE created from a workspace. Unless you need to make sure that your code cannot be looked at, an EXE has no advantages over a simple saved workspace; it just adds complexity and therefore should be avoided if there aren't any advantages. However, if you cannot be sure whether the required version of Dyalog is installed on the target machine then you have no choice: it has to be a stand-alone EXE.
+You need either a saved workspace with `⎕LX` set or an EXE created from a workspace. An EXE has two advantages compared with an ordinary workspace:
+
+1. The user cannot investigate the code.
+2. Dyalog is not required on the target system, not even the Runtime EXE.
+
+If this does not bother you then an EXE has no advantages over a simple saved workspace; it just adds complexity and therefore should be avoided if there aren't any advantages. However, if you cannot be sure whether the required version of Dyalog is installed on the target machine then you have no choice: it has to be a stand-alone EXE.
 
 We have already taken care of handling errors and writing to log files, which are the only sources of information in general, and in particular for analyzing any problems that pop up when a Scheduled Task runs, or crashes. In other words, we are ready to go.
 
@@ -223,8 +228,9 @@ A> With the UAC, users of the admin group have 2 tokens. The filtered token repr
 A> 
 A> Notes:
 A> 
-A> * Some applications ask for admin rights even when you do not right-click on the EXE and select "Run as administrator"; the Registry Editor and the Task Explorer are examples.
+A> * Some applications ask for admin rights even when you do not right-click on the EXE and select "Run as administrator"; the Registry Editor and the Task Manager are examples.
 A> * Even if you run an application with admin rights (sometimes called "in elevated mode") it does not mean that the application can do whatever it likes, but as an admin you can always grab any missing rights.
+A> * Remote filesystems are unlikely to be visible; you need to mount them again.
 
 
 #### The "Trigger" tab
@@ -240,11 +246,11 @@ After clicking "New" this is what you get:
 
 Make sure that you use the "Browse" button to navigate to the EXE/BAT/whatever you want to run as a Scheduled Task. That avoids typos.
 
-"Add arguments" allows you specify something like "maxws=345MB" or the name of a workspace in case "Program" is not an EXE but a Dyalog interpreter. In particular you should add `DYALOG_NOPOPUPS=1`. This prevents any dialogs from popping up (aplcore, WS FULL etc.). You don't want them when Dyalog is running in the background because there's nobody around to click the "OK" button...
+"Add arguments" allows you specify something like "MAXWS=345M" or the name of a workspace in case "Program" is not an EXE but a Dyalog interpreter. In particular you should add `DYALOG_NOPOPUPS=1`. This prevents any dialogs from popping up (aplcore, WS FULL etc.). You don't want them when Dyalog is running in the background because there's nobody around to click the "OK" button...
 
-"Start in" is useful for specifying what will become the current (or working) directory for the running program. We recommend to set the current directory from within your workspace, so you don't really need to set this here except that when you don't you might well get an error code 2147942512. We will discuss later how such error codes can be analyzed, but for the time being you have to believe us that it actually means "Not enough space available on the disk". When you do specify the "Start in" parameter it runs just fine. 
+"Start in" is useful for specifying what will become the current (or working) directory for the running program. We recommend setting the current directory in your code as early as possible, so you don't really need to set this here except that when you don't you might well get an error code 2147942512. We will discuss later how such error codes can be analyzed, but for the time being you have to believe us that it actually means "Not enough space available on the disk". When you do specify the "Start in" parameter it runs just fine. 
 
-However, note that you _must not embrace_ the path with double-quotes. It's understandable that Microsoft does not require them in this context because by definition any blanks are part of the path, but why they do not just ignore them when specified is less understandable.
+However, note that you _must not delimit_ the path with double-quotes. It's understandable that Microsoft does not require them in this context because by definition any blanks are part of the path, but why they do not just ignore them when specified is less understandable.
 
 
 #### The "Conditions" tab
@@ -268,7 +274,7 @@ To start the task right-click on it in the Task Scheduler and select "Run" from 
 ~~~
 2017-03-31 10:03:35 *** Log File opened
 2017-03-31 10:03:35 (0) Started MyApp in ...\code\v12\MyApp
-2017-03-31 10:03:35 (0)  ...\code\v12\MyApp\MyApp.exe maxws=370MB
+2017-03-31 10:03:35 (0)  ...\code\v12\MyApp\MyApp.exe MAXWS=370M
 2017-03-31 10:03:35 (0)  Accents            ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝ  AAAAAA...
 2017-03-31 10:03:35 (0)  ControlFileTieNo   1 
 2017-03-31 10:03:35 (0)  Debug              0 
@@ -277,11 +283,11 @@ To start the task right-click on it in the Task Scheduler and select "Run" from 
 2017-03-31 10:03:35 (0)  LogFolder          C:\Users\kai\AppData\Local\MyApp\Log 
 2017-03-31 10:03:35 (0)  Ride               0 
 2017-03-31 10:03:35 (0)  Trap               1 
-2017-03-31 10:03:35 (0) Source: maxws=370MB
+2017-03-31 10:03:35 (0) Source: MAXWS=370M
 2017-03-31 10:03:35 (0) *** ERROR RC=112; MyApp is unexpectedly shutting down: SOURCE_NOT_FOUND
 ~~~
 
-Since we have not provided a filename, `MyApp` assumed that "maxws=370MB" would be the filename. Since that does not exist the application quits with a return code SOURCE_NOT_FOUND, which is exactly what we expected.
+Since we have not provided a filename, `MyApp` assumed that "MAXWS=370M" would be the filename. Since that does not exist the application quits with a return code SOURCE_NOT_FOUND, which is exactly what we expected.
 
 However, from experience we know that the likelihood of the task _not_ running as intended is high. We have already discussed some of the issues that might pop up, and we will now discuss some more we have enjoyed over the years.
 
@@ -291,7 +297,7 @@ However, from experience we know that the likelihood of the task _not_ running a
 
 ### Riding into a Scheduled Task
 
-If you want to Ride into a Scheduled Task and therefore set in the INI file the `[Ride]Active` flag to `1` and the Windows Firewall has yet no rules for this port and this application then you _won't_ see the usual message (assuming that you use a user id with admin rights) you expect to see when you run the application for the very first time:
+Imagine you want to Ride into a Scheduled Task. Therefore you set in the INI file the `[Ride]Active` flag to `1`. When the Windows Firewall has yet no rules for both this port and this application then you _won't_ see the usual message you expect to see when you run the application for the very first time, assuming that you use a user id with admin rights:
 
 ![Windows Firewall](images\Firewall_01.jpg)
 

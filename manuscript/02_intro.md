@@ -48,6 +48,8 @@ Later on we'll introduce some professional writing techniques that might make ma
   We recommend you use classes to organise your own code [^classes]. But even if you don't, you need to know at least how to use classes. This is a deep subject, but all you need to know is the basics: how to call the static methods of a class (sufficient in most cases) or how to create an instance of a class and use its methods and properties. 
   
   See _Dyalog Programmer's Reference Guide_ for an introduction. 
+
+* A good understanding of SALT, Dyalog's built-in code management system that allows you to load and save scripts either automatically in the background or at will.
   
 * Internet access. Not necessarily all the time but probably most of the time. Not only because it gives you access to the [APL wiki](http://aplwiki.com) and the Dyalog forum (see below) but mainly for acessing the APLTree tools and the web site that is associated with this book: <https://cookbook.dyalog.com>.
 
@@ -71,7 +73,7 @@ W> Sometimes we need to warn you, for example in order to avoid common traps. Th
 
 T> Sometimes we want to provide a tip, and here's how that would look like.
 
-When we refer to a text file, e.g. something with the extension .txt, then we refer to it as a TXT. We refer to a dyalog script (*.dyalog) as a DYALOG. We refer to a dyapp script (\*.dyapp) as a DYAPP. You get the pattern.
+When we refer to a text file, e.g. something with the extension .txt, then we refer to it as a TXT. We refer to a dyalog script (\*.dyalog) as a DYALOG. We refer to a dyapp script (\*.dyapp) as a DYAPP. You get the pattern.
 
 ## Acknowledgements
 

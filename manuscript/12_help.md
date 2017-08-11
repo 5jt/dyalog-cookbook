@@ -119,7 +119,7 @@ Notes:
 
 Make some changes, for example add another paragraph `Go to →[Overview]`, and then press <escape>. `Markdown2Help` takes your changes, converts the Markdown to HTML and shows the changed page straight away. This gives you an idea of how easy it actually is to change help pages. Adding, renaming and deleting help pages -- and nodes -- can be achieved via the context menu.
 
-Note also that `→[Overview]` is a link. "Overview" must be the name of a page. If the title of the page is different from the name, the title is going to be shown as link text in the help page.
+Note also that `→[Overview]` is a link. For the link to work "Overview" must be the name of an existing page. If the title of the page is different from the name, the title is going to be shown as link text in the help page.
 
 Even if you are familiar with Markdown you should read `Markdown2Help`'s own help file before you start using `Markdown2Help` seriously. Some Markdown features are not supported by the help system, and internal links are implemented in a simplified way.
 
@@ -243,7 +243,7 @@ There are several reports available reporting broken and ambiguous links, `∆To
 
 You can export the help system so that it becomes a website. For that select "Export as HTML..." from the "File" menu.
 
-The resulting website does not offer all the features the Windows version comes with but at least you can read and print all the pages, you have the tree structure representing the contents and all the links work. That must do under Linux and Mac OS for the time being.
+The resulting website does not offer all the features the Windows version comes with but at least you can read and print all the pages, you have the tree structure representing the contents and all the links work. That must do under Linux and macOS for the time being.
 
 
 ## Making adjustments

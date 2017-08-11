@@ -11,6 +11,8 @@
       :If ~R←0∧.=⊃rc
           ⎕←'Could not create ',∆Path
       :EndIf
+      ⎕SE.UCMD'Load ',F.PWD,'\Make.dyalog -target=#'
+      #.Make.Run 0
     ∇
 
     ∇ R←Test_map_01(stopFlag batchFlag);⎕TRAP
@@ -98,7 +100,6 @@
           ##.FilesAndDirs.RmDir ∆Path
           ⎕EX'∆Path'
       :EndIf
-      ⎕EX'∆ExeFilename'
     ∇
 
 :EndNamespace

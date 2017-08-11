@@ -253,7 +253,8 @@
       CheckForRide Config.(Ride WaitForRide)
       MyLogger←OpenLogFile Config.LogFolder
       MyLogger.Log'Started MyApp in ',F.PWD
-      MyLogger.Log 2 ⎕NQ'#' 'GetCommandLine'
+      ⎕WSID←⊃{⍵/⍨~'='∊¨⍵}{⍵/⍨'-'≠⊃¨⍵}1↓2⎕nq # 'GetCommandLineArgs'
+      MyLogger.Log 2 ⎕NQ # 'GetCommandLineArgs'
       MyLogger.Log↓⎕FMT Config.∆List
       :If isService
           parms←#.ServiceState.CreateParmSpace

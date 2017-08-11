@@ -11,8 +11,8 @@ Most developers insist of twisting the development environment in one way or ano
 
 There are several ways to achieve that:
 
-1. Modify and save a copy of the default session file (by default `def_{counntryCode}.dse` in the installation directory) and twist the configuration so that this new DSE is loaded. 
-1. Modify and save a copy of the build workspace (typically something like `"C:\Program Files\Dyalog\...\ws\buildse.dws"`) and use it to create your own tailored version of a DSE.
+1. Modify and save a copy of the default session file (by default `def_{countryCode}.dse` in the installation directory) and twist the configuration so that this new DSE is loaded. 
+1. Modify and save a copy of the build workspace; that is typically something like `"C:\Program Files\Dyalog\...\ws\buildse.dws"`. Then use it to create your own tailored version of a DSE.
 
 Both approaches have their own problems, the most obvious being that with a new version of Dyalog you start from scratch. However, there is a better way: save a function `Setup` in either `C:\Users\{UserName}\Documents\MyUCMDs\setup.dyalog` or one of the SALT work directories and it will be executed when...
 
@@ -30,7 +30,7 @@ I> You might expect that saving a class script "Setup.dyalog" with a public shar
 
 A> ### SALT work directories
 A>
-A> You can check which folders are currently considered SALT work directories by issuing `]settings workdir ,/tmp/mydir`.
+A> You can check which folders are currently considered SALT work directories by issuing `]settings workdir`.
 A>
 A> You can add a folder `C:\Foo` with `]settings workdir ,C:\Foo`.
 
@@ -115,7 +115,7 @@ What this handler does depends on what extension the file has:
 
 * For `.dyalog` it writes a SALT load statement to the session. 
 
-  If the current namespace is not `#` but, say, `Foo` then a `-target=Foo` is added.
+  If the current namespace is not `#` but, say, `Foo` then `-target=Foo` is added.
 * For `.dws` it writes an )XLOAD statement to the session.
 * If the filename contains the string `aplcore` then it writes a )COPY statement for that aplcore with a trailing dot to the session.
 * For any other files the fully qualified filename is written to the session.
@@ -155,6 +155,8 @@ A definition like `LL,'→⎕LC ⍝',ER` reads as follows:
 * `→⎕LC ⍝` is then written to the session, meaning that everything that was already on that line is now on the right of the `⍝` and therefore has no effect.
 * `ER` then executes <enter>, meaning that the statement is actually executed.
 
+I> If you don't know what `LL` and `ER` actually are read the page "Keyboard shortcuts" in the "UI Guide". 
+
 
 ## Windows captions
 
@@ -184,7 +186,7 @@ Notes:
 
   You might not be interested in this in case you use just one version of Dyalog.
 
-The other pieces of information are less important. For details refer to [^dyalogcaptions]. These definitions make sure that literally any dialog box can be allocated to a particular Dyalog session with ease. This is just an example:
+The other pieces of information are less important. For details refer to the page "Window captions" in the "Installation and Configuration Guide". These definitions make sure that most dialog boxes (there are a few exceptions) can be allocated to a particular Dyalog session with ease. This is just an example:
 
 ![A typical dialog box](images/WindowsCaptionsDialogBox.png)
 

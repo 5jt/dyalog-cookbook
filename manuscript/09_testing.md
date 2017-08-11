@@ -431,7 +431,7 @@ Now run `RunDebug 1`. Trace into `Test_001` and watch whether now any error 5 (L
 
 A> ### ⎕DM versus ⎕DMX
 A>
-A> You have always used `⎕DM`, and it was perfectly fine, right? No need to switch to the (relatively) new `⎕DMX`, right? Well, the problem with `⎕DM` is that it is not thread save while `⎕DMX` is. That's why we suggest that you stop using `⎕DM` and use just `⎕DMX`.
+A> You have always used `⎕DM`, and it was perfectly fine, right? No need to switch to the (relatively) new `⎕DMX`, right? Well, the problem with `⎕DM` is that it is not thread save while `⎕DMX` is. That's why we suggest that you stop using `⎕DM` and use just `⎕DMX`. It also provides more and more precise information.
 
 This checks whether the error message is what we expect. Trace through the test function and watch what it is doing. After having left the test function you may click the green triangle in the Tracer ("Continue execution of all threads").
 

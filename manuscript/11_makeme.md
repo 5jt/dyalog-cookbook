@@ -80,7 +80,7 @@ One minor thing needs our attention: because we create `MyApp.exe` now in a fold
       r←⍬
       ⎕TRAP←#.HandleError.SetTrap ⍬
 leanpub-start-insert      
-      ⎕WSID←⊃⊣2⎕nq # 'GetCommandLineArgs'
+      ⎕WSID←⊃{⍵/⍨~'='∊¨⍵}{⍵/⍨'-'≠⊃¨⍵}1↓2⎕nq # 'GetCommandLineArgs'
 leanpub-end-insert      
       #.FilesAndDirs.PolishCurrentDir
 ...      
@@ -101,7 +101,7 @@ A> ### More complex scenarios
 A> 
 A> In a more complex application than ours you might prefer a different approach. Using an INI file for this is not a bad idea: it gives you way more freedom in defining all sorts of things while a DYAPP allows you to define just the modules to be loaded, and to execute some code.
 A> 
-A> Also, if you have not one but quite a number of applications to deal with it is certainly not a bad idea to use a generalized user command like `]runmake`.
+A> Also, if you have not one but quite a number of applications to deal with it is certainly not a bad idea to implement your own generalized user command like `]runmake`.
 
 `Execute`, `Tester` and `Tests` have no place in the finished application, and we don't need to establish the test helpers either.
 
@@ -123,7 +123,7 @@ Of course you need to make amendments so that it is using the version of Dyalog 
 '"',(⊃#.GetCommandLineArgs),'"'
 ~~~
 
-You might want to add other parameters like `MAXWS=128MB` to the BAT file.
+You might want to add other parameters like `MAXWS=128M` (or `MAXWS=6G`) to the BAT file.
 
 Notes:
 
@@ -134,11 +134,11 @@ Notes:
 
 A> ### The current directory
 A> 
-A> For APLers, the current directory (sometimes called "working directory") is a strange animal. In general, the current directory is where "the application" lives. That means that if you start an application `C:\Program Files\Foo\Foo.exe` then for the application "Foo" the current directory will be `C:\Program Files\Foo`. 
+A> For APLers, the current directory (sometimes called "working directory") is, when running under Windows, a strange animal. In general, the current directory is where "the application" lives. That means that if you start an application `C:\Program Files\Foo\Foo.exe` then for the application "Foo" the current directory will be `C:\Program Files\Foo`. 
 A>
 A> That's fine except that for APLers "the application" is _not_ the DYALOG.EXE, it's the workspace, whether it was loaded from disk or assembled by a DYAPP. When you double-click `MyApp.dyapp` then the interpreter changes the current directory for you: it's where the DYAPP lives, and that's fine from an APL application programmer's point of view.
 A> 
-A> The same holds true when you double-click a workspace but it is _not_ true when you _load_ a workspace: the current directory remains what it was before, and that's where the Dyalog EXE lives. Therefore it's probably not a bad idea to change the current directory yourself at the earliest possible stage after loading a workspace: call `#.FilesAndDirs.PolishCurrentDir` and your are done, no matter what the circumstances are. One of the authors is doing this for roughly 20 years now, and it has solved several problems without introducing new ones.
+A> The same holds true when you double-click a workspace but it is _not_ true when you _load_ a workspace: the current directory remains what it was before, and that's where the Dyalog EXE lives. Therefore it's probably not a bad idea to change the current directory yourself _at the earliest possible stage_ after loading a workspace: call `#.FilesAndDirs.PolishCurrentDir` and your are done, no matter what the circumstances are. One of the authors is doing this for roughly 20 years now, and it has solved several problems without introducing new ones.
 
 Now we need to establish the `Make.dyapp` file:
 
@@ -280,6 +280,10 @@ The test simply checks whether the two INI files have the same sections and the 
 
 `Export` automates what we've done so far by calling the "Export" command from the "File" menu. In case the "Bind" method fails it tries up to 50 times before giving up. This is because from experience we know that depending on the OS and the machine and God knows what else sometimes the command fails several times before it finally succeeds. 
 
+A> ### The "Bind" method
+A>
+A> Not that `Bind` is in version 16.0 not an official method. However, it's there, it works, and we expect it to become an official method in alter version of Dyalog.
+
 We specified `##.Constants.BIND_FLAGS.RUNTIME` as a default for `flags`, but that does not exist yet, so we add it to the `Constants` namespace:
 
 ~~~
@@ -310,9 +314,6 @@ We need to make a few changes:
     ∇ Initial;list;rc
       U←##.Utilities ⋄ F←##.FilesAndDirs ⋄ A←##.APLTreeUtils
       ∆Path←F.GetTempPath,'\MyApp_Tests'      
-leanpub-start-insert      
-      ∆ExeFilename←'MyApp.exe'
-leanpub-end-insert      
       F.RmDir ∆Path
       'Create!'F.CheckPath ∆Path     
       list←⊃F.Dir'..\..\texts\en\*.txt'
@@ -331,19 +332,8 @@ leanpub-end-insert
 
 Notes: `Initial` ...
 
-* ... now creates a global variable `∆ExeFilename` which will be used by the test cases.
 * ... loads the script `Make.dyalog` into `#`.
 * ... runs the function `Make.Run`. The `0` provided as right argument tells `Make.Run` to _not_ execute `⎕OFF`, something we would not appreciate at this stage.
-
-In the next step replace the string `'MyApp.exe '` (note the trailing blank) by:
-
-~~~
- ∆ExeFilename,' '
-~~~
-
-(note the leading blank) in the `Make` class. That makes sure that the EXE is created within the `MyApp` folder rather than in the current directory.
-
-Our last change: we add `⎕EX'∆ExeFilename'` to the `Cleanup` function in order to get rid of the global variable when the job is done.
 
 
 ## Workflow

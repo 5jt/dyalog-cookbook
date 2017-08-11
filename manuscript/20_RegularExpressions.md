@@ -3,9 +3,11 @@
 
 ## To whom it concerns
 
-If you are fluent in regular expressions then you might skip this chapter except perhaps "Analyzing APL ocde" which might tell you about a particular strength of Dyalog's implementation of regular expressions.
+If you are fluent in regular expressions then you may skip this chapter except perhaps "Analyzing APL ocde" which might tell you about a particular strength of Dyalog's implementation of regular expressions.
 
-If you are not fluent in regular expression but heavily involved into number crunching without any memory of ever having scanned strings for certain patterns then there is no point in looking into regular expressions because you just don't need them. Let's be clear, regular expressions are an extremely powerful tool but the level of abstract is really high. Without using them more or less constantly you will find it hard to master them. To rephrase it, if you need to find a pattern in a string twice a years you are probably better off finding an expert you can ask for advice.
+If you are not fluent in regular expression but heavily involved into number crunching without any memory of ever having scanned strings for certain patterns then there is no point in looking into regular expressions because you just don't need them. Let's be clear, regular expressions are an extremely powerful tool, but the level of abstraction is really high. You will find it hard to master them without using them regularly. To rephrase it, if you need to find a pattern in a string twice a year you are probably better off finding an expert on the matter you can ask for advice.
+
+Having said this it is amazing that many APLers do not realize how often they actually to search for strings and patterns.
 
 
 ## Overview
@@ -15,6 +17,8 @@ In this chapter we take the approach to explain regular expressions purely by ex
 This chapter is by no means a comprehensive introduction to regular expressions, but it should get you to a point where you can take advantage of examples, documents and books that are not addressing Dyalog's implementation.
 
 Note that we explain the syntax of `⎕R` and `⎕R` separately from the main text. That makes it easy to ignore those bits in case you are already familiar with the syntax.
+
+Despite the name of the book you will find only very few recipes for real-world problems in this chapter. The problems provided are used as vehicles to introduce the main features of regular expressions.
 
 
 ## What are regular expressions?
@@ -315,9 +319,10 @@ We already worked out that the engine is smart enough to take a hyphen literally
 ⌹ero  ⌹ne  ⌹wo  ⌹hree      four 
 ~~~
 
-⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹
-Explain \s !!
-⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹
+`\s` escapes the ASCII letter "s", meaning that the "s" takes on a special meaning: `\s` stands for "any whitespace". That is at the very least the space character (`⎕UCS 32`) and the tab character (`⎕UCS 9`). There are two options (the stuff that can be set with the `⍠` operator) that influence which characters qualifiy as white space:
+
+* "Mode" (discussed soon).
+* "UCP".
 
 
 ### Analyzing APL code
@@ -452,16 +457,133 @@ It's ⌹ plus ⌹.
 
 That's better.
 
-Naturally you will need a way to _negate_ a look-ahead and a look-behind.
+Naturally you will need a way to _negate_ a look-ahead and a look-behind. That can be achieved by using a `!` rather than a `=`.
 
-## Performance
+Lets' repeat this. Assuming we look for "x" and "y":
 
-Don't expect regular expressions to be faster than a taylored APL solutions.
+~~~
+      'x(?<=y)' ⎕R'⌹' ⊣ 'abxycxd' ⍝ Exchange all "x" when followed by a "y"
+ab⌹ycxd
+      'x(?!y)' ⎕R'⌹' ⊣ 'abxycxd' ⍝ Exchange all "x" when NOT followed by a "y"
+abxyc⌹d      
+      '(?<=x)y' ⎕R'⌹' ⊣ 'abxycyd' ⍝ Exchange all "y" when preceeded by an "x"
+abx⌹cyd
+      '(?<!x)y' ⎕R'⌹' ⊣ 'abxycyd' ⍝ Exchange all "y" when NOT preceeded by an "x"
+abxyc⌹d       
+~~~
 
 
-## Wands and potions
+## Transformation function
 
-* RegexBuddy
-* http://www.regular-expressions.info/tutorial.html
-* Teach yourself regular expressions
-* Regular expression cookbook
+Instead of providing a replace string one can also pass a function as operand to `⎕R`. Our earlier example:
+
+~~~
+      is←'a←1 ⋄ foo←1 ⋄ txt←''text; foo'' ⍝ comment'
+~~~
+
+Let's replace just the variable name with something else with a transformation function:
+
+~~~
+      ∇test[⎕]∇
+[0]   r←{x}test y
+[1]   .
+
+      '''.*''' '⍝.*$' 'foo'⎕R  test⊣is
+SYNTAX ERROR
+test[1] .
+       ∧
+      y.(⊃{⍵ (⍎⍵)}¨↓⎕nl 2 9)
+ Block        a←1 ⋄ foo←1 ⋄ txt←'text; foo' ⍝ comment 
+ BlockNum                                           0 
+ Lengths                                            3 
+ Match                                            foo 
+ Names                                                
+ Offsets                                            6 
+ Pattern                                          foo 
+ PatternNum                                         2 
+ ReplaceMode                                        0 
+ TextOnly                                           0       
+~~~
+
+The right argument 
+
+We modify `test` so that is leaves the text and the comment untouched:
+
+~~~
+      )reset
+      ∇test[⎕]∇
+[0]   r←{x}test y
+[1]   :If ''''''≡2⍴¯1⌽y.Match
+[2]       ⎕←r←y.Match
+[3]   :ElseIf '⍝'=1⍴y.Match
+[4]       ⎕←r←y.Match
+[5]   :Else
+[6]       r←'⌹Hello world⌹'
+[7]   :EndIf
+
+      '''.*''' '⍝.*$' 'foo'⎕R test⊣is
+'text; foo'
+⍝ comment
+a←1 ⋄ ⌹Hello world⌹←1 ⋄ txt←'text; foo' ⍝ comment
+~~~
+
+Since any match that starts and ends with a quote is text by definition the function returns those untouched. Anything that start with a lamp symbol is a comment, so they are returned untouched as well. That leaves the hits for the real variable names: they are exchanged against `⌹Hello world⌹`.
+
+Naturally transformation functions gives you enourmes power: you can do whatever you like.
+
+
+## Document mode
+
+So far we have specified just a simple string as input. We can however pass a vector of strings as well. Look at this example:
+
+~~~
+      input←'He said: "Yes, that might' 'well be right." She answered: "So be it!"'
+~~~
+
+It's not a bad idea to think of the two elements of the input vector as "blocks". Note that the first text spans over both blocks. 
+
+By default the search engine operates in "Line" mode. That means that each block is processed independently by the engine. Therefore you cannot search for `\r` in line mode: the search engine will never see them. 
+
+In mixed as well as document mode you _can_ search for `\r` because all blocks are passed at once. Naturally this also requires more memory than line mode.
+
+Let's do some tests:
+
+~~~
+      '".*"'⎕R'⌹'⍠('Greedy' 0)⊣input
+ He said: "Yes, that might  well be right.⌹So be it!" 
+      '".*"'⎕R'⌹'⍠('Greedy' 0)('Mode' 'M')('DotAll' 1)⊣input
+He said: ⌹ She answered: ⌹       
+~~~
+
+Note that in order to specify `('DotAll' 1)` it is necessary to set `('Mode' 'M')`. `('Mode' 'D')` would have worked in the same way. However, when it comes to `^` and `$` then the different settings make a big difference:
+
+* In line mode (`('Mode' 'L')`) `^` finds the start of the line and `$` finds the end of the end.
+* In mixed mode (`('Mode' 'M')`) `^` finds the start of each block and `$` finds the end of each block.
+* In document mode (`('Mode' 'D')`) `^` finds the start of the document and `$` finds the end of the document.
+
+Note that rather than specifying ⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹
+
+
+## Misc
+
+
+### Tests
+
+Given that complex regular expressions are hard to read and maintain you should document intensively. The best way to document them is to write exhaustive test cases. Therefore we highly recommond that you write test cases at least for the the more complex regular expressions.
+
+### Performance
+
+Don't expect regular expressions to be faster than a taylored APL solutions. Instead expect them to be slightly slower than a taylored APL expression.
+
+However, many expressions like finding a simple string in another simple string (`⍷`) or uppercasing or lowercasing characters (`⌶ 819`) are converted by the interpreter into a native (=faster) APL expression.
+
+
+### Helpful stuff
+
+RegexBuddy
+: This is a software that helps interpreting (or building) regular expressions.
+
+<http://www.regular-expressions.info/tutorial.html>
+: This is a web site that really goes into the details. It's from the author of RegExBuddy.
+
+: The web site also comes with detailed book reviews: <http://www.regular-expressions.info/hipowls.html>

@@ -253,7 +253,8 @@
       CheckForRide Config.(Ride WaitForRide)
       MyLogger←OpenLogFile Config.LogFolder
       Log'Started MyApp in ',F.PWD
-      Log 2 ⎕NQ'#' 'GetCommandLine'
+      ⎕WSID←⊃{⍵/⍨~'='∊¨⍵}{⍵/⍨'-'≠⊃¨⍵}1↓2⎕nq # 'GetCommandLineArgs'
+      MyLogger.Log 2 ⎕NQ # 'GetCommandLineArgs'
       Log↓⎕FMT Config.∆List
       r←Config MyLogger
       :If isService

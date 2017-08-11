@@ -74,7 +74,7 @@ In case you change an existing user command, for example by modifying the parsin
 
 It's not difficult to write your own user commands, and there is an example script available that makes that easy and straightforward. However, if your user command is not too simple consider developing it as an independent application, living in a particular namespace (let's assume `Foo`) in a particular workspace (let's assume `Goo`). Then write a user command that creates a namespace local to the function in the user command script, copy the namespace `Foo` from the workspace `Goo` into that local namespace and finally run the required function. Make sure the workspace is a sibling of the user command script.
 
-This approach has the advantage that you can develop and test your user commands independently from the user command framework. This is particularly important because changing a user command script from the Tracer is a bit dangerous; you will see the more aplcores than under normal circumstances. On the other hand it is difficult to execute the user command without the user command framework calling it: you need those arguments and sometimes even variables that live in the parent (`##`).
+This approach has the advantage that you can develop and test your user commands independently from the user command framework. This is particularly important because changing a user command script from the Tracer is a bit dangerous; you will see more aplcores than under normal circumstances. On the other hand it is difficult to execute the user command without the user command framework calling it: you need those arguments and sometimes even variables that live in the parent (`##`).
   
 You are therefore advised to make sure that no function in `Foo` relies on anything provided by the user command framework. Instead the calling function (`Run` in your user command) must pass such values as arguments to any functions in `Foo` called by `Run`. That makes it easy to test all the public functions in `Foo`. Of course you should have proper test cases for them.
 
@@ -82,7 +82,7 @@ The following code is a simple example that assumes the following conditions:
 
 * It requires a single argument.
 * It offers an optional switch `-verbose`.
-* It copied `Foo` from `Goo` and then runs `Foo.Run`.
+* It copies `Foo` from `Goo` and then runs `Foo.Run`.
 
 ~~~
 :Namespace  Foo

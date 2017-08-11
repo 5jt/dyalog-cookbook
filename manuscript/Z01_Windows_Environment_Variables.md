@@ -17,7 +17,7 @@ Notes:
 
 ## Outdated?!
 
-Some consider environment variables an outdated technology. We don't want to get involved into a religious argument here but we insist that enviroment variables will be round for a very long time, and that Windows relies on them. Also, they are standard in Linux and Mac OS.
+Some consider environment variables an outdated technology. We don't want to get involved into a religious argument here but we insist that enviroment variables will be round for a very long time, and that Windows relies on them. Also, they are standard in Linux and macOS.
 
 ## The variables
 
@@ -29,7 +29,7 @@ Defaults to "C:\\Users\\{yourName}\\AppData\\Roaming".
 
 Use this to store application specific data that is supposed to roam [^roaming] with the user. An INI file might be an example.
 
-See also **[LOCALAPPDATA](#)**.
+See also **[LocalAppData](#)**.
 
 ### CommonProgramFiles
 Defaults to "C:\\Program Files\\Common Files".
@@ -46,8 +46,8 @@ Carries the name of the computer.
 ### ComSpec
 Defaults to "C:\\WINDOWS\\system32\\cmd.exe".
 
-### ERRORLEVEL
-This variable does not necessarily exist. If you execute `⎕OFF 123` in an APL application then this will set `ERRORLEVEL` to 123.
+### ErrorLevel
+This variable does not necessarily exist. If you execute `⎕OFF 123` in an APL application then this will set `ErrorLevel` to 123.
 
 ### HomePath
 Defaults to "\\Users\\{yourName}".
@@ -60,7 +60,7 @@ Use this to store application specific data the is **not** supposed to roam [^ro
 See also **[AppData](#)**.
 
 ### LogonServer:
-Defaults to "ComputerName". This carries the name of the computer your are logged on to. In case of your own desktop PC the values of `LOGONSERVER` and `COMPUTERNAME` will be the same. In a Windows Server Domain however they will differ.
+Defaults to "ComputerName". This carries the name of the computer your are logged on to. In case of your own desktop PC the values of `LogonServer` and `ComputerName` will be the same. In a Windows Server Domain however they will differ.
 
 ### OS
 Specifies the Operating System. Under Windows 10 you get "Windows_NT".

@@ -141,7 +141,7 @@
    ⍝ Needs command line parameters, runs the application.
       r←⍬
       ⎕TRAP←#.HandleError.SetTrap ⍬
-      ⎕WSID←⊃⊣2⎕nq # 'GetCommandLineArgs'
+      ⎕WSID←⊃{⍵/⍨~'='∊¨⍵}{⍵/⍨'-'≠⊃¨⍵}1↓2⎕nq # 'GetCommandLineArgs'
       #.FilesAndDirs.PolishCurrentDir
       #.⎕SHADOW'ErrorParms'
       (Config MyLogger)←Initial ⍬
