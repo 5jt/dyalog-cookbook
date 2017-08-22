@@ -27,7 +27,7 @@ Defaults to "C:\\ProgramData". See [ProgramData](#).
 ### AppData
 Defaults to "C:\\Users\\{yourName}\\AppData\\Roaming".
 
-Use this to store application specific data that is supposed to roam [^roaming] with the user. An INI file might be an example.
+Use this to store data that is both application **and** user specific that is supposed to roam [^roaming] with the user. An INI file might be an example.
 
 See also **[LocalAppData](#)**.
 
@@ -55,7 +55,9 @@ Defaults to "\\Users\\{yourName}".
 ### LocalAppData
 Defaults to "C:\\Users\\{yourName}\\AppData\\Local".
 
-Use this to store application specific data the is **not** supposed to roam [^roaming] with the user. A log file might be an example. The reason is that when a user logs in all the data stored in %APPDATA% is copied over. A large log file might take significant time to be copied over with very little benefit.
+Use this to store data that is both application **and** user specific that is **not** supposed to roam [^roaming] with the user. 
+
+A log file might be an example. The reason is that when a user logs in all the data stored in %APPDATA% is copied over. A large log file might take significant time to be copied with very little (or none) benefit.
 
 See also **[AppData](#)**.
 
@@ -72,7 +74,7 @@ Specifies all the folders (separated by semicola) that the operating system shou
 The `PathExt` environment variable returns a list of the file extensions that the operating system considers to be executable, for example: ".COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC".
 
 ### ProgramData
-Defaults to "C:\\ProgramData". Use this for storing information that is application specific but needs write rights beyond installation. For Dyalog, this would actually be the right place to store the session file, workspaces and user commands.
+Defaults to "C:\\ProgramData". Use this for storing information that is application specific and needs write access beyond installation. For Dyalog, this would actually be the right place to store the session file, workspaces and user commands.
 
 ### ProgramFiles
 Defaults to "C:\\Program Files". On a 64-bit version of Windows this is where 64-bit programs are installed. Note however that on a 32-bit version of Windows this points to [ProgramFiles(x86)](#).
