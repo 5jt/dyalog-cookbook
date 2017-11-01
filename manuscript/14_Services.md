@@ -61,7 +61,9 @@ cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService DYALOG_NOPOPUPS=1'
 
 `cmd` could now be execute with the `Execute` class which we introduced in chapter 8, "Handling Errors". That would do the trick.
 
-Note `DYALOG_NOPOPUPS=1`: this prevents any dialogs from popping up (aplcore, WS FULL etc.). You don't want them when Dyalog is running in the background because there's nobody around to click the "OK" button. This also prevents the "Service MyAppService successfully installed" message from popping up which you don't want to see when executing tests that install, start, pause, resume, stop and uninstall a Service.
+`DYALOG_NOPOPUPS`
+: Setting this to 1 prevents any dialogs from popping up (aplcore, WS FULL etc.). You don't want them when Dyalog is running in the background because there's nobody around to click the "OK" button. 
+: This also prevents the "Service MyAppService successfully installed" message from popping up which you don't want to see when executing tests that install, start, pause, resume, stop and uninstall a Service.
 
 In order to uninstall the Service simply open a console window with "Run as administrator" and enter:
 

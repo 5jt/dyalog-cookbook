@@ -1,3 +1,5 @@
+{:: encoding=“utf-8” /}
+
 # Appendix 04: The development environment.
 
 ## Configure your session

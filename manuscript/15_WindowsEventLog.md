@@ -1,3 +1,5 @@
+{:: encoding=“utf-8” /}
+
 # The Windows Event Log
 
 Now that we have managed to establish `MyApp` as a Windows Service we have to make sure that it behaves. That means we need to make it report to the Windows Event Log.
@@ -46,10 +48,14 @@ We keep it simple here and write to the "Application" log.
 
 Copy `Z:\code\v13` to `Z:\code\v14`.
 
+### Preconditions
+
+Note that any attempt to write to the Windows Event Log with the `WindowsEventLog` class requires the Dyalog .NET bridge to be a sibling of the EXE, be it the Dyalog EXE or a taylor-made stand-alone EXE.
+
 
 ### Loading WindowsEventLog
 
-We are going to make `MyApp` writing to the Windows Event Log only when it runs as a Service. Therefore we need to load the module `WindowsEventLog` from within `MakeService.dyapp` (but not `MyApp.dyapp`):
+We are going to make `MyApp` writing to the Windows Event Log only when it runs as a Service. Therefore we need to load the class `WindowsEventLog` from within `MakeService.dyapp` (but not `MyApp.dyapp`):
 
 ~~~
 ...

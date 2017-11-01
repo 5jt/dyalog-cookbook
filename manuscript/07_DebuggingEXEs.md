@@ -36,6 +36,8 @@ For debugging purposes it is therefore recommended to create the EXE with the ch
 
 ## Code changes
 
+### Making Ride configurable
+
 We want to make the Ride configurable. That means we cannot do it earlier than after having instantiated the INI file. But not long after either, so we change `Initial`:
 
 ~~~
@@ -89,29 +91,33 @@ leanpub-start-insert
 ∇
 ~~~
 
+### Allowing a Ride
+
 We add a function `CheckForRide`:
 
 ~~~
-∇ {r}←CheckForRide (ridePort waitFlag);rc
+∇ {r}←CheckForRide (ridePort waitFlag);rc;init;msg
  ⍝ Depending on what's provided as right argument we prepare for a Ride 
  ⍝ or we don't. In case `waitFlag` is 1 we enter an endless loop.
   r←1
   :If 0<ridePort
-      rc←3502⌶0
-      :If ~rc∊0 ¯1
-          11 ⎕SIGNAL⍨'Problem switching off Ride, rc=',⍕rc
-      :EndIf
-      rc←3502⌶'SERVE::',⍕ridePort
-      :If 0≠rc
+      {}3502⌶0                     ⍝ Switch Ride off
+      init←'SERVE::',⍕ridePort     ⍝ Initialisation string
+      rc←3502⌶ini                  ⍝ Specify INIT string
+      :If 32=rc
+          11⎕Signal⍨'Cannot Ride: Conga DLLs are missing'
+      :ElseIf 64=rc
+          11 ⎕Signal⍨'Cannot Ride; invalid initialisation string: ',ini
+      :ElseIf 0≠rc
           msg←'Problem setting the Ride connecion string to SERVE::'
           msg,←,(⍕ridePort),', rc=',⍕rc
           11 ⎕SIGNAL⍨msg
       :EndIf
       rc←3502⌶1
       :If ~rc∊0 ¯1
-          11 ⎕SIGNAL⍨'Problem switching on Ride, rc=',⍕rc
+          11 ⎕SIGNAL⍨'Switching on Ride failed, rc=',⍕rc
       :EndIf
-      {}{_←⎕DL ⍵ ⋄ ∇ ⍵}⍣(⊃waitFlag)⊣1
+      {}{_←⎕DL ⍵ ⋄ ∇ ⍵}⍣(⊃waitFlag)⊣1  ⍝ Endless loop for an early RIDE
   :EndIf
 ∇
 ~~~
@@ -148,9 +154,7 @@ Finally we amend the `Version` function:
 ∇   
 ~~~
 
-Before we can actually try to Ride into
-
-Now you can start Ride, enter "localhost" and the port number as parameters, connect to the interpreter or stand-alone EXE etc. and then select "Strong interrupt" from the "Actions" menu in order to interrupt the endless loop; you can then start debugging the application. Note that this does not require the development EXE to be involved: it may well be a runtime EXE. However, of course you need a development license in order to be legally entitled to Ride into an application run by the RunTime EXE (DyalogRT.exe).
+Now you can start Ride, enter both "localhost" and the port number as parameters, connect to the interpreter or stand-alone EXE etc. and then select "Strong interrupt" from the "Actions" menu in order to interrupt the endless loop; you can then start debugging the application. Note that this does not require the development EXE to be involved: it may well be a runtime EXE. However, of course you need a development license in order to be legally entitled to Ride into an application run by the RunTime EXE (DyalogRT.exe).
 
 A> ### DLLs required by Ride
 A>

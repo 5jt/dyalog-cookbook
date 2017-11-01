@@ -15,7 +15,7 @@
 
 We'll start with the second item from the list above: quitting and passing an exit code.
 
-### Inspecting Windows exit codes
+## Inspecting Windows exit codes
 
 How do you see the exit code returned to Windows? You can access it in the command shell like this:
 
@@ -87,7 +87,9 @@ This is useful when we want to log an error code: the name is telling while the 
 
 I> We could have defined `EXIT` in `#.Constants`, but we reserve that script for Dyalog constants, keeping it as a component that could be used in other Dyalog applications. The exit codes defined in `EXIT` are specific to `MyApp`, so are better defined there. 
 
-Now the result of `TxtToCsv` gets passed to `⎕OFF` to be returned to the operating system as an exit code. 
+### Passing exit code to the caller
+
+Now the result of `TxtToCsv` gets passed to `Off` to be returned to the operating system as an exit code. 
 
 ~~~
 ∇ StartFromCmdLine;exit;args;rc
@@ -100,9 +102,9 @@ leanpub-end-insert
 ∇
 ~~~
 
-I> In case you wonder about `⎕OFF`: that's actually a niladic function. Being able to provide a "right argument" is therefore kind of cheating because there can't be any. This is a special case in the Dyalog parser.
-
 Note that in this particular case we invent a local variable `rc` although strictly speaking this is not necessary. We learned from experience that you should not call several functions on a single line with the left-most being `Off`. If you do this anyway you will regret it one day, it's just a matter of time.
+
+### The function `Off`
 
 Now we have to introduce a function `Off`:
 
@@ -122,6 +124,8 @@ Now we have to introduce a function `Off`:
   :EndIf
 ∇
 ~~~
+
+I> In case you wonder about `⎕OFF`: that's actually a niladic function. Being able to provide a "right argument" is therefore kind of cheating because there can't be any. This is a special case in the Dyalog parser.
 
 Note that `⎕OFF` is actually only executed when the program detects a runtime environment, otherwise it just quits. Although the workspace is much less important these days you still don't want to loose it by accident.
 
@@ -174,6 +178,8 @@ leanpub-end-insert
 Note that we have replaced some constants by calls to functions in `FilesAndDirs`. You might find this easier to read.
 
 In general, we like functions to _start at the top and exit at the bottom_. Returning from the middle of a function can lead to confusion, and we have learned a great respect for our capacity to get confused. However, here we don't mind exiting the function with `:Return` on line 5. It's obvious why that is and it saves us one level of nesting regarding the control structures. Also, there is no  tidying up at the end of the function that we would miss with `:Return`.
+
+### Trapping errors
 
 `ProcessFile` now traps some errors:
 
@@ -333,7 +339,9 @@ Our code so far covers the errors we foresee: errors in the parameters, and erro
 
 If the error is replicable, we can easily track it down using the development interpreter. But the error might not be replicable. It could, for instance, have been produced by ephemeral congestion on a network interfering with file operations. Or the parameters for your app might be so complicated that it is hard to replicate the environment and data with confidence. What you really want for analysing the crash is a crash workspace, a snapshot of the ship before it went down. 
 
-For this we need a high-level trap to catch any event not trapped by any `:Trap` statements. We want it to save the workspace for analysis. We might also want it to report the incident to the developer -- users don't always do this! For this we'll use the `HandleError` class from the APLTree.
+### Global trapping
+
+For this we need a high-level --- or global --- trap to catch any event not trapped by any `:Trap` statements. We want it to save the workspace for analysis. We might also want it to report the incident to the developer -- users don't always do this! For this we'll use the `HandleError` class from the APLTree.
 
 Define a new `EXIT` code constant:
 
@@ -368,6 +376,9 @@ leanpub-end-insert
 ~~~
 
 We need to set `⎕WSID` because the global trap will attempt to save a workspace in case of a crash.
+
+### Trap parameters
+
 We set `⎕TRAP` by assigning the result of `SetTrap`, so we we need to create that function now:
 
 ~~~
@@ -397,7 +408,7 @@ Notes:
   * Any function might crash, and we need to "see" the namespace with the parameters needed in case of a crash, so it has to be a global in `#`.
   * The `⎕TRAP` statement allows us to call a function and to pass parameters except references, so it has to be a named namespace.
  
- Let's investigate how this will work; trace into `#.MyApp.StartFromCmdLine ''`. When you reach line 4 `Config` exists, so now you can call `MyApp.SetTrap` with different left arguments:
+Let's investigate how this will work; trace into `#.MyApp.StartFromCmdLine ''`. When you reach line 4 `Config` exists, so now you can call `MyApp.SetTrap` with different left arguments:
 
 ~~~
       SetTrap Config
@@ -506,8 +517,6 @@ Because we've defined a source for the Windows Event Log `HandleError` has repor
 
 As mentioned earlier, the Windows Event Log is discussed in a later chapter.
 
-As already mentioned, the Windows Event Log will be discussed in its own chapter.
-
 We also find evidence in the log file that something broke; see LogDog:
 
 ![The log file](images\LogDog2.png)
@@ -527,7 +536,7 @@ Note that the crash files names are simply the WSID plus the timestamp prefixed 
 
 Save your work and re-export the EXE.
 
-## Crash files
+### The crash files
 
 What's _in_ those crash files?
 
@@ -606,14 +615,14 @@ tbl
 tgt         
 ~~~
 
-The DWS is the crash workspace. Load it. The Latent Expression has been disabled, to ensure `MyApp` does not attempt to start up again. 
+The DWS is the crash workspace. Load it. The Latent Expression has been disabled to ensure `MyApp` does not attempt to start up again. 
 
 ~~~
       ⎕LX
 ⎕TRAP←0 'S' ⍝#.MyApp.StartFromCmdLine
 ~~~
 
-The State Indicator shows the workspace captured at the moment the HandleError object saved the workspace. Your real problem -- the full stop in `MyApp.TxtToCsv` -- is some levels down in the stack. 
+The state indicator shows the workspace captured at the moment the HandleError object saved the workspace. Your real problem -- the full stop in `MyApp.TxtToCsv` -- is some levels down in the stack. 
 
 ~~~
       )SI
@@ -648,7 +657,7 @@ We also want to check whether the correct return code is returned. For that we h
  
 In development you'll discover and fix most errors while working from the APL session. Unforeseen errors encountered by the EXE will be much rarer. Now you're all set to investigate them! 
 
-## About #.ErrorParms
+### About #.ErrorParms
 
 We've established `#.ErrorParms` as a namespace, and we have explained why: `HandleError.Process` needs to see `ErrorParms` not matter the circumstances, otherwise it cannot work. Since we construct the workspace from scratch when we start developing it cannot do any harm because we quit as soon as the work is done.
 
@@ -694,7 +703,7 @@ leanpub-end-insert
 Note that we've put `#.` in front of `⎕SHADOW`; that is effectlively the same as having a header `StartFromCmdLine;#.ErrorParms` only that this is syntactically impossible to do. With `#.⎕SHADOW` it works. When you now try again a double-click on the DYAPP and then call `#.MyApp.StartFromCmdLine` you will find that no file is tied any more, and that `#.ErrorParms` is not hanging around either.
 
 
-## Very early errors
+### Very early errors
 
 At the moment there is a possibility that `MyApp` will crash and the global trap is not catching it. This is because we establish the global trap only after having instantiated the INI file: only then do we know where to write the crash files, how to log the error etc. But an error may well occur before that!
 
@@ -759,5 +768,8 @@ You can try this now but make sure that when you are ready you remove the line w
 
 `customFns` and `customFnsParent`
 : This allows you to make sure that `HandleError` will call a function of your choice. For example, you can use this to send an email or a text to a certain address.
+
+`windowsEventSource`
+: This defaults to an empty vector, meaning that `HandleError` does not attempt to write to the Windows Event Log. Writing to the Windows Event Log is discussed in its own chapter. 
 
 [^stop]: The English poets among us love that the tersest way to bring a function to a full stop is to type one. (American poets will of course have typed a period and will think of it as calling time out.)

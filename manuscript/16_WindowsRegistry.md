@@ -1,3 +1,5 @@
+{:: encoding=“utf-8” /}
+
 # The Windows Registry
 
 ## What is it, actually?
@@ -94,6 +96,14 @@ Any Windows Registry has just 5 root keys:
 
 From an application programmers point of view the HKCU and the HKLM are the most important ones, and usually the only ones they might actually write to.
 
+
+### 32/64-bit nightmares
+
+⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹
+To be added.
+⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹
+
+
 With the knowledge you have accumulated by now you can probably get away for the rest of your life as an application programmer. If you want to know all the details we recommend the Microsoft documentation [^microsoft].
 
 
@@ -109,7 +119,7 @@ It is also limited to the two data types `REG_SZ` and `REG_DWORD`.
 
 The class uses the Windows Scripting Host (WSH) [^wsh]. It is available on all Windows systems although it can be switched off by group policies, something we have never seen in the wild.
 
-If you just want to read a certain value then this -- very small -- class might be sufficient. For examples, in order to read the aforementioned `maxws` value:
+If you just want to read a certain value then this -- very small -- class might be sufficient. For example, in order to read the aforementioned `maxws` value:
 
 ~~~
       #.WinRegSimple.Read 'HKCU\Software\Dyalog\Dyalog APL/W-64 16.0 Unicode\maxws'

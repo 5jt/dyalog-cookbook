@@ -2,6 +2,8 @@
 
 # User interface 
 
+## Introduction
+
 Modern graphical user interfaces (GUIs, or more simply, UIs) are a wonder. UI conventions are so widely known it is now unremarkable for people to start using applications without prior training, expecting the software to make clear what they need to do. 
 
 This is a high standard to meet, and writing UIs is a deep art. The primary platforms for professional writers of UIs are currently a combination of HTML 5 and JavaScript (HTML/JS) and Windows Presentation Foundation (WPF). These are rich platforms, which enable effective and attractive UIs to be written. 
@@ -14,43 +16,244 @@ You have an alternative. The GUI tools native to Dyalog support perfectly workma
 
 You can still run your application from within a browser if you wish to: Amazon offers the "AppStream" [^appstream] service allowing exactly that.
 
+
+### ⎕WC versus ⎕NEW
+
+`⎕NEW` came much later than `⎕WC`. Is `⎕NEW` replacing `⎕WC`? Certainly not. It's just an alternative. Both have pros and cons, but after having tried them both in real-world projects we settle for `⎕WC`. Here's why:
+
+**Pro `⎕NEW`:**
+
+* Syntax checks are more strict. Yes, that is actually an advantage: problems are detected early.
+* It does not need a name. 
+
+  This point has implications that are not obvious: when you create a GUI control within a class and then try to use it later as parent in another GUI control in a different class you cannot create a reference from the `⎕WC` statement with something like:
+
+  ~~~
+  ref←⍎'MyControlName'parent.⎕wc'Button ('Caption' 'OK')
+  ~~~
+
+  because a name used by `⎕WC` is local to the class the `⎕WC` was executed in. `⎕NEW` gets us around this problem.
+
+**Pro `⎕WC`:**
+
+* Every control has its own name, and that name shows in the Event Viewer when debugging a GUI.
+
+  With `⎕NEW` you see something like `[Form].[SubForm].[Group].[Button]` which is not exactly helpful.
+* Can host Microsoft's WebBrowser control, an HTML renderer that can be integrated into your GUI.
+
+We hope that Dyalog will eventually use a `⎕DF` definition for the Event Viewer for GUI controls created by `⎕NEW`. Apart from the WebBrowser control problem `⎕NEW` has therefore more advantages than `⎕WC`; that's why we settle for `⎕NEW`.
+
+
+### A simple example
+
 Creating a GUI form in Dyalog could hardly be simpler:
 
 ~~~
-      UI←⎕NEW⊂'Form'
-      UI.Caption←'Hello world'
+      ∆Form←⎕NEW⊂'Form'
+      ∆Form.Caption←'Hello world'
 ~~~      
 
 ![Hello world form](images/form_01.png)
 
 To the form we add controls, set callback functions to run when certain events occur, and invoke the form's `Wait` method or invoke `⎕DQ`. See the _Dyalog for Microsoft Windows Interface Guide_ for details and tutorials. 
 
+Experience has shown that it is a good idea to keep controls and variables that belong logically to those controls within a namespace. Since this is a temporary namespace --- it will cease to exist once the form is closed --- we use an unnamed namespace for this. We create the controls with names but generate references for them which we assign to the very same names within that unnamed namespace. The concept will become clear when we create an example.
 
-## A sample Form
+
+## A simple UI with native Dyalog forms
 
 We are going to implement a sample form that looks like this:
 
 ![Hello world form](images/gui_example.png)
 
-We keep this separate from the application we have developed so far, and we are not using scripts
+Obviously this is a GUI that allows a programmer to search the current workspace.
+
+We would like to emphasize that it is a very good idea to keep the UI and its code separate from the application. Even if you think that you are absolutely sure that you will never go for a different --- or second --- UI, you should still keep it separate. Over and over again assumptions like "This app will only be used for a year or two" or "This app will never use a different type of GUI" have proven to be wrong. 
+
+Better prepare for it from the start, in particular because it takes actually little effort to do this right from the start, but it will be a major effort if you need to change or add a GUI later.
+
+In our example application, which by the way is completly independent from the application we have refined over and over again in previous chapters, we keep the "business logic" in `#.BusinessLogic`.
+
+Everything that is GUI-related starts their name with `GUI`.
+
+We start with creating...
+
+
+⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹
+the main function which we call `Run`:
+
+~~~
+:Namespace MainGUI
+
+    ∇ {n}←Run dummy;n;∆Posn;∆Wsid;U
+      ⎕IO←1 ⋄ ⎕ML←1
+      n←Init ⍬
+      n←CreateGUI n
+      n.SearchFor U.DQ n.∆Form
+      Shutdown n
+    ⍝Done
+    ∇
+
+:EndNamespace
+~~~
+
+What this function does:
+
+* It sets system variables.
+* It prepares (initializes) the application.
+* It creates the GUI.
+* It hands over control to the user.
+* When the user quits it cleans up.
+
+Next we introduce the `Init` function:
+
+~~~
+∇ n←Init dummy
+  U←##.GuiUtils
+  n←U.CreateNspace
+  n.∆Buttons←n.⎕NS''
+  n.∆Labels←n.⎕NS''
+  n.(∆V_Gap ∆H_Gap)←##.GuiGlobals.(∆V_Gap ∆H_Gap)
+  ∆Posn←80 30
+  ∆Size←600 800
+  n.InputFont←'InputFont'⎕WC'Font'('PName' 'APL385 Unicode')('Size' 17)
+⍝Done
+∇
+~~~
+
+* It creates a reference to `GuiUtils`, something that does not yet exists.
+* It calls a method `CreateNspace` ikn `GuiUtils` which seem to return a namespace which is assigned to `n`.
+* It creates a globals variable `∆Buttons` in `n` which we use to collect references to all push buttons on the GUI.
+* It creates a global variable `∆Labels` in `n` which we use to collect references to all lables on the GUI.
+* It creates two globals variables `∆V_Gap` and `∆H_Gap` in `n` with values we borrow from `GuiGlobals which again does not exist yet.
+* It defines two globals `∆Posn` and `∆Size` which will defines the position and the size of the main form.
+* It creates a font object.
+
+Next we introduce the namespace script `GuiUtils`:
+
+~~~
+:Namespace GuiUtils
+
+    ⎕IO←1 ⋄ ⎕ML←1
+
+      GetRef2n←{
+          9=⍵.⎕NC'n':⍵.n
+          ∇ ⍵.##
+      }
+
+    ∇ r←CreateNspace
+      r←⎕NS''
+      r.⎕FX'r←∆List' 'r←'' ''~¨⍨↓⎕nl 9'
+    ⍝Done
+    ∇
+
+      AddPosnAndSize←{
+          +⌿↑⍵.(Posn Size)
+      }
+
+    ∇ {r}←{focus}DQ ref
+      focus←{0<⎕NC ⍵:⍎⍵ ⋄ ref}'focus'
+      ⎕NQ focus'GotFocus' ⋄ r←⎕DQ ref
+     ⍝Done
+    ∇
+
+:EndNamespace
+~~~
+
+This introduces 4 functions. At the moment only `CreateNspace` is of interest to us; the others will be discussed later. `CreateNspace` creates an unnamed namespace, populates it with a niladic function `∆List` which returns the names of all namespaces within that unnamed namespaces. Of course their are'nt any yet.
+
+
+We then create `GuiGlobal`:
+
+~~~
+:Namespace GuiGlobals
+
+    ∆V_Gap←10
+    ∆H_Gap←5
+
+:EndNamespace
+~~~
+
+The `V` stands for "Vertical" and the "H" for "Horizontal". Those two variables defined the vertical and horizontal distance between controls on the GUI.
+
+Now the `Init` function would run; we are ready to create the function `CreateGUI`:
+
+~~~
+∇ n←CreateGUI n
+[1]   n←CreateMainForm n
+[2]   n←CreateSearch n
+[3]   n←CreateStartLookingHere n
+[4]   n.∆Groups←⎕NS''
+[5]   n←CreateOptionsGroup n
+[6]   n←CreateObjectTypesGroup n
+[7]   n←CreateScanGroup n
+[8]   n←CreateRegExGroup n
+[9]   {⍵.Size←(⊃⊃⌈/⍵.Size),¨2⊃¨⍵.Size}'Group'⎕WN n.∆Form
+[10]   n←CreateList n
+[11]   n←CreatePushButtons n
+[12]   n←CreateHiddenButtons n
+[13]   n.HitList.Size[1]-←n.∆V_Gap+n.∆Form.Size[1]-n.Find.Posn[1]
+[14]   n.(⍎¨↓⎕NL 9).onKeyPress←⊂'OnKeyPress'
+[15]   n.∆WriteToStatusbar←n∘{⍺.Statusbar.StatusField1.Text←⍵ ⋄ 1:r←⍬}
+[16]   n.∆Form.onConfigure←'OnConfigure'(335,CalculateMinWidth n)
+[17] ⍝Done
+∇
+~~~
+
+Note that for any of the controls (what are we searching, were to start, the groups) we have a didicated function `CreateSearch`, `CreateStartLookingHere` etc. Experience has shown that this is the most readable and maintainable way of creating controls.
+
+The function does some more things;
+
+* In line 4 a global variable `∆Groups` is created. We will discuss later why this is useful.
+* In line 9 the width of the form is calculated depending on the space the groups require.
+* In line 13 the size of the ListView named `HitList` is calculated.
+* In line 14 a KeyPress event handler is established for **all** controls.
+* In line 15 we establish a function `WriteToStatusbar` which gets a glued left argument: the `n` namespace which will be discussed soon.
+* In line 16 we establish a handler `OnConfigure` which gets a left argument: a vector of length two with 335 being the first item and the result of the function `CalculateMinWidth`.
+
+In the next step we create the function `CreateMainForm`:
+
+~~~
+∇ n←CreateMainForm n;∆
+[1]   ∆←⊂'Form'
+[2]   ∆,←⊂'Coord' 'Pixel'
+[3]   ∆,←⊂'Caption' 'MyApp'
+[4]   ∆,←⊂'Posn'∆Posn
+[5]   ∆,←⊂'Size'∆Size
+[6]   n.∆Form←⍎'Form'⎕WC ∆
+[7]   n.∆Form.n←n
+[8]   n←CreateMenubar n
+[9]   n←CreateStatusbar n
+[10]  ⍝Done
+∇
+~~~
+
+The function collects properties which are assigned to a local variables `∆`. We don't attempt to give it a proper name here because we just use it to collect stuff.
+
+Why are we not assigning the properties in one go? Something like this:
+
+~~~
+n.∆Form←⍎'Form'⎕WC 'Form'('Coord' 'Pixel')('Caption' 'MyApp')('Posn'∆Posn)('Size'∆Size)
+~~~
+
+Haven't we agreed that shorter programs are better? We did, but there are exceptions. Apart from being more readable having just one property on a line has the big advantage of allowing us to skip the line in the Tracer if wish so. That is particularly pleasant when we don't want a statement like `('Visible' 0)` or `('Active' 0)` to be executed. If they are part of a lengthy line, well, you get the idea.
+
 
 ### Collecting controls
 
-We are not using a designer for that, we use APL code. We start with a container that will collect the names of most if not all the controls we are about to create. That container is a namespace. We suggest to use a short name, because you will refer to this name very often. Let's name it `n` like "names" as in `n←⎕NS ''`. We do this because the hierarchy of the controls is not of much interest to us, we are happy to refer to them by a simple name. 
+We are not using a designer for creating the GUI, we use APL code. We start with a container that will collect the names of most if not all the controls we are about to create. That container is a namespace. We suggest to use a short name, because you will refer to this name very often. Let's name it `n` like "names" as in `n←⎕NS ''`. We do this because the hierarchy of the controls is not of much interest to us, we are happy to refer to them by a simple name. Flattening the hirarchy has even advantages: it makes it much easier to move controls elsewhere.
 
-We will create the different controls in dedicated functions. Experience has shown that this is more readable and easier to maintain (in case a re-design of the GUI is needed) than any other approach. Before we start to produce code we create a namespace `GUI` in the root that will hold all forms, and each form will have its own sub namespace:
+We will create the different controls in dedicated functions. Experience has shown that this is more readable and easier to maintain (in case a re-design of the GUI is needed) than any other approach. Before we start to produce code we create a namespace `GUI` in the root that will hold the main form and all forms created by actions on the main form. Everything that is not the main form will go into its own sub namespace:
 
 ~~~
       'GUI. #.⎕NS''
-      'Sample_01' #.GUI.⎕NS ''
-      )cs #.GUI.Sample_01
+      )cs #.GUI
 ~~~
 
-Let's start with a function that creates the whole form. Since we have already jumped into `#.GUI.Sample_01` we can create this function "locally":
+Let's start with a function that creates the whole form. Since we have already jumped into `#.GUI` we can create this function locally:
 
 ~~~
-∇ n←CreateGUI dummy
-  n←⎕NS ''
+∇ n←CreateGUI n
   n←CreateMainForm n
   n←CreateSearch n
   n←CreateReplace n
@@ -61,38 +264,30 @@ Let's start with a function that creates the whole form. Since we have already j
 ∇
 ~~~
 
-For the time being we create the `n` namespace with `⎕NS`. Later we will introduce a class that lives in `#.GUI` which not only creates a newnamespace but populates that namepsace with some useful methods.
+## 
 
+......
 
-~~~
-
-~~~
-
-
-
-
-## A simple UI with native Dyalog forms
-
-A new namespace script, UI in which a niladic function `Run` runs the user interface:
+⍝TODO Check!
 
 ~~~
-   ⍝ aliases
-    (A E F)←#.(APLTreeUtils Environment FilesAndDirs)
-    (M R U)←#.(MyApp RefNamespace Utilities)
-
-    ∇ Run;ui
-      ui←R.Create'User Interface'
-      ui←CreateGui ui
-      ui←Init ui
-      ui.∆Path←F.PWD
-      DQ ui.∆form
+    ∇ {r}←Run dummy;n;A
+     ⍝ The main ...
+      ⎕IO←1 ⋄ ⎕ML←`
+      A←#.APLTreeUtils 
+      r←⍬
+      n←⎕NS ''
+      n←CreateGui n
+      n←Init n
+      DQ n.∆form
       Shutdown
      ⍝ done
     ∇
 ~~~    
 
-Here we see the outline clearly. An instance of the RefNamespace class is assigned to `ui`. It is a namespace, empty apart from some standard methods -- 
-try `]ADoc #.RefNamespace` to see details. 
+I> For the time being we create the `n` namespace with `⎕NS`. Later we will introduce a class that lives in `#.GUI` which not only creates a new namespace but populates that namespace with some useful methods.
+
+Here we see the outline clearly. An instance of the RefNamespace class is assigned to `ui`. It is a namespace, empty apart from some standard methods -- try `]ADoc #.RefNamespace` to see details. 
 
 Functions `CreateGui` and `Init` build and initialise the user interface encapsulated in `ui`. Neither function needs to return a result, but doing so means the functions could be chained, for example:
 
