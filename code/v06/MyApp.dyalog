@@ -163,13 +163,3 @@
     ∇
 
 :EndNamespace
-⍝)(!CheckForRide!kai!2017 10 23 19 59 52 0!0
-⍝)(!CreateConfig!kai!2017 10 23 19 59 52 0!0
-⍝)(!GetCommandLineArg!kai!2017 10 23 19 59 52 0!0
-⍝)(!GetFiles!kai!2017 10 23 19 59 52 0!0
-⍝)(!Initial!kai!2017 10 23 19 59 52 0!0
-⍝)(!OpenLogFile!kai!2017 10 23 19 59 52 0!0
-⍝)(!SetLX!kai!2017 10 23 19 59 52 0!0
-⍝)(!StartFromCmdLine!kai!2017 10 23 19 59 52 0!0
-⍝)(!TxtToCsv!kai!2017 10 23 19 59 52 0!0
-⍝)(!Version!kai!2017 10 23 19 59 52 0!0

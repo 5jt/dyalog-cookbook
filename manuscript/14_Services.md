@@ -430,7 +430,10 @@ In order to install as well as un-install the Service we should have two BAT fil
       aplexe←'"',(2 ⎕NQ'#' 'GetEnvironment' 'dyalog'),'\dyalogrt.exe"'
       wsid←'"%~dp0\MyAppService.DWS"'
       cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService'
-      cmd,←' DYALOG_NOPOPUPS=1 MAXWS=64MB'
+     ⍝cmd,←' APLCORENAME={foldername}'
+     ⍝cmd,←' DYALOG_EVENTLOGNAME={foo}'
+      cmd,←' DYALOG_NOPOPUPS=1'
+      cmd,←' MAXWS=64MB'
       #.APLTreeUtils.WriteUtf8File(path,'\Install_Service.bat')cmd
 
       cmd←⊂'sc delete MyAppService'
@@ -451,6 +454,8 @@ Notes:
 
 * The install BAT will use the version of Dyalog used to create the BAT file, and it will call the runtime EXE.
 * In case you are not familiar with `%~dp0`: this stand for "the directory this BAT file was loaded from". In other words: as long as the workspace `MyAppService.DWS` (which we have not created yet) is a sibling of the BAT file it will work.
+* The setting of APLCORENAME specifies folder and name of any aplcores. For example, `D:\MyAplcores\aplcore_64_16_0_Unicode_*` would specify in which folder the aplcores shall be saved and that the filenames should start with `aplcore_64_16_0_Unicode_` followed by a running number (the asterisk).
+* By setting DYALOG_EVENTLOGNAME you can tell the interpreter that it should write messages to the Windows Event Log, and what name to use for this.
 * The un-install BAT file will check the `errorlevel` variable. If it detects an error it will pause so that one can actually see the error message even when we have just double-clicked the BAT file. We've discussed this in the chapter "Handling errors".
 
 

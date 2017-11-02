@@ -362,12 +362,12 @@ Now that we have a help system that is saved in the right place we have to make 
 ~~~
 :Namespace DevHelpers
 ...
-    
+
     ∇{r}←LoadHelp dummy;parms
     parms←#.Markdown2Help.CreateParms ⍬
     parms.saltFolder←#.FilesAndDirs.PWD,'\MyHelp'
     parms.source←'#.MyHelp'
-    parms.folderName←'Z:\code\v11\Help\Files'    
+    parms.folderName←#.FilesAndDirs.PWD,'\Help\Files'
     {}#.Markdown2Help.LoadHelpWithSalt parms
     ∇
 

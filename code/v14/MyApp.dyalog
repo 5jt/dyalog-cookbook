@@ -219,6 +219,7 @@
    ⍝ Needs command line parameters, runs the application.
       r←⍬
       ⎕WSID←'MyApp'
+      ⎕SIGNAL 0
       ⎕TRAP←#.HandleError.SetTrap ⍬
       #.⎕SHADOW'ErrorParms'
       (Config MyLogger)←Initial #.ServiceState.IsRunningAsService
@@ -458,29 +459,3 @@
     ∇
 
 :EndNamespace
-⍝)(!CheckForOtherInstances!kai!2017 10 23 20 3 41 0!0
-⍝)(!CheckForRide!kai!2017 10 23 20 3 41 0!0
-⍝)(!Cleanup!kai!2017 10 23 20 3 41 0!0
-⍝)(!Copyright!kai!2017 10 23 20 3 41 0!0
-⍝)(!CreateConfig!kai!2017 10 23 20 3 41 0!0
-⍝)(!FileRelatedErrorCodes!kai!2017 10 23 20 3 41 0!0
-⍝)(!GetCommandLineArg!kai!2017 10 23 20 3 41 0!0
-⍝)(!GetFiles!kai!2017 10 23 20 3 41 0!0
-⍝)(!History!kai!2017 10 23 20 3 41 0!0
-⍝)(!Initial!kai!2017 10 23 20 3 41 0!0
-⍝)(!Log!kai!2017 10 23 20 3 41 0!0
-⍝)(!LogError!kai!2017 10 23 20 3 41 0!0
-⍝)(!LoopOverFiles!kai!2017 10 23 20 3 41 0!0
-⍝)(!LoopOverFolder!kai!2017 10 23 20 3 41 0!0
-⍝)(!MainLoop!kai!2017 10 23 20 3 41 0!0
-⍝)(!Off!kai!2017 10 23 20 3 41 0!0
-⍝)(!OpenLogFile!kai!2017 10 23 20 3 41 0!0
-⍝)(!PublicFns!kai!2017 10 23 20 3 41 0!0
-⍝)(!RunAsService!kai!2017 10 23 20 3 41 0!0
-⍝)(!SetLXForApplication!kai!2017 10 23 20 3 41 0!0
-⍝)(!SetLXForService!kai!2017 10 23 20 3 41 0!0
-⍝)(!SetTrap!kai!2017 10 23 20 3 41 0!0
-⍝)(!ShowHelp!kai!2017 10 23 20 3 41 0!0
-⍝)(!StartFromCmdLine!kai!2017 10 23 20 3 41 0!0
-⍝)(!TxtToCsv!kai!2017 10 23 20 3 41 0!0
-⍝)(!Version!kai!2017 10 23 20 3 41 0!0

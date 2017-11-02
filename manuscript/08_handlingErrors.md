@@ -33,7 +33,7 @@ Exit Code is 101
 
 but only if you ticked the check box "Console application" in the "Export" dialog box. We don't want to do this if we can help it because we cannot Ride into an application with this option active. Therefore we are going to execute our stand-alone EXE from now on with the help of the APLTree class `Execute`.
 
-Copy `Z:\code\06` to `Z:\code\07`.
+Copy `Z:\code\v06` to `Z:\code\v07`.
 
 For the implementation of global error handling we need APLTree's `HandleError` class. For calling the exported EXE we need the `Execute` class. Therefore we add both to the DYAPP. Edit `Z:\code\v07\MyApp.dyapp`:
 
@@ -715,6 +715,7 @@ Naturally there is no perfect solution available here but we can at least try to
   r←⍬
 leanpub-start-insert    
   ⎕WSID←'MyApp'
+  ⎕SIGNAL 0
   ⎕TRAP←1 #.HandleError.SetTrap ⍬
   .
 leanpub-end-insert    
@@ -723,6 +724,26 @@ leanpub-end-insert
 ~~~
 
 Note that we use the `SetTrap` function `HandleError` comes with. It accepts a parameter space as right argument, but it also accepts an empty vector. In the latter case it falls back to the defaults.
+
+A> ### Resetting the diagnostic message and the event number
+A> We take the opportunity to initialize both `⎕DM` and `⎕EN`: with `⎕SIGNAL 0` we make sure that
+A>
+A> ~~~
+A>       .
+A> .
+A> SYNTAX ERROR
+A>      .
+A>     ∧
+A>       ⎕dm
+A> SYNTAX ERROR        .       ∧ 
+A>      ⎕en
+A> 2
+A>      ⎕signal 0
+A>      ⎕dm
+A>
+A>      ⎕en
+A> 0
+A> ~~~
 
 For testing purposes we have provided a `1` as left argument, which enforces error trapping even in a development environment. In the following line we break the program with a full stop.
 

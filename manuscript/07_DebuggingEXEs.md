@@ -18,9 +18,9 @@ Port        = 4599
 Wait        = 1
 ~~~
 
-By setting `Active` to 1 and defining a `Port` number for the communication between Ride and the EXE you can tell MyApp that you want "to give it a ride". Setting `Wait` to 1 lets the application wait for a Ride. That simply means it enters an endless loop.
+By setting `Active` to 1 and defining a `Port` number for the communication between Ride and the EXE you can tell MyApp that you want "to give it a ride". Setting `Wait` to 1 lets the application wait for a ride. That simply means it enters an endless loop.
 
-That's not always appropriate of course, because it allows anybody to read your code. If that's something you have to avoid then you have to find other ways to make the EXE communicate with Ride, most likely by making temporary changes to the code. The approach would be in both cases the same. In MyApp we keep things simple and allow the INI file to rule whether the user may Ride into the application or not.
+That's not always appropriate of course, because it allows anybody to read your code. If that's something you have to avoid then you have to find other ways to make the EXE communicate with Ride, most likely by making temporary changes to the code. The approach would be in both cases the same. In MyApp we keep things simple and allow the INI file to rule whether the user may ride into the application or not.
 
 Copy `Z:\code\v05` to `Z:\code\v06` and then run the DYAPP to recreate the `MyApp` workspace. 
 
@@ -38,7 +38,7 @@ For debugging purposes it is therefore recommended to create the EXE with the ch
 
 ### Making Ride configurable
 
-We want to make the Ride configurable. That means we cannot do it earlier than after having instantiated the INI file. But not long after either, so we change `Initial`:
+We want to make the ride configurable. That means we cannot do it earlier than after having instantiated the INI file. But not long after either, so we change `Initial`:
 
 ~~~
 ∇ (Config MyLogger)←Initial dummy

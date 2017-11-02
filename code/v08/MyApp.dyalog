@@ -122,6 +122,7 @@
    ⍝ Needs command line parameters, runs the application.
       r←⍬
       ⎕WSID←'MyApp'
+      ⎕SIGNAL 0
       ⎕TRAP←#.HandleError.SetTrap ⍬
       #.⎕SHADOW'ErrorParms'
       (Config MyLogger)←Initial ⍬
@@ -259,16 +260,3 @@
     ∇
 
 :EndNamespace
-⍝)(!CheckForRide!kai!2017 10 23 20 1 29 0!0
-⍝)(!CreateConfig!kai!2017 10 23 20 1 29 0!0
-⍝)(!FileRelatedErrorCodes!kai!2017 10 23 20 1 29 0!0
-⍝)(!GetCommandLineArg!kai!2017 10 23 20 1 29 0!0
-⍝)(!GetFiles!kai!2017 10 23 20 1 29 0!0
-⍝)(!Initial!kai!2017 10 23 20 1 29 0!0
-⍝)(!Off!kai!2017 10 23 20 1 29 0!0
-⍝)(!OpenLogFile!kai!2017 10 23 20 1 29 0!0
-⍝)(!SetLX!kai!2017 10 23 20 1 29 0!0
-⍝)(!SetTrap!kai!2017 10 23 20 1 29 0!0
-⍝)(!StartFromCmdLine!kai!2017 10 23 20 1 29 0!0
-⍝)(!TxtToCsv!kai!2017 10 23 20 1 29 0!0
-⍝)(!Version!kai!2017 10 23 20 1 29 0!0

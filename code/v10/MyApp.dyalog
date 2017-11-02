@@ -18,7 +18,7 @@
       r←(⍕⎕THIS)'1.5.0' 'YYYY-MM-DD'
     ∇
 
-    ∇ History      
+    ∇ History
       ⍝ * 1.5.0:
       ⍝   * MyApp is now ADOCable (function PublicFns).
       ⍝ * 1.4.0:
@@ -139,7 +139,8 @@
    ⍝ Needs command line parameters, runs the application.
       r←⍬
       ⎕TRAP←#.HandleError.SetTrap ⍬
-      ⎕WSID←⊃{⍵/⍨~'='∊¨⍵}{⍵/⍨'-'≠⊃¨⍵}1↓2⎕nq # 'GetCommandLineArgs'
+      ⎕WSID←⊃{⍵/⍨~'='∊¨⍵}{⍵/⍨'-'≠⊃¨⍵}1↓2 ⎕NQ #'GetCommandLineArgs'
+      ⎕SIGNAL 0
       #.FilesAndDirs.PolishCurrentDir
       #.⎕SHADOW'ErrorParms'
       (Config MyLogger)←Initial ⍬
@@ -172,7 +173,7 @@
       CheckForRide Config.(Ride WaitForRide)
       MyLogger←OpenLogFile Config.LogFolder
       MyLogger.Log'Started MyApp in ',F.PWD
-      MyLogger.Log 2 ⎕NQ # 'GetCommandLineArgs'
+      MyLogger.Log 2 ⎕NQ #'GetCommandLineArgs'
       MyLogger.Log↓⎕FMT Config.∆List
     ∇
 
@@ -207,24 +208,24 @@
       Config.DumpFolder←'expand'F.NormalizePath Config.DumpFolder
     ∇
 
-    ∇ {r}←CheckForRide (ridePort waitFlag);rc;msg
-    ⍝ Depending on what is provided as right argument we prepare for a Ride 
+    ∇ {r}←CheckForRide(ridePort waitFlag);rc;msg
+    ⍝ Depending on what is provided as right argument we prepare for a Ride
     ⍝ or we do not. In case `waitFlag` is 1 we enter an endless loop.
-     r←1
-     :If 0<ridePort
-         rc←3502⌶0
-         rc←3502⌶'SERVE::',⍕ridePort
-         :If 0≠rc
-             msg←'Problem setting the Ride connecion string to SERVE::'
-             msg,←,(⍕ridePort),', rc=',⍕rc
-             11 ⎕SIGNAL⍨msg
-         :EndIf
-         rc←3502⌶1
-         :If ~rc∊0 ¯1
-             11 ⎕SIGNAL⍨'Problem switching on Ride, rc=',⍕rc
-         :EndIf
-         {}{_←⎕DL ⍵ ⋄ ∇ ⍵}⍣(⊃waitFlag)⊣1  ⍝ Endless loop for an early RIDE
-     :EndIf
+      r←1
+      :If 0<ridePort
+          rc←3502⌶0
+          rc←3502⌶'SERVE::',⍕ridePort
+          :If 0≠rc
+              msg←'Problem setting the Ride connecion string to SERVE::'
+              msg,←,(⍕ridePort),', rc=',⍕rc
+              11 ⎕SIGNAL⍨msg
+          :EndIf
+          rc←3502⌶1
+          :If ~rc∊0 ¯1
+              11 ⎕SIGNAL⍨'Problem switching on Ride, rc=',⍕rc
+          :EndIf
+          {}{_←⎕DL ⍵ ⋄ ∇ ⍵}⍣(⊃waitFlag)⊣1  ⍝ Endless loop for an early RIDE
+      :EndIf
     ∇
 
     ∇ Off exitCode
@@ -281,19 +282,3 @@
     ∇
 
 :EndNamespace
-⍝)(!CheckForRide!kai!2017 10 23 20 2 14 0!0
-⍝)(!Copyright!kai!2017 10 23 20 2 14 0!0
-⍝)(!CreateConfig!kai!2017 10 23 20 2 14 0!0
-⍝)(!FileRelatedErrorCodes!kai!2017 10 23 20 2 14 0!0
-⍝)(!GetCommandLineArg!kai!2017 10 23 20 2 14 0!0
-⍝)(!GetFiles!kai!2017 10 23 20 2 14 0!0
-⍝)(!History!kai!2017 10 23 20 2 14 0!0
-⍝)(!Initial!kai!2017 10 23 20 2 14 0!0
-⍝)(!Off!kai!2017 10 23 20 2 14 0!0
-⍝)(!OpenLogFile!kai!2017 10 23 20 2 14 0!0
-⍝)(!Public!kai!2017 10 23 20 2 14 0!0
-⍝)(!SetLX!kai!2017 10 23 20 2 14 0!0
-⍝)(!SetTrap!kai!2017 10 23 20 2 14 0!0
-⍝)(!StartFromCmdLine!kai!2017 10 23 20 2 14 0!0
-⍝)(!TxtToCsv!kai!2017 10 23 20 2 14 0!0
-⍝)(!Version!kai!2017 10 23 20 2 14 0!0

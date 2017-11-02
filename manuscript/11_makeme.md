@@ -23,6 +23,8 @@ We resume, as usual, by saving a copy of `Z:\code\v09` as `Z:\code\v10`. Now del
 
 `MyApp.dyapp` does not need many changes, it comes with everything that's needed for development. The only thing we add is to execute the test cases automatically. Well, almost automatically. Ideally we should always make sure that all test cases pass when we call it a day, but sometimes that is just not possible due to the amount of work involved. In such cases it might or might not be sensible to execute the test cases before you start working: in case you _know_ they will fail and there are _many_ of them there is no point in wasting computer ressources and your time, so we better ask.
 
+### Development helpers
+
 For that we are going to have a function `YesOrNo` which is very simple and straightforward: the right argument (`question`) is printed to the session and then the user might answer that question. If she does not enter one of: "YyNn" the question is repeated. If she enters one of "Yy" a 1 is returned, otherwise a 0. Since we use this to ask ourself (or any other programmer) the function does not have to be bullet proof; that's why we allow `¯1↑⍞`.
 
 But where exactly should this function go? Though it is helpful it has no part in our final application. Therefore we put it into a new script called `DevHelpers`. We also add a function `RunTests` to this new script:
@@ -56,6 +58,8 @@ But where exactly should this function go? Though it is helpful it has no part i
 :EndNamespace
 ~~~
 
+### Running test cases first thing in the morning
+
 We add a line to the bottom of `MyApp.dyapp`:
 
 ~~~
@@ -79,6 +83,7 @@ One minor thing needs our attention: because we create `MyApp.exe` now in a fold
    ⍝ Needs command line parameters, runs the application.
       r←⍬
       ⎕TRAP←#.HandleError.SetTrap ⍬
+      ⎕SIGNAL 0
 leanpub-start-insert      
       ⎕WSID←⊃{⍵/⍨~'='∊¨⍵}{⍵/⍨'-'≠⊃¨⍵}1↓2⎕nq # 'GetCommandLineArgs'
 leanpub-end-insert      
@@ -104,6 +109,8 @@ A>
 A> Also, if you have not one but quite a number of applications to deal with it is certainly not a bad idea to implement your own generalized user command like `]runmake`.
 
 `Execute`, `Tester` and `Tests` have no place in the finished application, and we don't need to establish the test helpers either.
+
+### Batch file for starting Dyalog
 
 We are going to create a DYAPP file `Make.dyapp` that performs the "Make". However, if you want to make sure that you can specify explicitly the version of Dyalog that should run this DYAPP rather than relying on what happens to be associated with the file extensions DWS, DYALOG and DYAPP at the time you double-click it then you need a batch file that starts the correct version of Dyalog. Create such a batch file as `Make.bat`. This is the contents:
 
@@ -139,6 +146,8 @@ A>
 A> That's fine except that for APLers "the application" is _not_ the DYALOG.EXE, it's the workspace, whether it was loaded from disk or assembled by a DYAPP. When you double-click `MyApp.dyapp` then the interpreter changes the current directory for you: it's where the DYAPP lives, and that's fine from an APL application programmer's point of view.
 A> 
 A> The same holds true when you double-click a workspace but it is _not_ true when you _load_ a workspace: the current directory remains what it was before, and that's where the Dyalog EXE lives. Therefore it's probably not a bad idea to change the current directory yourself _at the earliest possible stage_ after loading a workspace: call `#.FilesAndDirs.PolishCurrentDir` and your are done, no matter what the circumstances are. One of the authors is doing this for roughly 20 years now, and it has solved several problems without introducing new ones.
+
+### The DYAPP file
 
 Now we need to establish the `Make.dyapp` file:
 
@@ -193,6 +202,11 @@ The upper part (until the blank line) is identical with `MyApp.dyapp` except tha
 :EndClass
 ~~~
 
+### Asserts
+
+It is common practice in any programming language to inject checks into the code to make sure that specific conditions are fulfilled because if not the program cannot succeed anyway. If a condition
+is not fulfilled an error is thrown.
+
 The function `Assert` does not exist yet in `Utilities`:
 
 ~~~
@@ -215,6 +229,8 @@ leanpub-end-insert
 Note that `Assert` executes a full stop in case `⍵` is `1` but returns `⍬` as a shy (!) result in case ⍵ is `0`. This is an easy way to make the calling function stop when something goes wrong. There is no point in doing anything but stopping the code from continuing since it is called by a programmer, and when it fails she wants to investigate straight away. And things can go wrong quite easily; for example, the attempt to remove `DESTINATION` may fail simply because somebody is looking with the Windows Explorer into `DESTINATION` at the same time.
 
 First we create the folder `DESTINATION` from scratch and then we copy everything that's needed to the folder `DESTINATION`: the application icon and the INI file. Whether the function executes `⎕OFF` or not depends on the right argument `offFlag`. Why that is needed will become apparent soon.
+
+### INI files
 
 We don't copy `MyApp.ini` into `DESTINATION` but `MyApp.ini.template`; therefore we must create this file: copy `MyApp.ini` to `MyApp.ini.template` and then check its settings: in particular these settings are important:
 
@@ -248,6 +264,8 @@ However, that leaves us vulnerable to another problem: imagine we introduce a ne
 ~~~
 
 The test simply checks whether the two INI files have the same sections and the same keys; that's sufficient to notify us in case we forgot something.
+
+### Exporting
 
 `Run` then calls `Export`, a private function in the `Make` class that does not yet exist:
 

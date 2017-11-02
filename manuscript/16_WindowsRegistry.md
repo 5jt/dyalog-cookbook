@@ -99,10 +99,15 @@ From an application programmers point of view the HKCU and the HKLM are the most
 
 ### 32/64-bit nightmares
 
-⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹
-To be added.
-⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹
+That's what the MSDN has to say about 32-bit and 64-bit applications when it comes to the Windows Registry:
 
+> On 64-bit Windows, portions of the registry entries are stored separately for 32-bit application and 64-bit applications and mapped into separate logical registry views using the registry redirector and registry reflection, because the 64-bit version of an application may use different registry keys and values than the 32-bit version. There are also shared registry keys that are not redirected or reflected.
+>
+> The parent of each 64-bit registry node is the Image-Specific Node or ISN. The registry redirector transparently directs an application's registry access to the appropriate ISN subnode. Redirection subnodes in the registry tree are created automatically by the WOW64 component using the name Wow6432Node. As a result, it is essential not to name any registry key you create Wow6432Node.
+>
+> The KEY_WOW64_64KEY and KEY_WOW64_32KEY flags enable explicit access to the 64-bit registry view and the 32-bit view, respectively. For more information, see Accessing an Alternate Registry View.
+
+It's probably best to avoid 32-bit applications and just create 64-bit applications these days if you can. If for any reason you are forced to deliver 32-bit applications then you are advised to read up the details in the MSDN [^deflection].
 
 With the knowledge you have accumulated by now you can probably get away for the rest of your life as an application programmer. If you want to know all the details we recommend the Microsoft documentation [^microsoft].
 
@@ -373,6 +378,9 @@ We can now write `captionValues` to all versions:
 
 [^wikipedia]: The Wikipedia on the Windows Registry:  
 <https://en.wikipedia.org/wiki/Windows_Registry>
+
+[^deflection]: The MSDN on 32-bit and 64-bit applications and the Windows Registry
+<https://msdn.microsoft.com/en-us/library/windows/desktop/ms724072(v=vs.85).aspx>
 
 
 [^microsoft]: Microsoft on the Windows Registry:  

@@ -17,6 +17,8 @@ T>
 T>With version 16.0 you can still force the interpreter to drop a CONTINUE workspace by enabling the old behaviour with `2704⌶ 1` while `2704⌶ 0` would disable it, but that's the default anyway.
 T> 
 T> Note that for analyzing purposes a CONTINUE workspace must be loaded in an already running instance of Dyalog. In other words: don't double-click a CONTINUE! The reason is that `⎕DM` and `⎕DMX` are overwritten in the process of booting SALT, meaning that you loose the error message. You _may_ be able to recreate them by re-executing the failing line but that might be dangerous, or fail in a different way when executed without the application having been initialised properly.
+T>
+T> Note also that the CONTINUE is always saved in the current directory; in version 16.0 there is no way to tell the interpreter to save the CONTINUE workspace elsewhere. That is unfortunate since it will fail for your own stand-alone EXEs if they are installed in the standard folders for executables under Windows, `C:\Program Files` (64-bit programs) and `C:\Program Files (x86)` (32-bit programs) because even as an admin you cannot write to those folders or any of its sub folders. But Windows saves it anyway! In case of a program attempts to write to a banned location Windows tells them "Sure, no problem" but saves them in a folder `"C:\Users\kai\AppData\Local\VirtualStore\Program Files\Dyalog\Dyalog APL-64 16.0 Unicode\CONTINUE.dws"` in case you are running Dyalog APL 64-bit Unicode version 16.0. 
 
 The next version of `MyApp` could do better by having the program recording what happens to a log file.
 

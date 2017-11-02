@@ -10,7 +10,10 @@
       aplexe←'"',(2 ⎕NQ'#' 'GetEnvironment' 'dyalog'),'\dyalogrt.exe"'
       wsid←'"%~dp0\MyAppService.DWS"'
       cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService'
-      cmd,←' DYALOG_NOPOPUPS=1 MAXWS=64MB'
+     ⍝cmd,←' APLCORENAME={foldername}'
+     ⍝cmd,←' DYALOG_EVENTLOGNAME={foo}'
+      cmd,←' DYALOG_NOPOPUPS=1'
+      cmd,←' MAXWS=64MB'
       #.APLTreeUtils.WriteUtf8File(path,'\Install_Service.bat')cmd
 
       cmd←⊂'sc delete MyAppService'

@@ -143,6 +143,7 @@
       r←⍬
       ⎕TRAP←#.HandleError.SetTrap ⍬
       ⎕WSID←⊃{⍵/⍨~'='∊¨⍵}{⍵/⍨'-'≠⊃¨⍵}1↓2⎕nq # 'GetCommandLineArgs'
+      ⎕SIGNAL 0
       #.FilesAndDirs.PolishCurrentDir
       #.⎕SHADOW'ErrorParms'
       (Config MyLogger)←Initial ⍬
@@ -333,22 +334,3 @@
     ∇
 
 :EndNamespace
-⍝)(!CheckForOtherInstances!kai!2017 10 23 20 2 54 0!0
-⍝)(!CheckForRide!kai!2017 10 23 20 2 54 0!0
-⍝)(!Cleanup!kai!2017 10 23 20 2 54 0!0
-⍝)(!Copyright!kai!2017 10 23 20 2 54 0!0
-⍝)(!CreateConfig!kai!2017 10 23 20 2 54 0!0
-⍝)(!FileRelatedErrorCodes!kai!2017 10 23 20 2 54 0!0
-⍝)(!GetCommandLineArg!kai!2017 10 23 20 2 54 0!0
-⍝)(!GetFiles!kai!2017 10 23 20 2 54 0!0
-⍝)(!History!kai!2017 10 23 20 2 54 0!0
-⍝)(!Initial!kai!2017 10 23 20 2 54 0!0
-⍝)(!Off!kai!2017 10 23 20 2 54 0!0
-⍝)(!OpenLogFile!kai!2017 10 23 20 2 54 0!0
-⍝)(!Public!kai!2017 10 23 20 2 54 0!0
-⍝)(!SetLX!kai!2017 10 23 20 2 54 0!0
-⍝)(!SetTrap!kai!2017 10 23 20 2 54 0!0
-⍝)(!ShowHelp!kai!2017 10 23 20 2 54 0!0
-⍝)(!StartFromCmdLine!kai!2017 10 23 20 2 54 0!0
-⍝)(!TxtToCsv!kai!2017 10 23 20 2 54 0!0
-⍝)(!Version!kai!2017 10 23 20 2 54 0!0
