@@ -36,12 +36,10 @@ You can still run your application from within a browser if you wish to: Amazon 
 
 **Pro `⎕WC`:**
 
-* Every control has its own name, and that name shows in the Event Viewer when debugging a GUI.
-
-  With `⎕NEW` you see something like `[Form].[SubForm].[Group].[Button]` which is not exactly helpful.
+* Every control has its own name, and that name shows in the Event Viewer when debugging a GUI. With `⎕NEW` you see something like `[Form].[SubForm].[Group].[Button]` which is not exactly helpful.
 * Can host Microsoft's WebBrowser control, an HTML renderer that can be integrated into your GUI.
 
-We hope that Dyalog will eventually use a `⎕DF` definition for the Event Viewer for GUI controls created by `⎕NEW`. Apart from the WebBrowser control problem `⎕NEW` has therefore more advantages than `⎕WC`; that's why we settle for `⎕NEW`.
+We hope that Dyalog will eventually use `⎕DF` for the Event Viewer for GUI controls created by `⎕NEW`. However, for the time being the disadvantages on `⎕NEW` are severe, therefore we settle for `⎕WC`.
 
 
 ### A simple example
@@ -49,7 +47,7 @@ We hope that Dyalog will eventually use a `⎕DF` definition for the Event Viewe
 Creating a GUI form in Dyalog could hardly be simpler:
 
 ~~~
-      ∆Form←⎕NEW⊂'Form'
+      ∆Form←⍎'MyForm'⎕WC 'Form'
       ∆Form.Caption←'Hello world'
 ~~~      
 
@@ -57,24 +55,24 @@ Creating a GUI form in Dyalog could hardly be simpler:
 
 To the form we add controls, set callback functions to run when certain events occur, and invoke the form's `Wait` method or invoke `⎕DQ`. See the _Dyalog for Microsoft Windows Interface Guide_ for details and tutorials. 
 
-Experience has shown that it is a good idea to keep controls and variables that belong logically to those controls within a namespace. Since this is a temporary namespace --- it will cease to exist once the form is closed --- we use an unnamed namespace for this. We create the controls with names but generate references for them which we assign to the very same names within that unnamed namespace. The concept will become clear when we create an example.
+Experience has shown that it is a good idea to keep references to all controls as well as any variables that belong logically to those controls within a namespace. Since this is a temporary namespace --- it will cease to exist once the form is closed --- we use an unnamed namespace for this. We create the controls with names but generate references for them which we assign to the very same names within that unnamed namespace. The concept will become clear when we create an example.
 
 
 ## A simple UI with native Dyalog forms
 
 We are going to implement a sample form that looks like this:
 
-![Hello world form](images/gui_example.png)
+![Find and replace](images/gui_example.png)
 
 Obviously this is a GUI that allows a programmer to search the current workspace.
 
-We would like to emphasize that it is a very good idea to keep the UI and its code separate from the application. Even if you think that you are absolutely sure that you will never go for a different --- or second --- UI, you should still keep it separate. Over and over again assumptions like "This app will only be used for a year or two" or "This app will never use a different type of GUI" have proven to be wrong. 
+We would like to emphasize that it is a very good idea to keep the UI and its code separate from the application. Even if you think that you are absolutely sure that you will never go for a different --- or additional --- UI, you should still keep it separate. Over and over again assumptions like "This app will only be used for a year or two" or "This app will never use a different type of GUI" have proven to be wrong. 
 
-Better prepare for it from the start, in particular because it takes actually little effort to do this right from the start, but it will be a major effort if you need to change or add a GUI later.
+Better prepare for it from the start, in particular because it takes actually little effort to do this early, but it will be a major effort if you need to change or add a GUI later.
 
 In our example application, which by the way is completly independent from the application we have refined over and over again in previous chapters, we keep the "business logic" in `#.BusinessLogic`.
 
-Everything that is GUI-related starts their name with `GUI`.
+Everything that is GUI-related starts their names with `MainGUI`.
 
 We start with creating...
 

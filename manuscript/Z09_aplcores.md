@@ -20,7 +20,7 @@ Regularly rebuilding the workspace from source files removes the risk of accumul
 
 Note that an aplcore is useful in two ways: 
 
-* You can copy from it.  Add a colon: 
+* You can copy from it.  Add a colon after `aplcore`:
 
   ~~~
         )copy aplcore. myObj
@@ -60,7 +60,9 @@ In order to create a "real" aplcore in the sense of corrupting the workspace thi
  
  but this might actually create another aplcore, overwriting the first one. Now it might well be too late to restrict the attempt to copy to what is most important to you: the object or objects you have worked on most recently. 
  
- I> If the aplcore is saved at all that is, because if the current directory is something like `C:\Program files\` then you won't have the right to save into this directory anyway.
+A> If the aplcore is saved at all that is, because if the current directory is something like `C:\Program files\` then you won't have the right to save into this directory anyway.
+A>
+>A When a program asks Windows to save a file in a location where this is not allowed (`C:\Program Files`, `C:\Program Files (x86)`, `C:\Windows`) then Windows will tell the application that it has fulfilled the request, but the file will actually be saved in something like `"C:\Users\{username}\AppData\Local\VirtualStore\Program Files\Dyalog\Dyalog APL-64 16.0 Unicode\"`
  
  For that reason it is highly recommended to set the value `aplcorename` in the Windows Registry:
 
@@ -71,3 +73,5 @@ In order to create a "real" aplcore in the sense of corrupting the workspace thi
 * are going to be saved in a folder of your choice.
 * start their names with `aplcore_Dyalog APL_W-64 16_0 Unicode_`.
 * will be numbered starting from 1; this as achieved by adding the trailing `*`.
+
+The same can be achieved by specifying `APLCORENAME=...` on the command line. That's particularly important for Windows Services.
