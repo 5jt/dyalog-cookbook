@@ -21,4 +21,5 @@ Z01_Windows_Environment_Variables.md
 Z02_UserCommands.md
 Z03_acre.md
 Z04_Session.md
+Z05_Special_Characters.md
 Z09_aplcores.md

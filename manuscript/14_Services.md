@@ -110,7 +110,7 @@ If a Service does not seem to do anything when started:
 
 * Check the name and path of the workspace the Service is expected to load: if that's wrong you won't see anything at all - the message "Workspace not found" goes straight into the ether.
 * Make sure the workspace size is sufficent. Again too little memory would not produce any error message.
-* The Service might create an aplcore when started. Look out for a file `aplcore` in the Service's current directory to exclude this possibility.
+* The Service might create an aplcore when started. Look out for a file `aplcore`[^aplcore] in the Service's current directory to exclude this possibility.
 * The Service might have created a CONTINUE workspace for all sorts of reasons.  
 
   Keep in mind that starting with version 16.0 by default Dyalog does _not_ drop a CONTINUE workspace by default. You must configure Dyalog accordingly. Also, a CONTINUE cannot be saved in case there is more than one thread running, and Services are by definition multi-threade. However, in case it fails very early there might still be a CONTINUE.
@@ -802,3 +802,5 @@ Looking for a function "Cleanup"...
 *** Tests done
 
 ~~~
+
+[^aplcore]: More informatin regarding aplcores is available in the appendix "Aplcores".

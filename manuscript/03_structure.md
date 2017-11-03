@@ -14,7 +14,7 @@ A> ### Corrupted workspaces
 A> 
 A> The _workspace_ (WS) is where the APL interpreter manages all code and all data in memory. The Dyalog tracer / debugger has extensive edit-and-continue capabilities; the downside is that these have been known to occasionally corrupt the workspace.
 A> 
-A>The interpreter checks WS integrity every now and then; how often can be influenced by setting certain debug flags; see the appendix "Workpace integrity, corruptions and aplcores" for details.
+A>The interpreter checks WS integrity every now and then; how often can be influenced by setting certain debug flags; see the appendix "Workpace integrity, corruptions and aplcores" for details. More details regarding aplcores are available in the appendix "Aplcores".
 
 
 ## How can you distribute your program?

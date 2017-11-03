@@ -383,23 +383,29 @@ a←1 ⋄ ⌹←1 2 ⋄ txt←'The ⍝ marks a comment; ⌹' ⍝ set up vars a, 
 Dyalog's implementation of regular expressions offers an elegant solution to the problem:
 
 ~~~
-      '''.*''' '⍝\N*$' 'foo'⎕R(,¨'&&⌹')⍠('Greedy' 0)⊣is
+      '''\N*''' '⍝\N*$' 'foo'⎕R(,¨'&&⌹')⍠('Greedy' 0)⊣is
 a←1 ⋄ ⌹←1 2 ⋄ txt←'The ⍝ marks a comment; foo' ⍝ set up vars a, foo, txt
 ~~~
 
 This needs some explanation:
 
-1. `\N` ...   ⍝TODO⍝ !!
+1. `\N` is the same as a `.`: it matches all characters but the end-of-line character. The difference is when `('DotAll' 1)` is specified; that would make the `.` match any character _including the end-of-line character_ while `\N` will not match the end-of-line character no matter what the setting of `DotAll` actually is.
 
-1. `'''.*'''` catches all text, and for that text `&` is specified as replacement. Now `&` stands for the matching text, therefore nothing will change at all but the matching text _won't participate in any further actions!_ In other words: everything between quotes is left alone.
+   That might make sense for the third search pattern (`foo`) but it would under certain circumstances stop the first two search patterns from working as expected.
 
-1. `'⍝.*$'` catches everything from a lamp (`⍝`) to the end of the line (`$`) and replaces it by itself (`&`). Again nothing changes but the comment will not be affected by anything that follows. Since the first expression has already masked eveything within (and including) quotes the first `⍝` does not cause problems.
+   We will come back to this soon  when it will become apparent why we have to use `\N` here rather than the dot.
+
+1. `'''\N*'''` catches all text, and for that text `&` is specified as replacement. Now `&` stands for the matching text, therefore nothing will change at all but the matching text _won't participate in any further actions!_ In other words: everything between quotes is left alone.
+
+1. `'⍝\N*$'` catches everything from a lamp (`⍝`) to the end of the line (`$`) and replaces it by itself (`&`). Again nothing changes but the comment will not be affected by anything that follows. 
+
+   Since the first expression has already masked eveything within (and including) quotes the first `⍝` does not cause problems; it will be ignored at this stage.
 
 1. Finally `foo` catches the string "foo" in the remaining part, and that is what we are interested in.
 
 As a result `foo` is found within the code but neither within the text nor as part of the comment.
 
-As far as we know this feature is specific to Dyalog, but then we have limited experience with other regular expression engines.
+As far as we know this powerful feature is specific to Dyalog, but then we have limited experience with other regular expression engines.
 
 Note that the `,¨` in `,¨'&&⌹'` is essential because otherwise  ....`⍝TODO⍝`  Bug report <01406>
 
@@ -409,7 +415,7 @@ A>
 A> Note that using the option (`⍠('Greedy' 0)`) has a disadvantage: it makes the _whole search pattern_ lazy. There might be cases when you want part of your search pattern to be lazy and other parts greedy. Luckily this can be achieved with the meta character question mark (`?`):
 A> 
 A> ~~~
-A>       '".*?"'⎕R '⌹' ⊣ is
+A>       '"\N*?"'⎕R '⌹' ⊣ is
 A> He said ⌹ and ⌹
 A> ~~~
 A>
@@ -418,15 +424,15 @@ A> Since "Greedy" is the engine's default you need to specify the `?` only for t
 Our search pattern is still not perfect since it would work on `boofoogoo` as well:
 
 ~~~
-      '''.*''' '⍝.*$' 'foo'⎕R(,¨'&&⌹')⍠('Greedy' 0)⊣'This boofoogoo is found as well'
+      '''\N*''' '⍝\N*$' 'foo'⎕R(,¨'&&⌹')⍠('Greedy' 0)⊣'This boofoogoo is found as well'
 This boo⌹goo is found as well
 ~~~
 
 To solve this we need to introduce look-ahead and look-behind, together known as look-arounds. The names make it pretty obvious what they do. We want to emphasize that all matching attempts we've introduced so far have been "consuming". Look-ahead as well as look-behind are _not_ consuming. That means that no matter whether they are successful or not they won't change the position the engine is currently investigating. They are also called zero-length assertions.
 
-However, before we tackle our problem we need to introduce the concept of both word boundaries and anchors. We've already met one anchor: the caret (`^`), which matches the beginning of a line. There is also the dollar (`$`) which matches the end of a line. And there is `\b` which matches a "word boundary". All these characters are zero-length matches.
+However, before we tackle our problem we need to introduce the concept of both word boundaries and anchors. We've already met two anchors: the caret (`^`), which matches the beginning of a line, and the dollar (`$`) which matches the end of a line. And there is `\b` which matches a "word boundary". All these characters are zero-length matches.
 
-I> Depending on the option "Mode" `^` and `$` have different meanings. This is discussed soon.
+I> Depending on the "Mode" option `^` and `$` have different meanings. This is discussed soon.
 
 To put it simply, `\b` allows you to perform a "whole word only" search. Prior to version 8 of PCRE (and 16.0 of Dyalog) this was true only for ASCII characters. Now you can set the "UCP" option to 1 if you want Unicode characters to be taken into account as well:
 
@@ -450,17 +456,17 @@ Both look-ahead and look behind start with `(?`. A look behind then needs a `<` 
 What the engine does:
 
 * Since the search pattern starts with a look-behind the engine checks whether there is a word boundary _to the left of the current position_. 
-* It's the beginning of the line, so that's successful, and the engine then checks whether the current position matches a "g". 
+* It's the beginning of the line, so that's successful. The engine then checks whether the current position matches a "g". 
 * That's successful, so the engine moves forward and tries to match the "e" with the current position.
 * That's successful too, so the engine moves forward again and tries to match the "r" with the current position.
-* That a match as well, so the engine performs a look-ahead: _without moving forward_ it tries the match the character _after_ the current one to be a word boundary. A space character qualifies as a word boundary.
-* Thats a success, too, so the "ger" is replaced by a single `⌹`.
+* That a match as well, so the engine performs a look-ahead: _without moving forward_ it tries to match the character _after_ the current one to be a word boundary. A space character qualifies as a word boundary.
+* Thats is a success, too, so the "ger" is replaced by a single `⌹`.
 
 I> What is important to realize is that the current position does not change when a look-behind or a look-ahead is performed; that's why they are called zero-length assertions.
 
-In the same way the following two appearances of "ger" are replaced by `⌹` because both `!` and `.` qualify as word boundaries as well. The "ger" in "Jaeger" was not replaced beecaus the look-behind failed: "e" is not a word boundary. Same for the last one: neither "ä" nor "ß" qualify as word boundaries because they are non-ASCII characters.
+In the same way the following two appearances of "ger" are replaced by `⌹` because both `!` and `.` qualify as word boundaries as well. The "ger" in "Jaeger" was not replaced becaus the look-behind failed: "e" is not a word boundary. Same for the last one: both "ä" and "ß" qualify as word boundaries because they are non-ASCII characters.
 
-That makes word boundaries pretty useless for other languages than English! Luckily with version 16.0 Dyalog was able to start using version 8 of the PCRE engine which now supports the Unicode definition of word boundaries. To take advantage of this feature we have to specify the "UCP" option:
+That makes word boundaries pretty useless for other languages than English. Luckily with version 16.0 Dyalog was able to start using version 8 of the PCRE engine which now supports the Unicode definition of word boundaries. To take advantage of this feature we have to specify the "UCP" option:
 
 ~~~
       ss←'ger :ger ger! Jaeger Jägerßabc'
@@ -468,9 +474,9 @@ That makes word boundaries pretty useless for other languages than English! Luck
 ⌹ :⌹ ⌹! Jaeger Jägerßabc
 ~~~
 
-Now both "ä" and "ß" qualify as word boundaries.
+Now both "ä" and "ß" don't qualify as word boundaries any more.
 
-We can use look-ahead and look-behind to solve a problem we did run into with numbers. This did not really work because _all_ dots got replaced when we wanted only those with digits to the right and the left being a match:
+We can use look-ahead and look-behind to solve a problem we did run into earlier with numbers. This did not really work because _all_ dots got replaced when we wanted only those with digits to the right and the left being a match:
 
 ~~~
       '[\d.¯-]'⎕R'⌹'⊣'It''s 23.45 plus 99.12.'
@@ -520,7 +526,7 @@ abxyc⌹d
 
 ## Transformation function
 
-Instead of providing a replace string one can also pass a function as operand to `⎕R`. Our earlier example:
+Instead of providing a replace string one can also pass a function as operand to `⎕R` (and `⎕S` as well). Our earlier example:
 
 ~~~
       is←'a←1 ⋄ foo←1 ⋄ txt←''text; foo'' ⍝ comment'
@@ -576,6 +582,8 @@ Since any match that starts and ends with a quote is text by definition the func
 
 Naturally transformation functions gives you enormous power: you can do whatever you like.
 
+Note that transformation functions can be specified with `⎕S` as well.
+
 
 ## Document mode
 
@@ -587,7 +595,7 @@ So far we have specified just a simple string as input. We can however pass a ve
 
 It's not a bad idea to think of the two elements of the input vector as "blocks". Note that the first text spans over both blocks. 
 
-By default the search engine operates in "Line" mode. That means that each block is processed independently by the engine. Therefore you cannot search for `\r` in line mode: the search engine will never see them. 
+By default the search engine operates in "Line" mode. That means that each block is processed independently by the engine. Therefore you cannot search for `\r` (carriage return) in line mode: the search engine will never see them. 
 
 In mixed as well as document mode you _can_ search for `\r` because all blocks are passed at once. Naturally this also requires more memory than line mode.
 
