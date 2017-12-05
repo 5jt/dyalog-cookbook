@@ -1,6 +1,9 @@
-{:: encoding=“utf-8” /}
+{:: encoding="utf-8" /}
+[parm]:toc                 =  0
+[parm]:title               =   'Special Chars'
 
-# Special characters
+
+# Appendix 5 --- Special characters
 
 The following assumes `⎕IO←1`.
 

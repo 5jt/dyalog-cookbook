@@ -1,4 +1,5 @@
 {:: encoding="utf-8" /}
+[parm]:title='Logging'
 
 # Logging what happens 
 
@@ -12,13 +13,14 @@ We see an alert message: _This Dyalog APL runtime application has attempted to u
 
 `MyApp` failed because there is no file or folder `Z:\texts\Does_not_exist`. That triggered an error in the APL code. The interpreter tried to display an error message and looked for input from a developer from the session. But a runtime task has no session, so at that point the interpreter popped the alert message and `MyApp` died.   
 
-T> Prior to version 16.0, as soon as you close the message box a CONTINUE workspace was created in the current directory. Such a CONTINUE WS can be loaded and investigated, making it easy to figure out what the problem is. However, this is only true if it is a single-threaded application since workspaces cannot be saved when more than one thread is running.
-T>
-T>With version 16.0 you can still force the interpreter to drop a CONTINUE workspace by enabling the old behaviour with `2704⌶ 1` while `2704⌶ 0` would disable it, but that's the default anyway.
-T> 
-T> Note that for analyzing purposes a CONTINUE workspace must be loaded in an already running instance of Dyalog. In other words: don't double-click a CONTINUE! The reason is that `⎕DM` and `⎕DMX` are overwritten in the process of booting SALT, meaning that you loose the error message. You _may_ be able to recreate them by re-executing the failing line but that might be dangerous, or fail in a different way when executed without the application having been initialised properly.
-T>
-T> Note also that the CONTINUE is always saved in the current directory; in version 16.0 there is no way to tell the interpreter to save the CONTINUE workspace elsewhere. That is unfortunate since it will fail for your own stand-alone EXEs if they are installed in the standard folders for executables under Windows, `C:\Program Files` (64-bit programs) and `C:\Program Files (x86)` (32-bit programs) because even as an admin you cannot write to those folders or any of its sub folders. But Windows saves it anyway! In case of a program attempts to write to a banned location Windows tells them "Sure, no problem" but saves them in a folder `"C:\Users\kai\AppData\Local\VirtualStore\Program Files\Dyalog\Dyalog APL-64 16.0 Unicode\CONTINUE.dws"` in case you are running Dyalog APL 64-bit Unicode version 16.0. 
+A> # CONTINUE workspaces
+A> Prior to version 16.0, as soon as you close the message box a CONTINUE workspace was created in the current directory. Such a CONTINUE WS can be loaded and investigated, making it easy to figure out what the problem is. However, this is only true if it is a single-threaded application since workspaces cannot be saved when more than one thread is running.
+A>
+A> With version 16.0 you can still force the interpreter to drop a CONTINUE workspace by enabling the old behaviour with `2704⌶ 1` while `2704⌶ 0` would disable it, but that's the default anyway.
+A> 
+A> Note that for analyzing purposes a CONTINUE workspace must be loaded in an already running instance of Dyalog. In other words: don't double-click a CONTINUE! The reason is that `⎕DM` and `⎕DMX` are overwritten in the process of booting SALT, meaning that you loose the error message. You _may_ be able to recreate them by re-executing the failing line but that might be dangerous, or fail in a different way when executed without the application having been initialised properly.
+A>
+A> Note also that the CONTINUE is always saved in the current directory; in version 16.0 there is no way to tell the interpreter to save the CONTINUE workspace elsewhere. That is unfortunate since it will fail for your own stand-alone EXEs if they are installed in the standard folders for executables under Windows, `C:\Program Files` (64-bit programs) and `C:\Program Files (x86)` (32-bit programs) because even as an admin you cannot write to those folders or any of its sub folders. But Windows saves it anyway! In case of a program attempts to write to a banned location Windows tells them "Sure, no problem" but saves them in a folder `"C:\Users\kai\AppData\Local\VirtualStore\Program Files\Dyalog\Dyalog APL-64 16.0 Unicode\CONTINUE.dws"` in case you are running Dyalog APL 64-bit Unicode version 16.0. 
 
 The next version of `MyApp` could do better by having the program recording what happens to a log file.
 
@@ -40,7 +42,7 @@ Run #.MyApp.SetLX ⍬
 
 and run the DYAPP to recreate the `MyApp` workspace. 
 
-A> ### Getting help with any APLTree members
+A> # Getting help with any APLTree members
 A> 
 A> Note that you can ask for a detailed documentation for how to use the members of the APLTree project by executing:
 A> 
@@ -158,14 +160,13 @@ Notes:
 
 * If we would run `OpenLogFile` and allow it to return its result to the session window then something similar to this would appear:
 
-   ~~~
-   [Logger:Logs\MyApp_20170211.log(¯87200436)]
-   ~~~
+  ~~~
+  [Logger:Logs\MyApp_20170211.log(¯87200436)]
+  ~~~
    
-   * "Logger" is the name of the class the object was instantiated from.
+  * "Logger" is the name of the class the object was instantiated from.
    
-   * The path between `:` and `(` tell us the actual name of the log file. Because the `filenameType` is "DATE" the name carries 
-     the year, month and day the log file was opened. 
+  * The path between `:` and `(` tell us the actual name of the log file. Because the `filenameType` is "DATE" the name carries the year, month and day the log file was opened. 
      
    * The negative number is the tie number of the log file.  
 
@@ -392,7 +393,7 @@ You start LogDog by double-clicking the EXE. You can then consult LogDog's help 
 
 Once you have started LogDog on the `MyApp` log file you will see something like this:
 
-![LogDog GUI](images/LogDog.png)
+![LogDog GUI](./images/LogDog.png)
 
 Note that LogDog comes with an auto-scroll feature, meaning that the latest entries at the bottom of the file are always visible. If you don't want this for any reason just tick the "Freeze" check box.
 
@@ -404,7 +405,7 @@ We now have `MyApp` logging its work in a subfolder of the application folder an
 
 Next we need to consider how to handle and report errors we have _not_ anticipated. We should also return some kind of error code to Windows. If `MyApp` encounters an error, any process calling it needs to know. But before we are doing this we will disuss how to configure `MyApp`.
 
-A> ### Destructors versus the Tracer
+A> # Destructors versus the Tracer
 A>
 A> When you trace through `TxtToCsv` the moment you leave the function the Tracer shows the function `Cleanup` of the `Logger` class. The function is declared as a destructor.
 A>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta charset="utf-8">
+<title>Direct input</title>
+<style media="screen">
+html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;}article,aside,details,figcaption,figure,footer,header,hgroup,main,menu,nav,section,summary{display:block;}audio,canvas,progress,video{display:inline-block;vertical-align:baseline;}audio:not([controls]){display:none;height:0;}[hidden],template{display:none;}a{background-color:transparent;}a:active,a:hover{outline:0;}abbr[title]{border-bottom:1px dotted;}b,strong{font-weight:bold;}dfn{font-style:italic;}h1{font-size:2em;margin:0.67em 0;}mark{background:#ff0;color:#000;}small{font-size:80%;}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline;}sup{top:-0.5em;}sub{bottom:-0.25em;}img{^border:0;}svg:not(:root){overflow:hidden;}figure{margin:1em 40px;}hr{-moz-box-sizing:content-box;box-sizing:content-box;height:0;}code,kbd,pre,samp{font-family:APLFont;font-size:1em;}button,input,optgroup,select,textarea{color:inherit;font:inherit;margin:0;}button{overflow:visible;}button,select{text-transform:none;}button,html input[type="button"], input[type="reset"],input[type="submit"]{-webkit-appearance:button;cursor:pointer;}button[disabled],html input[disabled]{cursor:default;}button::-moz-focus-inner,input::-moz-focus-inner{border:0;padding:0;}input{line-height:normal;}input[type="checkbox"],input[type="radio"]{box-sizing:border-box;padding:0;}input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{height:auto;}input[type="search"]{-webkit-appearance:textfield;-moz-box-sizing:content-box;-webkit-box-sizing:content-box;box-sizing:content-box;}input[type="search"]::-webkit-search-cancel-button,input[type="search"]::-webkit-search-decoration{-webkit-appearance:none;}fieldset{border:1px solid #c0c0c0;margin:0 2px;padding:0.35em 0.625em 0.75em;}legend{border:0;padding:0;}textarea{overflow:auto;}optgroup{font-weight:bold;}table{border-collapse:collapse;border-spacing:0;}td,th{padding:0;}body{margin:0pt 0pt 0pt 0pt;font-family:'Verdana', serif;background-color:#fdfdfd;font-size:18px;line-height:1.4;max-width:1200px;padding:15px;}h1, h2, h3, h4, h5, h6{color:Black;font-weight:800;padding-left:0;font-family:'Arial';}h1, h2, h3, h4, p{margin-bottom:16px;}h1{font-size:32px;margin:5px 0 20px 0;}h1 > code, h2 > code, h3 > code, h4 > code, h5 > code, h6 > code{font-size:100%;background-color:inherit;}h2{font-size:26px;margin:10px 0 10px 0;padding-top:10px;border-bottom:1px solid Black;}h3{margin:0; margin-top:10px;font-size:22px;}h4{font-size:18px;margin:0;margin-top:10px;}h5, h6{font-size:16px;margin:0;margin-top:12px;padding:0;}a{color:#0099ff;margin:0;padding:0;vertical-align:baseline;}a:visited{color:purple;}a.autoheader_anchor{text-decoration:none;}ul{list-style-type:disc;}ul, ol{padding:0;margin:0;}li > ul, ol{padding-bottom:0;}li{line-height:1.3;margin-left:25px;margin-bottom:10px;}ul > li{margin-left:20px;}li ul{margin-left:10px;}li ul{margin-left:5px;}li p{padding:1px 0 0 0; margin:10px 0 5px 0;line-height:1.3;}p, ul, ol{line-height:1.3;padding:8px 0 0 0;margin:0;color:#505050;}pre{overflow:auto;padding:10px 5px;margin:10px 0 10px 0 !important;white-space:pre-wrap;background-color:#e7e7e7;color:#3e3e3e;border:1px Silver dashed;display:block;font-family:APLFont, monospace;font-weight:400;}pre > code{line-height:1.2;border:0;padding:0;margin:0;background-color:inherit;color:inherit;font-weight:inherit;}li > pre{left-margin:0;}nav code{background-color:inherit;}code{font-family:APLFont, monospace;background-color:#e7e7e7;color:Black;font-weight:800;line-height:1.2;font-size:16px;margin:0;padding:3px 8px 3px 8px;}tbody th, tfoot tr{background-color:silver;}tbody tr:nth-child(odd){background-color:#f5f5f5;}th, td{padding:3px 10px;}table{border-color:Black;background-color:#ebebeb;margin:20px 0 20px 0;border:2px black;border-collapse:collapse;font-family:APLFont;font-size:16px;line-height:1.2;border:1pt solid Gray;}li > table{margin:10px 0 10px 0;}tr{margin:20px;}th{font-weight:bold;}tfoot td{font-weight:bold;}blockquote{border-left:5px solid silver;padding-left:5px;margin:15px 5px 15px 10px;}blockquote ul li{margin-left:215px;}blockquote ol li{margin-left:25px;}li > blockquote{margin-left:0;}nav{background-color:#f5f5f5;border:1px solid Black;padding:10px;margin:10px;margin-right:0;box-shadow:5px 5px 5px Gray; float:right;width:auto;}nav code{font-size:80%;}nav#main_nav{position:fixed;top:0;right:10px;float:none;}nav ul{list-style-type:none; margin:0 0 2px 0;padding:0;}nav a:visited{ color:black;}nav ul li{margin-bottom:0px;}nav li p{margin:0;padding:0;line-height:1;margin:0;padding:0;}nav li{font-size:11px;line-height:1.3;padding:0;margin-top:0;margin-bottom:0;margin-left:15px;}nav p{font-weight:bold;font-size:75%;padding-top:0;}dl{margin-top:0.1em;margin-bottom:0.1em;}dt{margin-top:0.75em;margin-bottom:0.1em;font-weight:800;}label#hide_toc_label{font-size:80%;}.toc-container{position:relative;height:auto;}[type="checkbox"]{position:absolute;left:-9999px;}label{display:block;width:100%;height:1.1em;cursor:pointer;top:0;padding-left:10pt;}label:before{content:'Table of contents (Show)';font-weight:bold;font-size:90%;padding-bottom:0pt;}[type="checkbox"] ~ div{display:none;}[type="checkbox"]:checked ~ div{display:block;margin-top:10pt;}[type="checkbox"]:checked + label{top:100%;}[type="checkbox"]:checked + label:before{content:'Table of contents (Hide)';}.print_only{display:none;}div#footnotes_div p{line-height:1; padding-bottom:0;padding-top:0;}div#footnotes_div ol{padding-top:0;}@font-face{font-family:"APLFont";src:local("APL385 Unicode"), url("http://misc.aplteam.com/apl385.ttf") format("truetype");}
+</style>
+<style media="print">
+html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;}body{-webkit-print-color-adjust:exact;}article,aside,details,figcaption,figure,footer,header,hgroup,main,menu,nav,section,summary{display:block;}audio,canvas,progress,video{display:inline-block;vertical-align:baseline;}audio:not([controls]){display:none;height:0;}[hidden],template{display:none;}a{background-color:transparent;}a{color:black !important;text-decoration:none;}a:active,a:hover{color:black;outline:0;}b,strong{font-weight:bold;}dfn{font-style:italic;}h1{margin:0.67em 0;}mark{background:#ff0;color:#000;}small{font-size:80%;}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline;}sup{top:-0.5em;}sub{bottom:-0.25em;}img{border:0;}svg:not(:root){overflow:hidden;}figure{margin:1em 40pt;}hr{-moz-box-sizing:content-box;box-sizing:content-box;height:0;}code,kbd,pre,samp{font-family:monospace, monospace;font-size:1em;}button,input,optgroup,select,textarea{color:inherit;font:inherit;margin:0;}button{overflow:visible;}button,select{text-transform:none;}button,html input[type="button"], input[type="reset"],input[type="submit"]{-webkit-appearance:button;cursor:pointer;}button[disabled],html input[disabled]{cursor:default;}button::-moz-focus-inner,input::-moz-focus-inner{border:0;padding:0;}input{line-height:normal;}input[type="checkbox"],input[type="radio"]{box-sizing:border-box;padding:0;}input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{height:auto;}input[type="search"]{-webkit-appearance:textfield;-moz-box-sizing:content-box;-webkit-box-sizing:content-box;box-sizing:content-box;}input[type="search"]::-webkit-search-cancel-button,input[type="search"]::-webkit-search-decoration{-webkit-appearance:none;}fieldset{border:1pt solid #c0c0c0;margin:0 2pt;padding:0.35em 0.625em 0.75em;}legend{border:0;padding:0;}textarea{overflow:auto;}optgroup{font-weight:bold;}table{border-collapse:collapse;border-spacing:0px;}td, th{padding:2pt 8pt;}body{margin:10pt 0 0 0;font-family:"Bookman Old Style", serif;background-color:#fdfdfd;font-size:9pt;line-height:1.2;max-width:auto;padding:15pt;}h1, h2, h3, h4 h5 h6{color:black;font-weight:800;padding-left:0;margin:5pt 0 0 0;padding:0}h1, h2, h3, h4, p{margin-bottom:5pt;}h1 > code, h2 > code, h3 > code, h4 > code, h5 > code, h6 > code{font-size:100%;}h1{font-size:170%;margin-top:25pt;margin-bottom:10pt;}h2{font-size:135%;margin:15pt 0 10pt 0;border-bottom:1pt solid Silver;}h3{font-size:125%;}h3, h4 > pre{margin-bottom:8pt;}h4{font-size:115%;}h5{font-size:105%;padding-bottom:0;margin-bottom:0;}h5{font-size:100%;}a{color:#0099ff;margin:0;padding:0;vertical-align:baseline;}a.autoheader_anchor{text-decoration:none;}ul{list-style-type:square;}ul, ol{padding:0;margin:0;}li > ul, ol{padding-bottom:0;}li{line-height:1.3;margin-left:13pt;margin-bottom:5pt;}ul > li{margin-left:10pt;}li ul{margin-left:5pt;}li ul{margin-left:3pt;}li p{padding:1pt 0 0 0; margin:5pt 0 3pt 0;line-height:1.3;}p, ul, ol{line-height:1.3;padding:4pt 0 0 0;margin:0;color:#292929;}pre{padding:3pt;margin:5px 0;white-space:pre-wrap; background-color:#f8f8f8; background-color:#f0f0f0;border:1pt Silver solid;display:block;font-family:APLFont, monospace;font-weight:800;overflow:auto;}pre code{ background-color:#f0f0f0; color:Black; padding:0; margin:0 0 -6pt 0; line-height:1.1; border:0;}code{font-family:APLFont, monospace;font-weight:800;line-height:1.2;font-size:8pt;color:#950000;padding:3pt 4pt 3pt 4pt;}tbody th, tfoot tr{background-color:silver;}tbody tr:nth-child(odd){background-color:#fafafa;}th, td{padding:1pt 5pt;}table{background-color:#f1f1f1;margin:20pt 0;font-family:APLFont;font-size:8pt;padding:3pt 5pt;border:1pt solid silver;page-break-inside:avoid;}li > table{margin:10pt 0 10pt 0;}tr{margin:20pt;}th{font-weight:bold;}tfoot td{font-weight:bold;}blockquote{border-left:5pt solid silver;padding-left:5pt;margin:8pt 3pt 8pt 8pt;}nav{background-color:#f8f8f8;border:1pt solid Gray;width:auto; float:right;padding:5pt 5pt 5pt 0;margin:5pt 0 5pt 5pt;}nav *{font-size:75%;}nav ul{list-style-type:none; margin:0 0 2px 0;padding:0;}nav ul li{margin-bottom:0px;}nav li p{margin:0;padding:0;line-height:1;margin:0;padding:0;}nav li{font-size:8pt;line-height:1;padding:0;margin-top:0;margin-bottom:0;margin-left:15px;}dl{margin-top:0.1em;margin-bottom:0.1em;}dt{margin-top:0.1em;margin-bottom:0.75em;font-weight:800;}label#hide_toc_label{font-size:65%;}.toc-container{position:relative;height:auto;margin-top:10pt;}[type="checkbox"]{display:none;}label{display:block;width:100%;height:1.1em;top:0;padding-left:10pt;}label:before{content:'Table of contents (Show)';font-weight:bold;font-size:140%;padding-bottom:10pt;}a.external_link::before{content:" 🌎";}a.bookmark_link::before{content:" ➯";}a.bookmark_link{font-style:italic;}a.mailto_link::before{content:" ✉"}nav a.bookmark_link{font-style:normal;}nav p{margin-left:10pt;font-weight:bold;font-size:10pt;}nav a.bookmark_link::before{content:"";}div#footnotes_div a::before{content:"";}div#footnotes_div a{font-style:normal;}@font-face{font-family:"APLFont";src:local("APL385 Unicode"), url("http://misc.aplteam.com/apl385.ttf") format("truetype");}
+</style>
+<meta name="author" content="Kai Jaeger">
+</head>
+<body>
+<a href="#minutes-2017-11-11" id="minutes-2017-11-11" class="autoheader_anchor">
+<h1>Minutes 2017-11-11</h1>
+</a>
+<a href="#participants" id="participants" class="autoheader_anchor">
+<h2>Participants</h2>
+</a>
+<p>Morten and Kai in Bramley, Gitte (partly) via Skype.</p>
+<a href="#topics" id="topics" class="autoheader_anchor">
+<h2>Topics</h2>
+</a>
+<ul>
+<li>Financial support for the APLTree project</li>
+<li>Cook book</li>
+</ul>
+<a href="#financial-support-for-apltree" id="financial-support-for-apltree" class="autoheader_anchor">
+<h3>Financial support for APLTree</h3>
+</a>
+<p>It was agreed that for maintenance work Dyalog start to pay £500 monthly from 1st November, so the first invoice will be send at the end of November. This agreement is scheduled for three month. After that it will be reconsidered. If neither side objects the agreement will continue.</p>
+<p>APL Team will report on what is done under the umbrella of “Maintenance”.</p>
+<p>Dyalog is prepared to consider additional support on a by-project basis. For that APL Team will provide details and ask for a decision.</p>
+<a href="#cook-book" id="cook-book" class="autoheader_anchor">
+<h3>Cook book</h3>
+</a>
+<a href="#change-of-strategy" id="change-of-strategy" class="autoheader_anchor">
+<h4>Change of strategy</h4>
+</a>
+<p>As opposed to the original plan it was decided to <strong>not</strong> go for a printed version of the Cook Book. Instead the new target is the web.</p>
+<p>This comes with advantages and disadvantages:</p>
+<a href="#advantages" id="advantages" class="autoheader_anchor">
+<h5>Advantages</h5>
+</a>
+<ul>
+<li>A web version can offer interactive support:
+<ul>
+<li>Hiding additional — possibly complex — stuff in accordion-like boxes that are closed by default.</li>
+<li>Offering “Copy code” buttons.</li>
+<li>Working links, either internal or external</li>
+</ul></li>
+<li>Easier to publish.</li>
+<li>Easier to maintain.</li>
+<li>No deadline: additional chapters can be added at any point in time.</li>
+<li>Regarding the code we can provide an HTML page that highlights the differences between the starting point and the end-result.</li>
+</ul>
+<a href="#disadvantages" id="disadvantages" class="autoheader_anchor">
+<h5>Disadvantages</h5>
+</a>
+<ul>
+<li>All existing chapters need an overhaul.</li>
+<li>We cannot produce a high-quality PDF for printing purposes, at least not without additional major effort.</li>
+</ul>
+<p>It was decided that the advantages outweigh the disadvantages, therefore we go for a web-based solution.</p>
+<p>However, in order to make a printed version of the copy as nice, appealing and easy to read as possible it was agreed that we need to put an effort into producing a proper style sheet for printing purposes.</p>
+<a href="#where-to-publish" id="where-to-publish" class="autoheader_anchor">
+<h4>Where to publish</h4>
+</a>
+<p>Since Dyalog wants to stay clear from any kind of publishing platform there are two obvious candidates:</p>
+<dl>
+<dt>Vector</dt>
+<dd>Given that Vector has not been produced for a long time and that the web site is in a condition that is actually doing harm despite Vector's reputation — which is now seriously damaged — Vector is not an option any more.</dd>
+<dt>APL wiki</dt>
+<dd>The fact the HTML pages produced by the underlying Wiki engine MoinMoin cannot be converted into something mobile-friendly and the fact that over the last three years just Pierre Gilbert and Kai have contributed to the APL wiki it's not really an option either.</dd>
+</dl>
+<p>That means a new kind of platform needs to be established but should be independent from Dyalog.</p>
+<p>Kai pointed out that with MarkAPL and either MiServer or Rumba it should not be too difficult to establish something that comes very close to, say, MkDocs. It would just a bit of effort to make it possible for would-be authors to edit stuff online and for an admin (Kai is willing to volunteer) to organize peer-reviewing and publishing an HTML page that is produced from the Markdown.</p>
+<p>(We did not discuss mathematical formula, something that needs to be addressed in one way or another).</p>
+<p>By publishing material as web pages many advantages come for free, for example its accessibility via Google searches.</p>
+<p>Kai will convert one Cook Book chapter into a web page; that should demonstrate all the advantage listed above.</p>
+<p>We agreed that Gitte and Morten will set time aside to look at the cookbook in the 1st half of December and be prepared for a “walk through” starting on December 20th, with the 21st reserved in case we need it.</p>
+<a href="#stephen-taylor" id="stephen-taylor" class="autoheader_anchor">
+<h4>Stephen Taylor</h4>
+</a>
+<p>Given that since his latest (and third) promise to contribute again nothing has happened at all it was decided to approach Stephen and force him to clarify his position. More promises won't do.</p>
+<p>Dyalog will communicate the decision and also make sure that Stephen presents a final invoice for what he's done so far. Only then can we be sure how much of the original budget is still available.</p>
+<a href="#fire" id="fire" class="autoheader_anchor">
+<h3>Fire</h3>
+</a>
+<p>Morten promised that he would look at FIRE in December. The HTML-ization of FIRE is a potential project that we can collaborate on next year.</p>
+</body>
+</html>

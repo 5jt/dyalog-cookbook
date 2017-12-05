@@ -1,4 +1,5 @@
-{:: encoding=“utf-8” /}
+{:: encoding="utf-8" /}
+[parm]:title='EventLog'
 
 # The Windows Event Log
 

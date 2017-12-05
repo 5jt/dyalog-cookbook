@@ -1,6 +1,8 @@
-{:: encoding=“utf-8” /}
+{:: encoding="utf-8" /}
+[parm]:title  = 'User CMDs'
 
-# Appendix 02: User commands
+
+# Appendix 2 --- User commands
 
 
 ## Overview

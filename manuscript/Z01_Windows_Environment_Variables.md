@@ -1,6 +1,8 @@
-{:: encoding=“utf-8” /}
+{:: encoding="utf-8" /}
+[parm]:title='EnvVars'
 
-# Appendix 01: Windows environment variables
+
+# Appendix 1 --- Windows environment variables
 
 ## Overview
 
@@ -111,7 +113,7 @@ The username of the user currently logged on. Same as `⎕AN` in APL.
 Defaults to "C:\\Users\\{username}". That's where all the stuff is saved that belongs to the user currently logged on. Note that this is kept apart from other user's spying eyes by the operating system.
 
 ### WinDir
-Defaults to %[SystemRoot](#)%. Deprecated.
+Defaults to the value of [`%SystemRoot%`](#). Deprecated.
 
 
 [^roaming]: <https://en.wikipedia.org/wiki/Roaming_user_profile>

@@ -1,6 +1,9 @@
-{:: encoding=“utf-8” /}
+{:: encoding="utf-8" /}
+[parm]:toc   = 0
+[parm]:title = 'aplcores'
 
-# Workspace integrity, corruptions and aplcores
+
+# Appendix 9 --- aplcores, WS integrity & corruptions
 
 The _workspace_ (WS) is where the APL interpreter manages all code and all data in memory. The Dyalog tracer / debugger has extensive edit-and-continue capabilities; the downside is that these have been known to occasionally corrupt the workspace. However, there are many other ways how the workspace may get corrupted:
 
@@ -12,7 +15,7 @@ The _workspace_ (WS) is where the APL interpreter manages all code and all data 
 The interpreter checks WS integrity every now and then; how often can be influenced by setting certain debug flags; see "The APL Command Line" in the documentation for details. Be warned that...
 
 * the `-DW` flag slows an application down _extremely_ even on very fast machines.
-* `-Dc` and `-Dw` slow the interpreter down in any case, but the effect depends on the workspace size. You might not notice anything at all with, say, maxws=64MB but you will notice a delay with maxws=2GB.
+* `-Dc` and `-Dw` slows the interpreter down in any case, but the effect depends on the workspace size. You might not notice anything at all with, say, maxws=64MB but you will notice a delay with maxws=2GB.
 
 When the interpreter finds that the WS is damaged it will create a dump file called "aplcore" and exit in order to prevent your application from producing (or storing) incorrect results.
 
@@ -43,13 +46,14 @@ This might be a useful thing to do just before executing a line you already know
 In order to create a "real" aplcore in the sense of corrupting the workspace this will do:
 
 ~~~
- Crash;MEMCPY
+ ∇Crash;MEMCPY
  :Trap 102
      ⎕NA'dyalog32|MEMCPY u4 u4 u4'
  :Else
      ⎕NA'dyalog64|MEMCPY u4 u4 u4'
  :EndTrap
  MEMCPY 0 0 4
+ ∇
  ~~~
  
  By default an aplcore is saved with the name `aplcore` in what is at that moment the current directory. This is not nice because it means that any aplcore might overwrite the last one. That can become particularly annoying when you try to copy from an aplcore with :
@@ -62,7 +66,7 @@ In order to create a "real" aplcore in the sense of corrupting the workspace thi
  
 A> If the aplcore is saved at all that is, because if the current directory is something like `C:\Program files\` then you won't have the right to save into this directory anyway.
 A>
->A When a program asks Windows to save a file in a location where this is not allowed (`C:\Program Files`, `C:\Program Files (x86)`, `C:\Windows`) then Windows will tell the application that it has fulfilled the request, but the file will actually be saved in something like `"C:\Users\{username}\AppData\Local\VirtualStore\Program Files\Dyalog\Dyalog APL-64 16.0 Unicode\"`
+A> When a program asks Windows to save a file in a location where that program has not "Write" permission (`C:\Program Files`, `C:\Program Files (x86)`, `C:\Windows`) then Windows will tell the application that it has fulfilled the request, but the file will actually be saved in something like `"C:\Users\{username}\AppData\Local\VirtualStore\Program Files\Dyalog\Dyalog APL-64 16.0 Unicode\"`
  
  For that reason it is highly recommended to set the value `aplcorename` in the Windows Registry:
 

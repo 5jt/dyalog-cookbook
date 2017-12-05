@@ -1,6 +1,7 @@
 {:: encoding="utf-8" /}
+[parm]:title='Documentation'
 
-# Documentation -- the Doc is in
+# Documentation --- the Doc is in
 
 Documentation is the bad mother of software. Programmers learn early that we depend on it but must not trust it. On the one hand we need it for the software we use. On the other we learn a great wariness of it for the software we develop. Understanding why this is so will help us see what to do about documenting `MyApp`.
 

@@ -1,4 +1,5 @@
 {:: encoding="utf-8" /}
+[parm]:title='Error Handling'
 
 # Handling errors
 
@@ -271,7 +272,7 @@ Now we can change `FileRelatedErrorCodes` by copying what we've just printed to 
 ∇
 ~~~
 
-A> ### Why don't we just :Trap all errors?
+A> # Why don't we just :Trap all errors?
 A> 
 A> `:Trap 0` would trap all errors - way easier to read and write, so why don't we do this?
 A> 
@@ -324,7 +325,7 @@ leanpub-end-insert
 
 Note that the exit code is tested against `EXIT.OK`. Testing `0=exit` would work and read as well, but relies on `EXIT.OK` being 0. The point of defining the codes in `EXIT` is to make the functions relate to the exit codes only by their names.
 
-A> ### Logging file related errors
+A> # Logging file related errors
 A>
 A> Logging errors related to files in a real-world application requires more attention to detail: `⎕DMX` provides more information that can be very useful:
 A>
@@ -725,7 +726,7 @@ leanpub-end-insert
 
 Note that we use the `SetTrap` function `HandleError` comes with. It accepts a parameter space as right argument, but it also accepts an empty vector. In the latter case it falls back to the defaults.
 
-A> ### Resetting the diagnostic message and the event number
+A> # Resetting the diagnostic message and the event number
 A> We take the opportunity to initialize both `⎕DM` and `⎕EN`: with `⎕SIGNAL 0` we make sure that
 A>
 A> ~~~

@@ -1,4 +1,5 @@
 {:: encoding="utf-8" /}
+[parm]:title='Configuration'
 
 # Configuration settings
 
@@ -231,7 +232,7 @@ leanpub-end-insert
 
 Although both `MyLogger` as well as `Config` are kind of global and not passed as arguments it helps to assign them this way rather then hide the statement that creates them somewhere down the stack. This way it's easy to see where they are coming from. 
 
-A> ### Specifying an INI file on the command line
+A> # Specifying an INI file on the command line
 A>
 A> We could pass the command line parameters as arguments to `Initial` and investigate whether it carries any `INI=` statement. If so the INI file specified this way should take precedence over any other INI file. However, we keep it simple here.
 

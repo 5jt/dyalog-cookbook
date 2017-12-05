@@ -1,6 +1,9 @@
-{:: encoding=“utf-8” /}
+{:: encoding="utf-8" /}
+[parm]:toc    =  0
+[parm]:title  = 'Quad-SE'
 
-# Appendix 04: The development environment.
+
+# Appendix 4 --- The development environment.
 
 ## Configure your session
 
@@ -30,7 +33,7 @@ The function may be saved in that file either on its own or as part of a namespa
 
 I> You might expect that saving a class script "Setup.dyalog" with a public shared function `Setup` would work as well but that's not the case.
 
-A> ### SALT work directories
+A> # SALT work directories
 A>
 A> You can check which folders are currently considered SALT work directories by issuing `]settings workdir`.
 A>
@@ -168,7 +171,7 @@ If on the other hand you run occasionally (let alone often) more than one instan
 
 ![Dyalog's help on window captions](images\HelpOnWindowCaptions.png)
 
-A> ### Help - online versus offline
+A> # Help - online versus offline
 A>
 A> There are pros and cons:
 A>

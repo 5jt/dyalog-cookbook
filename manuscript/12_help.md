@@ -1,4 +1,5 @@
 {:: encoding="utf-8" /}
+[parm]:title='Help'
 
 # Providing help
 
@@ -31,7 +32,7 @@ Double-click `ViewHelp.exe` in order to see `Markdown2Help2`'s own help system:
 By default `ViewHelp.exe` expects to find a folder `files` as a sibling of itself, and it assumes that this folder contains a help system. 
 
 
-A> ### Specify help folder and help page
+A> # Specify help folder and help page
 A>
 A> You can change the folder `ViewHelper.exe` expects to host the help system by specifying a command line parameter "helpFolder":
 A>

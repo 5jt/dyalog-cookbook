@@ -1,5 +1,8 @@
-{:: encoding=“utf-8” /}
+{:: encoding="utf-8" /}
+[parm]:title  = 'acre'
+[parm]:toc    =  0
 
-# Appendix 03: The source code management system "acre"
+
+# Appendix 3 --- The source code management system "acre"
 
 ## Overview

@@ -1,4 +1,5 @@
 {:: encoding="utf-8" /}
+[parm]:title='Make'
 
 # Make me
 
@@ -102,7 +103,7 @@ I> In most programming languages the process of compiling the source code and pu
 
 At first sight it might seem that we can get away with a reduced version of `MyApp.dyapp`, but that is not quite true. Soon we will discuss how to add a help system to our application. We must then make sure that the help system is compiled properly when the application is assembled. Later even more tasks will come up. Conclusion: we cannot do this with a DYAPP; we need more flexibility.
 
-A> ### More complex scenarios 
+A> # More complex scenarios 
 A> 
 A> In a more complex application than ours you might prefer a different approach. Using an INI file for this is not a bad idea: it gives you way more freedom in defining all sorts of things while a DYAPP allows you to define just the modules to be loaded, and to execute some code.
 A> 
@@ -139,7 +140,7 @@ Notes:
 
   However, this technique is suitable only for scripts that are supposed to be executed by a WCU [^WCU]; you don't want to have a pause in scripts that are called by other scripts.
 
-A> ### The current directory
+A> # The current directory
 A> 
 A> For APLers, the current directory (sometimes called "working directory") is, when running under Windows, a strange animal. In general, the current directory is where "the application" lives. That means that if you start an application `C:\Program Files\Foo\Foo.exe` then for the application "Foo" the current directory will be `C:\Program Files\Foo`. 
 A>
@@ -298,7 +299,7 @@ The test simply checks whether the two INI files have the same sections and the 
 
 `Export` automates what we've done so far by calling the "Export" command from the "File" menu. In case the "Bind" method fails it tries up to 50 times before giving up. This is because from experience we know that depending on the OS and the machine and God knows what else sometimes the command fails several times before it finally succeeds. 
 
-A> ### The "Bind" method
+A> # The "Bind" method
 A>
 A> Not that `Bind` is in version 16.0 not an official method. However, it's there, it works, and we expect it to become an official method in alter version of Dyalog.
 

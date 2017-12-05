@@ -1,4 +1,9 @@
 {:: encoding="utf-8" /}
+[parm]:title     = 'Services'
+[parm]:cssURL    = 'C:/T/TheDyalogCookBook/HTML/CSS/'
+[parm]:linkToCSS = 1
+[parm]:screenCSS = 'BlackOnWhite_print.css,cookbook_print.css'
+
 
 # Windows Services
 
@@ -73,13 +78,13 @@ sc delete MyAppService
 
 and you are done.
 
-A> ### Pitfalls when installing / uninstalling Windows Services
+A> # Pitfalls when installing / uninstalling Windows Services
 A>
 A> Be warned that when you have opened the "Services" GUI while installing or uninstalling a Windows Service then you must press F5 on the GUI in order to update it. The problem is not that the GUI does not update itself, though this can be quite annoying; it can get much worse: you might end up with a Service marked in the GUI as "disabled", and the only thing you can do by then is rebooting the machine. This will happen when you try to perform an action on the GUI when it is not in sync with the Service's current state.
 
-A> ### SC: Service Control
+A> # SC: Service Control
 A>
-A> `SC` is a command line program that allows a user with admin rights to issue particular commands regarding Services. The general format is:
+A> `SC` is a command line program that allows a user with admin rights to issue particular commands regarding Windows Services. The general format is:
 A>
 A> ~~~
 A> SC.exe {command} {serviceName}
@@ -110,11 +115,10 @@ If a Service does not seem to do anything when started:
 
 * Check the name and path of the workspace the Service is expected to load: if that's wrong you won't see anything at all - the message "Workspace not found" goes straight into the ether.
 * Make sure the workspace size is sufficent. Again too little memory would not produce any error message.
-* The Service might create an aplcore when started. Look out for a file `aplcore`[^aplcore] in the Service's current directory to exclude this possibility.
+* The Service might create an aplcore when started. Look out for a file `aplcore`[^aplcore] in the Service's current directory to exclude this possibility. Alos, see the Appendix regarding aplcores for details.
 * The Service might have created a CONTINUE workspace for all sorts of reasons.  
 
-  Keep in mind that starting with version 16.0 by default Dyalog does _not_ drop a CONTINUE workspace by default. You must configure Dyalog accordingly. Also, a CONTINUE cannot be saved in case there is more than one thread running, and Services are by definition multi-threade. However, in case it fails very early there might still be a CONTINUE.
-* The Service might have created an aplcore. See the Appendix regarding aplcores for details.
+  Note that starting with version 16.0 by default Dyalog does _not_ drop a CONTINUE workspace any more. You must configure Dyalog accordingly. Also, a CONTINUE cannot be saved in case there is more than one thread running, and Services are by definition multi-threade. However, in case it fails very early there might still be a CONTINUE.
 
 
   Keep in mind that once a second thread is started, Dyalog is not able any more to save a CONTINUE workspace. On the other hand you should have 
@@ -548,7 +552,7 @@ Notes:
 * Copies over the INI file as well as the two BAT files.
 * Finally it sets `⎕WSID` and saves the workspace without the status indicator and without `MakeService` by deleting itself.
 
-A> ### Self-deleting code
+A> # Self-deleting code
 A>
 A> In case you wonder how it is possible that the function `MakeService.Run` deletes itself and keeps running anyway:
 A>
@@ -736,7 +740,7 @@ Though this test starts and stops the Service, it's real purpose is to make sure
 
 First we need to make sure that everything is assembled freshly, and with admin rights. The best way to do that is to run the script `MakeService.dyapp` from a console that was started with admin rights. This is because unfortunately you cannot right-click on a DYAPP and select "Run as administrator" from the context menu.
 
-A> ### Console with admin rights.
+A> # Console with admin rights.
 A> 
 A> The best way to start a console window with admin rights:
 A>
@@ -803,4 +807,4 @@ Looking for a function "Cleanup"...
 
 ~~~
 
-[^aplcore]: More informatin regarding aplcores is available in the appendix "Aplcores".
+[^aplcore]: More information regarding aplcores is available in the appendix "Aplcores".

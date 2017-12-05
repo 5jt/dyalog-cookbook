@@ -1,6 +1,7 @@
 {:: encoding="utf-8" /}
+[parm]:title='Testing'
 
-# Testing: the sound of breaking glass (Unit tests)
+# Testing --- the sound of breaking glass
 
 Our application here is simple – just count letter frequency in text files. 
 
@@ -304,7 +305,7 @@ Notes:
 * The function `Initial` will be executed by the test framework before any test function is executed. This can be used to initialize stuff that all (or many) test cases need. Here we establish the references `A` (for the `APLTreeUtils` module), `F` (for the `FilesAndDirs` module) and `U` (for the `Utilities` module). `Initial` relies on naming conventions; in case there is a function around with that name it will be executed. More later.
 * The function `Cleanup` will be executed by the test framework after all test functions have been executed. This can be used to clean up stuff that's not needed any more. Here we delete the references `A`, `F` and `U`. More later.
 
-A> ### Ordinary namespaces versus scripted ones 
+A> # Ordinary namespaces versus scripted ones 
 A>
 A> There's a difference between an ordinary namespace and a scripted namespace: imagine you've called `#.Tester.EstablishHelpersIn` within an ordinary namespace. Now you change/add/delete test functions; that would have no effect on anything else in that namespace. In other words, the helpers would continue to exist.
 A>
@@ -337,7 +338,7 @@ That's what we expect.
 
 I> Note that there are INI files mentioned. Ignore this for the time being; we will discuss this later on.
 
-A> ### What is a test case?!
+A> # What is a test case?!
 A> You might wonder how `Run` established what is a test case and what isn't: that's achieved by naming conventions. Any test function _must_ start their name with `Test_`. After that there are two possibilities:
 A> 
 A> 1. In the simple case there are one or more digits after the `_`; nothing but digits. Therefore these all qualify as test cases: `Test_1`, `Test_01`, `Test_001` and so on. `Test_01A` however does not.
@@ -429,7 +430,7 @@ Now run `RunDebug 1`. Trace into `Test_001` and watch whether now any error 5 (L
     →PassesIf'Left argument is not a two-element vector'≡⎕DMX.EM
 ~~~
 
-A> ### ⎕DM versus ⎕DMX
+A> # ⎕DM versus ⎕DMX
 A>
 A> You have always used `⎕DM`, and it was perfectly fine, right? No need to switch to the (relatively) new `⎕DMX`, right? Well, the problem with `⎕DM` is that it is not thread save while `⎕DMX` is. That's why we suggest that you stop using `⎕DM` and use just `⎕DMX`. It also provides more and more precise information.
 
@@ -651,7 +652,7 @@ What we do in `Initial` apart from creating the references:
 * We copy all those files over to our temporary test folder.
 * Finally we check the return code of the copy operation; `R` gets 1 (indicating success) only in case they were successful.
 
-A> ### Machine-dependent initialisation
+A> # Machine-dependent initialisation
 A> 
 A> What if you need to initialise something (say a database connection) but it is somehow different depending on what machine the tests are executed on (IP address, user-id, password...)?
 A> The test framework tries to find two different INI files in the current directory:

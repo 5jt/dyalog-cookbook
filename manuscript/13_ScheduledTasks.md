@@ -1,4 +1,5 @@
 {:: encoding="utf-8" /}
+[parm]:title='Tasks'
 
 # Scheduled Tasks
 
@@ -169,6 +170,9 @@ If we do this then `Cleanup` would not be called in case the check fails. Let's 
 ~~~
 
 I> Note that we must call `MyApp.Cleanup` rather than just `Cleanup` because we are at that moment in `Tests`, and we don't want to execute `Tests.Cleanup`!
+I> ~~~
+I> moment in `Tests`, and we don't want to execute `Tests.Cleanup`!
+I> ~~~
 
 We can learn some lessons from the failure of those two test cases:
 
@@ -178,7 +182,7 @@ We can learn some lessons from the failure of those two test cases:
 
 In our specific case it was actually a problem in the test cases, _not_ in `MyApp`, but the conclusion holds true anyway.
 
-A> ### Shuffle test cases
+A> # Shuffle test cases
 A>
 A> At the time of writing (2017-07) the sequence of the test cases relied on alphabetical order and is therefore predictable. On the to-do list for the `Tester` class is a topic "Add option that makes the test framework shuffle the test cases so that the order of execution is not predictable anymore".
 
@@ -222,7 +226,9 @@ Running with highest privileges
 Configure for
 : Generally you should select the OS the task is running on.
 
-A> ### UAC, admin rights and all the rest
+A> # UAC, admin rights and all the rest
+A> With the UAC, users of the admin group have 2 tokens. The filtered token represents standard 
+A> ## UAC, admin rights and all the rest
 A> 
 A> With the UAC, users of the admin group have 2 tokens. The filtered token represents standard user rights. This token is used by default, for example when you create a shell (console). Therefore you have just standard user rights by default even when using a user account with admin rights. However, when you have admin rights and you click an EXE and select "run as administrator", the full token is used which contains admin rights.
 A> 
@@ -322,7 +328,7 @@ In case you've found a bug and execute `MyApp`'s `Make.bat` again keep in mind t
 
 You most probably forgot to copy over the DLLs needed by Ride [^ride] itself. That's what triggers the return code 32 which stands for "File not find".
 
-A> ### Windows return codes
+A> # Windows return codes
 A> 
 A> In case you want to translate a Windows return code like 32 into a more meaningful piece of information you might consider downloading the user command `GetMsg` from the APL wiki. Once installed properly you can do this:
 A> 
@@ -363,7 +369,7 @@ Instead we use the user command [^hex] `Int2Hex` which is based on code written 
 80070002
 ~~~
 
-A> ### Third-party user commands
+A> # Third-party user commands
 A> 
 A> Naturally there are quite a number of useful third-party user commands available. For details how to install them see Appendix 2.
 

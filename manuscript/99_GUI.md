@@ -1,4 +1,6 @@
 {:: encoding="utf-8" /}
+[parm]:title='GUI'
+
 
 # User interface 
 
@@ -262,7 +264,7 @@ Let's start with a function that creates the whole form. Since we have already j
 ∇
 ~~~
 
-## 
+## To be invented
 
 ......
 

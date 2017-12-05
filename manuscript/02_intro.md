@@ -1,4 +1,6 @@
 {:: encoding="utf-8" /}
+[parm]:title='Introduction'
+
 
 # Introduction
 
@@ -65,7 +67,7 @@ In case you still need help the [Dyalog Forum](http://forum.dyalog.com) provides
 
 I> Note that we assume `⎕IO←1` and `⎕ML←1`, not because  we are making a statement, but because that's the Dyalog default. That keeps the Cookbook in sync with the Dyalog documentation.
 
-A> ## Getting deeper
+A> # Getting deeper
 A>
 A> In case we want to discuss a particular issue in more detail but we are not sure whether the reader is ready for this, now or ever, we format the information this way.
 
@@ -77,7 +79,7 @@ When we refer to a text file, e.g. something with the extension .txt, then we re
 
 ## Acknowledgements
 
-We are deeply grateful for contributions, ideas, comments and outright help from our colleagues, particularly from Gil Athoraya, Morten Kromberg, Nick Nickolov, and Paul Mansour. 
+We are deeply grateful for contributions, ideas, comments and outright help from our colleagues, particularly from Gil Athoraya, Morten Kromberg, Nick Nickolov, Paul Mansour, Richard Smith and Andy Shiers.
 
 We jealously claim any errors as entirely our own work. 
 

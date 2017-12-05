@@ -1,11 +1,13 @@
-{:: encoding=“utf-8” /}
+{:: encoding="utf-8" /}
+[parm]:title='RegEx'
+
 
 # Regular expressions with Dyalog
 
 
 ## To whom it concerns
 
-If you are fluent in regular expressions then you may skip this chapter except perhaps "Analyzing APL ocde" which might tell you about a particular strength of Dyalog's implementation of regular expressions.
+If you are fluent in regular expressions then you may skip this chapter except perhaps "Analyzing APL ocde" which might tell you something new about a particular strength of Dyalog's implementation of regular expressions.
 
 If you are not fluent in regular expression but heavily involved into number crunching without any memory of ever having scanned strings for certain patterns then there is no point in looking into regular expressions because you just don't need them. Let's be clear, regular expressions are an extremely powerful tool, but the level of abstraction is really high. You will find it hard to master them without using them regularly. To rephrase it, if you need to find a pattern in a string twice a year you are probably better off finding an expert on the matter you can ask for advice.
 
@@ -14,13 +16,11 @@ Having said this it is amazing that many APLers do not realize how often they ac
 
 ## Overview
 
-In this chapter we take the approach to explain regular expressions purely by example. The examples start simple and grow complex. Along the line we introduce more features of regular expressions in general and Dyalog's implementation in particular. Your best strategy is to read the following stuff from start to end. It will introduce you to the basic concepts and provide you with the necessary knowledge to become a keen amateur. From there constant usage of regular expressions and the Internet will convert you into an expert, though it will take a bit of time and effort. Be assured that it will be well invested time.
+In this chapter we take the approach to explain regular expressions purely by example. The examples start simple and grow complex. Along the line we introduce more features of regular expressions in general and Dyalog's implementation in particular. Your best strategy is to read the following stuff from start to end. It will introduce you to the basic concepts and provide you with the necessary knowledge to become a keen amateur. From there constant usage of regular expressions --- together with plenty of reasearch on the Internet -- will convert you into an expert, though it will take a bit of time and effort. Be assured that this time will be well invested.
 
 This chapter is by no means a comprehensive introduction to regular expressions, but it should get you to a point where you can take advantage of examples, documents and books that are not addressing Dyalog's implementation.
 
-Note that we explain the syntax of `⎕S` and `⎕R` separately from the main text. That makes it easy to ignore those bits in case you are already familiar with the syntax.
-
-Despite the name of the book you will find only very few recipes for real-world problems in this chapter. The problems provided are used as vehicles to introduce the main features of regular expressions.
+Despite the name of the book you will find only a few recipes for real-world problems in this chapter. The problems provided are used as vehicles to introduce the main features of regular expressions.
 
 
 ## What are regular expressions?
@@ -92,7 +92,7 @@ Opps - no hit.
 
 In order to understand this we have to know _exactly_ what the regular expression engine did:
 
-1. It starts at the beginning of the string; that is actually one to the left of the initial "t"! That position can only match to the meta character `^` which represents the start of a line. 
+1. It starts at the beginning of the string; that is actually one to the left of the initial "t"! That position can only be matched by the meta character `^` which represents the start of a line. 
 1. If there is no match the engine forgets about it and moves one character forward. This is called "consuming" the position the engine has looked at. 
 1. It then tries to match `"` to `H`. Since there is no match either...
 1. It carries on until it arrives at the `"`. Now there is a match!
@@ -167,7 +167,7 @@ A> IC, Mode, DotAll, EOL, ML, Greedy, OM, InEnc, OutEnc, Enc, ResultText, UCP
 A>  
 A> Note that "IC" is the principle option. That means that if no other option needs to be specified you can omit the "IC"; this would do: `⎕S 0 ⍠ 1 ⊢ 'whatever'`. "IC" stands for "Ignore Case". A 1 would make a search pattern case insensitive. The default is 0.
 A> 
-A> In this chapter we won't discuss all these options but "IC", "Mode", "DotAll", "Greedy" and "UCP". For the others refer to `⎕R`'s help page.
+A> In this chapter we won't discuss all these options but "IC", "Mode", "DotAll", "Greedy" and "UCP"; these are the most important ones. For the others refer to `⎕R`'s help page.
 
 But wouldn't it be better to use the `+` rather than the `*` here? After all we are not interested in `""` because their is nothing between the two double quotes? Good point except it does not work:
 
@@ -179,8 +179,8 @@ He said ⌹"
 That because the engine would perform the following steps:
 
 1. Investigate until we find a `"`.
-1. Investigate any character after the first double quote. That is the scond double quote so _that is consumed_ becaue it required _at least one_. Since all other characters are a match as well the `.+` consumes all characters to the end of the input string. 
-1. It then goes back the the current position --- because it is lazy! --- which is bacause the second `"` was already consumed the space after (!) the second `"` and before the `a` of "and". From there it carries on until it finds a `"`. That is first `"` after the "and". All that is then relpaced by the `⌹` character.
+1. Investigate any character after the first double quote. That is the second double quote so _that is consumed_ because it required _at least one_. Since all other characters are a match as well the `.+` consumes all characters to the end of the input string. 
+1. It then goes back the the current position --- because it is lazy! --- which is bacause the second `"` was already consumed the space after (!) the second `"` and before the `a` of "and". From there it carries on until it finds a `"`. That is the first `"` after the "and". All that is then relpaced by the `⌹` character.
 1. The engine then carries on but because there is only a single `"` left there is no other match.
 
 What we need is called _permissive_. 
@@ -188,7 +188,7 @@ What we need is called _permissive_.
 
 ⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹
 
-Apart from delivering the desired result permissive quantifiers have a another advantage: they don't remember any backtracking positions. Therefore they should be faster. Let's check this. Fire up a Dyalog session with 512MB workspace size, issue the command `)copy dfns cmpx` and the define this input string:
+Apart from delivering the desired result permissive quantifiers have a another advantage: they don't remember any backtracking positions. Therefore they should be faster. Let's check this. Fire up a Dyalog session with 512MB workspace size, issue the command `)copy dfns cmpx` and then define this input string:
 
 ~~~
       is←'123 ',(200000000⍴⎕D),' 123'
@@ -252,7 +252,7 @@ By now we've met quite a number of meta characters; how many do we have to deal 
 
 By now we have already discussed six of them; they carry a check mark.
 
-Note that both `}` and `]` are considered meta characters only after an opening `{` or `[`. Without the opening counterpart they are taken literally; that's why they did not make it into the list of meta characters.
+Note that both `}` and `]` are considered meta characters only after an opening `{` or `[`. Without the opening counterpart they are taken literally; that's why they did not make it onto the list of meta characters.
 
 
 ### Example 2 - digits in a string
@@ -296,7 +296,7 @@ We take the opportunity to add the dot (`.`) and the minus (`-`) to the characte
 It's ⌹⌹⌹⌹⌹ plus ⌹⌹⌹⌹⌹⌹⌹
 ~~~
 
-Here we have another problem: we want the dot only to be a match when there is a digit to both the left and the right of the dot. Our search pattern is not dealing with this, therefore the trailing `.` is a match. We will tackle this problem soon with look-ahead and look-behind.
+Here we have another problem: we want the dot only to be a match when there is a digit to both the left and the right of the dot. Our search pattern is not dealing with this, therefore the trailing `.` is a match. We will tackle this problem soon.
 
 Character classes work for letters as well:
 
@@ -318,7 +318,7 @@ Notes:
 * Only at the beginning of a character class definition has the caret the meaning "negate". Therefore you could also say that `[^` means "negate" while, say, `[1^2]` means "Match for one of these three characters: `1^2`.
 * For APLers the caret is a bit tricky because it can easily be confused with the logical AND (`∧`) function. Only next to each other it becomes apparent what it what: `^∧`: the caret is a bit higher than the logical AND.
 
-I> Many problems can be solved in more than one way with regular expressions. For example, our earlier problem to find everything between (and including) double quotes can be solved with this expression as well: `'"[^"]*"' ⎕R '⌹' ⊣ 'He said "Yes", she said "No".'`. It matches a double quote, then as many characters as possible that are _not_ a double quote and finally the closing double quote. This expression has the advantage of not depending on the setting of the "Greedy" option.
+I> Many problems can be solved in more than one way with regular expressions. For example, our earlier problem to find everything between (and including) double quotes can be solved with this expression as well: `'"[^"]*"' ⎕R '⌹' ⊣ 'He said "Yes", she said "No".'`. It matches a double quote, then as many characters as possible that are _not_ a double quote and finally the closing double quote. This expression does not depend on the setting of the "Greedy" option: it's lazy by defintion.
 
 Negate with digits and dots:
 
@@ -357,7 +357,7 @@ We already worked out that the engine is smart enough to take a minus literally 
 ⌹ero  ⌹ne  ⌹wo  ⌹hree      four 
 ~~~
 
-`\s` escapes the ASCII letter "s", meaning that the "s" takes on a special meaning: `\s` stands for "any whitespace". That is at the very least the space character (`⎕UCS 32`) and the tab character (`⎕UCS 9`). There are two options (the stuff that can be set with the `⍠` operator) that influence which characters qualifiy as white space:
+`\s` escapes the ASCII letter "s", meaning that the "s" takes on a special meaning: `\s` stands for "any whitespace". That is at the very least the space character (`⎕UCS 32`) and the tab character (`⎕UCS 9`). There are two options (the stuff that can be set with the `⍠` operator) that influence which other characters qualify as white space:
 
 * "Mode" (discussed soon).
 * "UCP".
@@ -389,9 +389,9 @@ a←1 ⋄ ⌹←1 2 ⋄ txt←'The ⍝ marks a comment; foo' ⍝ set up vars a, 
 
 This needs some explanation:
 
-1. `\N` is the same as a `.`: it matches all characters but the end-of-line character. The difference is when `('DotAll' 1)` is specified; that would make the `.` match any character _including the end-of-line character_ while `\N` will not match the end-of-line character no matter what the setting of `DotAll` actually is.
+1. `\N` is the same as a `.`: it matches all characters but the end-of-line character. It's different when `('DotAll' 1)` is specified: that would make the `.` match any character _including the end-of-line character_ while `\N` will not match the end-of-line character no matter what the setting of `DotAll` actually is.
 
-   That might make sense for the third search pattern (`foo`) but it would under certain circumstances stop the first two search patterns from working as expected.
+   Setting `('DotAll' 1)` might make sense for the third search pattern (`foo`) but it would under certain circumstances stop the first two search patterns from working, therefore we _must_ use the `\N` syntax for those patterns.
 
    We will come back to this soon  when it will become apparent why we have to use `\N` here rather than the dot.
 
@@ -399,7 +399,7 @@ This needs some explanation:
 
 1. `'⍝\N*$'` catches everything from a lamp (`⍝`) to the end of the line (`$`) and replaces it by itself (`&`). Again nothing changes but the comment will not be affected by anything that follows. 
 
-   Since the first expression has already masked eveything within (and including) quotes the first `⍝` does not cause problems; it will be ignored at this stage.
+   Since the first expression has already masked everything within (and including) quotes the first `⍝` does not cause problems; it will be ignored at this stage.
 
 1. Finally `foo` catches the string "foo" in the remaining part, and that is what we are interested in.
 
@@ -407,17 +407,17 @@ As a result `foo` is found within the code but neither within the text nor as pa
 
 As far as we know this powerful feature is specific to Dyalog, but then we have limited experience with other regular expression engines.
 
-Note that the `,¨` in `,¨'&&⌹'` is essential because otherwise  ....`⍝TODO⍝`  Bug report <01406>
+Note that the `,¨` in `,¨'&&⌹'` is essential: without it the RegEx engine would use the pattern `'&&⌹'` thrice. The reason is that `⎕R` actually does not accept scalars, it only accepts vectors. So if you specify three search patterns on the left, then you need to specify not four and not two but three replace patterns as well. In case only a single vector is specified then this vector is taken thrice. Kind of wierd flavour of scalar extension.
 
 
 A> ### Greedy and lazy
 A>
-A> Note that using the option (`⍠('Greedy' 0)`) has a disadvantage: it makes the _whole search pattern_ lazy. There might be cases when you want part of your search pattern to be lazy and other parts greedy. Luckily this can be achieved with the meta character question mark (`?`):
+A> Note that using the option (`⍠('Greedy' 0)`) has a disadvantage: it makes _all search patterns fully_ lazy. There will be cases when you want only a part of your search pattern to be lazy and other parts greedy, or some search pattern lazy and others greedy. Luckily this can be achieved with the meta character question mark (`?`):
 A> 
-A> ~~~
+~~~
 A>       '"\N*?"'⎕R '⌹' ⊣ is
 A> He said ⌹ and ⌹
-A> ~~~
+~~~
 A>
 A> Since "Greedy" is the engine's default you need to specify the `?` only for those parts of your search pattern you want to be lazy.
 
@@ -428,9 +428,9 @@ Our search pattern is still not perfect since it would work on `boofoogoo` as we
 This boo⌹goo is found as well
 ~~~
 
-To solve this we need to introduce look-ahead and look-behind, together known as look-arounds. The names make it pretty obvious what they do. We want to emphasize that all matching attempts we've introduced so far have been "consuming". Look-ahead as well as look-behind are _not_ consuming. That means that no matter whether they are successful or not they won't change the position the engine is currently investigating. They are also called zero-length assertions.
+To solve this we need to introduce look-ahead and look-behind, together known as look-arounds. The names make it pretty obvious what they do. Note that all matching attempts we've introduced so far have been "consuming". Look-ahead as well as look-behind are _not_ consuming. That means that no matter whether they are successful or not they won't change the position the engine is currently investigating. They are also called zero-length assertions.
 
-However, before we tackle our problem we need to introduce the concept of both word boundaries and anchors. We've already met two anchors: the caret (`^`), which matches the beginning of a line, and the dollar (`$`) which matches the end of a line. And there is `\b` which matches a "word boundary". All these characters are zero-length matches.
+However, before we tackle our problem we need to introduce the concept of both word boundaries and anchors. We've already met two anchors: the caret (`^`), which matches the beginning of a line, and the dollar (`$`), which matches the end of a line. And there is `\b` which matches a "word boundary". All these characters are zero-length matches.
 
 I> Depending on the "Mode" option `^` and `$` have different meanings. This is discussed soon.
 
@@ -459,8 +459,8 @@ What the engine does:
 * It's the beginning of the line, so that's successful. The engine then checks whether the current position matches a "g". 
 * That's successful, so the engine moves forward and tries to match the "e" with the current position.
 * That's successful too, so the engine moves forward again and tries to match the "r" with the current position.
-* That a match as well, so the engine performs a look-ahead: _without moving forward_ it tries to match the character _after_ the current one to be a word boundary. A space character qualifies as a word boundary.
-* Thats is a success, too, so the "ger" is replaced by a single `⌹`.
+* That's a match as well, so the engine performs a look-ahead: _without moving forward_ it checks whether the character _after_ the current one is a word boundary. A space character qualifies as a word boundary.
+* That's is a success, too, so the "ger" is replaced by a single `⌹`.
 
 I> What is important to realize is that the current position does not change when a look-behind or a look-ahead is performed; that's why they are called zero-length assertions.
 
@@ -510,7 +510,7 @@ That's better.
 
 Naturally you will need a way to _negate_ a look-ahead and a look-behind. That can be achieved by using a `!` rather than a `=`.
 
-Lets' repeat this. Assuming we look for "x" and "y":
+Lets' try this. Assuming we look for "x" and "y":
 
 ~~~
       'x(?<=y)' ⎕R'⌹' ⊣ 'abxycxd' ⍝ Exchange all "x" when followed by a "y"
@@ -578,7 +578,7 @@ We modify `test` so that is leaves the text and the comment untouched:
 a←1 ⋄ ⌹Hello world⌹←1 ⋄ txt←'text; foo' ⍝ comment
 ~~~
 
-Since any match that starts and ends with a quote is text by definition the function returns those untouched. Anything that start with a lamp symbol is a comment, so they are returned untouched as well. That leaves the hits for the real variable names: they are exchanged against `⌹Hello world⌹`.
+Since any match that starts and ends with a quote is text by definition the function returns those untouched. Anything that starts with a lamp symbol is a comment, so they are returned untouched as well. That leaves the hits for the real variable names: they are exchanged against `⌹Hello world⌹`.
 
 Naturally transformation functions gives you enormous power: you can do whatever you like.
 
@@ -626,7 +626,7 @@ Given that complex regular expressions are hard to read and maintain you should 
 
 ### Performance
 
-Don't expect regular expressions to be faster than a taylored APL solutions; instead expect them to be slightly slower.
+Don't expect regular expressions to be faster than a taylored APL solution; instead expect them to be slightly slower.
 
 However, many regular expressions like finding a simple string in another simple string or uppercasing or lowercasing characters are converted by the interpreter into a native (=faster) APL expression (`⍷` and (`⌶ 819`).
 

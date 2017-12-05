@@ -1,5 +1,8 @@
-Creating a SetUp.exe with the Inno installer
-============================================
+{:: encoding="utf-8" /}
+[parm]:title='Installer'
+
+
+# Creating SetUp.exe with the Inno installer
 
 Before we goin into the details please copy
 

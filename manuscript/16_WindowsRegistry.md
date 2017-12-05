@@ -1,4 +1,5 @@
-{:: encoding=“utf-8” /}
+{:: encoding="utf-8" /}
+[parm]:title='Registry'
 
 # The Windows Registry
 
@@ -337,7 +338,7 @@ That's what `captionValues` may look like:
 13 2
 ~~~
 
-Again, this variable can be copied from the workspace `Z:\code\Workspaces\`. We are going to write this data to the Windows Registry for all versions of Dyalog installed on the current machine. For that we need a list with all versions of Dyalog installed on the current machine. For this we can use the function `GetAllVersionsOfDyalog` we've developed earlier in this chapter:
+Again, this variable can be copied from the workspace `Z:\code\Workspaces\WinReg`. We are going to write this data to the Windows Registry for all versions of Dyalog installed on the current machine. For that we need a list with all versions of Dyalog installed on the current machine. For this we can use the function `GetAllVersionsOfDyalog` we've developed earlier in this chapter:
 
 ~~~
    dyalogVersions←GetAllVersionsOfDyalog ''

@@ -1,0 +1,24 @@
+ C 1   02_intro
+ C 2   03_structure
+ C 3   04_packaging
+ C 4   05_logging
+ C 5   06_configSettings
+ C 6   07_DebuggingEXEs
+ C 7   08_handlingErrors
+ C 8   09_testing
+ C 9   10_documentation
+ C 10  11_makeme
+ C 11  12_help
+ C 12  13_ScheduledTasks
+ C 13  14_Services
+ C 14  15_WindowsEventLog
+ C 15  16_WindowsRegistry
+ C 16  17_Installer
+⍝C 17  20_RegularExpressions
+⍝C 18  99_GUI
+ A 1   Z01_Windows_Environment_Variables
+ A 2   Z02_UserCommands
+⍝A 3   Z03_acre
+ A 4   Z04_Session
+ A 5   Z05_Special_Characters
+ A 9   Z09_aplcores

@@ -1,4 +1,5 @@
 {:: encoding="utf-8" /}
+[parm]:title='Structure'
 
 # Structure
 
@@ -10,11 +11,11 @@ Let's assume you've done the convenient thing. Your code is in a workspace. Ever
 
 In this chapter, we shall convert a DWS (saved workspace) to some DYALOG scripts and introduce a DYAPP script to assemble an active workspace from them. Using scripts to store your source code has many advantages: You can use a traditional source code management system rather than having your code and data stored in a binary blob. Changes that you make to your source code are saved immediately, rather than relying on your remembering to save the workspace at some suitable point in your work process. Finally, you don't need to worry about crashes in your code or externally called modules and also any corruption of the active workspace which might prevent you from saving it.
 
-A> ### Corrupted workspaces
+A> # Corrupted workspaces
 A> 
 A> The _workspace_ (WS) is where the APL interpreter manages all code and all data in memory. The Dyalog tracer / debugger has extensive edit-and-continue capabilities; the downside is that these have been known to occasionally corrupt the workspace.
 A> 
-A>The interpreter checks WS integrity every now and then; how often can be influenced by setting certain debug flags; see the appendix "Workpace integrity, corruptions and aplcores" for details. More details regarding aplcores are available in the appendix "Aplcores".
+A> The interpreter checks WS integrity every now and then; how often can be influenced by setting certain debug flags; see the appendix "Workpace integrity, corruptions and aplcores" for details. More details regarding aplcores are available in the appendix "Aplcores".
 
 
 ## How can you distribute your program?
@@ -24,7 +25,7 @@ A>The interpreter checks WS integrity every now and then; how often can be influ
 
 Could not be simpler. If your user has a Dyalog interpreter, she can also save and send you the crash workspace if your program hits an execution error. But she will also be able to read your code -- which might be more than you wish for. 
 
-A> ### Crash workspaces
+A> # Crash workspaces
 A>
 A> A crash workspace is a workspace that was saved by a function what was initiated by error trapping, typically by a setting of `⎕TRAP`. It's a snapshot of the workspace at the moment an unforseen problem triggered error trapping to take over. It's usually very useful to analyze such problems.
 A>
@@ -58,7 +59,7 @@ We'll keep the program in manageable pieces – 'modules' – and keep those pie
 
 For this there are many _source-control management_ (SCM) systems and repositories available. Subversion, Git and Mercurial are presently popular. These SCMs support multiple programmers working on the same program, and have sophisticated features to help resolve conflicts between them. 
 
-A> ### Source code management with acre
+A> # Source code management with acre
 A> Some members of the APL community prefer to use a source code management system that is tailored to solve the needs of an APL programmer, or a team of APL programmers: acre. APL code is very compact, teams are typically small, and work on APL applications tends to be very oriented towards functions rather than modules. Other aspects of working in APL impact the importance of features of the SCM that you use. acre is an excellent alternative to Git etc., and it is available as Open Source; we will discuss acre in its own appendix.
 
 Whichever SCM you use (we used GitHub for writing this book and the code in it) your source code will comprise class and namespace scripts (DYALOGs) for the application. The help system will be an ordinary --- non-scripted --- namespace. We us a _build script_ (DYAPP) to assemble the application as well as the development environment.
@@ -71,7 +72,7 @@ We suppose you already have a workspace in which your program runs. We don't hav
 
 So we'll begin with the LetterCount workspace. It's trivially simple (we'll extend a bit what it does as we go) but for now it will stand in for your code. You can download it from the book's web site: <https://cookbook.dyalog.com>.
 
-A> ### On encryption
+A> # On encryption
 A> 
 A> Frequency counting relies on the distribution of letters being more or less constant for any given language. It is the first step in breaking a substitution cypher. Substitution cyphers have been superseded by public-private key encryption, and are mainly of historical interest, or for studying cryptanalysis. But they are also fun to play with. 
 A> 
@@ -195,10 +196,9 @@ The objects in `#` are 'public'. They comprise `MyApp` and objects other applica
 3. `tbl←Engine.CountLetters txt`
 4. `status←(bar>3) #.Utilities.means 'ok' #.Utilities.else 'error'`
 
-⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹ ⍝TODO⍝
-Andy made a good point here that this is a diversion he was not happy with. 
-Maybe this should be moved elsewhere?
-⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹⌹
+⍝TODO⍝
+⍝ Andy made a good point here that this is a diversion he was not happy with. 
+⍝ Maybe this should be moved elsewhere?
 
 The last one is pretty horrible. It needs some explanation.
 
@@ -295,7 +295,7 @@ status←(bar>3) means 'ok' else 'error'
 
 yet Shift+Enter in the Tracer or the Editor still works, and any changes would go into `#.Utilities`.
 
-A> ### More about :Include
+A> # More about :Include
 A>
 A>  When a namespace is :Included, the interpreter will execute functions from that namespace as if they had been defined in the current class. However, the actual _code_ is shared with the original namespace. For example, this means that if the code of `means` or `else` is changed while tracing into it from the `MyApp` class those changes are reflected in `#.Utilities` immediately (and any other classes that might have :Included it.
 A>
@@ -307,7 +307,7 @@ A> ~~~
 A> :Class Foo
 A> :Include Goo
 A> :EndClass
-A> 
+A>
 A> :Namespace Goo
 A> ∇ r←Hello
 A>     :Access Public Shared
@@ -349,7 +349,7 @@ In general: if you have a choice between a short and a long expression then your
 
 Diamonds can be useful in some situations, but in general it's a good idea to avoid them.
 
-A> ### Diamonds
+A> # Diamonds
 A> 
 A> In some circumstances diamonds are quite useful:
 A> 
@@ -368,13 +368,13 @@ A>
 A>   (Note that from version 16 onwards you can achieve the same result with `{'-'@(⍸⍵='¯')⊣⍵}`)
 A> * You _cannot_ trace into a one-line dfn. This can be quite useful. For example, this function:
 A>
-A>    ~~~
-A>    OnConfigure←{(4↑⍵),((⊃⍺){(0∊⍴⍺):⍵ ⋄ ⍺⌈⍵}⍵[4]),((⊃⌽⍺){(0∊⍴⍺):⍵ ⋄ ⍺⌈⍵}⍵[5])}
-A>    ~~~
+A>   ~~~
+A>   OnConfigure←{(4↑⍵),((⊃⍺){(0∊⍴⍺):⍵ ⋄ ⍺⌈⍵}⍵[4]),((⊃⌽⍺){(0∊⍴⍺):⍵ ⋄ ⍺⌈⍵}⍵[5])}
+A>   ~~~
 A>
-A>    makes sure that a GUI Form (window) is not going to be smaller than a minimum size defined by `⍺`.
+A>   makes sure that a GUI Form (window) is not going to be smaller than a minimum size defined by `⍺`.
 A>  
-A>    You don't want to have a multi-line dfn here because then you won't be able to trace into any `⎕DQ` (or `Wait`) statement any more; the number of "Config" events is simply overwhelming. Thanks to the `⋄` we can solve the task on a single line and prevent the Tracer from ever entering the dfn.
+A>   You don't want to have a multi-line dfn here because then you won't be able to trace into any `⎕DQ` (or `Wait`) statement any more; the number of "Config" events is simply overwhelming. Thanks to the `⋄` we can solve the task on a single line and prevent the Tracer from ever entering the dfn.
 
 #### Why not use `⎕PATH`?
 
@@ -500,9 +500,9 @@ In your text editor open a new document.
 
 A> You need a text editor that handles Unicode. If you're not already using a Unicode text editor, Windows' own Notepad will do for occasional use. (Set the default font to APL385 Unicode)
 A>
-A>For a full-strength multifile text editor [Notepad++](https://notepad-plus-plus.org/) works well but make sure that the editor converts TAB into spaces; by default it does not, and Dyalog does not like TAB characters. 
+A> For a full-strength multifile text editor [Notepad++](https://notepad-plus-plus.org/) works well but make sure that the editor converts TAB into spaces; by default it does not, and Dyalog does not like TAB characters. 
 A>
-A>You can even make sure that Windows will call Notepad++ when you enter "notepad.exe" into a console window or double-click a TXT file: google for "notepad replacer".
+A> You can even make sure that Windows will call Notepad++ when you enter "notepad.exe" into a console window or double-click a TXT file: google for "notepad replacer".
 
 Here's how the object tree will look:
 

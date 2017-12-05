@@ -1,0 +1,4 @@
+outputPath              = '..\HTML\'
+toc                     = 6
+leanpubExtensions       = 1
+width                   = 1200
