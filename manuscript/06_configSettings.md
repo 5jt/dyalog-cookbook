@@ -1,6 +1,7 @@
 {:: encoding="utf-8" /}
 [parm]:title='Configuration'
 
+
 # Configuration settings
 
 We are going to want our logging and error handling to be configurable. In fact, we will soon have lots of state settings; thinking more widely, an application's configuration includes all kinds of state: e.g., folders for log files and crashes, a debug flag, a flag for switching off error trapping, an email address to report to, you name it.

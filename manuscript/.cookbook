@@ -14,11 +14,12 @@
  C 14  15_WindowsEventLog
  C 15  16_WindowsRegistry
  C 16  17_Installer
-⍝C 17  20_RegularExpressions
-⍝C 18  99_GUI
+⍝C 17  18_RegularExpressions
+⍝C 18  19_GUI
+⍝C 18  20_Using DLLs: ⎕NA
  A 1   Z01_Windows_Environment_Variables
  A 2   Z02_UserCommands
-⍝A 3   Z03_acre
+ A 3   Z03_aplcores 
  A 4   Z04_Session
  A 5   Z05_Special_Characters
- A 9   Z09_aplcores
+⍝A 6   Z06_acre

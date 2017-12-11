@@ -380,7 +380,7 @@ We can now write `captionValues` to all versions:
 [^wikipedia]: The Wikipedia on the Windows Registry:  
 <https://en.wikipedia.org/wiki/Windows_Registry>
 
-[^deflection]: The MSDN on 32-bit and 64-bit applications and the Windows Registry
+[^deflection]: The MSDN on 32-bit and 64-bit applications and the Windows Registry:
 <https://msdn.microsoft.com/en-us/library/windows/desktop/ms724072(v=vs.85).aspx>
 
 

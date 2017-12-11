@@ -9,7 +9,7 @@ To follow this, we'll make a very simple program. It counts the frequency of let
 
 Let's assume you've done the convenient thing. Your code is in a workspace. Everything it needs to run is defined in the workspace. Maybe you set a latent expression, so the program starts when you load the workspace. 
 
-In this chapter, we shall convert a DWS (saved workspace) to some DYALOG scripts and introduce a DYAPP script to assemble an active workspace from them. Using scripts to store your source code has many advantages: You can use a traditional source code management system rather than having your code and data stored in a binary blob. Changes that you make to your source code are saved immediately, rather than relying on your remembering to save the workspace at some suitable point in your work process. Finally, you don't need to worry about crashes in your code or externally called modules and also any corruption of the active workspace which might prevent you from saving it.
+We shall convert a DWS (saved workspace) to some DYALOG scripts and introduce a DYAPP script to assemble an active workspace from them. Using scripts to store your source code has many advantages: You can use a traditional source code management system rather than having your code and data stored in a binary blob. Changes that you make to your source code are saved immediately, rather than relying on your remembering to save the workspace at some suitable point in your work process. Finally, you don't need to worry about crashes in your code or externally called modules and also any corruption of the active workspace which might prevent you from saving it.
 
 A> # Corrupted workspaces
 A> 
@@ -60,7 +60,11 @@ We'll keep the program in manageable pieces – 'modules' – and keep those pie
 For this there are many _source-control management_ (SCM) systems and repositories available. Subversion, Git and Mercurial are presently popular. These SCMs support multiple programmers working on the same program, and have sophisticated features to help resolve conflicts between them. 
 
 A> # Source code management with acre
-A> Some members of the APL community prefer to use a source code management system that is tailored to solve the needs of an APL programmer, or a team of APL programmers: acre. APL code is very compact, teams are typically small, and work on APL applications tends to be very oriented towards functions rather than modules. Other aspects of working in APL impact the importance of features of the SCM that you use. acre is an excellent alternative to Git etc., and it is available as Open Source; we will discuss acre in its own appendix.
+A> Some members of the APL community prefer to use a source code management system that is tailored to solve the needs of an APL programmer, or a team of APL programmers: acre. 
+A>
+A> APL code is very compact, teams are typically small, and work on APL applications tends to be very oriented towards functions rather than modules. 
+A>
+A> Other aspects of working in APL impact the importance of features of the SCM that you use. acre is an excellent alternative to Git etc., and it is available as Open Source; we will discuss acre in its own appendix.
 
 Whichever SCM you use (we used GitHub for writing this book and the code in it) your source code will comprise class and namespace scripts (DYALOGs) for the application. The help system will be an ordinary --- non-scripted --- namespace. We us a _build script_ (DYAPP) to assemble the application as well as the development environment.
 
@@ -74,14 +78,18 @@ So we'll begin with the LetterCount workspace. It's trivially simple (we'll exte
 
 A> # On encryption
 A> 
-A> Frequency counting relies on the distribution of letters being more or less constant for any given language. It is the first step in breaking a substitution cypher. Substitution cyphers have been superseded by public-private key encryption, and are mainly of historical interest, or for studying cryptanalysis. But they are also fun to play with. 
+A> Frequency counting relies on the distribution of letters being more or less constant for any given language. It is the first step in breaking a substitution cypher. 
+A>
+A> Substitution cyphers have been superseded by public-private key encryption, and are mainly of historical interest, or for studying cryptanalysis. But they are also fun to play with. 
 A> 
 A> We recommend _The Code Book: The secret history of codes & code-breaking_ by Simon Singh and _In Code_ by Sarah Flannery as introductions if you find this subject interesting.
 
 
 ## Versions
 
-In real life you will produce successive versions of your program, each better than the last. In an ideal world, all your users will have and use the current version. In that ideal world, you have only one version to maintain: the latest. In the real world, your users will have and use multiple versions. If you charge for upgrading to a newer version, this will surely happen. And even in your ideal world, you have to maintain at least two versions: the current and the next. 
+In real life you will produce successive versions of your program, each better than the last. In an ideal world, all your users will have and use the current version. In that ideal world, you have only one version to maintain: the latest. 
+
+In the real world, your users will have and use multiple versions. If you charge for upgrading to a newer version, this will surely happen. And even in your ideal world, you have to maintain at least two versions: the current and the next. 
 
 What does it mean to maintain a version? At the very minimum, you keep the source code for it, so you could recreate its EXE from scratch, exactly as it was distributed. There will be things you want to improve, and perhaps bugs you must fix. Those will all go into the next version, of course. But some you may need to put into the released version and re-issue it to current users as a patch. 
 
@@ -90,7 +98,7 @@ So in _The Dyalog Cookbook_ we shall develop in successive versions. Our 'versio
 Our first version won't even be ready to export as an EXE. It will just create a workspace MyApp.dws from scripts: a DYAPP and some DYALOGs. We'll call it Version 1. 
 
 
-From the `code` folder on the book website load `LetterCount.dws`. Again, this is just the stand-in for your own code. Here's a quick tour.
+Load the `LetterCount.dws` workspace from the `code\foo` folder on the book website. Again, this is just the stand-in for your own code. Here's a quick tour.
 
 
 ### Investigating the workspace LetterCount
@@ -297,9 +305,11 @@ yet Shift+Enter in the Tracer or the Editor still works, and any changes would g
 
 A> # More about :Include
 A>
-A>  When a namespace is :Included, the interpreter will execute functions from that namespace as if they had been defined in the current class. However, the actual _code_ is shared with the original namespace. For example, this means that if the code of `means` or `else` is changed while tracing into it from the `MyApp` class those changes are reflected in `#.Utilities` immediately (and any other classes that might have :Included it.
+A>  When a namespace is :Included, the interpreter will execute functions from that namespace as if they had been defined in the current class. However, the actual _code_ is shared with the original namespace. For example, this means that if the code of `means` or `else` is changed while tracing into it from the `MyApp` class those changes are reflected in `#.Utilities` immediately (and any other classes that might have :Included it).
 A>
-A> Most of the time, this works as you expect it to, but it can lead to confusion, in particular if you were to `)COPY #.Utilities` from another workspace. This will change the definition of the namespace, but the class has pointers to functions in the old copy of `#.Utilities`, and will not pick up the new definitions until the class is fixed again. If you were to edit these functions while tracing into the `MyApp` class, the changes will not be visible in the namespace. Likewise, if you were to `)ERASE #.Utilities`, the class will continue to work until the class itself is edited, at which point it will complain that the namespace does not exist.
+A> Most of the time, this works as you expect it to, but it can lead to confusion, in particular if you were to `)COPY #.Utilities` from another workspace. This will change the definition of the namespace, but the class has pointers to functions in the old copy of `#.Utilities`, and will not pick up the new definitions until the class is fixed again.
+A> 
+A> If you were to edit these functions while tracing into the `MyApp` class, the changes will not be visible in the namespace. Likewise, if you were to `)ERASE #.Utilities`, the class will continue to work until the class itself is edited, at which point it will complain that the namespace does not exist.
 A>
 A> Let's assume that in a WS `C:\Test_Include` we have just this code:
 A> 
@@ -403,7 +413,7 @@ Note that all the stuff in that WS lives in `#`. We have to change that so that 
    This makes sure that we really use the same values for important system variables as the WS by copying their values into the namespace `#.MyApp`. 
 1. Execute `]save #.MyApp Z:\code\v01\MyApp -makedir -noprompt` 
 
-The last step will save the contents of the namespace `#.MyApp` into `Z:\code\v01\MyApp.dyalog`. In the case that the folder `v01` or any of its parents do not already exist the –makedir option will cause them to be created. `-noprompt` makes sure that `]save` does not ask any questions.
+The last step will save the contents of the namespace `#.MyApp` into `Z:\code\v01\MyApp.dyalog`. In the case that the folder `v01` or any of its parents do not already exist the `-makedir` option will cause them to be created. `-noprompt` makes sure that `]save` does not ask any questions.
 
 This is how the script would look like:
 

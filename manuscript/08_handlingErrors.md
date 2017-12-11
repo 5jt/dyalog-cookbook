@@ -1,6 +1,7 @@
 {:: encoding="utf-8" /}
 [parm]:title='Error Handling'
 
+
 # Handling errors
 
 `MyApp` already anticipates, tests for and reports certain foreseeable problems with the parameters. We'll now move on to handle errors more comprehensively.
@@ -736,7 +737,7 @@ A> SYNTAX ERROR
 A>      .
 A>     ∧
 A>       ⎕dm
-A> SYNTAX ERROR        .       ∧ 
+A> SYNTAX ERROR
 A>      ⎕en
 A> 2
 A>      ⎕signal 0

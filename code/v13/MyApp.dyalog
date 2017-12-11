@@ -218,7 +218,7 @@
    ⍝ Needs command line parameters, runs the application.
       r←⍬
       ⎕TRAP←#.HandleError.SetTrap ⍬
-      ⎕WSID←⊃⊣2 ⎕NQ #'GetCommandLineArgs'
+      ⎕WSID←⊃1↓2 ⎕NQ #'GetCommandLineArgs'
       ⎕SIGNAL 0
       #.FilesAndDirs.PolishCurrentDir
       #.⎕SHADOW'ErrorParms'

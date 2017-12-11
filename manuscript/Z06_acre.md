@@ -3,6 +3,6 @@
 [parm]:toc    =  0
 
 
-# Appendix 3 --- The source code management system "acre"
+# Appendix 6 --- The source code management system "acre"
 
 ## Overview
