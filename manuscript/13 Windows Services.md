@@ -61,7 +61,7 @@ wsid←'"whereEverTheWsLives\MyAppService.DWS"'
 cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService DYALOG_NOPOPUPS=1'
 ~~~
 
-`cmd` could now be execute with the `Execute` class which we introduced in chapter 8, "Handling Errors". That would do the trick.
+`cmd` could now be execute with the `Execute` class which we introduced in the chapter "[Handling Errors](./07 Handling errors.html)". That would do the trick.
 
 `DYALOG_NOPOPUPS`
 : Setting this to 1 prevents any dialogs from popping up (aplcore, WS FULL etc.). You don't want them when Dyalog is running in the background because there's nobody around to click the "OK" button. 
@@ -123,7 +123,7 @@ A> ~~~
 A> `APLCORENAME='/pathToFolder/my_aplcore*`. 
 A> ~~~
 A>
-A> This save any aplcore as "my_aplcore" followed by a number. For more information regarding aplcores see its own appendix.
+A> This save any aplcore as "my_aplcore" followed by a number. For more information regarding aplcores see "[Appendix 3 — aplcores and WS integrity](./52 Appendix 3 — aplcores and WS integrity.html)".
 
 
   Keep in mind that once a second thread is started, Dyalog is not able any more to save a CONTINUE workspace. On the other hand you should have 
@@ -190,7 +190,7 @@ If that's not suitable then consider passing the directory that will host the "L
 
 #### Windows event log
 
-In the next chapter we will discuss why and how to use the Windows Event Log, in particular when it comes to Services.
+In the next chapter ("[The Windows Event Log](./14 The Windows Event Log.html)") we will discuss why and how to use the Windows Event Log, in particular when it comes to Services.
 
 
 ## How to implement it
@@ -465,7 +465,7 @@ Notes:
 * In case you are not familiar with `%~dp0`: this stand for "the directory this BAT file was loaded from". In other words: as long as the workspace `MyAppService.DWS` (which we have not created yet) is a sibling of the BAT file it will work.
 * The setting of APLCORENAME specifies folder and name of any aplcores. For example, `D:\MyAplcores\aplcore_64_16_0_Unicode_*` would specify in which folder the aplcores shall be saved and that the filenames should start with `aplcore_64_16_0_Unicode_` followed by a running number (the asterisk).
 * By setting DYALOG_EVENTLOGNAME you can tell the interpreter that it should write messages to the Windows Event Log, and what name to use for this.
-* The un-install BAT file will check the `errorlevel` variable. If it detects an error it will pause so that one can actually see the error message even when we have just double-clicked the BAT file. We've discussed this in the chapter "Handling errors".
+* The un-install BAT file will check the `errorlevel` variable. If it detects an error it will pause so that one can actually see the error message even when we have just double-clicked the BAT file. We've discussed this in the chapter "[Handling errors](./07 Handling errors.html)".
 
 
 ### "Make" for the Service
@@ -812,4 +812,56 @@ Looking for a function "Cleanup"...
 
 ~~~
 
-[^aplcore]: More information regarding aplcores is available in the appendix "Aplcores".
+[^aplcore]: More information regarding aplcores is available in "[Appendix 3 — aplcores and WS integrity](52 Appendix 3 — aplcores and WS integrity.html).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*[HTML]: Hyper Text Mark-up language
+*[DYALOG]: File with the extension 'dyalog' holding APL code
+*[TXT]: File with the extension 'txt' containing text
+*[INI]: File with the extension 'ini' containing configuration data
+*[DYAPP]: File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to compile an APL application
+*[EXE]: Executable file with the extension 'exe'
+*[BAT]: Executeabe file that contains batch commands
+*[CSS]: File that contains layout definitions (Cascading Style Sheet)
+*[MD]: File with the extension 'md' that contains markdown
+*[CHM]: Executable file with the extension 'chm' that contains Windows Help(Compiled Help) 
+*[DWS]: Dyalog workspace
+*[WS]: Short for Workspaces

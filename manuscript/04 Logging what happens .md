@@ -393,7 +393,7 @@ You start LogDog by double-clicking the EXE. You can then consult LogDog's help 
 
 Once you have started LogDog on the `MyApp` log file you will see something like this:
 
-![LogDog GUI](./images/LogDog.png)
+![LogDog GUI](./Images/LogDog.png)
 
 Note that LogDog comes with an auto-scroll feature, meaning that the latest entries at the bottom of the file are always visible. If you don't want this for any reason just tick the "Freeze" check box.
 
@@ -415,3 +415,55 @@ A> In case you wonder why that is: a destructor (if any) is called when the inst
 [^apltree]: You can download all members of the APLTree library from the APL Wiki: <http://download.aplwiki.com/>
 
 [^bom]: Details regarding the BOM: <https://en.wikipedia.org/wiki/Byte_order_mark>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*[HTML]: Hyper Text Mark-up language
+*[DYALOG]: File with the extension 'dyalog' holding APL code
+*[TXT]: File with the extension 'txt' containing text
+*[INI]: File with the extension 'ini' containing configuration data
+*[DYAPP]: File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to compile an APL application
+*[EXE]: Executable file with the extension 'exe'
+*[BAT]: Executeabe file that contains batch commands
+*[CSS]: File that contains layout definitions (Cascading Style Sheet)
+*[MD]: File with the extension 'md' that contains markdown
+*[CHM]: Executable file with the extension 'chm' that contains Windows Help(Compiled Help) 
+*[DWS]: Dyalog workspace
+*[WS]: Short for Workspaces

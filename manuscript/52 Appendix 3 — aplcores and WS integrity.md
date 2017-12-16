@@ -3,7 +3,7 @@
 [parm]:title = 'aplcores'
 
 
-# Appendix 3 --- aplcores, WS integrity & corruptions
+# Appendix 3 --- aplcores and WS integrity
 
 The _workspace_ (WS) is where the APL interpreter manages all code and all data in memory. The Dyalog tracer / debugger has extensive edit-and-continue capabilities; the downside is that these have been known to occasionally corrupt the workspace. However, there are many other ways how the workspace may get corrupted:
 
@@ -70,7 +70,7 @@ A> When a program asks Windows to save a file in a location where that program h
  
  For that reason it is highly recommended to set the value `aplcorename` in the Windows Registry:
 
- ![Defining home and names of aplcores](images/aplcore_1.png)
+ ![Defining home and names of aplcores](Images/aplcore_1.png)
  
  This means that aplcores...
 
@@ -79,3 +79,55 @@ A> When a program asks Windows to save a file in a location where that program h
 * will be numbered starting from 1; this as achieved by adding the trailing `*`.
 
 The same can be achieved by specifying `APLCORENAME=...` on the command line. That's particularly important for Windows Services.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*[HTML]: Hyper Text Mark-up language
+*[DYALOG]: File with the extension 'dyalog' holding APL code
+*[TXT]: File with the extension 'txt' containing text
+*[INI]: File with the extension 'ini' containing configuration data
+*[DYAPP]: File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to compile an APL application
+*[EXE]: Executable file with the extension 'exe'
+*[BAT]: Executeabe file that contains batch commands
+*[CSS]: File that contains layout definitions (Cascading Style Sheet)
+*[MD]: File with the extension 'md' that contains markdown
+*[CHM]: Executable file with the extension 'chm' that contains Windows Help(Compiled Help) 
+*[DWS]: Dyalog workspace
+*[WS]: Short for Workspaces

@@ -1,6 +1,6 @@
 {:: encoding="utf-8" /}
 [parm]:title='Introduction'
-
+⍝
 
 # Introduction
 
@@ -87,10 +87,66 @@ We jealously claim any errors as entirely our own work.
 Kai Jaeger & Stephen Taylor
 
 
-[^apltree]: _APLTree_ is the name of an Open Source library that offers robust, tested and well documented solutions to many every-day problems you will face when addressing the tasks discussed in this book. It also offers some powerful tools that support the development proccess. We will use this library extensively and discuss it in detail but if you are curious: <http://aplwiki.com/CategoryAplTree>.
-
-
 [^win]: Perhaps one day you would like it to ship on multiple platforms. Perhaps one day we'll write that book too. Meanwhile, Microsoft Windows. You will however find that whenever possible we keep the code platform independent. If we use platform dependent utilities we will mentioned it and explain why, and we might mention alternatives available on other platforms.
+
+
+[^apltree]: _APLTree_ is the name of an Open Source library that offers robust, tested and well documented solutions to many every-day problems you will face when addressing the tasks discussed in this book. It also offers some powerful tools that support the development proccess. We will use this library extensively and discuss it in detail but if you are curious: <http://aplwiki.com/CategoryAplTree>.
   
   
 [^classes]: These days seasoned programmers often have strong opinions about whether to use an object-oriented approach or a functional approach, or to mix the both. We have seen friendships going bust on discussing these issues. In this book we take a mixed approach.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*[HTML]: Hyper Text Mark-up language
+*[DYALOG]: File with the extension 'dyalog' holding APL code
+*[TXT]: File with the extension 'txt' containing text
+*[INI]: File with the extension 'ini' containing configuration data
+*[DYAPP]: File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to compile an APL application
+*[EXE]: Executable file with the extension 'exe'
+*[BAT]: Executeabe file that contains batch commands
+*[CSS]: File that contains layout definitions (Cascading Style Sheet)
+*[MD]: File with the extension 'md' that contains markdown
+*[CHM]: Executable file with the extension 'chm' that contains Windows Help(Compiled Help) 
+*[DWS]: Dyalog workspace
+*[WS]: Short for Workspaces

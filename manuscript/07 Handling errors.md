@@ -515,13 +515,13 @@ A> This is not strictly true. When `HandleError` detects multiple threads it tri
 
 Because we've defined a source for the Windows Event Log `HandleError` has reported the error accordingly:
 
-![Windows Event Log](images\MyAppEventViewer.png)
+![Windows Event Log](Images\MyAppEventViewer.png)
 
 As mentioned earlier, the Windows Event Log is discussed in a later chapter.
 
 We also find evidence in the log file that something broke; see LogDog:
 
-![The log file](images\LogDog2.png)
+![The log file](Images\LogDog2.png)
 
 This is done automatically by the `HandleError` class for us because we provided the name of a logging function and a ref pointing to the instance where that log function lives.
 
@@ -796,3 +796,55 @@ You can try this now but make sure that when you are ready you remove the line w
 : This defaults to an empty vector, meaning that `HandleError` does not attempt to write to the Windows Event Log. Writing to the Windows Event Log is discussed in its own chapter. 
 
 [^stop]: The English poets among us love that the tersest way to bring a function to a full stop is to type one. (American poets will of course have typed a period and will think of it as calling time out.)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*[HTML]: Hyper Text Mark-up language
+*[DYALOG]: File with the extension 'dyalog' holding APL code
+*[TXT]: File with the extension 'txt' containing text
+*[INI]: File with the extension 'ini' containing configuration data
+*[DYAPP]: File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to compile an APL application
+*[EXE]: Executable file with the extension 'exe'
+*[BAT]: Executeabe file that contains batch commands
+*[CSS]: File that contains layout definitions (Cascading Style Sheet)
+*[MD]: File with the extension 'md' that contains markdown
+*[CHM]: Executable file with the extension 'chm' that contains Windows Help(Compiled Help) 
+*[DWS]: Dyalog workspace
+*[WS]: Short for Workspaces

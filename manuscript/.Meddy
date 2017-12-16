@@ -1,4 +1,4 @@
 outputPath              = '..\HTML\'
-toc                     = 6
+toc                     = 2 3 4 5 6
 leanpubExtensions       = 1
 width                   = 1200

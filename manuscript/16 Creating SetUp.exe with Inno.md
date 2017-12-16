@@ -96,7 +96,7 @@ Sample application
 
 We use a very simple application for this chapter: the application "Foo" just puts up a form:
 
-![Sample application "Foo"](images/foo.png)
+![Sample application "Foo"](Images/foo.png)
 
 As soon as you press either <enter> or <escape> or click the "Close" button it will quit. That's all it is doing.
 
@@ -283,7 +283,7 @@ This section allows you to add settings to the Windows Registry.
 
 Notes:
 
-* With `Root:` you define the root key. See the chapter [The Windows Registry: root keys](./15%20The%20Windows%20Registry.html#root-keys]) for details which root keys you may specify.
+* With `Root:` you define the root key. See the chapter "[The Windows Registry: root keys](./15 The Windows Registry#root-keys])" for details which root keys you may specify.
 * With `Subkey` you define the remaining part but the value.
 * What's a `Value` in Microsoft speech is called `ValueName` by Inno.
 * The actual data is called `ValueData` by Inno.
@@ -435,3 +435,55 @@ Windows Installer
 
 [^guid]:<https://blogs.msdn.microsoft.com/oldnewthing/20080627-00/?p=21823/>:
 About GUIDs
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*[HTML]: Hyper Text Mark-up language
+*[DYALOG]: File with the extension 'dyalog' holding APL code
+*[TXT]: File with the extension 'txt' containing text
+*[INI]: File with the extension 'ini' containing configuration data
+*[DYAPP]: File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to compile an APL application
+*[EXE]: Executable file with the extension 'exe'
+*[BAT]: Executeabe file that contains batch commands
+*[CSS]: File that contains layout definitions (Cascading Style Sheet)
+*[MD]: File with the extension 'md' that contains markdown
+*[CHM]: Executable file with the extension 'chm' that contains Windows Help(Compiled Help) 
+*[DWS]: Dyalog workspace
+*[WS]: Short for Workspaces

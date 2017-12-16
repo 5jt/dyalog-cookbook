@@ -169,9 +169,9 @@ If you always run just one instance of the interpreter you can safely ignore thi
 
 If on the other hand you run occasionally (let alone often) more than one instance of Dyalog in parallel then you are familiar with how it feels when all of a sudden an unexpected dialog box pops up, be it an aplcore or a message box asking "Are you sure?" when you have no idea what you are expected to be sure about, or which instance has just crashed. There is a way to get around this. With version 14.0 windows captions became configurable. This is a screenshot from the online help:
 
-![Dyalog's help on window captions](images\HelpOnWindowCaptions.png)
+![Dyalog's help on window captions](Images\HelpOnWindowCaptions.png)
 
-A> # Help - online versus offline
+A> # Help --- online versus offline
 A>
 A> There are pros and cons:
 A>
@@ -181,7 +181,7 @@ A> * The online help is frequently updated by Dyalog.
 
 We suggest you configure Windows captions in a particular way in order to overcome this problem. The following screen shot shows the definitions for all windows captions in the Windows Registry for version 16 in case you follow our suggestions:
 
-![Windows Registry entries for "Window captions"](images/WindowsCaptions.png)
+![Windows Registry entries for "Window captions"](Images/WindowsCaptions.png)
 
 Notes:
 
@@ -193,6 +193,58 @@ Notes:
 
 The other pieces of information are less important. For details refer to the page "Window captions" in the "Installation and Configuration Guide". These definitions make sure that most dialog boxes (there are a few exceptions) can be allocated to a particular Dyalog session with ease. This is just an example:
 
-![A typical dialog box](images/WindowsCaptionsDialogBox.png)
+![A typical dialog box](Images/WindowsCaptionsDialogBox.png)
 
-However, this cannot be configured in any way, you need to add subkeys and values to the Windows Registry. We do _not_ suggest that you add or modify those caption with the Registry Editor. It is a better idea to write them by program, even if you deal with just one version of Dyalog at a time because soon there will be a new version coming along requiring you to carry out the same actions again. See the chapter "The Windows Registry" for how to solve this; that chapters uses this scenario as an example.
+However, this cannot be configured in any way, you need to add subkeys and values to the Windows Registry. We do _not_ suggest that you add or modify those caption with the Registry Editor. It is a better idea to write them by program, even if you deal with just one version of Dyalog at a time because soon there will be a new version coming along requiring you to carry out the same actions again. See the chapter "[The Windows Registry](./15 The Windows Registry) for how to solve this; that chapters uses this scenario as an example.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*[HTML]: Hyper Text Mark-up language
+*[DYALOG]: File with the extension 'dyalog' holding APL code
+*[TXT]: File with the extension 'txt' containing text
+*[INI]: File with the extension 'ini' containing configuration data
+*[DYAPP]: File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to compile an APL application
+*[EXE]: Executable file with the extension 'exe'
+*[BAT]: Executeabe file that contains batch commands
+*[CSS]: File that contains layout definitions (Cascading Style Sheet)
+*[MD]: File with the extension 'md' that contains markdown
+*[CHM]: Executable file with the extension 'chm' that contains Windows Help(Compiled Help) 
+*[DWS]: Dyalog workspace
+*[WS]: Short for Workspaces

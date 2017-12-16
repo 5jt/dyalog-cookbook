@@ -38,7 +38,7 @@ For these reasons you are advised to use a different folder.
 
 Let's assume that you have a folder `C:\MyUserCommands` that's supposed to hold all non-Dyalog user commands. Via the "Options > Configure" command you can select the "User Commands" tab and add that folder to the search path; don't forget to press the "Add" button once you have browsed to the right directory.
 
-If you use several versions of Dyalog in parallel then you are advised _not_ to add that folder via the configuration dialog box in each of those versions. Instead we recommend to write an APL function that adds the folder to all versions of Dyalog currently installed. See the chapter "The Windows Registry" where this scenario is used as an example.
+If you use several versions of Dyalog in parallel then you are advised _not_ to add that folder via the configuration dialog box in each of those versions. Instead we recommend to write an APL function that adds the folder to all versions of Dyalog currently installed. See the chapter "[The Windows Registry](./15 The Windows Registry)" where this scenario is used as an example.
 
 
 ## Name clashes
@@ -134,3 +134,55 @@ The workspace `Goo` can be tested independently from the user command framework,
 
 [^wiki]:Dyalog user commands from the APL wiki  
 <http://aplwiki.com//CategoryDyalogUserCommands>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*[HTML]: Hyper Text Mark-up language
+*[DYALOG]: File with the extension 'dyalog' holding APL code
+*[TXT]: File with the extension 'txt' containing text
+*[INI]: File with the extension 'ini' containing configuration data
+*[DYAPP]: File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to compile an APL application
+*[EXE]: Executable file with the extension 'exe'
+*[BAT]: Executeabe file that contains batch commands
+*[CSS]: File that contains layout definitions (Cascading Style Sheet)
+*[MD]: File with the extension 'md' that contains markdown
+*[CHM]: Executable file with the extension 'chm' that contains Windows Help(Compiled Help) 
+*[DWS]: Dyalog workspace
+*[WS]: Short for Workspaces

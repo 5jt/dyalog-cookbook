@@ -21,13 +21,13 @@ It's time to save a copy of `Z:\code\v10` as `Z:\code\v11`.
 
 In order to use `Markdown2Help` you need to download it from <http://download.aplwiki.com/>. We suggest creating a folder `Markdown2Help` within the folder `Z:\code\APLTree`. Copy the contents of the zip file you've just downloaded into `Z:\code\APLTree\Markdown2Help`:
 
-![Download target](images/DownloadTarget.png)
+![Download target](Images/DownloadTarget.png)
 
 Within that folder you will find a workspace `Markdown2Help` (from which we are going to copy the module) and a folder "help". This folder contains in turn a sub folder "files" (which contains `Markdown2Help`'s own help system) and the file `ViewHelp.exe`; that is the external viewer you need in case you want to view your help system independently from your application.
 
 Double-click `ViewHelp.exe` in order to see `Markdown2Help2`'s own help system:
 
-![Markdown2Help's Help](images/HelpViewer.png)
+![Markdown2Help's Help](Images/HelpViewer.png)
 
 By default `ViewHelp.exe` expects to find a folder `files` as a sibling of itself, and it assumes that this folder contains a help system. 
 
@@ -78,7 +78,7 @@ parms #.Markdown2Help.CreateStub '#.MyHelp'
 
 `CreateStub` will create some pages and a node (or folder) for us; that's what you should see:
 
-![Download target](images/MyFirstHelpPage.png)
+![Download target](Images/MyFirstHelpPage.png)
 
 Notes:
 
@@ -96,7 +96,7 @@ Notes:
 
 In the workspace all nodes (in our case "MyHelp" and "Sub") are ordinary namespaces while the pages are variables. You can check with the Workspace Explorer:
 
-![The help system in the Workspace Explorer](images/Structure.png)
+![The help system in the Workspace Explorer](Images/Structure.png)
 
 This is the reason why the names of nodes and pages must be valid APL names. By default those names are shown in the help system as title in the tree, but if that is not good enough for you then there is of course a way to specify something different. We'll come back to this soon.
 
@@ -105,7 +105,7 @@ This is the reason why the names of nodes and pages must be valid APL names. By 
 
 When you right-click on a page like "Copyright" and then select "Edit help page" from the context menu (pressing <Ctrl+Enter> will do the same) the APL editor opens and shows something similar to this:
 
-![A help page in the editor](images/EditMarkdown.png)
+![A help page in the editor](Images/EditMarkdown.png)
 
 This is the definition of the help page in Markdown. 
 
@@ -176,7 +176,7 @@ We have also changed the title of the "Overview" page to "Miller's overview". Th
 
 After fixing the function the help system is re-compiled automatically; therefore our changes become visible immediately:
 
-![The changed help system](images/MyHelp_2.png)
+![The changed help system](Images/MyHelp_2.png)
 
 What "compiling the help system" actually means is discussed soon.
 
@@ -185,7 +185,7 @@ What "compiling the help system" actually means is discussed soon.
 
 The context menu offers plenty of commands. Note that the first three commands are always available. The other commands are useful for a developer (or shall we say help system author?) and are available only when the help system is running in a development version of Dyalog.
 
-![The context menu](images/ContextMenu.png)
+![The context menu](Images/ContextMenu.png)
 
 As a developer you should have no problem mastering these commands.
 
@@ -230,7 +230,7 @@ This command creates an HTML document from all the help pages and writes the HTM
 
 You can then open that document with your favourite word processor, say Microsoft Word. This will show something like this:
 
-![The help system as a single HTML page](images/ProofRead.png)
+![The help system as a single HTML page](Images/ProofRead.png)
 
 This is a great help when it comes to proofreading a document: one can use the "Review" features of the chosen word processor and also print the document. You are much more likely to spot any problems in a printed version of the document than on screen.
 
@@ -251,11 +251,11 @@ The resulting website does not offer all the features the Windows version comes 
 
 If you have not copied the contents of `code\v11\*` from the book'w website then you should make adjustments to the help system to keep it in sync with the book. We have just two help pages; a page regarding the main method `TxtToCsv`:
 
-![The changed help system](images/Helppage_1.png)
+![The changed help system](Images/Helppage_1.png)
 
 And a page regarding copyright:
 
-![The changed help system](images/Helppage_2.png)
+![The changed help system](Images/Helppage_2.png)
 
 
 ## How to view the  help system
@@ -301,7 +301,7 @@ Strictly speaking only the "source" parameter needs to be specified to get it to
 
 Most of the parameters should explain themselves, but if you are in doubt you can always start `Markdown2Help`'s own help system with `#.Markdown2Help.Selfie ⍬` and read the pages under the "Parameters" node. That's what you would see:
 
-![The context menu](images/HelpParameters.png)
+![The context menu](Images/HelpParameters.png)
 
 You can request a list of all parameters with their default values with this statement:
 
@@ -457,3 +457,55 @@ leanpub-end-insert
 
 
 [^ham]: <http://www.helpandmanual.com/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*[HTML]: Hyper Text Mark-up language
+*[DYALOG]: File with the extension 'dyalog' holding APL code
+*[TXT]: File with the extension 'txt' containing text
+*[INI]: File with the extension 'ini' containing configuration data
+*[DYAPP]: File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to compile an APL application
+*[EXE]: Executable file with the extension 'exe'
+*[BAT]: Executeabe file that contains batch commands
+*[CSS]: File that contains layout definitions (Cascading Style Sheet)
+*[MD]: File with the extension 'md' that contains markdown
+*[CHM]: Executable file with the extension 'chm' that contains Windows Help(Compiled Help) 
+*[DWS]: Dyalog workspace
+*[WS]: Short for Workspaces

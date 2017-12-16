@@ -15,7 +15,7 @@ A> # Corrupted workspaces
 A> 
 A> The _workspace_ (WS) is where the APL interpreter manages all code and all data in memory. The Dyalog tracer / debugger has extensive edit-and-continue capabilities; the downside is that these have been known to occasionally corrupt the workspace.
 A> 
-A> The interpreter checks WS integrity every now and then; how often can be influenced by setting certain debug flags; see the appendix "Workpace integrity, corruptions and aplcores" for details. More details regarding aplcores are available in the appendix "Aplcores".
+A> The interpreter checks WS integrity every now and then; how often can be influenced by setting certain debug flags; see the "[Appendix 3 — aplcores and WS integrity](./52 Appendix 3 — aplcores and WS integrity.html)" for details. More details regarding aplcores are available in the appendix "Aplcores".
 
 
 ## How can you distribute your program?
@@ -35,7 +35,7 @@ If she doesn't have an interpreter, and you are not worried about her someday ge
 
 If your application uses multiple threads, the thread states can't be saved in a crash workspace anyway. 
 
-You need your program to catch and report any errors before it dies, something we will discuss in the chapter _Handling Errors_.
+You need your program to catch and report any errors before it dies, something we will discuss in the chapter [Handling errors](./07 Handling errors.html).
 
 
 ### Send an executable file (EXE)
@@ -64,7 +64,7 @@ A> Some members of the APL community prefer to use a source code management syst
 A>
 A> APL code is very compact, teams are typically small, and work on APL applications tends to be very oriented towards functions rather than modules. 
 A>
-A> Other aspects of working in APL impact the importance of features of the SCM that you use. acre is an excellent alternative to Git etc., and it is available as Open Source; we will discuss acre in its own appendix.
+A> Other aspects of working in APL impact the importance of features of the SCM that you use. acre is an excellent alternative to Git etc., and it is available as Open Source; we will discuss acre in its own appendix. ⍝TODO⍝
 
 Whichever SCM you use (we used GitHub for writing this book and the code in it) your source code will comprise class and namespace scripts (DYALOGs) for the application. The help system will be an ordinary --- non-scripted --- namespace. We us a _build script_ (DYAPP) to assemble the application as well as the development environment.
 
@@ -725,3 +725,55 @@ We have reached our goal:
 
 
 [^csv]: With version 16.0 Dyalog has introduced a system function `⎕CSV` for both importing from and exporting to CSV files.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*[HTML]: Hyper Text Mark-up language
+*[DYALOG]: File with the extension 'dyalog' holding APL code
+*[TXT]: File with the extension 'txt' containing text
+*[INI]: File with the extension 'ini' containing configuration data
+*[DYAPP]: File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to compile an APL application
+*[EXE]: Executable file with the extension 'exe'
+*[BAT]: Executeabe file that contains batch commands
+*[CSS]: File that contains layout definitions (Cascading Style Sheet)
+*[MD]: File with the extension 'md' that contains markdown
+*[CHM]: Executable file with the extension 'chm' that contains Windows Help(Compiled Help) 
+*[DWS]: Dyalog workspace
+*[WS]: Short for Workspaces

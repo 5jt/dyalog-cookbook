@@ -32,7 +32,7 @@ If you find the terminology strange: so do we, but it was invented by Microsoft 
 
 Why is the terminology strange? Because Microsoft uses common words but gives them unusual meaning when it comes to the Windows Registry. Let's look at an example. This is the definition of the MAXWS parameter for Dyalog 64 bit Unicode version 16:
 
-![Definition of maxws in the Windows Registry](images/WinReg_maxws.png)
+![Definition of maxws in the Windows Registry](Images/WinReg_maxws.png)
 
 The full path is:
 
@@ -139,7 +139,7 @@ You can create a new value as well as a new key with `Write`:
 
 ~~~
 
-![MyValue](images/WinReg_MyValue.png)
+![MyValue](Images/WinReg_MyValue.png)
 
 You can also delete a subkey or a value, but a subkey must be empty:
 
@@ -165,7 +165,7 @@ You can also write the default value for a key. For that you must specify a trai
 APL is great
 ~~~
 
-![Default values](images/WinReg_DefaultValue.png)
+![Default values](Images/WinReg_DefaultValue.png)
 
 Note that whether `Write` writes REG_SZ or a REG_DWORD depends on the data: a text vector becomes "REG_SZ" while a 32-bit integer becomes "REG_DWORD" though Booleans as well as smaller integers are converted to a 32-bit integer. Other data types are rejected.
 
@@ -291,7 +291,7 @@ Note that although we called `Add` twice the folder `C:\MyUserCommands` makes an
 
 ### Configure Dyalog's window captions
 
-In Appendix 4 "Your development environment" we mention that if you run more than once instance of Dyalog in parallel then you want to be able to allocate any dialog box to the instance it was issued from. This can be achieved by adding certain pieces of information to certain entries in the Windows Registry. We talk about this subkey of, say, Dyalog APL/W-64 16.0 Unicode:
+In "[Appendix 4 — The development environment](./53 Appendix 4 — The development environment.html)" we mention that if you run more than once instance of Dyalog in parallel then you want to be able to allocate any dialog box to the instance it was issued from. This can be achieved by adding certain pieces of information to certain entries in the Windows Registry. We talk about this subkey of, say, Dyalog APL/W-64 16.0 Unicode:
 
 ~~~
 HKCU\Software\Dyalog\Dyalog APL/W-64 16.0 Unicode\Captions
@@ -390,3 +390,55 @@ We can now write `captionValues` to all versions:
 
 [^wsh]: The Wikipedia on the Windows Scripting Host:  
 <https://en.wikipedia.org/wiki/Windows_Script_Host>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*[HTML]: Hyper Text Mark-up language
+*[DYALOG]: File with the extension 'dyalog' holding APL code
+*[TXT]: File with the extension 'txt' containing text
+*[INI]: File with the extension 'ini' containing configuration data
+*[DYAPP]: File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to compile an APL application
+*[EXE]: Executable file with the extension 'exe'
+*[BAT]: Executeabe file that contains batch commands
+*[CSS]: File that contains layout definitions (Cascading Style Sheet)
+*[MD]: File with the extension 'md' that contains markdown
+*[CHM]: Executable file with the extension 'chm' that contains Windows Help(Compiled Help) 
+*[DWS]: Dyalog workspace
+*[WS]: Short for Workspaces

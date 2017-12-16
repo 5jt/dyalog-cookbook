@@ -194,13 +194,13 @@ A> At the time of writing (2017-07) the sequence of the test cases relied on alp
 
 Press the <Win> key and type Scheduler. Select "Task Scheduler" form the list. This is what will come up:
 
-![The Windows Task Scheduler](images/scheduler_01.png)
+![The Windows Task Scheduler](Images/scheduler_01.png)
 
 First thing to check is whether the fifth pointin the "Actions" pane on the right reads "Disable All Tasks History" - if it does not you won't be able to get  any details regarding a Scheduled Task.
 
 The arrow points to the "Create Task" command - click it.
 
-![Create Task](images/scheduler_02.png)
+![Create Task](Images/scheduler_02.png)
 
 #### The "General" tab
 
@@ -248,7 +248,7 @@ The tab does not carry any mysteries.
 
 After clicking "New" this is what you get:
 
-![New Action](images/scheduler_03.png)
+![New Action](Images/scheduler_03.png)
 
 Make sure that you use the "Browse" button to navigate to the EXE/BAT/whatever you want to run as a Scheduled Task. That avoids typos.
 
@@ -305,7 +305,7 @@ However, from experience we know that the likelihood of the task _not_ running a
 
 Imagine you want to Ride into a Scheduled Task. Therefore you set in the INI file the `[Ride]Active` flag to `1`. When the Windows Firewall has yet no rules for both this port and this application then you _won't_ see the usual message you expect to see when you run the application for the very first time, assuming that you use a user id with admin rights:
 
-![Windows Firewall](images\Firewall_01.jpg)
+![Windows Firewall](Images\Firewall_01.jpg)
 
 The application would start, seemingly run for a short period of time and then stop again without leaving any traces: no error codes, no log files, no crash files, nothing.
 
@@ -371,7 +371,7 @@ Instead we use the user command [^hex] `Int2Hex` which is based on code written 
 
 A> # Third-party user commands
 A> 
-A> Naturally there are quite a number of useful third-party user commands available. For details how to install them see Appendix 2.
+A> Naturally there are quite a number of useful third-party user commands available. For details how to install them see "[Appendix 2 — User commands](./51 Appendix 2 — User commands.html)".
 
 Now the first four digits, 8007, mean that what follows is a win32 status code. The last 4 are the status code. This is a  number that needs to be converted into decimal:
 
@@ -405,3 +405,55 @@ for details.
 [^hex]: For details and download regarding the user commands `Hex2Int` and `Int2Hex` see <http://aplwiki.com/UserCommands/Hex>
 
 [^getmsg]: For details and download regarding the user command `GetMsgFrom` see <http://aplwiki.com/UserCommands/GetMsgFrom>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*[HTML]: Hyper Text Mark-up language
+*[DYALOG]: File with the extension 'dyalog' holding APL code
+*[TXT]: File with the extension 'txt' containing text
+*[INI]: File with the extension 'ini' containing configuration data
+*[DYAPP]: File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to compile an APL application
+*[EXE]: Executable file with the extension 'exe'
+*[BAT]: Executeabe file that contains batch commands
+*[CSS]: File that contains layout definitions (Cascading Style Sheet)
+*[MD]: File with the extension 'md' that contains markdown
+*[CHM]: Executable file with the extension 'chm' that contains Windows Help(Compiled Help) 
+*[DWS]: Dyalog workspace
+*[WS]: Short for Workspaces

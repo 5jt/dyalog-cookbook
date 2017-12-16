@@ -104,7 +104,7 @@ For a more detailed list with arguments and results specify `]ADoc #.HandleError
     ]ADoc #.HandleError
 ~~~
 
-![Using ADOC to browse the HandleError class](images/adoc_handleerror.png)
+![Using ADOC to browse the HandleError class](Images/adoc_handleerror.png)
 
 Composes a documentation page in HTML and displays it in your default browser. 
 
@@ -113,7 +113,7 @@ Composes a documentation page in HTML and displays it in your default browser.
 
 To get basic information enter `]?adoc`. For some more details enter `]??adoc`. In order to get the full picture enter `]???adoc`. The underlying `ADOC` class then processes itself and creates an HTML page with detailed information.
 
-![ADOC’s own documentation](images/adoc_help.png)
+![ADOC’s own documentation](Images/adoc_help.png)
 
 
 ## ADOC for MyApp
@@ -125,7 +125,7 @@ How might ADOC help us? Start by seeing what ADOC has to say about `MyApp` as it
     ]ADoc #.MyApp
 ~~~    
 
-![Using ADOC to browse the MyApp namespace](images/adoc_myapp_01.png)
+![Using ADOC to browse the MyApp namespace](Images/adoc_myapp_01.png)
 
 ADOC has found and displayed all the functions within the `MyApp` namespace. If `MyApp` would contain any operators and/or variables you would find them in the document as well.
 
@@ -229,11 +229,11 @@ Finally we need to address the problem that the variables inside `EXIT` are esse
     ]ADoc #.MyApp #.MyApp.EXIT
 ~~~
 
-![Browsing the revised MyApp namespace](images/adoc_myapp_02.png)
+![Browsing the revised MyApp namespace](Images/adoc_myapp_02.png)
 
 When you scroll down (or click at "Exit" in the top-left corner) then you get to the part of the document where `EXIT` is documented:
 
-![Browsing the revised MyApp namespace](images/adoc_myapp_03.png)
+![Browsing the revised MyApp namespace](Images/adoc_myapp_03.png)
 
 #### Public
 
@@ -253,3 +253,56 @@ That will do for now.
 [^fixme]: Be it `⍝FIXME⍝` or `⍝CHECKME⍝` or `⍝TODO⍝` - what matters is that you keep it consistent and searchable. That implies that the search term cannot be mistaken as something else by accident. For that reason  `⍝TODO⍝` is slighty better better than `TODO`.
 
 [^markdown]: <https://en.wikipedia.org/wiki/Markdown>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*[HTML]: Hyper Text Mark-up language
+*[DYALOG]: File with the extension 'dyalog' holding APL code
+*[TXT]: File with the extension 'txt' containing text
+*[INI]: File with the extension 'ini' containing configuration data
+*[DYAPP]: File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to compile an APL application
+*[EXE]: Executable file with the extension 'exe'
+*[BAT]: Executeabe file that contains batch commands
+*[CSS]: File that contains layout definitions (Cascading Style Sheet)
+*[MD]: File with the extension 'md' that contains markdown
+*[CHM]: Executable file with the extension 'chm' that contains Windows Help(Compiled Help) 
+*[DWS]: Dyalog workspace
+*[WS]: Short for Workspaces

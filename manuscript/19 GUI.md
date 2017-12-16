@@ -53,7 +53,7 @@ Creating a GUI form in Dyalog could hardly be simpler:
       ∆Form.Caption←'Hello world'
 ~~~      
 
-![Hello world form](images/form_01.png)
+![Hello world form](Images/form_01.png)
 
 To the form we add controls, set callback functions to run when certain events occur, and invoke the form's `Wait` method or invoke `⎕DQ`. See the _Dyalog for Microsoft Windows Interface Guide_ for details and tutorials. 
 
@@ -64,7 +64,7 @@ Experience has shown that it is a good idea to keep references to all controls a
 
 We are going to implement a sample form that looks like this:
 
-![Find and replace](images/gui_example.png)
+![Find and replace](Images/gui_example.png)
 
 Obviously this is a GUI that allows a programmer to search the current workspace.
 
