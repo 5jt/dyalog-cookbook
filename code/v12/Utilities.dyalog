@@ -5,8 +5,5 @@
           nw←∪⍵
           (new,nw)[(old,nw)⍳⍵]
       }
-      Assert←{
-          ~⍵:.
-          1:r←⍬
-      }
+      Assert←{⍺←'' ⋄ ⊃⍵:r←1 ⋄ ⍺ ⎕SIGNAL 11}
 :EndNamespace

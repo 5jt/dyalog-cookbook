@@ -134,6 +134,7 @@
 
     ∇ {r}←SetLX dummy
    ⍝ Set Latent Expression (needed in order to export workspace as EXE)
+      #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1      
       r←⍬
       ⎕LX←'#.MyApp.StartFromCmdLine #.MyApp.GetCommandLineArg ⍬'
     ∇
@@ -172,13 +173,11 @@
 
     ∇ (Config MyLogger)←Initial dummy
     ⍝ Prepares the application.
-      #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
       Config←CreateConfig ⍬
       Config.ControlFileTieNo←CheckForOtherInstances ⍬
       CheckForRide Config.(Ride WaitForRide)
       MyLogger←OpenLogFile Config.LogFolder
       MyLogger.Log'Started MyApp in ',F.PWD
-      ⎕WSID←⊃{⍵/⍨~'='∊¨⍵}{⍵/⍨'-'≠⊃¨⍵}1↓2⎕nq # 'GetCommandLineArgs'
       MyLogger.Log 2 ⎕NQ # 'GetCommandLineArgs'
       MyLogger.Log↓⎕FMT Config.∆List
     ∇

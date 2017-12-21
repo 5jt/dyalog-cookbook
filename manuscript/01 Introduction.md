@@ -1,6 +1,5 @@
 {:: encoding="utf-8" /}
 [parm]:title='Introduction'
-⍝
 
 # Introduction
 
@@ -28,6 +27,8 @@ But the development tools introduced by Dyalog in recent years are still finding
 Many of the issues addressed here are entangled with each other. We’ll arrive at our best solutions by way of interim solutions. Proposing some wickedly intricate 'complete solution' framework does little to illuminate the problems it solves. So we'll add features -- INI files, error handling, and so on -- one at a time, and as we go we'll find ourselves revisiting the code that embeds the earlier features. 
 
 We will also improve the code along the way while explaining why exactly the changes are improvements.
+
+This is true for chapter one to fourteen. Later chapters stand on their own.
 
 If you are an experienced Dyalog developer, you may be able to improve on what is described here. For this reason _The Dyalog Cookbook_ remains for now [an open-source project on GitHub](https://github.com/5jt/dyalog-cookbook). 
 
@@ -57,7 +58,11 @@ Later on we'll introduce some professional writing techniques that might make ma
 
   However, we also tried to write the book in a way so that you can just read it if that's what you prefer.
   
-We have not attempted to 'dumb down' our use of the language for readers with less experience. In some cases we stop to discuss linguistic features; mostly not. If you see an expression you cannot read, a little experimentation and consultation of the reference material should show how it works. 
+We have not attempted to 'dumb down' our use of the language for readers with less experience. In some cases we stop to discuss linguistic features; mostly not. 
+
+If you see an expression you cannot read, a little experimentation and consultation of the reference material should show how it works. 
+
+But we have not tried to be smart either. The code should be as terse as reasonable, but it should always be readable, maintainable and traceable.
 
 We encourage you to take the time to do this. Generally speaking -- not invariably -- short, crisp expressions are less work for you and the interpreter to read. Learn them and prefer them. 
 
@@ -79,7 +84,7 @@ When we refer to a text file, e.g. something with the extension .txt, then we re
 
 ## Acknowledgements
 
-We are deeply grateful for contributions, ideas, comments and outright help from our colleagues, particularly from Gil Athoraya, Morten Kromberg, Nick Nickolov, Paul Mansour, Richard Smith and Andy Shiers.
+We are deeply grateful for contributions, ideas, comments and outright help from our colleagues, particularly from (in alphabetical order) Gil Athoraya, Morten Kromberg, Paul Mansour, Nick Nickolov, Andy Shiers and Richard Smith.
 
 We jealously claim any errors as entirely our own work. 
 
@@ -87,55 +92,19 @@ We jealously claim any errors as entirely our own work.
 Kai Jaeger & Stephen Taylor
 
 
-[^win]: Perhaps one day you would like it to ship on multiple platforms. Perhaps one day we'll write that book too. Meanwhile, Microsoft Windows. You will however find that whenever possible we keep the code platform independent. If we use platform dependent utilities we will mentioned it and explain why, and we might mention alternatives available on other platforms.
+[^win]: Perhaps one day you would like it to ship on multiple platforms. Perhaps one day we'll write that book too. Meanwhile, Microsoft Windows. 
+   
+  You will however find that whenever possible we keep the code platform independent. If we use platform dependent utilities we will mentioned it and explain why, and we might mention alternatives available on other platforms.
 
 
-[^apltree]: _APLTree_ is the name of an Open Source library that offers robust, tested and well documented solutions to many every-day problems you will face when addressing the tasks discussed in this book. It also offers some powerful tools that support the development proccess. We will use this library extensively and discuss it in detail but if you are curious: <http://aplwiki.com/CategoryAplTree>.
+[^apltree]: _APLTree_ is the name of an Open Source library that offers robust, tested and well documented solutions to many every-day problems you will face when addressing the tasks discussed in this book.
+
+  It also offers some powerful tools that support the development proccess. We will use this library extensively and discuss it in detail but if you are curious: <http://aplwiki.com/CategoryAplTree>.
   
   
-[^classes]: These days seasoned programmers often have strong opinions about whether to use an object-oriented approach or a functional approach, or to mix the both. We have seen friendships going bust on discussing these issues. In this book we take a mixed approach.
+[^classes]: These days seasoned programmers often have strong opinions about whether to use an object-oriented approach or a functional approach, or to mix the both. 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  We have seen friendships going bust on discussing these issues. In this book we take a mixed approach.
 
 
 *[HTML]: Hyper Text Mark-up language

@@ -84,6 +84,7 @@ leanpub-end-insert
 leanpub-start-insert    
     ∇ {r}←SetLX dummy
     ⍝ Set Latent Expression (needed in order to export workspace as EXE)
+     #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1   
      r←⍬
      ⎕LX←'#.MyApp.StartFromCmdLine #.MyApp.GetCommandLineArgs ⍬'
     ∇
@@ -134,6 +135,17 @@ Notes:
 
 * Currently we allow only one file (or folder) to be specified. That's supposed to be the last parameter specified on the command line. We'll improve on this later.
 
+* Note that we set now `⎕IO`, `⎕ML`, `⎕WX`, `⎕PP` and `⎕DIV` in `#` (!) as soon as possible. 
+
+  The reason is that we want to be sure that when we create a namespace with `#.⎕NS ''` those system variables carries the expected values. Alternatively you could make sure that you execute `⎕NS ''` within a namespace that is known to have system variables with the "right" values.
+
+W> # Inheriting system variables.
+W> 
+W> A common source of confusion is that code relies on the system variables having expected values. For example, you can specify your favourite values for those system variables in the Dyalog configuration. Whenever you execute then, say, `#.⎕NS ''` you can expect the resulting namespace to inherit those settings from the hosting namespace, so that's fine.
+W>
+W> If you send your WS elsewhere then somebeody with different values might load your WS and execute your code. Now `#.⎕NS ''` would create a namespace that carries different values; that's a recipe for disaster.
+
+
 We're now nearly ready to create the first version of our EXE. Note that in Dyalog's "File" menu this is called "Export" for some reason.
 
 1. Double-click the DYAPP in order to create the WS.
@@ -176,6 +188,8 @@ Z:\code\v03\MyApp.exe texts\en
 Looking in Windows Explorer at `Z:\texts\en.csv`, we see its timestamp just changed. Our EXE works! 
 
 [^folder]: Note that in the Cookbook the words "folder" and "directory" are used interchangeably. 
+
+
 
 
 

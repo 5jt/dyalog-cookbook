@@ -104,7 +104,7 @@ For a more detailed list with arguments and results specify `]ADoc #.HandleError
     ]ADoc #.HandleError
 ~~~
 
-![Using ADOC to browse the HandleError class](Images/adoc_handleerror.png)
+![Using ADoc to browse the HandleError class](Images/adoc_handleerror.png)
 
 Composes a documentation page in HTML and displays it in your default browser. 
 
@@ -113,28 +113,28 @@ Composes a documentation page in HTML and displays it in your default browser.
 
 To get basic information enter `]?adoc`. For some more details enter `]??adoc`. In order to get the full picture enter `]???adoc`. The underlying `ADOC` class then processes itself and creates an HTML page with detailed information.
 
-![ADOC’s own documentation](Images/adoc_help.png)
+![ADoc’s own documentation](Images/adoc_help.png)
 
 
-## ADOC for MyApp
+## ADoc for MyApp
 
 
-How might ADOC help us? Start by seeing what ADOC has to say about `MyApp` as it is now:
+How might ADoc help us? Start by seeing what ADoc has to say about `MyApp` as it is now:
 
 ~~~
     ]ADoc #.MyApp
 ~~~    
 
-![Using ADOC to browse the MyApp namespace](Images/adoc_myapp_01.png)
+![Using ADoc to browse the MyApp namespace](Images/adoc_myapp_01.png)
 
-ADOC has found and displayed all the functions within the `MyApp` namespace. If `MyApp` would contain any operators and/or variables you would find them in the document as well.
+ADoc has found and displayed all the functions within the `MyApp` namespace. If `MyApp` would contain any operators and/or variables you would find them in the document as well.
 
 We can improve this in a number of ways. Time for a new version of MyApp. Make a copy of `Z:\code\v08` as `Z:\code\v09`.
 
 ### Leading comments: basic information
 
 
-First we edit the top of the script to follow ADOC's conventions:
+First we edit the top of the script to follow ADoc's conventions:
 
 ~~~
 :Namespace MyApp
@@ -154,7 +154,7 @@ First we edit the top of the script to follow ADOC's conventions:
 
 Next we specify which functions we want to be included in the document: not all but just those that are designed to be called from the outside. In a class those are called "Public interface", and it's easy to see why.
 
-For classes ADOC can work out what's public and what isn't due to the `Public Access` statements. For namespaces there is no such mechanism. We just learned that by default ADOC considers all functions and operators as well as all variables public, but it also offers a mechanism to reduce this list to what's really public. For that ADOC looks for a function `Public`. It may return an empty vector (nothing is public at all) or a list of names. This list would define what is public.
+For classes ADoc can work out what's public and what isn't due to the `Public Access` statements. For namespaces there is no such mechanism. We just learned that by default ADoc considers all functions and operators as well as all variables public, but it also offers a mechanism to reduce this list to what's really public. For that ADoc looks for a function `Public`. It may return an empty vector (nothing is public at all) or a list of names. This list would define what is public.
 
 Let's define the public functions at the bottom of the script:
 
@@ -169,7 +169,7 @@ Let's define the public functions at the bottom of the script:
 
 ### Reserved names
 
-ADOC honours five functions in a special way if they exist: `Copyright`, `History`, `Version`, `Public` and `ADOC_Doc`. If they exist when they (or rather their results) will be treated in a special way.
+ADoc honours five functions in a special way if they exist: `Copyright`, `History`, `Version`, `Public` and `ADOC_Doc`. If they exist when they (or rather their results) will be treated in a special way.
 
 
 #### Version
@@ -205,7 +205,7 @@ We had already a function `Version` in place, and so far we've added comments re
 
 ∇ History      
   ⍝ * 1.5.0:
-  ⍝   * MyApp is now ADOCable (function Public.
+  ⍝   * MyApp is now ADocable (function Public.
   ⍝ * 1.4.0:
   ⍝   * Handles errors with a global trap.
   ⍝   * Returns an exit code to calling environment.
@@ -223,7 +223,7 @@ We had already a function `Version` in place, and so far we've added comments re
 
 This gives us more prominent copyright and version notices as well as information about the most recent changes. Note that `History` is not expected to carry a  history of all changes but rather the most recent ones.
 
-Finally we need to address the problem that the variables inside `EXIT` are essential for using `MyApp`; they should be part of the documentation. ADOC has ignored the namespace EXIT but we can change this by specifying it explicitly:
+Finally we need to address the problem that the variables inside `EXIT` are essential for using `MyApp`; they should be part of the documentation. ADoc has ignored the namespace EXIT but we can change this by specifying it explicitly:
 
 ~~~
     ]ADoc #.MyApp #.MyApp.EXIT
@@ -253,6 +253,8 @@ That will do for now.
 [^fixme]: Be it `⍝FIXME⍝` or `⍝CHECKME⍝` or `⍝TODO⍝` - what matters is that you keep it consistent and searchable. That implies that the search term cannot be mistaken as something else by accident. For that reason  `⍝TODO⍝` is slighty better better than `TODO`.
 
 [^markdown]: <https://en.wikipedia.org/wiki/Markdown>
+
+
 
 
 

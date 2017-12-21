@@ -201,7 +201,7 @@ This technique allows to reduce typing and is a safeguard against typos.
 
 `MyBlank` is included in order to improve readability: without it it can be difficult to spot a blank character in a name or path.
 
-### The section [Setup]
+### The section [Setup]{#setup}
 
 ~~~
 [Setup]
@@ -248,7 +248,7 @@ Notes:
   However, whatever the user decides, `app` will point to that folder. In other words, the user might choose a different folder, but whatever she does, `app` is pointing to that folder.
 
 
-### The section [Languages]
+### The section [Languages]{#lang}
 
 ~~~
 [Languages]
@@ -269,7 +269,7 @@ While the two parameters `Name` and `MessageFile` are mandatory the other three 
 When we execute `Setup.exe` you will see when exactly the contents of them is displayed. Note that if `LicenseFile` is defined the user must accept the conditions, otherwise she cannot go ahead.
 
 
-### The section [Registry]
+### The section [Registry]{#registry}
 
 ~~~
 [Registry]
@@ -305,8 +305,7 @@ Notes:
   This comes handy when you use the Registry for saving user preferences: as long as the user has not defined any preferences the key can be deleted safely. If she has then you might consider leaving them alone. After all the user might uninstall just in order to install a better version, expecting her preferences to survive the procedure.
 
 
-
-### The section [Dirs]
+### The section [Dirs]{#dirs}
 
 ~~~
 [Dirs]
@@ -326,7 +325,7 @@ W> Of course you are not supposed to grant "modify" rights to the folder where y
 Note that in case you install the application _again_ then the folder **won't** be created, and you won't see an error message either.
 
 
-### The section [Files]
+### The section [Files]{#files}
 
 ~~~
 [Files]
@@ -354,11 +353,16 @@ We have included here a number of files that are quite common in any APL applica
 * The file `foo.ini.remove_me` is included as well but will be renamed to `foo.ini` but only when it does not already exist.
 
   That way you make sure that any already existing INI file is not overwritten. This is an important step in case the user installs a better version over an already existing one.
-* With `{#MyAppIcoName}; DestDir: "{app}";` you make sure that a folder etc is inserted into the Start menu. However, you may allow the user to have a say on this; refer to "AllowNoIcons" in the "[The section [SetUp]](#)".
+* With `{#MyAppIcoName}; DestDir: "{app}";` you make sure that a folder etc is inserted into the Start menu. However, you may allow the user to have a say on this; refer to "AllowNoIcons" in the "[The section [SetUp]](#setup)".
 * We include the font "APL385 Unicode" but only if it does not already exist (`onlyifdoesntexist`) and we make sure that the font is not uninstalled even if the application is (`uninsneveruninstall`).
 * Note that in case you want to Ride into your application you also need to include the Conga DLLs. Usually this well be done only while the application is still under development or is tested.
 
-### The section [Icons]
+W> # .NET 
+W>
+W> In case your applications calls any .NET methods make sure you include the Dyalog .NET bridge files!
+
+
+### The section [Icons]{#icons}
 
 ~~~
 [Icons]
@@ -369,7 +373,7 @@ Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFil
 The first line inserts group and application name into the Windows Start menu. Read up on "group" in the Inno help for details what the group names means and where it is installed; there are differences between users who install the application with admin rights and those who don't.
 
 
-### The section [Run]
+### The section [Run]{#run}
 
 ~~~
 [Run]
@@ -388,7 +392,7 @@ Notes:
 * Both entries are offered as check boxes which are ticked by default; the user might un-tick them in order to prevent the associated action from being carried out.
 
 
-### The section [Tasks]
+### The section [Tasks]{#tasks}
 
 ~~~
 [Tasks]
@@ -420,7 +424,8 @@ CreateDesktopIcon = This and that
 
 That would overwrite the internal message.
 
-### The section [Code]
+
+### The section [Code]{#code}
 
 Inno comes with a built-in script language that allows you to do pretty much whatever you like. However, scripting is beyond the scope of this chapter.
 
@@ -435,43 +440,6 @@ Windows Installer
 
 [^guid]:<https://blogs.msdn.microsoft.com/oldnewthing/20080627-00/?p=21823/>:
 About GUIDs
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

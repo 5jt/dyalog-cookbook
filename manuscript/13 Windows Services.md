@@ -7,12 +7,16 @@
 
 ## What is a Windows Service
 
-While the Windows Task Manager just starts any ordinary application, any application that runs as a Windows Service must be specifically designed in order to meet a number of requirements. In particular services are expected to communicate by exchanging messages with the Windows Service Control Manager (SCM). Commands can be issued by the `SC.exe` (Service Controller) application or interactively via the "Services" application. This allows the user to not only start but also to pause, continue (also called resume) and stop a Windows Service. 
+While the Windows Task Manager just starts any ordinary application, any application that runs as a Windows Service must be specifically designed in order to meet a number of requirements. In particular services are expected to communicate by exchanging messages with the Windows Service Control Manager (SCM). 
+
+Commands can be issued by the `SC.exe` (Service Controller) application or interactively via the "Services" application. This allows the user to not only start but also to pause, continue (also called resume) and stop a Windows Service. 
 
 
 ## Windows Services and the Window Event Log
   
-Our application is already prepared to write log files and save information in case of a crash, but that's not sufficient: while applications started by the Windows Task Scheduler _might_ write to the Windows Event Log, applications running as a Windows Service are _expected_ to do that, and for good reasons: when running on a server one cannot expect anybody to be around for keeping an eye on log or crash files. In large organisations running server farms it is common to have a software in place that frequently checks the Windows Event Logs of all those servers, and raise an alarm in one way or another (TCP messages, text messages, emails, whatever) in case it finds any problems.
+Our application is already prepared to write log files and save information in case of a crash, but that's not sufficient: while applications started by the Windows Task Scheduler _might_ write to the Windows Event Log, applications running as a Windows Service are _expected_ to do that, and for good reasons: when running on a server one cannot expect anybody to be around for keeping an eye on log or crash files. 
+
+In large organisations running server farms it is common to have a software in place that frequently checks the Windows Event Logs of all those servers, and raise an alarm in one way or another (TCP messages, text messages, emails, whatever) in case it finds any problems.
 
 We won't add the ability to write to the Windows Event Log in this chapter but rather discuss how to do this in the next chapter.
 
@@ -38,7 +42,9 @@ In order to simplify things we are going to make use of the `ServiceState` names
 
 1. Call `ServiceState.Init` as early as possible. This function will make sure that the Service is capable of communicating with the SCM. 
 
-   To do it as early as possible is necessary so that any request will be answered in time. Windows is not exactly patient when it waits for a Service to respond to a "Pause", "Resume" or "Stop" request: after 5 seconds you are already in danger to see an error message that is basically saying that the Service refused to cooperate. However, note that the interpreter confirms the "start" request for us; no further action is required.
+   To do it as early as possible is necessary so that any request will be answered in time. Windows is not exactly patient when it waits for a Service to respond to a "Pause", "Resume" or "Stop" request: after 5 seconds you are already in danger to see an error message that is basically saying that the Service refused to cooperate.
+
+   However, note that the interpreter confirms the "start" request for us; no further action is required.
    
    Normally you need to create a parameter space by calling `CreateParmSpace` and to set at least the name of the log function and possibly the namespace (or class instance) that log function is living in; this log function is used to log any incoming requests from the SCM. The parameter space is then passed as right argument to `Init`.
 
@@ -46,7 +52,9 @@ In order to simplify things we are going to make use of the `ServiceState` names
    
    This is an operator, so it needs a function as operand: that is a function that is doing the logging, allowing `CheckServiceMessages` to log its actions to the log file. (If you don't have the need to write to a log file then simply passing `{⍵}` will do.
       
-   If no request of the SCM is pending when `CheckServiceMessages` is called then it will quit straight away and return a 0. If a "Pause" is pending then it goes into a loop, and it will continue to loop (with a `⎕DL` in between) until either "Continue" (sometimes referred to as "Resume") or "Stop" is requested by the SCM. If a "Stop" is requested the operator will subsequently quit and return a 1.
+   If no request of the SCM is pending when `CheckServiceMessages` is called then it will quit straight away and return a 0. If a "Pause" is pending then it goes into a loop, and it will continue to loop (with a `⎕DL` in between) until either "Continue" (sometimes referred to as "Resume") or "Stop" is requested by the SCM. 
+
+   If a "Stop" is requested the operator will subsequently quit and return a 1.
 
    
 ## Installing and uninstalling a Service.
@@ -77,7 +85,11 @@ and you are done.
 
 A> # Pitfalls when installing / uninstalling Windows Services
 A>
-A> Be warned that when you have opened the "Services" GUI while installing or uninstalling a Windows Service then you must press F5 on the GUI in order to update it. The problem is not that the GUI does not update itself, though this can be quite annoying; it can get much worse: you might end up with a Service marked in the GUI as "disabled", and the only thing you can do by then is rebooting the machine. This will happen when you try to perform an action on the GUI when it is not in sync with the Service's current state.
+A> Be warned that when you have opened the "Services" GUI while installing or uninstalling a Windows Service then you must press F5 on the GUI in order to update it. 
+A>
+A> The problem is not that the GUI does not update itself, though this can be quite annoying; it can get much worse: you might end up with a Service marked in the GUI as "disabled", and the only thing you can do by then is rebooting the machine. 
+A> 
+A> This will happen when you try to perform an action on the GUI when it is not in sync with the Service's current state.
 
 A> # SC: Service Control
 A>
@@ -111,25 +123,34 @@ From experience we can tell that there are quite a number of traps. In general t
 If a Service does not seem to do anything when started:
 
 * Check the name and path of the workspace the Service is expected to load: if that's wrong you won't see anything at all - the message "Workspace not found" goes straight into the ether.
+
 * Make sure the workspace size is sufficent. Again too little memory would not produce any error message.
-* The Service might create an aplcore when started. Look out for a file `aplcore`[^aplcore] in the Service's current directory to exclude this possibility. 
-* The Service might have created a CONTINUE workspace for all sorts of reasons.  
 
-  Note that starting with version 16.0 by default Dyalog does _not_ drop a CONTINUE workspace any more. You must configure Dyalog accordingly. Also, a CONTINUE cannot be saved in case there is more than one thread running, and Services are by definition multi-threaded. However, in case it fails very early there might still be a CONTINUE.
+* The Service might create an aplcore when started.
 
-A> # CONTINUE and aplcores
-A> Writing to the directory the service is installed in might be prohibited by Windows. That might well prevent a CONTINUE or aplcore from being saved. While you have no influence on the folder where a CONTINUE would be saved you can define a folder for aplcores:
+* Start the "Event Viewer" and check whether any useful piece of information is provided. Although our application does not write to the application log yet, the SCM might!
+
+
+A> # CONTINUE workspaces
+A> 
+A> The Service might have created a CONTINUE workspace for all sorts of reasons.  
+A> 
+A> Note that starting with version 16.0 by default Dyalog does _not_ drop a CONTINUE workspace any more. You must configure Dyalog accordingly. 
+A> 
+A> Note also that a CONTINUE cannot be saved in case there is more than one thread running, and Services are by definition multi-threaded. However, in case it fails very early there might still be a CONTINUE.
+A> 
+A> Keep in mind that once a second thread is started, Dyalog is not able any more to save a CONTINUE workspace. On the other hand you should have established error trapping before a second thread is started; that would avoid this problem.
+
+A> # aplcores
+A> 
+A> Writing to the directory the service is installed in might be prohibited by Windows. That might well prevent a CONTINUE or aplcore from being saved. 
+A> 
+A> While you have no influence on the folder where a CONTINUE would be saved you can define a folder for aplcores:
 A> ~~~
 A> `APLCORENAME='/pathToFolder/my_aplcore*`. 
 A> ~~~
-A>
-A> This save any aplcore as "my_aplcore" followed by a number. For more information regarding aplcores see "[Appendix 3 — aplcores and WS integrity](./52 Appendix 3 — aplcores and WS integrity.html)".
+A> This saves any aplcore as "my_aplcore" followed by a running number. For more information regarding aplcores see "[Appendix 3 — aplcores and WS integrity](./52 Appendix 3 — aplcores and WS integrity.html)".
 
-
-  Keep in mind that once a second thread is started, Dyalog is not able any more to save a CONTINUE workspace. On the other hand you should have 
-  established error trapping before a second thread is started; that would avoid this problem.
-* Start the "Event Viewer" and check whether any useful piece of information is provided. Although our application does not write to the application 
-  log yet, the SCM might!
   
 ### The Service starts but ignores "Pause" and "Stop" requests.
 
@@ -169,21 +190,25 @@ There are two very different scenarios when you might want to use Ride:
 * The Service does not seem to start or does not react to "Pause" or "Stop" requests. 
 * Although the Service starts fine and reacts properly to any "Pause" or "Stop" requests, the application is behaving unexpectedly.
  
-In the former case make sure that you allow the programmer to Ride into the Service as soon as possible - literally. That means that the second line of the function noted on `⎕LX` should provide a Ride, assuming that the first line sets `⎕IO`, `⎕ML` etc.
+In the former case make sure that you allow the programmer to Ride into the Service as soon as possible - literally. That means that the first line of the function noted on `⎕LX` should provide a Ride.
 
-At such an early stage we don't have an INI file instantiated, so we cannot switch Ride on and off via the INI file, we have to modify the code for that. You might feel tempted to overcome this by doing it a bit later (read: after having processed the INI file etc.) but we warn you: if a Service does not cooperate then "a bit later" might well be too late to get to the bottom of the problem, so don't.
+At such an early stage we don't have an INI file instantiated, so we cannot switch Ride on and off via the INI file, we have to modify the code for that. 
+
+You might feel tempted to overcome this by doing it a bit later (read: after having processed the INI file etc.) but we warn you: if a Service does not cooperate then "a bit later" might well be too late to get to the bottom of the problem, so don't.
   
-In the latter case you should add the call to `CheckForRide` to the main loop of the application.
+In the latter case you should add the call to `CheckForRide` once the INI file has been instanciated.
 
 I> Make sure that you have _never_ more than one of the two calls to `CheckForRide` active: if both are active you would be able to make use of the first one but the second one would throw you out!  
 
 
-### Logging
+## Logging
 
 
-#### Local logging
+### Local logging
 
-We want to log as soon as possible any command-line parameters as well as any message exchange between the Service and the SCM. Again we advise you to not wait until the folder holding the log files is defined by instantiating the INI file. Instead we suggest making the assumption that a certain folder ("Logs") will (or might) exist in the current directory which will become where the workspace was loaded from.
+We want to log as soon as possible any command-line parameters as well as any message exchange between the Service and the SCM.
+
+Again we advise you to not wait until the folder holding the log files is defined by instantiating the INI file. Instead we suggest making the assumption that a certain folder ("Logs") will (or might) exist in the current directory which will become where the workspace was loaded from.
 
 If that's not suitable then consider passing the directory that will host the "Logs" folder as a command line parameter.
 
@@ -193,12 +218,14 @@ If that's not suitable then consider passing the directory that will host the "L
 In the next chapter ("[The Windows Event Log](./14 The Windows Event Log.html)") we will discuss why and how to use the Windows Event Log, in particular when it comes to Services.
 
 
-## How to implement it
+### How to implement it
 
 
-### Setting the latent expression
+#### Setting the latent expression
 
-First of all we need to point out that `MyApp` as it stands is hardly a candidate for a Service. Therefore we have to make something up: the idea is to specify one to many folders to be watched by the `MyApp` Service. If any files are found then those are processed. Finally the app will store hashes for all files it has processed. That allows it to recognize any added, changed or removed files efficiently.
+First of all we need to point out that `MyApp` as it stands is hardly a candidate for a Service. Therefore we have to make something up: the idea is to specify one to many folders to be watched by the `MyApp` Service.
+
+If any files are found then those are processed. Finally the app will store hashes for all files it has processed. That allows it to recognize any added, changed or removed files efficiently.
 
 For the Service we need to create a workspace that can be loaded by that Service. Therefore we need to set `⎕LX`, and for that we create a new function:
 
@@ -207,6 +234,7 @@ For the Service we need to create a workspace that can be loaded by that Service
    ⍝ Set Latent Expression (needed in order to export workspace as EXE)
    ⍝ `earlyRide` is a flag. 1 allows a Ride.
    ⍝ `ridePort`  is the port number to be used for a Ride.
+      #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1   
       r←⍬
       ⎕LX←'#.MyApp.RunAsService ',(⍕earlyRide),' ',(⍕ridePort)
  ∇
@@ -217,7 +245,7 @@ The function takes a flag `earlyRide` and an integer `ridePort` as arguments. Ho
 Because we have now two functions that set `⎕LX` we shall rename the original one (`SetLX`) to `SetLXForApplication` to tell them apart.
 
 
-### Initialising the Service
+#### Initialising the Service
 
 Next we need the main function for the service:
 
@@ -227,7 +255,6 @@ Next we need the main function for the service:
     ⍝ `earlyRide`: flag that allows a very early Ride.
     ⍝ `ridePort`: Port number used by Ride.
       r←⍬
-      #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
       CheckForRide earlyRide ridePort
       #.FilesAndDirs.PolishCurrentDir
       ⎕TRAP←#.HandleError.SetTrap ⍬
@@ -236,10 +263,10 @@ Next we need the main function for the service:
       Config.ControlFileTieNo←CheckForOtherInstances ⍬
       ∆FileHashes←0 2⍴''
       :If #.ServiceState.IsRunningAsService
-          {MainLoop ⍵}&ridePort
+          {MainLoop ⍵}&⍬
           ⎕DQ'.'
       :Else
-          MainLoop ridePort
+          MainLoop ⍬
       :EndIf
       Cleanup ⍬
       Off EXIT.OK
@@ -248,13 +275,16 @@ Next we need the main function for the service:
 
 Notes:
 
-* This function allows a Ride very early indeed.
+* This function allows a Ride very early indeed. 
+
 * It calls the function `Initial` and passes the result of the function `#.ServiceState.IsRunningAsService` as right argument. We will discuss `Initial` next.
+
 * We create a global variable `∆FileHashes` which we use to collect the hashes of all files that we have processed. This gives us an easy and fast way to check whether any of the files we've already processed got changed.
+
 * We call `MainLoop` (a function that has not been established yet) in different ways depending on whether the function is running as a Windows Service or not for the simple reason that it is much easier to debug an application that runs in a single thread.
 
 
-### The "business logic"
+#### The "business logic"
 
 Time to change the `MyApp.Initial` function:
 
@@ -263,7 +293,6 @@ leanpub-start-insert
  ∇ (Config MyLogger)←Initial isService;parms
 leanpub-end-insert
     ⍝ Prepares the application.
-      #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
 leanpub-start-insert
       Config←CreateConfig isService
 leanpub-end-insert
@@ -319,7 +348,6 @@ Time to introduce the function `MainLoop`:
   MyLogger.Log'"MyApp" server started'
   S←#.ServiceState
   :Repeat
-      CheckForRide 0 port
       LoopOverFolder ⍬
       :If (MyLogger.Log S.CheckServiceMessages)S.IsRunningAsService
           MyLogger.Log'"MyApp" is about to shut down...'
@@ -333,8 +361,8 @@ Time to introduce the function `MainLoop`:
 
 Notes:
 
-* We put a call to the function `CheckForRide` into the code but pass a 0 as first item of the right argument, making it inactive for the time being.
 * The call to `ServiceState.CheckServiceMessages` makes sure that the function reacts to any status change requests from the SCM.
+
 * `LoopOverFolder` is doing the real work.
 
 The function `LoopOverFolder`:
@@ -417,12 +445,12 @@ leanpub-end-insert
 ~~~
 
 
-### Running the test cases
+#### Running the test cases
 
 Now it's time to make sure that we did not break anything: double-click `MyApp.dyapp` and answer the question whether you would like to run all test cases with "y". If something does not work execute `#.Tests.RunDebug 0` and fix the problem(s).
 
 
-### Installing and un-installing the Service
+## Installing and un-installing the Service
 
 In order to install as well as un-install the Service we should have two BAT files: `InstallService.bat` and `Uninstall_Service.bat`. We will create these BAT files from Dyalog. For that we create a class `ServiceHelpers`:
 
@@ -462,13 +490,21 @@ In order to install as well as un-install the Service we should have two BAT fil
 Notes:
 
 * The install BAT will use the version of Dyalog used to create the BAT file, and it will call the runtime EXE.
+
 * In case you are not familiar with `%~dp0`: this stand for "the directory this BAT file was loaded from". In other words: as long as the workspace `MyAppService.DWS` (which we have not created yet) is a sibling of the BAT file it will work.
-* The setting of APLCORENAME specifies folder and name of any aplcores. For example, `D:\MyAplcores\aplcore_64_16_0_Unicode_*` would specify in which folder the aplcores shall be saved and that the filenames should start with `aplcore_64_16_0_Unicode_` followed by a running number (the asterisk).
+
+* The setting of APLCORENAME specifies folder and name of any aplcores. 
+
+  For example, `D:\MyAplcores\aplcore_64_16_0_Unicode_*` would specify in which folder the aplcores shall be saved and that the filenames should start with `aplcore_64_16_0_Unicode_` followed by a running number (the asterisk).
+
 * By setting DYALOG_EVENTLOGNAME you can tell the interpreter that it should write messages to the Windows Event Log, and what name to use for this.
-* The un-install BAT file will check the `errorlevel` variable. If it detects an error it will pause so that one can actually see the error message even when we have just double-clicked the BAT file. We've discussed this in the chapter "[Handling errors](./07 Handling errors.html)".
+
+* The un-install BAT file will check the `errorlevel` variable. 
+
+  If it detects an error it will pause so that one can actually see the error message even when we have just double-clicked the BAT file. We've discussed this in the chapter "[Handling errors](./07 Handling errors.html)".
 
 
-### "Make" for the Service
+## "Make" for the Service
 
 Now it's time to create a DYAPP for the service. For that copy `Make.dyapp` as `MakeService.dyapp` and then edit it:
 
@@ -570,7 +606,9 @@ A> Even if the code of a class executes `⎕EX ⍕⎕THIS` or a function or oper
 
 We have test cases that ensure that the "business logic" of `MyApp` works just fine. What we also need are tests that make sure that it runs fine as a Service as well.
 
-Since the two test scenarios are only loosely related we want to keep those tests separate. It is easy to see way: testing the Service means assembling all the needed stuff, installing the Service, carrying out the tests and finally un-installing the tests and cleaning up. We don't want to execute this unless we really have to.
+Since the two test scenarios are only loosely related we want to keep those tests separate. It is easy to see way: testing the Service means assembling all the needed stuff, installing the Service, carrying out the tests and finally un-installing the tests and cleaning up. 
+
+We don't want to execute all this unless we really have to.
 
 We start be creating a new script `TestsForServices` which we save alongside the other scrips in `v13/`:
 
@@ -585,7 +623,9 @@ We start be creating a new script `TestsForServices` which we save alongside the
 :EndNamespace
 ~~~
 
-We now discuss the functions we are going to add one after the other. Note that the `Initial` function is particularly important in this scenario: we need to copy over all the stuff we need, code as well as input files, make adjustments, and install the Service. This could all be done in a single function but it would be lengthy and difficult to read. To avoid this we split the function into obvious units. By naming those functions carefully we should get away without adding any comments because the code explains itself. Here we go:
+We now discuss the functions we are going to add one after the other. Note that the `Initial` function is particularly important in this scenario: we need to copy over all the stuff we need, code as well as input files, make adjustments, and install the Service.
+
+This could all be done in a single function but it would be lengthy and difficult to read. To avoid this we split the function into obvious units. By naming those functions carefully we should get away without adding any comments because the code explains itself. Here we go:
 
 ~~~
 ∇ r←Initial;rc;ini;row;bat;more
@@ -621,9 +661,13 @@ Note that all the sub-function and global variables start their names with `∆`
 ∇
 ~~~    
 
-It executes `SC` commands like "start", "pause", "continue", "stop" and "query" by preparing a string and then passing it to `Execute.Process`. It analyzes the result and returns the text part of it as well as a return code. While the first 4 commands aim to change the current status of a Service, "query" is designed to establish what the current status of a Service actually is.
+It executes `SC` commands like "start", "pause", "continue", "stop" and "query" by preparing a string and then passing it to `Execute.Process`.
 
-After having executed the test suite we want to clean up, so we create a function `Cleanup`. Just a reminder: in case the test framework finds a function `Initial` it executes it _before_ executing the actual test cases, while any function  `Cleanup` will be executed _after_ the test cases have been executed.
+It analyzes the result and returns the text part of it as well as a return code. While the first 4 commands aim to change the current status of a Service, "query" is designed to establish what the current status of a Service actually is.
+
+After having executed the test suite we want to clean up, so we create a function `Cleanup`. 
+
+Just a reminder: in case the test framework finds a function `Initial` it executes it _before_ executing the actual test cases, while any function  `Cleanup` will be executed _after_ the test cases have been executed.
 
 ~~~
 ∇ {r}←Cleanup
@@ -743,7 +787,11 @@ Though this test starts and stops the Service, it's real purpose is to make sure
 
 ### Running the tests
 
-First we need to make sure that everything is assembled freshly, and with admin rights. The best way to do that is to run the script `MakeService.dyapp` from a console that was started with admin rights. This is because unfortunately you cannot right-click on a DYAPP and select "Run as administrator" from the context menu.
+First we need to make sure that everything is assembled freshly, and with admin rights. 
+
+The best way to do that is to run the script `MakeService.dyapp` from a console that was started _with admin rights_. This is because unfortunately you cannot right-click on a DYAPP and select "Run as administrator" from the context menu.
+
+Note that you _must_ change the current directory in the console window to where the DYAPP lives before actually calling it.
 
 A> # Console with admin rights.
 A> 
@@ -813,6 +861,8 @@ Looking for a function "Cleanup"...
 ~~~
 
 [^aplcore]: More information regarding aplcores is available in "[Appendix 3 — aplcores and WS integrity](52 Appendix 3 — aplcores and WS integrity.html).
+
+
 
 
 

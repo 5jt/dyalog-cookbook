@@ -201,7 +201,6 @@ leanpub-start-insert
 ∇ (Config MyLogger)←Initial dummy
 leanpub-end-insert
 ⍝ Prepares the application.
-  #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
 leanpub-start-insert  
   Config←CreateConfig ⍬
 leanpub-end-insert  
@@ -356,6 +355,8 @@ And finally we create a new standalone EXE as before and run it to make sure tha
 
 
 [^fire]: Fire stands for _Find and Replace_. It is a powerful tool for both search and replace operations in the workspace. It is also a member of the APLTree Open Source Library. For details see <http://aplwiki.com/Fire>. Fire is discussed in the chapter "Useful user commands".
+
+
 
 
 

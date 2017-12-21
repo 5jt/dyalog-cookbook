@@ -174,6 +174,8 @@ The workspace `Goo` can be tested independently from the user command framework,
 
 
 
+
+
 *[HTML]: Hyper Text Mark-up language
 *[DYALOG]: File with the extension 'dyalog' holding APL code
 *[TXT]: File with the extension 'txt' containing text

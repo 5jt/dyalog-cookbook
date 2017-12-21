@@ -219,15 +219,16 @@ The function `Assert` does not exist yet in `Utilities`:
           (new,nw)[(old,nw)⍳⍵]
       }      
 leanpub-start-insert      
-      Assert←{
-          ⍵:.
-          1:r←⍬
-      }
+      Assert←{⍺←'' ⋄ ⊃⍵:r←1 ⋄ ⍺ ⎕SIGNAL 11}
 leanpub-end-insert      
 :EndNamespace
 ~~~
 
-Note that `Assert` executes a full stop in case `⍵` is `1` but returns `⍬` as a shy (!) result in case ⍵ is `0`. This is an easy way to make the calling function stop when something goes wrong. There is no point in doing anything but stopping the code from continuing since it is called by a programmer, and when it fails she wants to investigate straight away. And things can go wrong quite easily; for example, the attempt to remove `DESTINATION` may fail simply because somebody is looking with the Windows Explorer into `DESTINATION` at the same time.
+Note that `Assert` signals an error in case `⍵` is not `1` but returns `1` as a shy (!) result otherwise. Via the optional left argument you can specify a message.
+
+Because it's a one-liner you cannot trace into it, and that's a good thing.
+
+This is an easy way to make the calling function stop when something goes wrong. There is no point in doing anything but stopping the code from continuing since it is called by a programmer, and when it fails she wants to investigate straight away. And things can go wrong quite easily; for example, the attempt to remove `DESTINATION` may fail simply because somebody is looking with the Windows Explorer into `DESTINATION` at the same time.
 
 First we create the folder `DESTINATION` from scratch and then we copy everything that's needed to the folder `DESTINATION`: the application icon and the INI file. Whether the function executes `⎕OFF` or not depends on the right argument `offFlag`. Why that is needed will become apparent soon.
 
@@ -369,6 +370,8 @@ With the two DYAPPs and the BAT file, your development cycle now looks like this
    or simply close the session and relaunch `MyApp.dyapp`.
    
 [^WCU]: Worst Case User, also known as Dumbest Assumable User (DAU).
+
+
 
 
 

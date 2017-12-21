@@ -195,7 +195,9 @@ The other pieces of information are less important. For details refer to the pag
 
 ![A typical dialog box](Images/WindowsCaptionsDialogBox.png)
 
-However, this cannot be configured in any way, you need to add subkeys and values to the Windows Registry. We do _not_ suggest that you add or modify those caption with the Registry Editor. It is a better idea to write them by program, even if you deal with just one version of Dyalog at a time because soon there will be a new version coming along requiring you to carry out the same actions again. See the chapter "[The Windows Registry](./15 The Windows Registry) for how to solve this; that chapters uses this scenario as an example.
+However, this cannot be configured in any way, you need to add subkeys and values to the Windows Registry. We do _not_ suggest that you add or modify those caption with the Registry Editor. It is a better idea to write them by program, even if you deal with just one version of Dyalog at a time because soon there will be a new version coming along requiring you to carry out the same actions again. See the chapter "[The Windows Registry](./15 The Windows Registry)" for how to solve this; that chapters uses this scenario as an example.
+
+
 
 
 

@@ -9,7 +9,7 @@
     
     DESTINATION←'MyApp'
     
-    ∇ {filename}←Run offFlag;rc;en;more;F;U;msg
+    ∇ {filename}←Run offFlag;rc;en;more;F;U;msg;successFlag
       :Access Public Shared
       (F U)←##.(FilesAndDirs Utilities)
       (rc en more)←F.RmDir DESTINATION

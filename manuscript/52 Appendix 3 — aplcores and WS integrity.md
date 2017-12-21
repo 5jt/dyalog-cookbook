@@ -119,6 +119,8 @@ The same can be achieved by specifying `APLCORENAME=...` on the command line. Th
 
 
 
+
+
 *[HTML]: Hyper Text Mark-up language
 *[DYALOG]: File with the extension 'dyalog' holding APL code
 *[TXT]: File with the extension 'txt' containing text

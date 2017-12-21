@@ -228,9 +228,10 @@ Configure for
 
 A> # UAC, admin rights and all the rest
 A> With the UAC, users of the admin group have 2 tokens. The filtered token represents standard 
-A> ## UAC, admin rights and all the rest
 A> 
-A> With the UAC, users of the admin group have 2 tokens. The filtered token represents standard user rights. This token is used by default, for example when you create a shell (console). Therefore you have just standard user rights by default even when using a user account with admin rights. However, when you have admin rights and you click an EXE and select "run as administrator", the full token is used which contains admin rights.
+A> With the UAC, users of the admin group have 2 tokens. The filtered token represents standard user rights. 
+A>
+A> This token is used by default, for example when you create a shell (console). Therefore you have just standard user rights by default even when using a user account with admin rights. However, when you have admin rights and you click an EXE and select "run as administrator", the full token is used which contains admin rights.
 A> 
 A> Notes:
 A> 
@@ -342,12 +343,16 @@ A> However, Microsoft being Microsoft, the error messages are not always that he
 
 ### Binding MyAPP with the Dyalog development EXE
 
-If for some reason you've created `MyApp.exe` by binding the application with the development version of Dyalog rather than the Runtime (you can do this by providing a 0 as left argument to the `MakeExport` function) then you might run into a problem: Our code takes into account whether it is running under a development EXE or a runtime EXE: error trapping will be inactive (unless it is enforced via the INI file) and `⎕OFF` won't be executed; instead it would execute `→` and hang around but without you being able to see the session. Therefore you are advised not to do this: because you have Ride at your disposal the development version of Dyalog has no advantages over the runtime EXE anyway.
+If for some reason you've created `MyApp.exe` by binding the application with the development version of Dyalog rather than the Runtime (you can do this by providing a 0 as left argument to the `MakeExport` function) then you might run into a problem: Our code takes into account whether it is running under a development EXE or a runtime EXE: error trapping will be inactive (unless it is enforced via the INI file) and `⎕OFF` won't be executed; instead it would execute `→` and hang around but without you being able to see the session. 
+
+Therefore you are advised not to do this: because you have Ride at your disposal the development version of Dyalog has no advantages over the runtime EXE anyway.
 
 
 ### Your application doesn't do what it's supposed to do
 
-... but only when running as a task. Start the Task Scheduler and go to the "History" tab; if this is empty then you have not clicked at "Enable all tasks history" as suggested earlier. Don't get fooled by "Action completed" and "Task completed" - whether a task failed or not does not become apparent this way. Click at "Action completed": at the bottom you get information regarding that run. You might read something like:
+... but only when running as a task. Start the Task Scheduler and go to the "History" tab; if this is empty then you have not clicked at "Enable all tasks history" as suggested earlier. 
+
+Don't get fooled by "Action completed" and "Task completed" - whether a task failed or not does not become apparent this way. Click at "Action completed": at the bottom you get information regarding that run. You might read something like:
 
 "Task Scheduler successfully completed task "\MyApp" , instance "{c7cb733a-be97-4988-afca-a551a7907918}" , action "...\code\v12\MyApp\MyApp.exe" with return code 2147942512."
 
@@ -356,7 +361,9 @@ That tells you that the task did not run at all. Consequently you won't find eit
 
 ### Task Scheduler error codes
 
-In case the Task Scheduler itself throws an error you will find them of little value at first sight. You can provoke such an error quite easily: edit the task we've created and change the contents of the "Program/script" field in the "Edit action" dialog to something that does not exist, meaning that the Task Scheduler won't find such a program. Then issue the "Run" command from the context menu.
+In case the Task Scheduler itself throws an error you will find them of little value at first sight. 
+
+You can provoke such an error quite easily: edit the task we've created and change the contents of the "Program/script" field in the "Edit action" dialog to something that does not exist, meaning that the Task Scheduler won't find such a program. Then issue the "Run" command from the context menu.
 
 Update the GUI by pressing F5 and you will see that errors are reported. The row that reads "Task Start Failed" in the "Task Category" columns and "Launch Failure" in the "Operational Code" columns is the one we are interested in. When you click at this row you will find that it reports an "Error Value 2147942402". What exactly does this mean?
 
@@ -379,7 +386,9 @@ Now the first four digits, 8007, mean that what follows is a win32 status code. 
       ]Hex2Int 0002
 ~~~
 
-but in our case that is of course not necessary because the number is so small that there is no difference between hex and integer anyway, so we can convert it into an error message straight away. Again we use a user command that is not part of a standard Dyalog installation but because it is so useful we strongly recommend to install this as well [^getmsg]; it translates any Windows error code into meaningful text.
+but in our case that is of course not necessary because the number is so small that there is no difference between hex and integer anyway, so we can convert it into an error message straight away. 
+
+Again we use a user command that is not part of a standard Dyalog installation but because it is so useful we strongly recommend to install this as well [^getmsg]; it translates any Windows error code into meaningful text.
 
 ~~~
       ]GetMsgFrom
@@ -405,6 +414,8 @@ for details.
 [^hex]: For details and download regarding the user commands `Hex2Int` and `Int2Hex` see <http://aplwiki.com/UserCommands/Hex>
 
 [^getmsg]: For details and download regarding the user command `GetMsgFrom` see <http://aplwiki.com/UserCommands/GetMsgFrom>
+
+
 
 
 

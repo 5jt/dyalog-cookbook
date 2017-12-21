@@ -176,11 +176,10 @@ We create a function `Initial` (short for "Initialize") which calls `OpenLogFile
 ~~~
 ∇ {MyLogger}←Initial dummy
 ⍝ Prepares the application.   
-   #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
 ⍝   
 ~~~
 
-At the moment `Initial` is not doing too much, but that will change. Note that we took the opportunity to make sure that all the system settings in `#` are set according to our needs. `MyApp` sets these variables for itself but within `Initial` we now make sure that `#` uses the same values as well, no matter what the session defaults are.
+At the moment `Initial` is not doing anything, but that will change soon.
 
 We also need to change `ProcessFile`:
 
@@ -415,6 +414,8 @@ A> In case you wonder why that is: a destructor (if any) is called when the inst
 [^apltree]: You can download all members of the APLTree library from the APL Wiki: <http://download.aplwiki.com/>
 
 [^bom]: Details regarding the BOM: <https://en.wikipedia.org/wiki/Byte_order_mark>
+
+
 
 
 

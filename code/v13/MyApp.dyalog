@@ -97,7 +97,6 @@
     ⍝ `earlyRide`: flag that allows a very early Ride.
     ⍝ `ridePort`: Port number used by Ride.
       r←⍬
-      #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
       CheckForRide earlyRide ridePort
       #.FilesAndDirs.PolishCurrentDir
       ⎕TRAP←#.HandleError.SetTrap ⍬
@@ -106,21 +105,20 @@
       Config.ControlFileTieNo←CheckForOtherInstances ⍬
       ∆FileHashes←0 2⍴''
       :If #.ServiceState.IsRunningAsService
-          {MainLoop ⍵}&ridePort
+          {MainLoop ⍵}&⍬
           ⎕DQ'.'
       :Else
-          MainLoop ridePort
+          MainLoop ⍬
       :EndIf
       Cleanup ⍬
       Off EXIT.OK
     ∇
 
-    ∇ {r}←MainLoop port;S
+    ∇ {r}←MainLoop dummy;S
       r←⍬
       MyLogger.Log'"MyApp" server started'
       S←#.ServiceState
       :Repeat
-          CheckForRide 0 port
           LoopOverFolder ⍬
           :If (MyLogger.Log S.CheckServiceMessages)S.IsRunningAsService
               MyLogger.Log'"MyApp" is about to shut down...'
@@ -202,6 +200,7 @@
 
     ∇ {r}←SetLXForApplication dummy
    ⍝ Set Latent Expression (needed in order to export workspace as EXE)
+      #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1      
       r←⍬
       ⎕LX←'#.MyApp.StartFromCmdLine #.MyApp.GetCommandLineArg ⍬'
     ∇
@@ -210,6 +209,7 @@
    ⍝ Set Latent Expression (needed in order to export workspace as EXE)
    ⍝ `earlyRide` is a flag. 1 allows a Ride.
    ⍝ `ridePort`  is the port number to be used for a Ride.
+      #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1   
       r←⍬
       ⎕LX←'#.MyApp.RunAsService ',(⍕earlyRide),' ',(⍕ridePort)
     ∇
@@ -218,7 +218,7 @@
    ⍝ Needs command line parameters, runs the application.
       r←⍬
       ⎕TRAP←#.HandleError.SetTrap ⍬
-      ⎕WSID←⊃1↓2 ⎕NQ #'GetCommandLineArgs'
+      ⎕WSID←⊃{⍵/⍨~'='∊¨⍵}{⍵/⍨'-'≠⊃¨⍵}1↓2⎕nq # 'GetCommandLineArgs'
       ⎕SIGNAL 0
       #.FilesAndDirs.PolishCurrentDir
       #.⎕SHADOW'ErrorParms'
@@ -248,14 +248,12 @@
 
     ∇ (Config MyLogger)←Initial isService;parms
     ⍝ Prepares the application.
-      #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
       Config←CreateConfig isService
       Config.ControlFileTieNo←CheckForOtherInstances ⍬
       CheckForRide Config.(Ride WaitForRide)
       MyLogger←OpenLogFile Config.LogFolder
       MyLogger.Log'Started MyApp in ',F.PWD
-      ⎕WSID←⊃{⍵/⍨~'='∊¨⍵}{⍵/⍨'-'≠⊃¨⍵}1↓2⎕nq # 'GetCommandLineArgs'
-      MyLogger.Log 2 ⎕NQ # 'GetCommandLineArgs'
+      MyLogger.Log 2 ⎕NQ #'GetCommandLineArgs'
       MyLogger.Log↓⎕FMT Config.∆List
       :If isService
           parms←#.ServiceState.CreateParmSpace
@@ -301,24 +299,24 @@
       Config.DumpFolder←'expand'F.NormalizePath Config.DumpFolder
     ∇
 
-    ∇ {r}←CheckForRide (ridePort waitFlag);rc;msg
-    ⍝ Depending on what is provided as right argument we prepare for a Ride 
+    ∇ {r}←CheckForRide(ridePort waitFlag);rc;msg
+    ⍝ Depending on what is provided as right argument we prepare for a Ride
     ⍝ or we do not. In case `waitFlag` is 1 we enter an endless loop.
-     r←1
-     :If 0<ridePort
-         rc←3502⌶0
-         rc←3502⌶'SERVE::',⍕ridePort
-         :If 0≠rc
-             msg←'Problem setting the Ride connecion string to SERVE::'
-             msg,←,(⍕ridePort),', rc=',⍕rc
-             11 ⎕SIGNAL⍨msg
-         :EndIf
-         rc←3502⌶1
-         :If ~rc∊0 ¯1
-             11 ⎕SIGNAL⍨'Problem switching on Ride, rc=',⍕rc
-         :EndIf
-         {}{_←⎕DL ⍵ ⋄ ∇ ⍵}⍣(⊃waitFlag)⊣1  ⍝ Endless loop for an early RIDE
-     :EndIf
+      r←1
+      :If 0<ridePort
+          rc←3502⌶0
+          rc←3502⌶'SERVE::',⍕ridePort
+          :If 0≠rc
+              msg←'Problem setting the Ride connecion string to SERVE::'
+              msg,←,(⍕ridePort),', rc=',⍕rc
+              11 ⎕SIGNAL⍨msg
+          :EndIf
+          rc←3502⌶1
+          :If ~rc∊0 ¯1
+              11 ⎕SIGNAL⍨'Problem switching on Ride, rc=',⍕rc
+          :EndIf
+          {}{_←⎕DL ⍵ ⋄ ∇ ⍵}⍣1⊣1  ⍝ Endless loop for an early RIDE
+      :EndIf
     ∇
 
     ∇ Off exitCode
@@ -425,5 +423,14 @@
       ⍝ Get hash for file ⍵
           ⊣2 ⎕NQ'#' 'GetBuildID'⍵
       }
+
+    ∇ Crash;MEMCPY
+      :Trap 102
+          ⎕NA'dyalog32|MEMCPY u4 u4 u4'
+      :Else
+          ⎕NA'dyalog64|MEMCPY u4 u4 u4'
+      :EndTrap
+      MEMCPY 0 0 4
+    ∇
 
 :EndNamespace

@@ -5,11 +5,19 @@
 
 In this chapter we consider your choices for making your program available to others, and for taking care of the source code, including tracking the changes through successive versions. 
 
-To follow this, we'll make a very simple program. It counts the frequency of letters used in one or multiple text files. (This is simple, but useful in cryptanalysis, at least at hobby level.) We'll put the source code under version control, and package the program for use. Some of the things we are going to add to this application will seem like overkill, but keep in mind that we use this application just as a very simple example for all the techniques we are going to introduce.
+To follow this, we'll make a very simple program. It counts the frequency of letters used in one or multiple text files. (This is simple, but useful in cryptanalysis, at least at hobby level.) We'll put the source code under version control, and package the program for use. 
+
+Some of the things we are going to add to this application will seem like overkill, but keep in mind that we use this application just as a very simple example for all the techniques we are going to introduce.
 
 Let's assume you've done the convenient thing. Your code is in a workspace. Everything it needs to run is defined in the workspace. Maybe you set a latent expression, so the program starts when you load the workspace. 
 
-We shall convert a DWS (saved workspace) to some DYALOG scripts and introduce a DYAPP script to assemble an active workspace from them. Using scripts to store your source code has many advantages: You can use a traditional source code management system rather than having your code and data stored in a binary blob. Changes that you make to your source code are saved immediately, rather than relying on your remembering to save the workspace at some suitable point in your work process. Finally, you don't need to worry about crashes in your code or externally called modules and also any corruption of the active workspace which might prevent you from saving it.
+We shall convert a DWS to some DYALOG scripts and introduce a DYAPP script to assemble an active workspace from them. 
+
+Using scripts to store your source code has many advantages: You can use a traditional source code management system rather than having your code and data stored in a binary blob. 
+
+Changes that you make to your source code are saved immediately, rather than relying on your remembering to save the workspace at some suitable point in your work process. 
+
+Finally, you don't need to worry about crashes in your code or externally called modules and also any corruption of the active workspace which might prevent you from saving it.
 
 A> # Corrupted workspaces
 A> 
@@ -725,6 +733,8 @@ We have reached our goal:
 
 
 [^csv]: With version 16.0 Dyalog has introduced a system function `⎕CSV` for both importing from and exporting to CSV files.
+
+
 
 
 

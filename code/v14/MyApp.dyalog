@@ -99,7 +99,6 @@
     ⍝ `earlyRide`: flag that allows a very early Ride.
     ⍝ `ridePort`: Port number used by Ride.
       r←⍬
-      #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
       CheckForRide earlyRide ridePort
       #.FilesAndDirs.PolishCurrentDir
       ⎕TRAP←#.HandleError.SetTrap ⍬
@@ -108,21 +107,20 @@
       Config.ControlFileTieNo←CheckForOtherInstances ⍬
       ∆FileHashes←0 2⍴''
       :If #.ServiceState.IsRunningAsService
-          {MainLoop ⍵}&ridePort
+          {MainLoop ⍵}&⍬
           ⎕DQ'.'
       :Else
-          MainLoop ridePort
+          MainLoop ⍬
       :EndIf
       Cleanup ⍬
       Off EXIT.OK
     ∇
 
-    ∇ {r}←MainLoop port;S
+    ∇ {r}←MainLoop dummy;S
       r←⍬
       'both'Log'"MyApp" server started'
       S←#.ServiceState
       :Repeat
-          CheckForRide 0 port
           LoopOverFolder ⍬
           :If ('both'∘Log S.CheckServiceMessages)S.IsRunningAsService
               'both'Log'"MyApp" is about to shut down...'
@@ -203,6 +201,7 @@
 
     ∇ {r}←SetLXForApplication dummy
    ⍝ Set Latent Expression (needed in order to export workspace as EXE)
+      #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1   
       r←⍬
       ⎕LX←'#.MyApp.StartFromCmdLine #.MyApp.GetCommandLineArg ⍬'
     ∇
@@ -211,6 +210,7 @@
    ⍝ Set Latent Expression (needed in order to export workspace as EXE)
    ⍝ `earlyRide` is a flag. 1 allows a Ride.
    ⍝ `ridePort`  is the port number to be used for a Ride.
+      #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
       r←⍬
       ⎕LX←'#.MyApp.RunAsService ',(⍕earlyRide),' ',(⍕ridePort)
     ∇
@@ -218,7 +218,7 @@
     ∇ {r}←StartFromCmdLine arg;MyLogger;Config;rc;⎕TRAP
    ⍝ Needs command line parameters, runs the application.
       r←⍬
-      ⎕WSID←'MyApp'
+      ⎕WSID←⊃{⍵/⍨~'='∊¨⍵}{⍵/⍨'-'≠⊃¨⍵}1↓2⎕nq # 'GetCommandLineArgs'
       ⎕SIGNAL 0
       ⎕TRAP←#.HandleError.SetTrap ⍬
       #.⎕SHADOW'ErrorParms'
@@ -248,13 +248,11 @@
 
     ∇ (Config MyLogger)←Initial isService;parms
     ⍝ Prepares the application.
-      #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
       Config←CreateConfig isService
       Config.ControlFileTieNo←CheckForOtherInstances ⍬
       CheckForRide Config.(Ride WaitForRide)
       MyLogger←OpenLogFile Config.LogFolder
       Log'Started MyApp in ',F.PWD
-      ⎕WSID←⊃{⍵/⍨~'='∊¨⍵}{⍵/⍨'-'≠⊃¨⍵}1↓2⎕nq # 'GetCommandLineArgs'
       MyLogger.Log 2 ⎕NQ # 'GetCommandLineArgs'
       Log↓⎕FMT Config.∆List
       r←Config MyLogger

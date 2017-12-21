@@ -3,7 +3,9 @@
 
 # Debugging a stand-alone EXE
 
-Imagine the following situation: when MyApp is started with a double-click on the DYAPP and then tested everything works just fine. When you create a stand-alone EXE from the DYAPP and execute it with some appropriate parameter it does not create the CSV files. In this situation obviously you need to debug the EXE. In this chapter we'll discuss how to achieve that. In addition we will make `MyApp.exe` return an exit code. 
+Imagine the following situation: when MyApp is started with a double-click on the DYAPP and then tested everything works just fine. When you create a stand-alone EXE from the DYAPP and execute it with some appropriate parameter it does not create the CSV files. 
+
+In this situation obviously you need to debug the EXE. In this chapter we'll discuss how to achieve that. In addition we will make `MyApp.exe` return an exit code. 
 
 For debugging we are going to use Ride. (If you don't know what Ride is refer to the documentation) If enabled you can use Ride to hook into a running interpreter, interrupt any running code, investigate and even change that code.
 
@@ -21,16 +23,24 @@ Wait        = 1
 
 By setting `Active` to 1 and defining a `Port` number for the communication between Ride and the EXE you can tell MyApp that you want "to give it a ride". Setting `Wait` to 1 lets the application wait for a ride. That simply means it enters an endless loop.
 
-That's not always appropriate of course, because it allows anybody to read your code. If that's something you have to avoid then you have to find other ways to make the EXE communicate with Ride, most likely by making temporary changes to the code. The approach would be in both cases the same. In MyApp we keep things simple and allow the INI file to rule whether the user may ride into the application or not.
+That's not always appropriate of course, because it allows anybody to read your code. 
+
+If that's something you have to avoid then you have to find other ways to make the EXE communicate with Ride, most likely by making temporary changes to the code. 
+
+The approach would be the same in both cases. In MyApp we keep things simple and allow the INI file to rule whether the user may ride into the application or not.
 
 Copy `Z:\code\v05` to `Z:\code\v06` and then run the DYAPP to recreate the `MyApp` workspace. 
 
-I>Note that 4502 is Ride's default port, and that we've settled for a different port, and for good reasons. Using the default port leaves room for mistakes. Using a dedicated port rather than just using the default minimises the risk of connecting with the wrong application.
+I> Note that 4502 is Ride's default port, and that we've settled for a different port, and for good reasons. Using the default port leaves room for mistakes. 
+I>
+I> Using a dedicated port rather than using the default minimises the risk of connecting to the wrong application.
 
 
 ## The "Console application" flag
 
-In case you've exported the EXE with the "console application" check box ticked there is a problem: although you will be able to connect to the EXE with Ride, all output goes into the console window. That means that you can enter statements in Ride but any response from the interpreter goes to the console window rather than Ride.
+In case you've exported the EXE with the "console application" check box ticked there is a problem: although you will be able to connect to the EXE with Ride, all output goes into the console window. 
+
+That means that you can enter statements in Ride but any response from the interpreter goes to the console window rather than Ride.
 
 For debugging purposes it is therefore recommended to create the EXE with the check box unticked.
 
@@ -44,7 +54,6 @@ We want to make the ride configurable. That means we cannot do it earlier than a
 ~~~
 ∇ (Config MyLogger)←Initial dummy
 ⍝ Prepares the application.
-  #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
   Config←CreateConfig ⍬
 leanpub-start-insert  
   CheckForRide Config.(Ride WaitForRide)
@@ -91,6 +100,8 @@ leanpub-start-insert
   Config.DumpFolder←'expand'F.NormalizePath Config.DumpFolder
 ∇
 ~~~
+
+As a result `Config.Ride` will be 0 in case the INI rules that no Ride is permitted and the port number to be used by Ride otherwise.
 
 ### Allowing a Ride
 
@@ -143,7 +154,9 @@ Notes:
 
 * With `{_←⎕DL ⍵ ⋄ ∇ ⍵}1` we start an endless loop: wait for a second, then calls itself (`∇`) recursively. It's a dfn, so there is no stack growing on recursive calls.
 
-* We could have passed `Config` rather than `Config.(Ride WaitForRide)` to `CheckForRide`. By _not_ doing this we allow the function `CheckForRide` to be tested independently from `Config`. This is an important point. There is value in keeping the function independent in this way, but if you suspect that later you will most likely be in need for other parameters in `Config` then the flexibility you gain this way outperforms the value of keeping the function independent from `Config`. 
+* We could have passed `Config` rather than `Config.(Ride WaitForRide)` to `CheckForRide`. By _not_ doing this we allow the function `CheckForRide` to be tested independently from `Config`. 
+
+  This is an important point. There is value in keeping the function independent in this way, but if you suspect that later you will most likely be in need for other parameters in `Config` then the flexibility you gain this way outweighs the value of keeping the function independent from `Config`. 
 
 Finally we amend the `Version` function:
 
@@ -155,20 +168,26 @@ Finally we amend the `Version` function:
 ∇   
 ~~~
 
-Now you can start Ride, enter both "localhost" and the port number as parameters, connect to the interpreter or stand-alone EXE etc. and then select "Strong interrupt" from the "Actions" menu in order to interrupt the endless loop; you can then start debugging the application. Note that this does not require the development EXE to be involved: it may well be a runtime EXE. However, of course you need a development license in order to be legally entitled to Ride into an application run by the RunTime EXE (DyalogRT.exe).
+Now you can start Ride, enter both "localhost" and the port number as parameters, connect to the interpreter or stand-alone EXE etc. and then select "Strong interrupt" from the "Actions" menu in order to interrupt the endless loop; you can then start debugging the application. 
+
+Note that this does not require the development EXE to be involved: it may well be a runtime EXE. However, of course you need a development license in order to be legally entitled to Ride into an application run by the RunTime EXE (DyalogRT.exe).
 
 A> # DLLs required by Ride
 A>
 A> Prior to version 16.0 one had to copy the files "ride27_64.dll" (or "ride27_32.dll") and "ride27ssl64.dll" (or "ride27ssl32.dll") so that they are siblings of the EXE. From 16.0 onward you must copy the Conga DLLs instead. 
 A>
-A> Failure in doing that will make `3502⌶1` fail. Note that "2.7" refers to the version of Conga, not Ride. Prior to version 3.0 of Conga every application (interpreter, Ride, etc.) needed to have their own copy of the Conga DLLs, with a different name. Since 3.0 Conga can serve several applications in parallel. We suggest that you copy the 32-bit and the 64-bit DLLs over to where your EXE lives.
+A> Failure in doing that will make `3502⌶1` fail. Note that "2.7" refers to the version of Conga, not Ride. Prior to version 3.0 of Conga every application (interpreter, Ride, etc.) needed to have their own copy of the Conga DLLs, with a different name. 
+A> 
+A> Since 3.0 Conga can serve several applications in parallel. We suggest that you copy the 32-bit and the 64-bit DLLs over to where your EXE lives.
 A>
 A> In case you forgot to copy "ride27ssl64.dll" and/or "ride27ssl32.dll" then you will see an error "Can't find Conga DLL". This is because the OS does not bother to tell you about dependencies. You need a tool like DependencyWalker for finding out what's really missing. Note that we said "OS" because this is _not_ a Windows-only problem.
 
 
 A> # Restartable functions
 A> 
-A> Not only do we try to exit functions at the bottom, we also like them to be "restartable". What we mean by that is that we want a function -- and its variables -- to survive `→1`whenever that is possible; sometimes it is not like a function that starts a thread and _must not_ start a second one for the same task, or a file was tied etc. but most of the time it is possible to achieve that. 
+A> Not only do we try to exit functions at the bottom, we also like them to be "restartable". 
+A> 
+A> What we mean by that is that we want a function -- and its variables -- to survive `→1`whenever that is possible; sometimes it is not like a function that starts a thread and _must not_ start a second one for the same task, or a file was tied etc. but most of the time it is possible to achieve that. 
 A>
 A> That means that something like this should be avoided:
 A>
@@ -181,44 +200,6 @@ A> :Until 0∊⍴arg←1↓arg
 A> ~~~
 A> 
 A> This function does not make much sense but the point is that the right argument is mutilated; one cannot restart this function with `→1`. Don't do something like that unless there are very good reasons. In this example a counter is a better way to do this. It's also faster.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 *[HTML]: Hyper Text Mark-up language

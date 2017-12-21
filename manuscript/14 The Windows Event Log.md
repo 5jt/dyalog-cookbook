@@ -179,14 +179,13 @@ Now it's time to replace the call to `MyLogger.Log` by a call to `Log` in the `M
 There are however three functions where we need to add `'both'` as left argument:
 
 ~~~
-∇ {r}←MainLoop port;S
+∇ {r}←MainLoop dummy;S
   r←⍬
 leanpub-start-insert
   'both'Log'"MyApp" server started'
 leanpub-end-insert
   S←#.ServiceState
   :Repeat
-      CheckForRide 0 port
       LoopOverFolder ⍬
 leanpub-start-insert
       :If ('both'∘Log S.CheckServiceMessages)S.IsRunningAsService
@@ -220,7 +219,6 @@ leanpub-start-insert
 ∇ r←Initial isService;parms;Config;MyLogger;MyWinEventLog
 leanpub-end-insert
 ⍝ Prepares the application.
-  #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
   Config←CreateConfig isService
   Config.ControlFileTieNo←CheckForOtherInstances ⍬
   CheckForRide(0≠Config.Ride)Config.Ride
@@ -358,6 +356,8 @@ No doubt you feel now confident with the Windows Event Log, right? Well, keep re
 [^winlog]: Microsoft on the Windows Event Log: <https://msdn.microsoft.com/en-us/library/windows/desktop/aa363648(v=vs.85).aspx>
  
 [^restore]: Details about System Restore Point: <https://en.wikipedia.org/wiki/System_Restore>
+
+
 
 
 
