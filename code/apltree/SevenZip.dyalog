@@ -1,9 +1,9 @@
 ﻿:Class SevenZip
 ⍝ Use this class to zip/unzip files and directories with the Open Source software 7zip.\\
 ⍝ This class relies on an installed version of 7zip. The EXE must be on the PATH environment variable.\\
-⍝ This class is supported under Linux and Windows but not Mac OS.\\
+⍝ This class is supported under Linux and Windows but not Mac OS because 7zip is not available on the Mac.\\
 ⍝ Note that the file extension **must** be lowercase!\\
-⍝ If `type` is not specified then the extension of the filename rules the day.
+⍝ If `type` is not specified then the extension of the filename rules the day.\\
 ⍝ Note also that 7-zip suffers from a bug: that these two files cannot go into the same zip file:
 ⍝
 ⍝ ~~~
@@ -15,7 +15,7 @@
 ⍝ folder2\foo
 ⍝ folder1\foo
 ⍝ ~~~
-⍝ would actually work when the current directory is C:\My. Well...
+⍝ would actually work when the current directory is `C:\My`. Well...
 ⍝
 ⍝ ## Examples
 ⍝ ~~~
@@ -36,15 +36,20 @@
     ⎕IO←0
     ⎕ML←3
 
-    :Field Public Shared types←'7z' 'split' 'zip' 'gzip' 'bzip2' 'tar'
+    :Field Public Shared types←'7z' 'split' 'zip' 'gzip' 'bzip2' 'tar' 'gz'
 
     ∇ r←Version
       :Access Public Shared
-      r←(Last⍕⎕THIS)'2.1.0' '2017-05-19'
+      r←(Last⍕⎕THIS)'2.1.2' '2017-10-30'
     ∇
 
     ∇ History
       :Access Public Shared
+    ⍝ * 2.1.2:
+    ⍝   * Documentation improved.
+    ⍝   * Better performance in case a file does not exist.
+    ⍝ * 2.1.1:
+    ⍝   * Bug fix: list of types was missing "gz".
     ⍝ * 2.1.0:
     ⍝   * New method `History`.
     ⍝   * `SevenZip` is now managed by acre 3.
@@ -136,17 +141,17 @@
 
 ⍝⍝⍝ Public stuff
 
-    ∇ {(rc msg more)}←Add pattern;fno;cmd;b;counter;Until
+    ∇ {(rc msg more)}←Add pattern;fno;cmd;counter;Until;this;buff
     ⍝ Add zero, one or more files to the ZIP file.\\
     ⍝ `pattern` can use wildcards `*` and `?`.\\
     ⍝ **Note**: in order to get **all** files one **must** specify `*`;
     ⍝ the expression `*.*` catches only all files with an extension.\\
     ⍝ When `pattern` is something like "c:\directory\*" then all files
     ⍝ including all sub directories are zipped recursively.
-    ⍝ Note that `pattern` **can not** specify more than one file however
+    ⍝ `rc` is 0 when okay.
       :Access Public Instance
       :If 0∊⍴pattern
-          r←⍬
+          rc←0 ⋄ msg←more←''
       :Else
           cmd←''
           cmd,←'7z '
@@ -159,23 +164,24 @@
               pattern←refToUtils.FilesAndDirs.NormalizePath pattern~'"'
               cmd,←'"""',pattern,'"""'
               counter←1
-              :Repeat
-                  (rc msg more)←Run_7zip cmd
-                  :If 0=rc
-                  :AndIf 'Everything is Ok'≡↑¯1↑msg
-                      :Leave
-                  :EndIf
-                  ⎕DL 0.1                               ⍝ Otherwise we are very likely to see all sorts of problems
-              :Until 40<counter←counter+1
           :Case 2
-              b←~{∨/'?*'∊⍵}¨{0 1∊⍨≡⍵:⊂⍵ ⋄ ⍵}pattern     ⍝ Which ones do not contain any wildcards?
               pattern←{refToUtils.FilesAndDirs.NormalizePath ⍵~'"'}¨pattern
-              cmd,←↑,/{'"""',⍵,'""" '}¨pattern
-              (rc msg more)←Run_7zip cmd
-              ⎕DL 0.1
+              cmd,←⊃,/' ',¨{'"""',⍵,'"""'}¨pattern
           :Else
               'Invalid right argument'⎕SIGNAL 11
           :EndSelect
+          :Repeat
+              (rc msg more)←Run_7zip cmd
+              :If 0=rc
+              :AndIf 'Everything is Ok'≡↑¯1↑msg
+                  :Leave
+              :EndIf
+              :If ∨/'The system cannot find the file specified'⍷∊msg
+              :OrIf ∨/'Duplicate filename'⍷∊msg
+                  :Leave
+              :EndIf
+              ⎕DL 0.2                               ⍝ Otherwise we are very likely to see all sorts of problems
+          :Until 20<counter←counter+1
           :If 0=rc
           :AndIf ~0∊⍴msg
               rc←'Everything is Ok'≢↑¯1↑msg
@@ -192,9 +198,9 @@
     ∇ r←List verboseFlag;cmd;rc;more;exitCode
     ⍝ Returns information about what is saved in the archive.
     ⍝
-    ⍝ If "verboseFlag" is 1 then the 7zip output is returned which contains all
+    ⍝ If `verboseFlag` is 1 then the 7zip output is returned which contains all
     ⍝ sorts of pieces of information. If `verboseFlag` is 0 only a vector of file
-    ⍝ namesis returned with the names of all files (and sub dirs) fond in this file.
+    ⍝ names is returned with the names of all files (and sub folders) found in this file.
       :Access Public Instance
       cmd←''
       cmd,←'7z'
@@ -232,7 +238,7 @@
     ∇
 
     ∇ r←GetMsgFromExitCode code;case;msgs
-    ⍝ Takes a 7zip exit code and returns a meaningful message or "[unknown}"
+    ⍝ Takes a 7zip exit code and returns a meaningful message or "[unknown]"
       :Access Public Shared
       msgs←''
       msgs,←⊂'No error'

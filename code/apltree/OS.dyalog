@@ -12,11 +12,13 @@
 
     ∇ r←Version
       :Access Public shared
-      r←(Last⍕⎕THIS)'1.3.0' '2017-05-19'
+      r←(Last⍕⎕THIS)'1.3.1' '2017-08-23'
     ∇
 
     ∇ History
       :Access Public shared
+      ⍝ * 1.3.1
+      ⍝   * Some glitches in the documentation fixed.
       ⍝ * 1.3.0
       ⍝   * Bug fixed in `KillPID`: did not always return a result.
       ⍝   * Method `History` introduced.
@@ -62,7 +64,7 @@
       :Access Public Shared
       ⍝ Simple way to fire up an application or a document.\\
       ⍝ Note that you **cannot** catch the standard output of any application executed with `WinExecute`.
-      ⍝ However, you might be able to execute it with `WinExecBatch` which can return the standard
+      ⍝ However, you might be able to execute it with `WinExecBatch` which _can_ return the standard
       ⍝ output returned by whatever you've executed - see there.
       ⍝
       ⍝ `⍵` can be one of:
@@ -87,7 +89,7 @@
       ⍝
       ⍝ The optional left argument defaults to 0 which makes the verb default to "OPEN". By specifying
       ⍝ a 1 here it's going to be "RUNAS" meaning that the application is executed in elevated mode
-      ⍝ (=with admin rights). Of course for this being an option the user must have admin rights.
+      ⍝ (=with admin rights). Of course for this the user must have admin rights.
       ⍝
       ⍝ See the test cases for examples.\\
       ⍝ The function returns a three-element vector:
@@ -139,12 +141,12 @@
       :Access Public Shared
       ⍝ This method returns a parameter space populated with default values that can be fed to the [`WinExecute`](#) method.
       ⍝ | **Parameter**| **Notes** |
-      ⍝ | `verb`       | Must be one of: EDIT, EXPLORE, FIND, OPEN, PRINT, RUNAS, NULL (default). Note the "RUNAS" is "Open" but with admin rights. |
-      ⍝ | `file`       | Name of the file `operation` is performed on. Usually this is an EXE but it can be a document as well. |
-      ⍝ | `handle`     | Handle pointing to a window or 0 (default. |
+      ⍝ | `verb`       | Must be one of: EDIT, EXPLORE, FIND, OPEN, PRINT, RUNAS, NULL (default). Note that "RUNAS" is "Open" with admin rights. |
+      ⍝ | `file`       | Name of the file `verb` is performed on. Usually this is an EXE but it can be a document as well. |
+      ⍝ | `handle`     | Handle pointing to a window or 0 (default). |
       ⍝ | `show`       | 1 (default) allows the application involved to show its windows. 0 hides any windows. |
-      ⍝ | `lpParms`    | Any parameters, for example command line parameters in case the verb is "OPEN". |
-      ⍝ | `lpDirectory`| The working direcotry for the application involved. |
+      ⍝ | `lpParms`    | Command line parameters in case the verb is "OPEN". |
+      ⍝ | `lpDirectory`| The working directory for the application involved. |
       ⍝
       ⍝ For more information see <https://msdn.microsoft.com/en-us/library/windows/desktop/bb762153(v=vs.85).aspx>
       parms←⎕NS''
@@ -159,13 +161,13 @@
     ∇ (success rc result)←{adminFlag}WinExecBatch cmd;batFilename;tempFilename;en;more
     ⍝ This method executes a command and returns its standard output on `result`.\\
     ⍝ ** Don't** use this for programs that interact with a user! For example, don't use
-    ⍝ this to fire up an APL session, it cannot work because standard output is redirected.\\
-    ⍝ Uses `WinExecute` for this which cannot capture standard output itself.\\
+    ⍝ this to fire up an APL session! This cannot work because standard output is redirected.\\
+    ⍝ Use `WinExecute` for this which cannot capture standard output itself.\\
     ⍝ Performes the following actions:
     ⍝ * Puts `cmd` into a batch file which is a temp file.
     ⍝ * Execute that batch file with `WinExecute`.
-    ⍝ * Circumvent the standard output of the bat file into another temp file.
-    ⍝ * Waits until the temp file makes an appearance
+    ⍝ * Circumvent the standard output of the batch file into another temp file.
+    ⍝ * Waits until the temp file makes an appearance.
     ⍝ * Reads that temp file and returns the contents as `result`.
     ⍝ \\
     ⍝ * `success` is a Boolean with 1 indicating success.

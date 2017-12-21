@@ -12,10 +12,8 @@
 ⍝ * any EXE from Dyalog.
 ⍝ * a batch script from Dyalog.
 ⍝
-⍝ When you need the actual output of another application then you
-⍝ would use `Process` rather than `Application`.
+⍝ When you need the actual output then you would use `Process`. Examples are:
 ⍝
-⍝ Examples are:
 ⍝ * Get a list with a SubVersion command.
 ⍝ * Get a directory listing with the console DIR command.
 ⍝
@@ -46,11 +44,13 @@
 
     ∇ r←Version
       :Access Public shared
-      r←(Last⍕⎕THIS)'1.8.0' '2017-05-18'
+      r←(Last⍕⎕THIS)'1.8.1' '2017-08-23'
     ∇
 
     ∇ History
       :Access Public Shared
+    ⍝ * 1.8.1
+    ⍝   * Glitches in the documentation fixed.
     ⍝ * 1.8.0
     ⍝   * Method `History` polished.
     ⍝   * Now managed by acre 3.
@@ -68,6 +68,7 @@
 
     ∇ {(rc processInfo result more)}←{cs}Application program;⎕IO;⎕ML;NORMAL_PRIORITY_CLASS;nl;bool;startupInfo;processHandle;threadHandle;StillActive;Ctrl_C_Is;ProcessAborted;i;∆CreateProcess;∆GetCurrentDirectory;∆GetExitCodeProcess;∆GetExitCodeThread;∆WaitForSingleObject;∆TerminateProcess;∆TerminateThread
     ⍝ # Overview
+    ⍝
     ⍝ Run "program" in the same environment as the calling process.
     ⍝
     ⍝ The left argument is optional. If passed this must be a command space.
@@ -76,6 +77,7 @@
     ⍝ appropriate changes and pass it as left argument.
     ⍝
     ⍝ ## Explicit Result
+    ⍝
     ⍝ There are four items returned as explicit result:
     ⍝ * `rc` (return code) with 0 being okay.
     ⍝ * `processInfo`: an integer vector with process related information.

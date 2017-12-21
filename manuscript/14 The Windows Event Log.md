@@ -398,6 +398,8 @@ No doubt you feel now confident with the Windows Event Log, right? Well, keep re
 
 
 
+
+
 *[HTML]: Hyper Text Mark-up language
 *[DYALOG]: File with the extension 'dyalog' holding APL code
 *[TXT]: File with the extension 'txt' containing text

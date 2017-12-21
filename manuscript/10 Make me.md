@@ -6,15 +6,17 @@
 It's time to take a closer look at the process of building the application workspace and exporting the EXE. In this chapter we'll
 
 * add the automated execution of test cases to the DYAPP.
+
 * create a "Make" utility that allows us to create everything thats needed for what will finally be shipped to the customer.
 
 At first glance you might think we can get away with splitting the DYAPP into two different versions, one for development and one for producing the final version of the EXE, but there will be tasks we cannot carry out with this approach. Examples are:
 
-* Currently we depend on whatever version of Dyalog is associated with DYAPPs. We need an explicit way to define that version, 
-  even if for the time being there is just one version installed on our machine.
-* We might want to convert any Markdown documents -- like README.MD -- into HTML documents. While the MD is the source, 
-  the HTML will become part of the final product.
+* Currently we depend on whatever version of Dyalog is associated with DYAPPs. We need an explicit way to define that version, even if for the time being there is just one version installed on our machine.
+
+* We might want to convert any Markdown documents -- like README.MD -- into HTML documents. While the MD is the source, only the HTML will become part of the final product.
+
 * We need to make sure that the help system -- which we will introduce soon -- is properly compiled and configured by the "make" utility.
+
 * Soon we need an installer that produces an EXE we can send to the customer for installing the software.
 
 We resume, as usual, by saving a copy of `Z:\code\v09` as `Z:\code\v10`. Now delete `MyApp.exe` from `Z:\code\v10`: from now on we will create the EXE somewhere else.
@@ -22,11 +24,17 @@ We resume, as usual, by saving a copy of `Z:\code\v09` as `Z:\code\v10`. Now del
 
 ## The development environment
 
-`MyApp.dyapp` does not need many changes, it comes with everything that's needed for development. The only thing we add is to execute the test cases automatically. Well, almost automatically. Ideally we should always make sure that all test cases pass when we call it a day, but sometimes that is just not possible due to the amount of work involved. In such cases it might or might not be sensible to execute the test cases before you start working: in case you _know_ they will fail and there are _many_ of them there is no point in wasting computer ressources and your time, so we better ask.
+`MyApp.dyapp` does not need many changes, it comes with everything that's needed for development. The only thing we add is to execute the test cases automatically. Well, almost automatically. 
+
+Ideally we should always make sure that all test cases pass when we call it a day, but sometimes that is just not possible due to the amount of work involved. 
+
+In such cases it might or might not be sensible to execute the test cases before you _start_ working: in case you _know_ they will fail and there are _many_ of them there is no point in wasting computer ressources and your time, so we better ask.
 
 ### Development helpers
 
-For that we are going to have a function `YesOrNo` which is very simple and straightforward: the right argument (`question`) is printed to the session and then the user might answer that question. If she does not enter one of: "YyNn" the question is repeated. If she enters one of "Yy" a 1 is returned, otherwise a 0. Since we use this to ask ourself (or any other programmer) the function does not have to be bullet proof; that's why we allow `¯1↑⍞`.
+For that we are going to have a function `YesOrNo` which is very simple and straightforward: the right argument (`question`) is printed to the session and then the user might answer that question.
+
+If she does not enter one of: "YyNn" the question is repeated. If she enters one of "Yy" a 1 is returned, otherwise a 0. Since we use this to ask ourself (or other programmers) the function does not have to be bullet proof; that's why we allow `¯1↑⍞`.
 
 But where exactly should this function go? Though it is helpful it has no part in our final application. Therefore we put it into a new script called `DevHelpers`. We also add a function `RunTests` to this new script:
 
@@ -101,7 +109,9 @@ Note that we access `GetCommandLineArgs` as a function call with `⎕NQ` rather 
 
 I> In most programming languages the process of compiling the source code and putting together an application is done by a utility that's called "Make"; therefore we use the same term.
 
-At first sight it might seem that we can get away with a reduced version of `MyApp.dyapp`, but that is not quite true. Soon we will discuss how to add a help system to our application. We must then make sure that the help system is compiled properly when the application is assembled. Later even more tasks will come up. Conclusion: we cannot do this with a DYAPP; we need more flexibility.
+At first sight it might seem that we can get away with a reduced version of `MyApp.dyapp`, but that is not quite true. Soon we will discuss how to add a help system to our application. 
+
+We must then make sure that the help system is compiled properly when the application is assembled. Later even more tasks will come up. Conclusion: we cannot do this with a DYAPP; we need more flexibility.
 
 A> # More complex scenarios 
 A> 
@@ -113,7 +123,9 @@ A> Also, if you have not one but quite a number of applications to deal with it 
 
 ### Batch file for starting Dyalog
 
-We are going to create a DYAPP file `Make.dyapp` that performs the "Make". However, if you want to make sure that you can specify explicitly the version of Dyalog that should run this DYAPP rather than relying on what happens to be associated with the file extensions DWS, DYALOG and DYAPP at the time you double-click it then you need a batch file that starts the correct version of Dyalog. Create such a batch file as `Make.bat`. This is the contents:
+We are going to create a DYAPP file `Make.dyapp` that performs the "Make".
+
+However, if you want to make sure that you can specify explicitly the version of Dyalog that should run this DYAPP rather than relying on what happens to be associated with the file extensions DWS, DYALOG and DYAPP at the time you double-click it then you need a batch file that starts the correct version of Dyalog. Create such a batch file as `Make.bat`. This is the contents:
 
 ~~~
 "C:\Program Files\Dyalog\Dyalog APL{yourPreferredVersion}\Dyalog.exe" DYAPP="%~dp0Make.dyapp"
@@ -135,18 +147,29 @@ You might want to add other parameters like `MAXWS=128M` (or `MAXWS=6G`) to the 
 
 Notes:
 
-* The expression `%~dp0` in a batch file will give you the full path -- with a trailing `\` -- of the folder that hosts the batch file. In other words, `"%~dp0Make.dyapp"` would result in a full path pointing to `MyApp.dyapp`, no matter where that is as long as it is a sibling of the BAT file. You _must_ specify a full path because when the interpreter tries to find the DYAPP, the current directory is where the EXE lives, _not_ where the BAT file lives.
-* Checking `errorlevel` makes sure that in case of an error the batch file shows the return code and then pauses. That gets us around the nasty problem that when you double-click a BAT file, you see a black windows popping up for a split of a second and then it's gone, leaving you wondering whether it has worked alright or not. Now when an error occurs it will pause. In addition it will pass the value of `errorlevel` as return code of the batch script.
+* The expression `%~dp0` in a batch file will give you the full path -- with a trailing `\` -- of the folder that hosts the batch file. In other words, `"%~dp0Make.dyapp"` would result in a full path pointing to `MyApp.dyapp`, no matter where that is as long as it is a sibling of the BAT file. 
+
+  You _must_ specify a full path because when the interpreter tries to find the DYAPP, the current directory is where the EXE lives, _not_ where the BAT file lives.
+
+* Checking `errorlevel` makes sure that in case of an error the batch file shows the return code and then pauses. 
+
+  That gets us around the nasty problem that when you double-click a BAT file, you see a black windows popping up for a split of a second and then it's gone, leaving you wondering whether it has worked alright or not.
+
+  Now when an error occurs it will pause. In addition it will pass the value of `errorlevel` as return code of the batch script.
 
   However, this technique is suitable only for scripts that are supposed to be executed by a WCU [^WCU]; you don't want to have a pause in scripts that are called by other scripts.
 
 A> # The current directory
 A> 
-A> For APLers, the current directory (sometimes called "working directory") is, when running under Windows, a strange animal. In general, the current directory is where "the application" lives. That means that if you start an application `C:\Program Files\Foo\Foo.exe` then for the application "Foo" the current directory will be `C:\Program Files\Foo`. 
-A>
-A> That's fine except that for APLers "the application" is _not_ the DYALOG.EXE, it's the workspace, whether it was loaded from disk or assembled by a DYAPP. When you double-click `MyApp.dyapp` then the interpreter changes the current directory for you: it's where the DYAPP lives, and that's fine from an APL application programmer's point of view.
+A> For APLers, the current directory (sometimes called "working directory") is, when running under Windows, a strange animal. In general, the current directory is where "the application" lives. 
 A> 
-A> The same holds true when you double-click a workspace but it is _not_ true when you _load_ a workspace: the current directory remains what it was before, and that's where the Dyalog EXE lives. Therefore it's probably not a bad idea to change the current directory yourself _at the earliest possible stage_ after loading a workspace: call `#.FilesAndDirs.PolishCurrentDir` and your are done, no matter what the circumstances are. One of the authors is doing this for roughly 20 years now, and it has solved several problems without introducing new ones.
+A> That means that if you start an application `C:\Program Files\Foo\Foo.exe` then for the application "Foo" the current directory will be `C:\Program Files\Foo`. 
+A>
+A> That's fine except that for APLers "the application" is _not_ the DYALOG.EXE, it's the workspace, whether it was loaded from disk or assembled by a DYAPP. When you double-click `MyApp.dyapp` then the interpreter changes the current directory for you: it's going to be where the DYAPP lives, and that's fine from an APL application programmer's point of view.
+A> 
+A> The same holds true when you double-click a workspace but it is _not_ true when you _load_ a workspace: the current directory remains what it was before, and that's where the Dyalog EXE lives.
+A> 
+A> Therefore it's probably not a bad idea to change the current directory yourself _at the earliest possible stage_ after loading a workspace: call `#.FilesAndDirs.PolishCurrentDir` and your are done, no matter what the circumstances are. One of the authors is doing this for roughly 20 years now, and it has solved several problems without introducing new ones.
 
 ### The DYAPP file
 
@@ -187,13 +210,13 @@ The upper part (until the blank line) is identical with `MyApp.dyapp` except tha
       :Access Public Shared
       F←##.FilesAndDirs ⋄ U←##.Utilities
       (rc en more)←F.RmDir DESTINATION
-      U.Assert 0≠rc
+      U.Assert 0=rc
       successFlag←'Create!'F.CheckPath DESTINATION
-      U.Assert 1≠successFlag
+      U.Assert successFlag
       (successFlag more)←2↑'images'F.CopyTree DESTINATION,'\images'
-      U.Assert 1≠successFlag
+      U.Assert successFlag
       (rc more)←'MyApp.ini.template'F.CopyTo DESTINATION,'\MyApp.ini'
-      U.Assert 0≠rc
+      U.Assert 0=rc
       Export'MyApp.exe'
       filename←DESTINATION,'\MyApp.exe'
       :If offFlag
@@ -203,7 +226,7 @@ The upper part (until the blank line) is identical with `MyApp.dyapp` except tha
 :EndClass
 ~~~
 
-### Asserts
+### Assertions
 
 It is common practice in any programming language to inject checks into the code to make sure that specific conditions are fulfilled because if not the program cannot succeed anyway. If a condition
 is not fulfilled an error is thrown.
@@ -228,7 +251,9 @@ Note that `Assert` signals an error in case `⍵` is not `1` but returns `1` as 
 
 Because it's a one-liner you cannot trace into it, and that's a good thing.
 
-This is an easy way to make the calling function stop when something goes wrong. There is no point in doing anything but stopping the code from continuing since it is called by a programmer, and when it fails she wants to investigate straight away. And things can go wrong quite easily; for example, the attempt to remove `DESTINATION` may fail simply because somebody is looking with the Windows Explorer into `DESTINATION` at the same time.
+This is an easy way to make the calling function stop when something goes wrong. There is no point in doing anything but stopping the code from continuing since it is called by a programmer, and when it fails she wants to investigate straight away. 
+
+And things can go wrong quite easily; for example, the attempt to remove `DESTINATION` may fail simply because somebody is looking into `DESTINATION` with the Windows Explorer.
 
 First we create the folder `DESTINATION` from scratch and then we copy everything that's needed to the folder `DESTINATION`: the application icon and the INI file. Whether the function executes `⎕OFF` or not depends on the right argument `offFlag`. Why that is needed will become apparent soon.
 
@@ -254,7 +279,7 @@ However, that leaves us vulnerable to another problem: imagine we introduce a ne
 
 ~~~
     ∇ R←Test_misc_01(stopFlag batchFlag);⎕TRAP;ini1;ini2
-      ⍝ Check whether MyApp.ini and MyApp.ini.template have the same sections and keys
+      ⍝ Check if MyApp.ini & MyApp.ini.template have same sections & keys
       ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
       R←∆Failed
       ini1←⎕NEW ##.IniFiles(,⊂'MyApp.ini')
@@ -267,44 +292,34 @@ However, that leaves us vulnerable to another problem: imagine we introduce a ne
 
 The test simply checks whether the two INI files have the same sections and the same keys; that's sufficient to notify us in case we forgot something.
 
-### Exporting
 
-`Run` then calls `Export`, a private function in the `Make` class that does not yet exist:
+### Prerequisites
+
+
+#### Bind types
+
+For the "Bind" method we can specify different types. We add those to the `Constants` namespace but in a separate sub namespace:
 
 ~~~
+:Namespace Constants
 ...
-    ∇ {r}←{flags}Export exeName;type;flags;resource;icon;cmdline;try;max;success
-    ⍝ Attempts to export the application
-      r←⍬
-      flags←##.Constants.BIND_FLAGS.RUNTIME{⍺←0 ⋄ 0<⎕NC ⍵:⍎⍵ ⋄ ⍺}'flags'
-      max←50
-      type←'StandaloneNativeExe'
-      icon←F.NormalizePath DESTINATION,'\images\logo.ico'
-      resource←cmdline←''
-      success←try←0
-      :Repeat
-          :Trap 11
-              2 ⎕NQ'.' 'Bind',(DESTINATION,'\',exeName)type flags resource icon cmdline
-              success←1
-          :Else
-              ⎕DL 0.2
-          :EndTrap
-      :Until success∨max<try←try+1
-      :If 0=success
-          ⎕←'*** ERROR: Failed to export EXE to ',DESTINATION,'\',exeName,' after ',(⍕try),' tries.'
-          . ⍝ Deliberate error; allows investigation
-      :EndIf
-    ∇
-:EndClass
+    :EndNamespace
+leanpub-start-insert
+    :Namespace BIND_TYPES
+        ActiveXControl←'ActiveXControl'
+        InProcessServer←'InProcessServer'
+        Library←'Library'
+        NativeExe←'NativeExe'
+        OutOfProcessServer←'OutOfProcessServer'
+        StandaloneNativeExe←'StandaloneNativeExe'
+    :EndNamespace
+leanpub-end-insert    
+:EndNamespace
 ~~~
 
-`Export` automates what we've done so far by calling the "Export" command from the "File" menu. In case the "Bind" method fails it tries up to 50 times before giving up. This is because from experience we know that depending on the OS and the machine and God knows what else sometimes the command fails several times before it finally succeeds. 
+Why do we do this? After all it does not increase readability. But it does offer all available options, so it makes the code self-explaining.
 
-A> # The "Bind" method
-A>
-A> Not that `Bind` is in version 16.0 not an official method. However, it's there, it works, and we expect it to become an official method in alter version of Dyalog.
-
-We specified `##.Constants.BIND_FLAGS.RUNTIME` as a default for `flags`, but that does not exist yet, so we add it to the `Constants` namespace:
+#### Flags
 
 ~~~
 :Namespace Constants
@@ -313,13 +328,73 @@ We specified `##.Constants.BIND_FLAGS.RUNTIME` as a default for `flags`, but tha
 leanpub-start-insert
     :Namespace BIND_FLAGS
         BOUND_CONSOLE←2
+        BOUND_USEDOTNET←4
         RUNTIME←8
+        BOUND_XPLOOK←32
     :EndNamespace
 leanpub-end-insert    
 :EndNamespace
 ~~~
 
+### Exporting
+
+`Run` then calls `Export`, a private function in the `Make` class that does not yet exist:
+
+~~~
+...
+    ∇ {r}←{flags}Export exeName;type;flags;resource;icon;cmdline;try;max;success;details;fn
+    ⍝ Attempts to export the application
+      r←⍬
+      flags←##.Constants.BIND_FLAGS.RUNTIME{⍺←0 ⋄ 0<⎕NC ⍵:⍎⍵ ⋄ ⍺}'flags'
+      max←50
+      type←##.Constants.BIND_TYPES.StandaloneNativeExe
+      icon←F.NormalizePath DESTINATION,'\images\logo.ico'
+      resource←cmdline←''
+      details←''
+      details,←⊂'CompanyName' 'My company'
+      details,←⊂'ProductVersion'(2⊃##.MyApp.Version)
+      details,←⊂'LegalCopyright' 'Dyalog Ltd 2018'
+      details,←⊂'ProductName' 'MyApp'
+      details,←⊂'FileVersion' '1.2.3.4'
+      details←↑details
+      success←try←0
+      fn←DESTINATION,'\',exeName     ⍝ filename
+      :Repeat
+          :Trap 11
+              2 ⎕NQ'.' 'Bind' fn type flags resource icon cmdline details
+              success←1
+          :Else
+              ⎕DL 0.2
+          :EndTrap
+      :Until success∨max<try←try+1
+      :If 0=success
+          ⎕←'*** ERROR: Failed to export EXE to ',fn,' after ',(⍕try),' tries.'
+          . ⍝ Deliberate error; allows investigation
+      :EndIf
+    ∇
+:EndClass
+~~~
+
+`Export` automates what we've done so far by calling the "Export" command from the "File" menu. In case the "Bind" method fails it tries up to 50 times before giving up. 
+
+This is because from experience we know that depending on the OS and the machine and God knows what else sometimes the command fails several times before it finally succeeds. 
+
+A> # The "Bind" method
+A>
+A> Not that for the `Bind` method to work as discussed in this chapter you must use at least version 16.0.31811.0 of Dyalog. Before that `Bind` was not an official method and did not support the "Details".
+
 Double-click `Make.dyapp`: a folder `MyApp` should appear in `Z:\code\v10` with, among other files, `MyApp.exe`.
+
+
+### Check the result
+
+Open a Windows Explorer (Windows key + "E"), navigate to the folder hosting the EXE, right-click on the EXE and select "Properties" from the context menu. Then click on the "Details" tab.
+
+![EXEs properties](./Images/Stand-alone-properties.png "APL Team's dots")
+
+As you can see, the fields "File version", "Product name", "Product version" and "Copyright" hold the information we have specified.
+
+W> Note that the names we have used are not the names used by Microsoft in the GUI. The MSDN [^9] provides details.
 
 
 ## The tests
@@ -370,46 +445,7 @@ With the two DYAPPs and the BAT file, your development cycle now looks like this
    or simply close the session and relaunch `MyApp.dyapp`.
    
 [^WCU]: Worst Case User, also known as Dumbest Assumable User (DAU).
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+[^9]: The [MSDN](https://msdn.microsoft.com/en-us/library/windows/desktop/aa381058(v=vs.85).aspx) provides more information on what names are actually recognized.
 
 
 *[HTML]: Hyper Text Mark-up language

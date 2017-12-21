@@ -164,7 +164,7 @@
 
     ∇ r←Version
       :Access Public shared
-      r←(Last⍕⎕THIS)'3.6.0' '2017-07-??'
+      r←(Last⍕⎕THIS)'3.6.0' '2017-10-28'
     ∇
 
     ∇ History
@@ -196,6 +196,7 @@
       :Access Public Shared
       flags←1 0 0 0
       (rc log)←refToTestNamespace Run__ flags,⊂⍬
+     ⍝Done
     ∇
 
     ∇ {(rc log)}←{trapAndDebugFlag}RunBatchTests refToTestNamespace;flags
@@ -648,6 +649,7 @@
       :EndIf
       HandleStops(1⊃⎕SI)ps ∆StopHere testNo
      ∆StopHere:rc←ref.⍎fnsName,' ',(⍕ps.debugFlag),' ',(⍕ps.batchFlag)
+    ⍝Done
     ∇
 
     IsScripted←{16::0 ⋄ 1⊣⎕SRC ⍵}
@@ -920,7 +922,7 @@
           :Access Public Shared
 ⍝ Returns a list of **all** helper functions.
 ⍝ These are defined as all private functions of the sub class `Helpers`.
-         
+
 ⍝ ↓↓↓↓ Circumvention of Dyalog bug <01154> (⎕nl 3 does NOT list the private functions of `Helpers`!)
           r←(ListHelpers 1)[;1]
         ∇
@@ -929,18 +931,18 @@
 ⍝ Model for a test function.
           ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
           R←∆Failed
-         
+
 ⍝ Preconditions...
 ⍝ ...
-         
+
           →PassesIf 1≡1
           →FailsIf 1≢1
           →GoToTidyUp 1≢1
           R←∆OK
-         
+
          ∆TidyUp: ⍝ Clean up after this label
           ⍝ ...
-         
+
         ∇
 
         ∇ r←∆OK

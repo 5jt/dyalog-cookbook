@@ -76,6 +76,8 @@ Note that strictly speaking a file should always end with such characters. Howev
 
 
 
+
+
 *[HTML]: Hyper Text Mark-up language
 *[DYALOG]: File with the extension 'dyalog' holding APL code
 *[TXT]: File with the extension 'txt' containing text

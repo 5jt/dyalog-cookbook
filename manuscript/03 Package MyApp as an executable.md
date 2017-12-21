@@ -29,20 +29,22 @@ A> Catch[2] . ⍝ !
 A> ~~~
 A>
 A> You can even use this to investigate what is about to be written to the session (the left argument of `Catch`) and make the function stop when it reaches the output you are looking for. In the above example we check for anything that’s empty.
+A>
+A>
+A> Notes:
+A>
+A> * Don't try the `⎕se.onSessionPrint←'#.Catch'` syntax with `⎕SE`; just stick with `⎕WS` as in the above example.
+A> 
+A> * Don't forget to clear the stack after `Catch` crashed because if you don't and instead call `test` again it would behave as if there was no handler associated with the `SessionPrint` event.
+
+`TxtToCsv` has a shy result, so it won't write its result to the session. That’s fine. 
 
 
-Notes:
+## Preparing the application
 
-* Don't try the `⎕se.onSessionPrint←'#.Catch'` syntax with `⎕SE`; just stick with `⎕WS` as in the above example.
+`TxtToCsv` needs an argument. The EXE we are about to create must fetch it from the command line. We'll give `MyApp` a function `StartFromCmdLine`. 
 
-* Don't forget to clear the stack after `Catch` crashed because if you don't and instead call `test` again it would behave as if there was no handler associated with the `SessionPrint` event.
-
-`TxtToCsv` however has a shy result, so it won't write its result to the session. That’s fine. 
-
-
-## Reading arguments from the command line 
-
-`TxtToCsv` needs an argument. The EXE we are about to create must take it from the command line. We'll give `MyApp` a function `StartFromCmdLine`. We will also introduce `SetLX`: the last line of the DYAPP will run it to set `⎕LX`:
+We will also introduce `SetLX`: the last line of the DYAPP will run it to set `⎕LX`:
 
 ~~~
 Target #
@@ -105,6 +107,8 @@ leanpub-end-insert
 
 Changes are emphasized.
 
+## Conclusions
+
 Now MyApp is ready to be run from the Windows command line, with the name of the file to be processed following the command name. 
 
 Notes:
@@ -113,7 +117,7 @@ Notes:
 
 * `Accents` is now a vector of text vectors (vtv). There is no point in making it a matrix when `CountLetters` (the only function that consumes `Accents`) requires a vtv anyway. We were able to simplify `CountLetters` as a bonus.
 
-* Functions should return a result, even `StartFromCmdLine` and `SetLX`. Always. Otherwise, by definition, they are not functions. 
+* Functions should return a result, even `StartFromCmdLine` and `SetLX`. Always.
 
   If there is nothing reasonable to return as a result, return `⍬` as a shy result as in `StartFromCmdLine`. Make this a habit. It makes life easier in the long run. One example is that you cannot call a "function" from a dfn that does not return a result. Another one is that you cannot provide it as an operand to the `⍣` (power) operator.
   
@@ -146,6 +150,9 @@ W>
 W> If you send your WS elsewhere then somebeody with different values might load your WS and execute your code. Now `#.⎕NS ''` would create a namespace that carries different values; that's a recipe for disaster.
 
 
+## Exporting the application
+
+
 We're now nearly ready to create the first version of our EXE. Note that in Dyalog's "File" menu this is called "Export" for some reason.
 
 1. Double-click the DYAPP in order to create the WS.
@@ -175,9 +182,13 @@ If you do not tick "Console application", the program is started as a separate p
 
 It is therefore recommended not to tick the "Console application" check box unless you have a good reason to do so.
 
-T> Use the *Version* button to bind to the EXE information about the application, author, version, copyright and so on. These pieces of information will show in the "Properties/Details" tab of the resulting EXE. Note that in order to use the cursor keys or "Home" or "End" _within_ a cell the "Version" dialog box requires you to enter "in-cell" mode by pressing F2.
+T> Use the *Version* button to bind to the EXE information about the application, author, version, copyright and so on. These pieces of information will show in the "Properties/Details" tab of the resulting EXE. 
+T> 
+T> Note that in order to use the cursor keys or "Home" or "End" _within_ a cell the "Version" dialog box requires you to enter "in-cell" mode by pressing F2.
 
 T> You might specify an icon file to replace the Dyalog icon with your own one. 
+
+## Running the stand-alone EXE
 
 Let's run it. From a command line:
 
@@ -187,7 +198,9 @@ Z:\code\v03\MyApp.exe texts\en
 
 Looking in Windows Explorer at `Z:\texts\en.csv`, we see its timestamp just changed. Our EXE works! 
 
-[^folder]: Note that in the Cookbook the words "folder" and "directory" are used interchangeably. 
+[^folder]: Note that in the Dyalog Cookbook the words "folder" and "directory" are used interchangeably. 
+
+
 
 
 

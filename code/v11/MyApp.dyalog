@@ -142,7 +142,7 @@
    ⍝ Needs command line parameters, runs the application.
       r←⍬
       ⎕TRAP←#.HandleError.SetTrap ⍬
-      ⎕WSID←⊃{⍵/⍨~'='∊¨⍵}{⍵/⍨'-'≠⊃¨⍵}1↓2⎕nq # 'GetCommandLineArgs'
+      ⎕WSID←⊃{⍵/⍨~'='∊¨⍵}{⍵/⍨'-'≠⊃¨⍵}1↓2 ⎕NQ #'GetCommandLineArgs'
       ⎕SIGNAL 0
       #.FilesAndDirs.PolishCurrentDir
       #.⎕SHADOW'ErrorParms'
@@ -175,7 +175,7 @@
       CheckForRide Config.(Ride WaitForRide)
       MyLogger←OpenLogFile Config.LogFolder
       MyLogger.Log'Started MyApp in ',F.PWD
-      MyLogger.Log #.GetCommandLine
+      MyLogger.Log 2 ⎕NQ #'GetCommandLineArgs'
       MyLogger.Log↓⎕FMT Config.∆List
     ∇
 

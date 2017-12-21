@@ -238,6 +238,8 @@ However, this cannot be configured in any way, you need to add subkeys and value
 
 
 
+
+
 *[HTML]: Hyper Text Mark-up language
 *[DYALOG]: File with the extension 'dyalog' holding APL code
 *[TXT]: File with the extension 'txt' containing text

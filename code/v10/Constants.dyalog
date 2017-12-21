@@ -24,8 +24,18 @@
     :Namespace NPUT
         OVERWRITE←1
     :EndNamespace
+    :Namespace BIND_TYPES
+        ActiveXControl←'ActiveXControl'
+        InProcessServer←'InProcessServer'
+        Library←'Library'
+        NativeExe←'NativeExe'
+        OutOfProcessServer←'OutOfProcessServer'
+        StandaloneNativeExe←'StandaloneNativeExe'
+    :EndNamespace
     :Namespace BIND_FLAGS
         BOUND_CONSOLE←2
+        BOUND_USEDOTNET←4
         RUNTIME←8
+        BOUND_XPLOOK←32
     :EndNamespace
 :EndNamespace

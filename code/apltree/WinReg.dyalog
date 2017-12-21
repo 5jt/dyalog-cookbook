@@ -40,11 +40,13 @@
 
     ∇ R←Version
       :Access Public Shared
-      R←(Last⍕⎕THIS)'2.9.0' '2017-05-19'
+      R←(Last⍕⎕THIS)'2.9.1' '2017-08-04'
     ∇
 
     ∇ History
       :Access Public Shared
+      ⍝ * 2.9.0     1
+      ⍝   * Bug fix: `GetAllSubKeyNames` closed handle twice.
       ⍝ * 2.9.0
       ⍝   * Method `History` introduced.
       ⍝   * `WinReg` is now managed by acre 3.
@@ -56,9 +58,6 @@
       ⍝   * Support for `REG_QWORD` was added.
       ⍝   * Bug fixes:
       ⍝     * Unsupported data types could crash WinReg.
-      ⍝ * 2.7.0:
-      ⍝   * Requires ta least Dyalog 15.0 Unicode!
-      ⍝ * 2.6.0: Documentation improved and converted to Markdown (Requires at least ADOC 5.0).
     ∇
 
   ⍝ All data types, including those not supported yet
@@ -575,11 +574,7 @@
           :If rc=ERROR_SUCCESS
               r,←⊂length↑name
               i+←1
-          :ElseIf rc=ERROR_NO_MORE_ITEMS
-              flag←1
-              Close(~yIsHandle)/handle
-          :ElseIf rc=ERROR_INVALID_HANDLE
-              r←''
+          :ElseIf rc∊ERROR_NO_MORE_ITEMS ERROR_INVALID_HANDLE
               flag←1
           :Else
               Close(~yIsHandle)/handle

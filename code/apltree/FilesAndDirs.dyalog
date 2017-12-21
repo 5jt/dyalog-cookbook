@@ -1,5 +1,4 @@
 ﻿:Class FilesAndDirs
-
 ⍝ ## Overview
 ⍝ This class offers methods useful for dealing with files and directories. The class aims
 ⍝ to be platform-independent and work under Windows, Linux and Mac OS.
@@ -8,7 +7,7 @@
 ⍝ for making an application platform-independent when handling files and directories.\\
 ⍝ However, those new functions do not fully cover the common needs of applications. Examples
 ⍝ include functionalities like "Move", "Copy", and recursive listings of directories.
-⍝ The class attempts to fill this gap.
+⍝ `FilesAndDirs` attempts to fill this gap.
 ⍝
 ⍝ Note that error codes as well as messages may differ between operating systems for the same
 ⍝ kind of problem.
@@ -52,11 +51,19 @@
 
     ∇ r←Version
       :Access Public shared
-      r←(Last⍕⎕THIS)'1.6.2' '2017-05-28'
+      r←(Last⍕⎕THIS)'1.7.1' '2017-06-03'
     ∇
 
     ∇ History
       :Access Public shared
+      ⍝ * 1.7.1
+      ⍝   1.7.0 introduced a bug: if a folder contained directories that match a wildcard expression
+      ⍝   those folder were ignored anyway.
+      ⍝ * 1.7.0
+      ⍝   * Bug fixes:
+      ⍝     * `Dir` when given a path without a trailing separator should return information
+      ⍝       just for the given directory but **not** its contents. That's now the case but
+      ⍝       it may break your code.
       ⍝ * 1.6.2
       ⍝   * Performance improved: `ListDirs`.
       ⍝   * Bug fixes:
@@ -68,36 +75,30 @@
       ⍝   * Bug fix: `'expand'∘NormalizePath¨fileList` did not expand. The `¨` is however redundant.
       ⍝ * 1.6.0
       ⍝   * Now managed by acre 3.
-      ⍝ * 1.5.1
-      ⍝   * Bug fix: "Windows only" for `NormalizePath` wasn't actually implemented.
-      ⍝ * 1.5.0
-      ⍝   * `NormalizePath` now expands environment variables (Windows only).
     ∇
 
     ∇ r←{parms_}Dir path;buff;list;more;parms;rc;extension;filename;folder;subFolders;pattern;isSelfCall
       :Access Public Shared
-    ⍝ List contents of `path`. With a trailing `/` path itself is excluded. That means that
-    ⍝ with `('recursive' 0)` and `path/` the result is empty if `path` does not contain anything
-    ⍝ but it not empty without the `/`.\\
-    ⍝ `path` may be one of:
-    ⍝ * A file: `Dir` returns attributes for just that file
-    ⍝ * A directory without a trailing slash: `Dir` returns attributes for just that directory
-    ⍝ * A directory with a trailing slash: `Dir` returns attributes for all files and directories
-    ⍝   found in that directory.
-    ⍝ * An empty vector: this defaults to `PWD,'/'`
-    ⍝
+    ⍝ By default this function returns names. You may request further information by specifying `type`.\\
+    ⍝ Without a trailing slash and any wildcards `path` is expected to be either a filename or the
+    ⍝ name of a directory. `Dir` returns the requested information for just that file or folder.
+    ⍝ If the last characer of `path` is a separator then `Dir` returns the requested information for
+    ⍝ whatever `path` contains. If the last partition of `path` contains wild cards then `Dir` returns
+    ⍝ the requested information for zero, one or many hits. `path` may also be empty; in this case it
+    ⍝ defaults to the current directory.\\
     ⍝ Note that `*` and `?` are treated as wildcard characters. That means that `FilesAndDirs`
     ⍝ cannot deal with files that contain a `*` or a `?` as part of any name, be it directory
-    ⍝ or filename; under Linux and Mac OS these are legal characters for filenames.\\
-    ⍝ The result is a vector of the same length as `type` which defaults to 0: just file- and
-    ⍝ directory names.
+    ⍝ or filename; under Linux and Mac OS these are legal characters for filenames. Only the very last
+    ⍝ partition of `path` is allowed to carry wild card characters.\\
+    ⍝ The result is a vector of the same length as `type`. `type` defaults to 0 which stands for file-
+    ⍝ and directory names.\\
     ⍝ You may specify additional attributes via the `type` parameter either as key/value pairs or
     ⍝ via a namespace populated with variables. If you do then the number of attributes specified
     ⍝ defines the length of the result.
     ⍝ Examples:
     ⍝ ~~~
-    ⍝ ('recursive' 1) FilesAndDirs.Dir ''      ⍝ returns list with all folders and files
-    ⍝ ('recursive' 1) FilesAndDirs.Dir '*.md'  ⍝ returns list with all files with extension "md"
+    ⍝ ('recursive' 1) FilesAndDirs.Dir ''      ⍝ returns list with folders & files in the current dir.
+    ⍝ ('recursive' 1) FilesAndDirs.Dir '*.md'  ⍝ returns list with files with extension "md".
     ⍝ ~~~
     ⍝
     ⍝ ~~~
@@ -110,10 +111,10 @@
     ⍝ Note that the names of parameters are case sensitive.\\
     ⍝ |Parameter  |Default|Meaning|
     ⍝ |-----------|-------|-------|
-    ⍝ | follow    | 0     | Shall symbolic links be followed |
-    ⍝ | recursive | 0     | Shall `Dir` scan `path` recursively |
+    ⍝ | follow    | 0     | 1=follow symbolic links   |
+    ⍝ | recursive | 0     | 1=scan `path` recursively |
     ⍝ | type      | 0     | Use this to select the information to be returned<<br>>by `Dir`. 0 means names. For more information see<<br>>help on `⎕NINFO`. |
-    ⍝ Note that `selfCall` is used only internally in order to detect whether `Dir` has called itself recursively.
+    ⍝ Note that `selfCall` is used internally in order to detect whether `Dir` has called itself recursively.
       r←⍬
       path←NormalizePath path
       parms←⎕NS''
@@ -172,36 +173,36 @@
               :AndIf 0=⎕NEXISTS buff
                   'path does not exist'⎕SIGNAL 6
               :EndIf
+              pattern←folder,(filename{0∊⍴⍺,⍵:'' ⋄ '/',⍺,⍵}extension)
+              buff←(0 1,parms.type~0 1)⎕NINFO⍠('Follow'parms.follow)('Wildcard' 1)⊣pattern
+              buff←((1⊃buff)∊1 2 4)∘/¨buff   ⍝ Ordinary files, folders and links
+              (0⊃buff)←NormalizePath 0⊃buff
+              r←buff[,(0 1,parms.type~0 1)⍳parms.type]
+              isSelfCall←parms.selfCall
+              parms.selfCall←1
+              :If parms.recursive
+              :AndIf IsDir folder
+              :AndIf ~0∊⍴subFolders←ListDirs folder
+                  buff←parms Dir¨subFolders,¨⊂CurrentSep,filename,extension
+                  :If 0=+/'*?'∊path
+                      buff←(⊂∘⊂¨subFolders),¨¨buff
+                  :EndIf
+                  :If ~0∊⍴buff←↑{⍺,¨⍵}/buff
+                  :AndIf ~0∊⍴buff←(0<↑∘⍴¨buff)/buff
+                      r←r,¨buff
+                  :EndIf
+              :EndIf
+              :If 0=isSelfCall
+              :AndIf 0∊⍴(filename,extension)~'*'
+                  buff←(0 1,parms.type~0 1)⎕NINFO⍠('Follow'parms.follow)⊣folder
+                  (0⊃buff)←NormalizePath 0⊃buff
+                  r←(⊂¨buff),¨r
+              :EndIf
           :Else
               'path does not exist'⎕SIGNAL 6/⍨0=⎕NEXISTS path
-              folder←path
-              filename←(IsDir folder)/'*'
-              extension←''
-          :EndIf
-          pattern←folder,(filename{0∊⍴⍺,⍵:'' ⋄ '/',⍺,⍵}extension)
-          buff←(0 1,parms.type~0 1)⎕NINFO⍠('Follow'parms.follow)('Wildcard' 1)⊣pattern
-          buff←(2=1⊃buff)∘/¨buff
-          (0⊃buff)←NormalizePath 0⊃buff
-          r←buff[,(0 1,parms.type~0 1)⍳parms.type]
-          isSelfCall←parms.selfCall
-          parms.selfCall←1
-          :If parms.recursive
-          :AndIf IsDir folder
-          :AndIf ~0∊⍴subFolders←ListDirs folder
-              buff←parms Dir¨subFolders,¨⊂CurrentSep,filename,extension
-              :If 0=+/'*?'∊path
-                  buff←(⊂∘⊂¨subFolders),¨¨buff
-              :EndIf
-              :If ~0∊⍴buff←↑{⍺,¨⍵}/buff
-              :AndIf ~0∊⍴buff←(0<↑∘⍴¨buff)/buff
-                  r←r,¨buff
-              :EndIf
-          :EndIf
-          :If 0=isSelfCall
-          :AndIf 0∊⍴(filename,extension)~'*'
-              buff←(0 1,parms.type~0 1)⎕NINFO⍠('Follow'parms.follow)⊣folder
-              (0⊃buff)←NormalizePath 0⊃buff
-              r←(⊂¨buff),¨r
+              r←(0 1,parms.type~0 1)⎕NINFO⍠('Follow'parms.follow)⊣path
+              (0⊃r)←NormalizePath 0⊃r
+              r←,⊂r[,(0 1,parms.type~0 1)⍳parms.type]
           :EndIf
       :EndIf
     ∇
@@ -330,7 +331,7 @@
     ∇ (success more list)←source CopyTree target;tree;ind;buff
     ⍝ ## Overview
     ⍝ `source` must be an existing directory. `target` must be either a existing directory
-    ⍝ or a name valid as a directory.\\
+    ⍝ or a valid directory name.\\
     ⍝ All files and directories in `source` are copied over to `target`.\\
     ⍝ ## Result
     ⍝ * `success` is Boolean with 1 indicating success. A 0 means failure, but the failure may
@@ -351,7 +352,7 @@
     ⍝   existing files will be overwritten.
       :Access Public Shared
       success←1 ⋄ more←'' ⋄ list←0 3⍴'' 0 0
-     
+
       'Invalid left argument'⎕SIGNAL 11/⍨(~(≡source)∊0 1)∨80≠⎕DR source
       'Invalid right argument'⎕SIGNAL 11/⍨(~(≡target)∊0 1)∨80≠⎕DR target
       'Left argument is not a directory'⎕SIGNAL 11/⍨0=IsDir source

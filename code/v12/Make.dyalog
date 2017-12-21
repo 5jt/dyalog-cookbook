@@ -32,7 +32,7 @@
       :EndIf
     ∇
     
-    ∇ {r}←{flags}Export exeName;type;flags;resource;icon;cmdline;try;max;success
+    ∇ {r}←{flags}Export exeName;type;flags;resource;icon;cmdline;try;max;success;details;fn
     ⍝ Attempts to export the application
       r←⍬
       flags←{0<⎕NC ⍵:⍎⍵ ⋄ 8}'flags'       ⍝ 2=BOUND_CONSOLE; 8=RUNTIME
@@ -40,17 +40,25 @@
       type←'StandaloneNativeExe'
       icon←F.NormalizePath DESTINATION,'\images\logo.ico'
       resource←cmdline←''
+      details←''
+      details,←⊂'CompanyName' 'My company'
+      details,←⊂'ProductVersion'(2⊃##.MyApp.Version)
+      details,←⊂'LegalCopyright' 'Dyalog Ltd 2018'
+      details,←⊂'ProductName' 'MyApp'
+      details,←⊂'FileVersion' '1.2.3.4'
+      details←↑details
       success←try←0
+      fn←DESTINATION,'\',exeName   ⍝ filename
       :Repeat
           :Trap 11
-              2 ⎕NQ'.' 'Bind',(DESTINATION,'\',exeName)type flags resource icon cmdline
+              2 ⎕NQ'.' 'Bind' fn type flags resource icon cmdline details
               success←1
           :Else
               ⎕DL 0.2
           :EndTrap
       :Until success∨max<try←try+1
       :If 0=success
-          ⎕←'*** ERROR: Failed to export EXE to ',DESTINATION,'\',exeName,' after ',(⍕try),' tries.'
+          ⎕←'*** ERROR: Failed to export EXE to ',fn,' after ',(⍕try),' tries.'
           . ⍝ Deliberate error; allows investigation
       :EndIf
     ∇

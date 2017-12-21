@@ -218,7 +218,7 @@
    ⍝ Needs command line parameters, runs the application.
       r←⍬
       ⎕TRAP←#.HandleError.SetTrap ⍬
-      ⎕WSID←⊃{⍵/⍨~'='∊¨⍵}{⍵/⍨'-'≠⊃¨⍵}1↓2⎕nq # 'GetCommandLineArgs'
+      ⎕WSID←⊃{⍵/⍨~'='∊¨⍵}{⍵/⍨'-'≠⊃¨⍵}1↓2 ⎕NQ #'GetCommandLineArgs'
       ⎕SIGNAL 0
       #.FilesAndDirs.PolishCurrentDir
       #.⎕SHADOW'ErrorParms'
@@ -315,7 +315,7 @@
           :If ~rc∊0 ¯1
               11 ⎕SIGNAL⍨'Problem switching on Ride, rc=',⍕rc
           :EndIf
-          {}{_←⎕DL ⍵ ⋄ ∇ ⍵}⍣1⊣1  ⍝ Endless loop for an early RIDE
+         {}{_←⎕DL ⍵ ⋄ ∇ ⍵}⍣(⊃waitFlag)⊣1  ⍝ Endless loop for an early RIDE
       :EndIf
     ∇
 

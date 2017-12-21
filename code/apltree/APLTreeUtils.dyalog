@@ -1,5 +1,5 @@
 ﻿:Namespace APLTreeUtils
-⍝ *** Version 4.1.0 ⋄ 2017-05-10 ***
+⍝ *** Version 4.1.1 ⋄ 2017-11-20 ***
 ⍝
 ⍝ ## Overview
 ⍝ Version 4.0.0 is a major change in two respects:
@@ -30,6 +30,11 @@
 ⍝ * `WriteBytesAs8BitSignedIntegersToFile`
 ⍝
 ⍝ ## Version History
+⍝ * 4.1.1
+⍝   * Very serious performance issue fixed in `WriteUtf8File` with "append".
+⍝   Bug fixes:
+⍝   * `GoToWebPage` worked on a Mac only when connected to Ride.
+⍝   * Test case 998 crashed on the Mac.
 ⍝ * 4.1.0
 ⍝   * Now managed by acre 3.
 ⍝ * 4.0.2
@@ -272,7 +277,9 @@
       {}0 ⎕NRESIZE⍣(⊃(~append)∨append∧fno≡⍬)⊣fno
       data←⎕UCS'UTF-8'⎕UCS data             ⍝ Enforce UTF-8
       data ⎕NAPPEND fno
-      ⎕NUNTIE(~wasOpenFlag)/fno
+      :If ~wasOpenFlag
+          ⎕NUNTIE fno
+      :EndIf
     ∇
 
     ∇ {r}←{browser}GoToWebPage Url;wsh;⎕IO;url;⎕WX;⎕ML;html;title;EncodeBlanksForNix
@@ -338,7 +345,7 @@
                   {}⎕SH browser,' ',Url,'</dev/null > /dev/null 2>&1 &'
               :EndIf
           :Case 'Mac'
-              .
+              {}⎕SH'open Safari ',Url
           :EndSelect
       :EndIf
     ∇
