@@ -11,7 +11,9 @@ A variety of mechanisms for permanently storing configuration settings exists: U
 
 ## Using the Windows Registry
 
-The Windows Registry is held in memory, so it is fast to read. It has been widely used to store configuration settings; some would say abused. However, for quite some time it was considered bad to have application-specific config files. Everything was expected to go into the Windows Registry. The pendulum started to swing back the other way now for several years, and we see application-specific config files becoming ever more common. We follow a consensus opinion that it is well to minimise use of the Registry. 
+The Windows Registry is held in memory, so it is fast to read. It has been widely used to store configuration settings; some would say abused. However, for quite some time it was considered bad to have application-specific config files. 
+
+Everything was expected to go into the Windows Registry. The pendulum started to swing back the other way now for several years, and we see application-specific config files becoming ever more common. We follow a consensus opinion that it is well to minimise use of the Registry. 
 
 Settings needed by Windows itself _have_ to be stored in the Registry. For example, associating a file extension with your application, so that double clicking on its icon launches your application. 
 
@@ -24,7 +26,9 @@ I> Note that the Windows Registry is still an excellent choice for saving user-s
 
 ## INI, JSON, or XML configuration files? 
 
-Three formats are popular for configuration files: INI, JSON and XML. INI is the oldest, simplest, and most crude. The other formats offer advantages: XML can represent nested data structures, and JSON can do so with less verbosity. Both XML and JSON depend upon unforgiving syntax: a single typo in an XML document can render it impossible to parse. 
+Three formats are popular for configuration files: INI, JSON and XML. INI is the oldest, simplest, and most crude. The other formats offer advantages: XML can represent nested data structures, and JSON can do so with less verbosity. 
+
+Both XML and JSON depend upon unforgiving syntax: a single typo in an XML document can render it impossible to parse. 
 
 We want configuration files to be suitable for humans to read and write, so you might consider the robustness of the INI format an advantage. Or a disadvantage: a badly-formed XML document is easy to detect, and a clear indication of an error. 
 
@@ -44,20 +48,27 @@ We will discuss all these features as we go along.
 
 ### Where to save an INI file
 
-In the chapter on Logging, we considered the question of where to keep application logs. The answer depends in part on what kind of application you are writing. Will there be single or multiple instances? For example, while a web browser might have several windows open simultaneously, it is nonetheless a single instance of the application. Its user wants to run just one version of it, and for it to remember her latest preferences and browsing history. But a machine may have many users, and each user needs her own preferences and history remembered. 
+In the chapter on Logging, we considered the question of where to keep application logs. The answer depends in part on what kind of application you are writing. Will there be single or multiple instances? 
+
+For example, while a web browser might have several windows open simultaneously, it is nonetheless a single instance of the application. Its user wants to run just one version of it, and for it to remember her latest preferences and browsing history. 
+
+But a machine may have many users, and each user needs her own preferences and history remembered. 
 
 Our MyApp program might well form part of other software processes, perhaps running as a service. There might be multiple instances of MyApp running at any time, quite independently of each other, each with quite different configuration settings. 
 
 Where does that leave us? We want configuration settings:
 
 As defaults for the application in the absence of any other configuration settings, for all users.
-: These must be coded into the application ("Convention over configuration"), so it will run in the absence of any configuration files. But an administrator should be able to revise these settings for a site. So they should be saved somewhere for all users. This filepath is represented in Windows by the `ALLUSERSPROFILE` environment variable. So we might look there for a `MyApp\MyApp.ini` file.
+: These must be coded into the application ("Convention over configuration"), so it will run in the absence of any configuration files. 
+: But an administrator should be able to revise these settings for a site. So they should be saved somewhere for all users. This filepath is represented in Windows by the `ALLUSERSPROFILE` environment variable. So we might look there for a `MyApp\MyApp.ini` file.
 
 For invocation when the application is launched.
 : We could look in the command line arguments for an INI.
 
 As part of the user's profile
-: The Windows environment variable `APPDATA` points to the individual user's roaming profile, so we might look there for a `MyApp\MyApp.ini` file. "Roaming" means that no matter which computer a user logs on to in a Windows Domain [^windomain] her personal settings, preferences, desktop etc. roams with her. The Windows environment variable `LOCALAPPDATA` on the other hand defines a folder that is saved just locally. Typically `APPDAATA` points to something like `C:\Users\{username}\AppData\Roaming` and `LOCALAPPDATA` to `C:\Users\{username}\AppData\Local`.
+: The Windows environment variable `APPDATA` points to the individual user's roaming profile, so we might look there for a `MyApp\MyApp.ini` file. "Roaming" means that no matter which computer a user logs on to in a Windows Domain [^windomain] her personal settings, preferences, desktop etc. roams with her. 
+
+: The Windows environment variable `LOCALAPPDATA` on the other hand defines a folder that is saved just locally. Typically `APPDAATA` points to something like `C:\Users\{username}\AppData\Roaming` and `LOCALAPPDATA` to `C:\Users\{username}\AppData\Local`.
 
 I> Note that when a user logs on to another computer all the files in `APPDATA` are syncronized first. Therefore it is not too good an idea to save a logfile in `APPDATA` that will eventually grow large -- that should go into `LOCALAPPDATA`.
 
@@ -69,7 +80,9 @@ From the above we get a general pattern for configuration settings:
 4. Overwrite from an INI specified in command line, if any
 5. Overwrite with the command line
 
-However, for the Cookbook we keep things simple: we look for an INI file that is a sibling of the DYAPP or the EXE for now but will allow this to be overwritten via the command line with something like `INI='C:\MyAppService\MyApp.ini`. We need this when we make MyApp a Windows Scheduled Task, or run it as a Windows Service.
+However, for the Cookbook we keep things simple: we look for an INI file that is a sibling of the DYAPP or the EXE for now but will allow this to be overwritten via the command line with something like `INI='C:\MyAppService\MyApp.ini`. 
+
+We need this when we make MyApp a Windows Scheduled Task, or run it as a Windows Service.
 
 
 ### Let's start
@@ -117,11 +130,17 @@ Notes:
 
 * The `IniFiles` class offers some unique features. Those are discussed below. This is by no means a violation of the standard because for INI files there is no such thing.
 
-* Assignments above the first section -- which is `[Config]` -- are variables local to the INI file. We can refer to them by putting curly brackets (`{}`) around their names as with `{localhome}` but they have no other purpose. You can see that `localhome` is referred to twice in the `[Folders]` section, and why that is useful.
+* Assignments above the first section -- which is `[Config]` -- are variables local to the INI file. We can refer to them by putting curly brackets (`{}`) around their names as with `{localhome}` but they have no other purpose. 
+
+  You can see that `localhome` is referred to twice in the `[Folders]` section, and why that is useful.
 
 * `IniFiles` supports two data types: character and number. Everything between two quotes is character, everything else is assumed to be a number.
 
-* `Debug` is set to ¯1 -- it is indeed going to be a numeric value because there are no quotes involved. `debug` defines whether the application runs in debug mode or not. Most importantly `debug←1` will switch off global error trapping, something we will soon introduce. `¯1` means that the INI file does not set the flag. Therefore it will later in the application default to 1 in a development environment and to 0 in a runtime evenvironment. By setting this to either 1 or 0 in the INI file you can force it to be a particular value.
+* `Debug` is set to ¯1 -- it is indeed going to be a numeric value because there are no quotes involved. `debug` defines whether the application runs in debug mode or not.
+
+  Most importantly `debug←1` will switch off global error trapping, something we will soon introduce. `¯1` means that the INI file does not set the flag. 
+
+  Therefore it will later in the application default to 1 in a development environment and to 0 in a runtime evenvironment. By setting this to either 1 or 0 in the INI file you can force it to be a particular value.
 
 * `Trap` can be used to switch off error trapping globally. It will be used in statements like `:Trap Config.Traps/0`. What `Config` is we will discuss in a minute.
 
@@ -171,7 +190,11 @@ Notes:
 
 * The `Get` function requires a section and a key as right argument. They can be provided either as a two-item vector as in `'Config' 'debug'` or as a text vector with section and key separated by a colon as in `'Config:debug'`.
 
-* `Get` requires a given section to exist, otherwise it will throw an error. It is tolerant in case a given key does not exist in case a left argument is provided: in that case the left argument is considered a default and returned by `Get`. In case the key does not exist _and_ no left argument was specified an error is thrown.
+* `Get` requires a given section to exist, otherwise it will throw an error. 
+
+  It is tolerant in case a given key does not exist in case a left argument is provided: in that case the left argument is considered a default and returned by `Get`. 
+
+  In case the key does not exist _and_ no left argument was specified an error is thrown.
 
 * In case you cannot be sure whether a section/key combination exists (a typical problem when after an update a newer version of an application hits an old INI file) you can check with the `Exist` method.
   
@@ -240,7 +263,9 @@ We now need to think about how to access `Config` from within `TxtToCsv`.
 
 ### What we think about when we think about encapsulating state
 
-The configuration parameters, including `Accents`, are now collected in the namespace `Config`.  That namespace is not passed explicitly to `TxtToCsv` but is needed by `CountLetters` which is called by `TxtToCsv`. We have two options here: we can pass a reference to `Config` to `TxtToCsv`, for example as left argument, and `TxtToCsv` in turn can pass it to `CountLetters`. The other option is that `CountLetters` just assumes the `Config` is around and has a variable `Accents` in it:
+The configuration parameters, including `Accents`, are now collected in the namespace `Config`.  That namespace is not passed explicitly to `TxtToCsv` but is needed by `CountLetters` which is called by `TxtToCsv`. 
+
+We have two options here: we can pass a reference to `Config` to `TxtToCsv`, for example as left argument, and `TxtToCsv` in turn can pass it to `CountLetters`. The other option is that `CountLetters` just assumes the `Config` is around and has a variable `Accents` in it:
 
 ~~~
 CountLetters←{
@@ -252,19 +277,33 @@ Yes, that's it. Bit of a compromise here. Let's pause to look at some other ways
 
 Passing everything through function arguments does not come with a performance penalty. The interpreter doesn't make 'deep copies' of the arguments unless and until they are modified in the called function (which we hardly ever do) -- instead the interpreter just passes around references to the original variables. 
 
-So we could pass `G` as a left argument of `TxtToCsv`, which then simply gets passed to `CountLetters`. No performance penalty for this, as just explained, but now we've loaded the syntax of `TxtToCsv` with a namespace it makes no direct use of, an unnecessary complication of the writing. And we've set a left argument we (mostly) don't want to specify when working in session mode.
+So we could pass `G` as a left argument of `TxtToCsv`, which then simply gets passed to `CountLetters`. 
+
+No performance penalty for this, as just explained, but now we've loaded the syntax of `TxtToCsv` with a namespace it makes no direct use of, an unnecessary complication of the writing. And we've set a left argument we (mostly) don't want to specify when working in session mode.
 
 The matter of _encapsulating state_ -- which functions have access to state information, and how it is shared between them -- is very important. Poor choices can lead to tangled and obscure code. 
 
-From time to time you will be offered (not by us) rules that attempt to make the choices simple. For example: _never communicate through global variables_. (Or semi-global variables. [^semi]) There is some wisdom in these rules, but they masquerade as satisfactory substitutes for thought, which they are not. Just as in a natural language, any rule about writing style meets occasions when it can and should be broken. Following style 'rules' without considering the alternatives will from time to time have horrible results, such as functions that accept complex arguments only to pass them on unexamined to other functions. 
+From time to time you will be offered (not by us) rules that attempt to make the choices simple. For example: _never communicate through global or semi-global variables_. [^semi]. 
+
+There is some wisdom in these rules, but they masquerade as satisfactory substitutes for thought, which they are not. 
+
+Just as in a natural language, any rule about writing style meets occasions when it can and should be broken. 
+
+Following style 'rules' without considering the alternatives will from time to time have horrible results, such as functions that accept complex arguments only to pass them on unexamined to other functions. 
 
 Think about the value of style 'rules' and learn when to apply them. 
 
-One of the main reasons why globals should be used with great care is that they can easily be confused with local variables with similar or -- worse --  the same name. If you need to have global variables then we suggest to encapsulating them in a dedicated namespace `Globals`. With a proper search tool like Fire [^fire] it is easy to get a report on all lines referring to anything in `Globals`, or set it.
+One of the main reasons why globals should be used with great care is that they can easily be confused with local variables with similar or -- worse --  the same name. 
 
-Sometimes it's only after writing many lines of code that it becomes apparent that a different choice would have been better. And sometimes it becomes apparent that the other choice would be so much better that it's worth unwinding and rewriting a good deal of what you've done. (Then be glad you're writing in  a terse language.) 
+If you need to have global variables then we suggest to encapsulating them in a dedicated namespace `Globals`. With a proper search tool like Fire [^fire] it is easy to get a report on all lines referring to anything in `Globals`, or set it.
 
-We share these musings here so you can see what we think about when we think about encapsulating state; and also that there is often no clear right answer. Think hard, make your best choices, and be ready to unwind and remake them later if necessary. 
+Sometimes it's only after writing many lines of code that it becomes apparent that a different choice would have been better. 
+
+And sometimes it becomes apparent that the other choice would be so much better that it's worth unwinding and rewriting a good deal of what you've done. (Then be glad you're writing in  a terse language.) 
+
+We share these musings here so you can see what we think about when we think about encapsulating state; and also that there is often no clear right answer. 
+
+Think hard, make your best choices, and be ready to unwind and remake them later if necessary. 
 
 ### The IniFiles class
 
@@ -355,6 +394,18 @@ And finally we create a new standalone EXE as before and run it to make sure tha
 
 
 [^fire]: Fire stands for _Find and Replace_. It is a powerful tool for both search and replace operations in the workspace. It is also a member of the APLTree Open Source Library. For details see <http://aplwiki.com/Fire>. Fire is discussed in the chapter "Useful user commands".
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -14,7 +14,9 @@ It helps to distinguish three quite different things people refer to as _documen
 
 ## Instructions on how to use the application
 
-Unless you are writing a tool or components for other developers to use, all software is operated through a graphical user interface. Users know the common conventions of UIs in various contexts. The standard for UIs is relatively demanding. If you know what the application is for, it should be obvious how to use its basic features. The application might help you with wizards (dialogue sequences) to accomplish complex tasks. A user might supplement this by consulting what the Help menu offers. She might search the Web for advice. The last thing she is likely to do is go looking for a printed manual.
+Unless you are writing a tool or components for other developers to use, all software is operated through a graphical user interface. Users know the common conventions of UIs in various contexts. The standard for UIs is relatively demanding. 
+
+If you know what the application is for, it should be obvious how to use its basic features. The application might help you with wizards (dialogue sequences) to accomplish complex tasks. A user might supplement this by consulting what the Help menu offers. She might search the Web for advice. The last thing she is likely to do is go looking for a printed manual.
 
 We'll come in a later chapter to how to offer online help from a Help menu. For now, we mention Help to exclude it from what we mean by _documentation_.
 
@@ -32,7 +34,9 @@ This is what you want when you revisit part of the code after six months -- or s
 
 In the best case the code explains everything. Software is a story told in two worlds. One world is the domain of the user, for example, a world of customer records. The other world is the arrays and namespaces used to represent them.
 
-Good writing achieves a double vision. The transformations described by the code make sense in both worlds. Ken Iverson once coined the term _expository programming_ for this writing. Expository programs reveal their workings to the reader. They also discover errors more easily, making it possible to "stare the bugs out". (David Armstrong liked to say the best writing style for a philosopher lets him see his errors before his colleagues do.)
+Good writing achieves a double vision. The transformations described by the code make sense in both worlds. Ken Iverson once coined the term _expository programming_ for this writing. Expository programs reveal their workings to the reader. 
+
+They also discover errors more easily, making it possible to "stare the bugs out". (David Armstrong liked to say the best writing style for a philosopher lets him see his errors before his colleagues do.)
 
 APL requires little 'ceremonial code' -- e.g. declarations of data type -- and so makes high levels of semantic density achievable. It is perhaps easier to write expository code than in more commonly-used languages. But we have learned great respect for how quickly we can forget what a piece of code does. Then we need documentation in its third sense.
 
@@ -45,7 +49,9 @@ We write software for people and people press us for results, which rarely inclu
 
 Documentation is for those who come after us, quite probably our future selves. Since 80% of the lifetime costs of software are spent on maintenance, documentation is a good investment. If the software is ours, we're more likely to make that investment. But there will be constant pressure to defer writing it.
 
-The common result of this pressure is that application code has either no documentation, or its documentation is not up to date. Out-of-date documentation is worse than having none. If you have no documentation you have no help with the code. You have to read it and run it to understand what it does. But however difficult that is, it is utterly reliable. Out-of-date documentation is worse: it will mislead you and waste your time before sending you back to the code. Even if the relevant part of it is accurate, once you learn to distrust it, its value is mostly gone.
+The common result of this pressure is that application code has either no documentation, or its documentation is not up to date. Out-of-date documentation is worse than having none. If you have no documentation you have no help with the code. You have to read it and run it to understand what it does.
+
+But however difficult that is, it is utterly reliable. Out-of-date documentation is worse: it will mislead you and waste your time before sending you back to the code. Even if the relevant part of it is accurate, once you learn to distrust it, its value is mostly gone.
 
 The only place worth writing documentation is in the code itself. Maintaining documentation separately adds the uncertainty of matching versions. Writing the documentation as comments in the code encourages you to keep it in step with changes to the code. We write comments in three ways, serving slightly different purposes.
 
@@ -59,7 +65,9 @@ Heading comments
 
 Trailing comments
 
-: Comments at the ends of lines act as margin notes. Do not use them as a running translation of the code. Instead aim to for expository style and code that needs no translation. On lines where you're not satisfied you've achieved expository style, do write an explanatory comment. Better to reserve trailing comments for other notes, such as `⍝FIXME⍝ slow for >1E7 elements` [^fixme]. (Using a tag such as `⍝FIXME⍝` makes it easy to bookmark lines for review.) Aligning trailing comments to begin at the same column makes them easier to scan, and is considered OCD compliant [^ocd]. 
+: Comments at the ends of lines act as margin notes. Do not use them as a running translation of the code. Instead aim to for expository style and code that needs no translation. On lines where you're not satisfied you've achieved expository style, do write an explanatory comment.
+
+: Better to reserve trailing comments for other notes, such as `⍝FIXME⍝ slow for >1E7 elements` [^fixme]. (Using a tag such as `⍝FIXME⍝` makes it easy to bookmark lines for review.) Aligning trailing comments to begin at the same column makes them easier to scan, and is considered OCD compliant [^ocd]. 
 
 The above conventions are simple enough and have long been in wide use.
 
@@ -74,7 +82,11 @@ _Automatic documentation generation_ will extract documentation from your script
 
 ADoc is an acronym for _automatic documentation_ generation. It works on classes and namespaces.
 
-In its most basic function, it lists methods, properties and fields (functions, operators and variableas) and requires no comments in the code. In its more powerful function, it composes from header comments an HTML page. Honouring Markdown conventions, it provides all the typographical features you need for documentation. If you don't know what Markdown is please read the Markdown article on Wikipedia [^markdown] and `Markdown2Help`'s own help file. The time will be a good investment in any case because these days Markdown is used pretty much everywhere.
+In its most basic function, it lists methods, properties and fields (functions, operators and variableas) and requires no comments in the code. 
+
+In its more powerful function, it composes from header comments an HTML page. Honouring Markdown conventions, it provides all the typographical features you need for documentation.
+
+If you don't know what Markdown is please read the Markdown article on Wikipedia [^markdown] and `Markdown2Help`'s own help file. The time will be a good investment in any case because these days Markdown is used pretty much everywhere.
 
 Previously only found as a class in the APLTree library, it is now shipped in Dyalog Version 16.0 as a user command.
 
@@ -154,7 +166,9 @@ First we edit the top of the script to follow ADoc's conventions:
 
 Next we specify which functions we want to be included in the document: not all but just those that are designed to be called from the outside. In a class those are called "Public interface", and it's easy to see why.
 
-For classes ADoc can work out what's public and what isn't due to the `Public Access` statements. For namespaces there is no such mechanism. We just learned that by default ADoc considers all functions and operators as well as all variables public, but it also offers a mechanism to reduce this list to what's really public. For that ADoc looks for a function `Public`. It may return an empty vector (nothing is public at all) or a list of names. This list would define what is public.
+For classes ADoc can work out what's public and what isn't due to the `Public Access` statements. For namespaces there is no such mechanism. 
+
+We just learned that by default ADoc considers all functions and operators as well as all variables public, but it also offers a mechanism to reduce this list to what's really public. For that ADoc looks for a function `Public`. It may return an empty vector (nothing is public at all) or a list of names. This list would define what is public.
 
 Let's define the public functions at the bottom of the script:
 
@@ -242,7 +256,9 @@ This function was already discussed; see "Public interface".
 
 #### ADOC_Doc
 
-There is one more reserved name: `ADOC_Doc`. This is useful when you want to document an unscripted (ordinary) namespace. Just add a niladic function carrying comments that returns no or a shy resul. Those comments are then processed in exactly the same way leading comments in scripts are processed.
+There is one more reserved name: `ADOC_Doc`. This is useful when you want to document an unscripted (ordinary) namespace. Just add a niladic function carrying comments that returns no or a shy resul. 
+
+Those comments are then processed in exactly the same way leading comments in scripts are processed.
 
 That will do for now.
 
@@ -253,44 +269,6 @@ That will do for now.
 [^fixme]: Be it `⍝FIXME⍝` or `⍝CHECKME⍝` or `⍝TODO⍝` - what matters is that you keep it consistent and searchable. That implies that the search term cannot be mistaken as something else by accident. For that reason  `⍝TODO⍝` is slighty better better than `TODO`.
 
 [^markdown]: <https://en.wikipedia.org/wiki/Markdown>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

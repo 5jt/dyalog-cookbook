@@ -50,7 +50,9 @@ Our application does not suggest itself as a Scheduled Task; it's obviously a ca
 
 ## Precautions: ensure one instance only
 
-When dealing with Scheduled Tasks then usually you don't want more than one instance of the application running at the same time. When there is a problem with a Scheduled Task then one of the most common reasons why getting to the bottom of the problem turns out to be difficult is that you fire up another instance when there is already one running. For example, you try to Ride into it but the port used by Ride is already occupied by an instance that was started earlier without you being aware of this. For that reason we are going to prevent this from happening.
+When dealing with Scheduled Tasks then usually you don't want more than one instance of the application running at the same time. When there is a problem with a Scheduled Task then one of the most common reasons why getting to the bottom of the problem turns out to be difficult is that you fire up another instance when there is already one running.
+
+For example, you try to Ride into it but the port used by Ride is already occupied by an instance that was started earlier without you being aware of this. For that reason we are going to prevent this from happening.
 
 A> Even in the rare circumstances when you want an application managed by the Task Scheduler to run in parallel more than once you should establish a mechanism that allows you to enforce having just one instance running if only for debugging purposes. Make it an INI entry (like "AllowMultipleInstances") and document it appropriately.
 
@@ -255,7 +257,9 @@ Make sure that you use the "Browse" button to navigate to the EXE/BAT/whatever y
 
 "Add arguments" allows you specify something like "MAXWS=345M" or the name of a workspace in case "Program" is not an EXE but a Dyalog interpreter. In particular you should add `DYALOG_NOPOPUPS=1`. This prevents any dialogs from popping up (aplcore, WS FULL etc.). You don't want them when Dyalog is running in the background because there's nobody around to click the "OK" button...
 
-"Start in" is useful for specifying what will become the current (or working) directory for the running program. We recommend setting the current directory in your code as early as possible, so you don't really need to set this here except that when you don't you might well get an error code 2147942512. We will discuss later how such error codes can be analyzed, but for the time being you have to believe us that it actually means "Not enough space available on the disk". When you do specify the "Start in" parameter it runs just fine. 
+"Start in" is useful for specifying what will become the current (or working) directory for the running program. We recommend setting the current directory in your code as early as possible, so you don't really need to set this here except that when you don't you might well get an error code 2147942512. 
+
+We will discuss later how such error codes can be analyzed, but for the time being you have to believe us that it actually means "Not enough space available on the disk". When you do specify the "Start in" parameter it runs just fine. 
 
 However, note that you _must not delimit_ the path with double-quotes. It's understandable that Microsoft does not require them in this context because by definition any blanks are part of the path, but why they do not just ignore them when specified is less understandable.
 
@@ -312,7 +316,9 @@ The application would start, seemingly run for a short period of time and then s
 
 It is different when you simply double-click the `MyApp.exe`: in that case the "Security Alert" dialog box would pop up, giving you an easy way to create a rule that allows the application to communicate via the given port.
 
-BTW, when you click "Cancel" in the "Security Alert" dialog box then you might expect that the Windows Firewall does not allow access to the port but wouldn't create a rule either, but you would be mistaken. The two buttons "Allow access" and "Cancel" shouldn't be buttons at all! Instead there should be a group "Create rule" with two radio buttons: "Allow access" and "Deny access". In case the user clicks the "Cancel" button a message should pop up saying that although no rule will be created, access to the port in question is denied. That would imply that when the application is started again the "Security Alert" dialog box would pop up again, too. Instead when "Cancel" is clicked a blocking rule for that combination of application and port number is created, and you will not see that dialog box again for this combination.
+BTW, when you click "Cancel" in the "Security Alert" dialog box then you might expect that the Windows Firewall does not allow access to the port but wouldn't create a rule either, but you would be mistaken. The two buttons "Allow access" and "Cancel" shouldn't be buttons at all! Instead there should be a group "Create rule" with two radio buttons: "Allow access" and "Deny access".
+
+In case the user clicks the "Cancel" button a message should pop up saying that although no rule will be created, access to the port in question is denied. That would imply that when the application is started again the "Security Alert" dialog box would pop up again, too. Instead when "Cancel" is clicked a blocking rule for that combination of application and port number is created, and you will not see that dialog box again for this combination.
 
 
 ### The Task Scheduler GUI
@@ -414,6 +420,18 @@ for details.
 [^hex]: For details and download regarding the user commands `Hex2Int` and `Int2Hex` see <http://aplwiki.com/UserCommands/Hex>
 
 [^getmsg]: For details and download regarding the user command `GetMsgFrom` see <http://aplwiki.com/UserCommands/GetMsgFrom>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

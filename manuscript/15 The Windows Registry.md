@@ -13,7 +13,9 @@ We cannot say it any better than the Wikipedia [^wikipedia]:
 
 The Windows Registry is still subject of heated discussions among programmers. Most hate it, some like it, but whatever your opinion is: you cannot ignore it. 
 
-Originally Microsoft designed the database as _the_ source for any configuration parameters, be it for the operating system, users or applications. The Windows Registry will certainly remain to be the source for any OS-related pieces of information, but for applications we have seen a comeback of the old-fashioned configuration file, be at as an INI, an XML or a JSON file.
+Originally Microsoft designed the database as _the_ source for any configuration parameters, be it for the operating system, users or applications.
+
+The Windows Registry will certainly remain to be the source for any OS-related pieces of information, but for applications we have seen a comeback of the old-fashioned configuration file, be at as an INI, an XML or a JSON file.
 
 Even if you go for configuration files in order to configure your own application, you must be able to read and occasionally also to write to the Windows Registry, if only to configure Dyalog APL in order to make it suit your needs.
 
@@ -28,7 +30,9 @@ Note that `HKCU` is a short cut for "HKey Current User". There are others, and w
 
 ## Terminology
 
-If you find the terminology strange: so do we, but it was invented by Microsoft and therefore defines the standard. That is the reason why we go for it: it makes it easier to understand the Microsoft documentation but also to understand others while talking about the Windows Registry. It also helps when you google for Registry tweaks because the guys posting the solution to your problem are most likely using Microsoft speech as well.
+If you find the terminology strange: so do we, but it was invented by Microsoft and therefore defines the standard. 
+
+That is the reason why we go for it: it makes it easier to understand the Microsoft documentation but also to understand others while talking about the Windows Registry. It also helps when you google for Registry tweaks because the guys posting the solution to your problem are most likely using Microsoft speech as well.
 
 Why is the terminology strange? Because Microsoft uses common words but gives them unusual meaning when it comes to the Windows Registry. Let's look at an example. This is the definition of the MAXWS parameter for Dyalog 64 bit Unicode version 16:
 
@@ -46,7 +50,9 @@ We can get rid of "Computer" if it is the local machine, and we can shorten "HKE
 HKCU\Software\Dyalog\Dyalog APL/W-64 16.0 Unicode\maxws
 ~~~
 
-That looks pretty much like a file path, doesn't it? So what about calling the different parts to the left of `maxws` folders? Well, that would be logical, therefore Microsoft did not do that. Instead they call `HKCU` a _key_, although the top level ones are sometimes called _root keys_. The other bits and pieces but `maxws` are called subkeys but sometimes just keys.
+That looks pretty much like a file path, doesn't it? So what about calling the different parts to the left of `maxws` folders? 
+
+Well, that would be logical, therefore Microsoft did not do that. Instead they call `HKCU` a _key_, although the top level ones are sometimes called _root keys_. The other bits and pieces but `maxws` are called subkeys but sometimes just keys.
 
 Okay, what's `maxws` then? Well it holds a value, so why not call it _key_? Ups, that's been taken already, but maybe "name" or "ID"? Well, Microsoft calls it a _value_. That's a strange name because is _has_ as value, in our example the string `'64000'`.
 
@@ -297,7 +303,9 @@ In "[Appendix 4 — The development environment](./53 Appendix 4 — The develop
 HKCU\Software\Dyalog\Dyalog APL/W-64 16.0 Unicode\Captions
 ~~~
 
-If that subkey exists (after an installation it doesn't) then it is supposed to contain particular values defining the captions for all dialog boxes that might make an appearance when running an instance of Dyalog. So in order to configure all these window captions you have to add the subkey `Chapter` and the required values in one way or another. This is a list of values honoured by version 16.0:
+If that subkey exists (after an installation it doesn't) then it is supposed to contain particular values defining the captions for all dialog boxes that might make an appearance when running an instance of Dyalog. 
+
+So in order to configure all these window captions you have to add the subkey `Chapter` and the required values in one way or another. This is a list of values honoured by version 16.0:
 
 | Editor |
 | Event_Viewer |
@@ -338,7 +346,9 @@ That's what `captionValues` may look like:
 13 2
 ~~~
 
-Again, this variable can be copied from the workspace `Z:\code\Workspaces\WinReg`. We are going to write this data to the Windows Registry for all versions of Dyalog installed on the current machine. For that we need a list with all versions of Dyalog installed on the current machine. For this we can use the function `GetAllVersionsOfDyalog` we've developed earlier in this chapter:
+Again, this variable can be copied from the workspace `Z:\code\Workspaces\WinReg`. We are going to write this data to the Windows Registry for all versions of Dyalog installed on the current machine. 
+
+For that we need a list with all versions of Dyalog installed on the current machine. For this we can use the function `GetAllVersionsOfDyalog` we've developed earlier in this chapter:
 
 ~~~
    dyalogVersions←GetAllVersionsOfDyalog ''
@@ -390,6 +400,18 @@ We can now write `captionValues` to all versions:
 
 [^wsh]: The Wikipedia on the Windows Scripting Host:  
 <https://en.wikipedia.org/wiki/Windows_Script_Host>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

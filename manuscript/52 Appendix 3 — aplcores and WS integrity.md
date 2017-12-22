@@ -5,7 +5,9 @@
 
 # Appendix 3 --- aplcores and WS integrity
 
-The _workspace_ (WS) is where the APL interpreter manages all code and all data in memory. The Dyalog tracer / debugger has extensive edit-and-continue capabilities; the downside is that these have been known to occasionally corrupt the workspace. However, there are many other ways how the workspace may get corrupted:
+The _workspace_ (WS) is where the APL interpreter manages all code and all data in memory. 
+
+The Dyalog tracer / debugger has extensive edit-and-continue capabilities; the downside is that these have been known to occasionally corrupt the workspace. However, there are many other ways how the workspace may get corrupted:
 
 * The interpreter might carry a bug.
 * The user uses `⎕NA` incorrectly.
@@ -15,7 +17,11 @@ The _workspace_ (WS) is where the APL interpreter manages all code and all data 
 The interpreter checks WS integrity every now and then; how often can be influenced by setting certain debug flags; see "The APL Command Line" in the documentation for details. Be warned that...
 
 * the `-DW` flag slows an application down _extremely_ even on very fast machines.
-* `-Dc` and `-Dw` slows the interpreter down in any case, but the effect depends on the workspace size. You might not notice anything at all with, say, maxws=64MB but you will notice a delay with maxws=2GB.
+
+* `-Dc` and `-Dw` slows the interpreter down in any case, but the effect depends on the workspace size. 
+
+  You might not notice anything at all with, say, maxws=64MB but you will notice a delay with maxws=2GB.
+
 
 When the interpreter finds that the WS is damaged it will create a dump file called "aplcore" and exit in order to prevent your application from producing (or storing) incorrect results.
 
@@ -79,6 +85,18 @@ A> When a program asks Windows to save a file in a location where that program h
 * will be numbered starting from 1; this as achieved by adding the trailing `*`.
 
 The same can be achieved by specifying `APLCORENAME=...` on the command line. That's particularly important for Windows Services.
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

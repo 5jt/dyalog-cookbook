@@ -6,7 +6,9 @@
 
 ## Overview
 
-Windows comes with quite a number of environment variables. Those variables are helpful in addressing, say, a particular path without actually using a physical path. For example, on most PCs Windows is installed in C:\\Windows, but this is by no means guaranteed. It is therefore much better to address this particular folder as `⊣2 ⎕NQ # 'GetEnvironment' 'WINDIR'`. 
+Windows comes with quite a number of environment variables. Those variables are helpful in addressing, say, a particular path without actually using a physical path. 
+
+For example, on most PCs Windows is installed in C:\\Windows, but this is by no means guaranteed. It is therefore much better to address this particular folder as `⊣2 ⎕NQ # 'GetEnvironment' 'WINDIR'`. 
 
 Underneath you find some of the environment variables found on a Windows 10 system listed and explained.
 
@@ -147,6 +149,18 @@ WinDir
 [^powershell]: <https://en.wikipedia.org/wiki/PowerShell>
 
 [^wow]: <https://msdn.microsoft.com/en-us/library/windows/desktop/aa384274(v=vs.85).aspx>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

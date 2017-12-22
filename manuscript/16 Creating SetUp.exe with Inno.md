@@ -181,7 +181,9 @@ Code
 
 ### The file `Foo.iss`
 
-`Foo.iss` does not cover anything fancy, but it does cover the normal stuff. Note that the file has the extension ".iss" - that's Inno's extension. Therefore double-clicking it should bring up Inno Script Studio which does not only act as a special editor, it also allows you to execute the script, and it comes with debugging features as well.
+`Foo.iss` does not cover anything fancy, but it does cover the normal stuff. Note that the file has the extension ".iss" - that's Inno's extension. 
+
+Therefore double-clicking it should bring up Inno Script Studio which does not only act as a special editor, it also allows you to execute the script, and it comes with debugging features as well.
 
 ### Defining variables
 
@@ -302,7 +304,9 @@ Notes:
 * The keyword `uninsdeletekey` tells Inno that it is supposed to delete the Registry key when the application is uninstalled. Without that keyword Inno would **not** delete any Registry keys and values when the application is uninstalled.
 * The `uninsdeletekeyifempty` keyword is similar but let Inno delete the Registry key only when it is empty. 
 
-  This comes handy when you use the Registry for saving user preferences: as long as the user has not defined any preferences the key can be deleted safely. If she has then you might consider leaving them alone. After all the user might uninstall just in order to install a better version, expecting her preferences to survive the procedure.
+  This comes handy when you use the Registry for saving user preferences: as long as the user has not defined any preferences the key can be deleted safely. 
+
+  If she has then you might consider leaving them alone. After all the user might uninstall just in order to install a better version, expecting her preferences to survive the procedure.
 
 
 ### The section [Dirs]{#dirs}
@@ -316,7 +320,9 @@ From the Inno Help:
 
 > This optional section defines any additional directories Setup is to create besides the application directory the user chooses, which is created automatically. Creating subdirectories underneath the main application directory is a common use for this section.
 
-With the above line we tell Inno to create a folder `{#MyAppName}` which in our case will be "My Company Ltd". Note that `commonappdata` defaults to `ProgramData\`, usually on the `C:\` drive. Instead we could have used `localappdata` which defaults to `C:\Users\{username}\AppData\Local`. There are many more constants available; refer to "Constants" in the Inno Help for details.
+With the above line we tell Inno to create a folder `{#MyAppName}` which in our case will be "My Company Ltd". Note that `commonappdata` defaults to `ProgramData\`, usually on the `C:\` drive. 
+
+Instead we could have used `localappdata` which defaults to `C:\Users\{username}\AppData\Local`. There are many more constants available; refer to "Constants" in the Inno Help for details.
 
 We also tell Inno that it should give any user who belongs to the "Users" group the right to modify files in this directory.
 
@@ -413,7 +419,9 @@ However, this is a much more powerful feature than it looks like at first glance
 
 or any combination of them. 
 
-In order to achieve that you need to add the (optional) section `[Components]` and list all the files involved there. You can then create additional lines in the `[Task]` section that link to those lines in `[Components]`. The user is then presented a list of check boxes that allow her to select the options she's after.
+In order to achieve that you need to add the (optional) section `[Components]` and list all the files involved there. You can then create additional lines in the `[Task]` section that link to those lines in `[Components]`. 
+
+The user is then presented a list of check boxes that allow her to select the options she's after.
 
 Note that `cm:CreateDesktopIcon` refers to a message `CreateDesktopIcon` which can be modified if you wish so; the `cm` stands for "Custom Message". For that you would insert the (optional) section `[CustomMessages]` like this:
 
@@ -440,6 +448,18 @@ Windows Installer
 
 [^guid]:<https://blogs.msdn.microsoft.com/oldnewthing/20080627-00/?p=21823/>:
 About GUIDs
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

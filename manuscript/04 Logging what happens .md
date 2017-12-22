@@ -18,13 +18,22 @@ A> Prior to version 16.0, as soon as you close the message box a CONTINUE worksp
 A>
 A> With version 16.0 you can still force the interpreter to drop a CONTINUE workspace by enabling the old behaviour with `2704⌶ 1` while `2704⌶ 0` would disable it, but that's the default anyway.
 A> 
-A> Note that for analyzing purposes a CONTINUE workspace must be loaded in an already running instance of Dyalog. In other words: don't double-click a CONTINUE! The reason is that `⎕DM` and `⎕DMX` are overwritten in the process of booting SALT, meaning that you loose the error message. You _may_ be able to recreate them by re-executing the failing line but that might be dangerous, or fail in a different way when executed without the application having been initialised properly.
+A> Note that for analyzing purposes a CONTINUE workspace must be loaded in an already running instance of Dyalog. In other words: don't double-click a CONTINUE! The reason is that `⎕DM` and `⎕DMX` are overwritten in the process of booting SALT, meaning that you loose the error message. 
 A>
-A> Note also that the CONTINUE is always saved in the current directory; in version 16.0 there is no way to tell the interpreter to save the CONTINUE workspace elsewhere. That is unfortunate since it will fail for your own stand-alone EXEs if they are installed in the standard folders for executables under Windows, `C:\Program Files` (64-bit programs) and `C:\Program Files (x86)` (32-bit programs) because even as an admin you cannot write to those folders or any of its sub folders. But Windows saves it anyway! In case of a program attempts to write to a banned location Windows tells them "Sure, no problem" but saves them in a folder `"C:\Users\kai\AppData\Local\VirtualStore\Program Files\Dyalog\Dyalog APL-64 16.0 Unicode\CONTINUE.dws"` in case you are running Dyalog APL 64-bit Unicode version 16.0. 
+A> You _may_ be able to recreate them by re-executing the failing line but that might be dangerous, or fail in a different way when executed without the application having been initialised properly.
+A>
+A> Note also that the CONTINUE is always saved in the current directory; in version 16.0 there is no way to tell the interpreter to save the CONTINUE workspace elsewhere. 
+A>
+A> That is unfortunate since it will fail for your own stand-alone EXEs if they are installed in the standard folders for executables under Windows, `C:\Program Files` (64-bit programs) and `C:\Program Files (x86)` (32-bit programs) because even as an admin you cannot write to those folders or any of its sub folders.
+A>
+A> But Windows saves it anyway! In case of a program attempts to write to a banned location Windows tells them "Sure, no problem" but saves them in a folder `"C:\Users\kai\AppData\Local\VirtualStore\Program Files\Dyalog\Dyalog APL-64 16.0 Unicode\CONTINUE.dws"` in case you are running Dyalog APL 64-bit Unicode version 16.0. 
 
 The next version of `MyApp` could do better by having the program recording what happens to a log file.
 
 Save a copy of `Z:\code\v03` as `Z:\code\v04` or copy `v04` from the Cookbook's website.
+
+
+## Include the "Logger" class
 
 We'll use the APLTree `Logger` class, which we'll now install in the workspace root. If you've not already done so, copy the APLTree library folder into `Z:\code\apltree`.[^apltree] Now edit `Z:\code\v04\MyApp.dyapp` to include some library code:
 
@@ -97,7 +106,9 @@ Z:\code\v04\MyApp.exe Z:\texts\en
 
 Current directory is `Z:\` and therefore that's where the logfiles will appear.
 
-If this version of `MyApp` were for shipping that would be a problem. An application installed in `C:\Program Files` cannot rely on being able to write logfiles there. That is a problem to be solved by an installer. We'll come to that later. But for this version of `MyApp` the logfiles are for your eyes only. It's fine that the logfiles appear wherever you launch the EXE. You just have to know where they are. We will put them into a sub folder `Logs` within the current directory.
+If this version of `MyApp` were for shipping that would be a problem. An application installed in `C:\Program Files` cannot rely on being able to write logfiles there. That is a problem to be solved by an installer. We'll come to that later.
+
+But for this version of `MyApp` the logfiles are for your eyes only. It's fine that the logfiles appear wherever you launch the EXE. You just have to know where they are. We will put them into a sub folder `Logs` within the current directory.
 
 In developing and testing `MyApp`, we create the active workspace by running `MyApp.dyapp`. The interpreter sets the current directory of the active workspace as the DYAPP's parent folder for us. That too is sure to exist. 
 
@@ -105,6 +116,9 @@ In developing and testing `MyApp`, we create the active workspace by running `My
       #.FilesAndDirs.PWD
 Z:\code\v04
 ~~~
+
+
+## Setting up parameters for "Logger"
 
 Now we set up the parameters needed to instantiate the Logger class. First we use the Logger class' shared `CreateParms` method to get a parameter space with an initial set of default parameters. You can use the built-in method `∆List` to display its properties and their defaults:
 
@@ -126,7 +140,12 @@ Now we set up the parameters needed to instantiate the Logger class. First we us
   timestamp                     
 ~~~
 
-We then modify those where the defaults don't match our needs and use the parameter space to create the Logger object. For this we create a function `OpenLogFile`:
+We then modify those where the defaults don't match our needs and use the parameter space to create the Logger object. 
+
+
+## Implementing the logging function
+
+For this we create a function `OpenLogFile`:
 
 ~~~
 ∇ instance←OpenLogFile path;logParms
@@ -171,6 +190,9 @@ Notes:
    * The negative number is the tie number of the log file.  
 
 
+## Initializing "Logger"
+
+
 We create a function `Initial` (short for "Initialize") which calls `OpenLogFile` and returns the `Logger` instance:
 
 ~~~
@@ -180,6 +202,8 @@ We create a function `Initial` (short for "Initialize") which calls `OpenLogFile
 ~~~
 
 At the moment `Initial` is not doing anything, but that will change soon.
+
+## Get it to work
 
 We also need to change `ProcessFile`:
 
@@ -196,7 +220,11 @@ We also need to change `ProcessFile`:
 ∇
 ~~~
 
-We use `APLTreeUtils.ReadUtf8File` rather than `⎕NGET` because it optionally returns a flat string without a performance penalty, although that is only an issue with really large files. This is achieved by passing "flat" as the (optional) left argument to `ReadUtf8File`. We ignore encoding and the new line character and allow it to default to the current operating system. As a side effect `ProcessFiles` won't crash anymore when `files` is empty because `enc` and `nl` have disappeared from the function. 
+We use `APLTreeUtils.ReadUtf8File` rather than `⎕NGET` because it optionally returns a flat string without a performance penalty, although that is only an issue with really large files. This is achieved by passing "flat" as the (optional) left argument to `ReadUtf8File`. 
+
+We ignore encoding and the new line character and allow it to default to the current operating system. 
+
+As a side effect `ProcessFiles` won't crash anymore when `files` is empty because `enc` and `nl` have disappeared from the function. 
 
 Now we have to make sure that `Initial` is called from `StartFromCmdLine`:
 
@@ -213,6 +241,9 @@ Now we have to make sure that `Initial` is called from `StartFromCmdLine`:
 ~~~
 
 Note that we now log the full command line. In an application that receives its parameters from the command line this is an important thing to do.
+
+
+## Improvements to our code
 
 We take the opportunity to move code from `TxtToCsv` to a new function `GetFiles`. This new function will take the command line argument and return a list of files which may contain zero, one or many filenames:
 
@@ -262,7 +293,9 @@ We have to make sure that `GetFiles` is called from `TxtToCsv`. Note that moving
 
 Notes:
 
-* We are now using `FilesAndDirs.Dir` rather than the Dyalog primitive `⎕NINFO`. Apart from offering recursive searches (a feature we don't need here) the `Dir` function also normalizes the separator character. Under Windows it will always be a backslash while under Linux it is always a slash character.
+* We are now using `FilesAndDirs.Dir` rather than the Dyalog primitive `⎕NINFO`. 
+
+  Apart from offering recursive searches (a feature we don't need here) the `Dir` function also normalizes the separator character. Under Windows it will always be a backslash while under Linux it is always a slash character.
 
   Although Windows itself is quite relaxed about the separator and accepts a slash as well as a backslash, as soon as you call something else in one way or another you will find that slashes are not accepted. An example is any setting to `⎕USING`.
 
@@ -309,7 +342,9 @@ We can now test `TxtToCsv`:
 
 I> Alternatively you could set the parameter `printToSession` -- which defaults to 0 -- to 1. That would let the `Logger` class write all the messages not only to the log file but also to the session. That can be quite useful for test cases or during development. You could even prevent the `Logger` class to write to the disk at all by setting `fileFlag` to 0.
 
-I> The `Logger` class is designed to never break your application -- for obvious reasons. The drawback of this is that if something goes wrong like the path becoming invalid because the drive got removed you would only notice by trying to look at the log files. You can tell the `Logger` class that it should **not** trap all errors by setting the parameter `debug` to 1. Then `Logger` would crash if something goes wrong.
+I> The `Logger` class is designed to never break your application -- for obvious reasons. The drawback of this is that if something goes wrong like the path becoming invalid because the drive got removed you would only notice by trying to look at the log files. 
+I>
+I> You can tell the `Logger` class that it should **not** trap all errors by setting the parameter `debug` to 1. Then `Logger` would crash if something goes wrong.
 
 Let's see if logging works also for the exported EXE. Run the DYAPP to rebuild the workspace. Export as before and then run the new `MyApp.exe` in a Windows console.
 
@@ -370,11 +405,15 @@ to the more readable:
 
 So far we have used modules from the APLTree project: classes and namespace scripts that might be useful when implementing an application.
 
-APLTree also offers applications that support the programmer during her work without becoming part of the application. One of those applications is the LogDog. Its purpose is simply to watch a log file and make sure that any changes are immediately reflected by the GUI. This is useful for us since now the log file is the major source of information about how the application is doing. 
+APLTree also offers applications that support the programmer during her work without becoming part of the application. One of those applications is the LogDog. 
+
+Its purpose is simply to watch a log file and make sure that any changes are immediately reflected by the GUI. This is useful for us since now the log file is the major source of information about how the application is doing. 
 
 In order to use LogDog you first need to download it from <http://download.aplwiki.com>. We assume that you download it into the default download location. For a user "JohnDoe" that would be `C:\Users\JohnDoe\Downloads`.
 
-LogDog does not come with an installer. All you have to do is to copy it into a folder where you have the right to add, delete and change files. That means `C:\Program Files` and `C:\Program Files (x86)` are not an option. If you want to install the application just for your own user ID then this is the right place:  
+LogDog does not come with an installer. All you have to do is to copy it into a folder where you have the right to add, delete and change files. That means `C:\Program Files` and `C:\Program Files (x86)` are not an option. 
+
+If you want to install the application just for your own user ID then this is the right place:  
 
 ~~~
 "C:\Users\JohnDoe\AppData\Local\Programs\LogDog
@@ -388,7 +427,9 @@ If you want to install it for all users on your PC then we suggest that you crea
 
 Of course `C:\MyPrograms\LogDog` might be okay as well.
 
-You start LogDog by double-clicking the EXE. You can then consult LogDog's help for how to open a log file. We recommend to go for the "Investigate folder" option. The reason is that every night at 24:00 a new log file with a new name is created. To put any new(er) log file on display you can issue the "Investigate folder" menu command again.
+You start LogDog by double-clicking the EXE. You can then consult LogDog's help for how to open a log file. 
+
+We recommend to go for the "Investigate folder" option. The reason is that every night at 24:00 a new log file with a new name is created. To put any new(er) log file on display you can issue the "Investigate folder" menu command again.
 
 Once you have started LogDog on the `MyApp` log file you will see something like this:
 
@@ -408,12 +449,26 @@ A> # Destructors versus the Tracer
 A>
 A> When you trace through `TxtToCsv` the moment you leave the function the Tracer shows the function `Cleanup` of the `Logger` class. The function is declared as a destructor.
 A>
-A> In case you wonder why that is: a destructor (if any) is called when the instance of a class is destroyed (or shortly thereafter). `MyLogger` is localized in the header of `TxtToCsv`, meaning that when `TxtToCsv` ends, this instance of the `Logger` class is destroyed and the destructor is invoked. Since the Tracer was up and running, the destructor makes an appearance in the Tracer.
+A> In case you wonder why that is: a destructor (if any) is called when the instance of a class is destroyed (or shortly thereafter). 
+A>
+A> `MyLogger` is localized in the header of `TxtToCsv`, meaning that when `TxtToCsv` ends, this instance of the `Logger` class is destroyed and the destructor is invoked. Since the Tracer was up and running, the destructor makes an appearance in the Tracer.
 
 
 [^apltree]: You can download all members of the APLTree library from the APL Wiki: <http://download.aplwiki.com/>
 
 [^bom]: Details regarding the BOM: <https://en.wikipedia.org/wiki/Byte_order_mark>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

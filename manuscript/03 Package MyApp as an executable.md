@@ -119,13 +119,17 @@ Notes:
 
 * Functions should return a result, even `StartFromCmdLine` and `SetLX`. Always.
 
-  If there is nothing reasonable to return as a result, return `⍬` as a shy result as in `StartFromCmdLine`. Make this a habit. It makes life easier in the long run. One example is that you cannot call a "function" from a dfn that does not return a result. Another one is that you cannot provide it as an operand to the `⍣` (power) operator.
+  If there is nothing reasonable to return as a result, return `⍬` as a shy result as in `StartFromCmdLine`. Make this a habit. It makes life easier in the long run. 
+
+  One example is that you cannot call a "function" from a dfn that does not return a result. Another one is that you cannot provide it as an operand to the `⍣` (power) operator.
   
 * _Always_ make a function monadic rather than niladic even if the function does not require an argument right now. 
 
   It is way easier to change a monadic function that has ignored its argument so far to one that actually requires an argument than to change a niladic function to a monadic one later on, especially when the function is called in many places, and this is something you _will_ run into; it's just a matter of time.
   
-* `GetCommandLineArgs` ignores its right argument. It makes that very clear by using the name "dummy". ("ignored" would be fine as well while "to_be_ignored" would not because that might well be a list of objects to be ignored by the function) When you change this at one stage or another then of course you have to change that name to something meaningful.
+* `GetCommandLineArgs` ignores its right argument. It makes that very clear by using the name "dummy". ("ignored" would be fine as well while "to_be_ignored" would not because that might well be a list of objects to be ignored by the function).
+  
+  When you change this at one stage or another then of course you have to change that name to something meaningful.
   
 * Make sure that a `⎕LX` statement can be executed from anywhere. That requires the path to be fully qualified, therefore `#.MyApp` rather than `MyApp`. Make that a habit too. You won't regret it when later on you want to execute the statement:
 
@@ -135,17 +139,24 @@ Notes:
   
   when you are not in root.
 
-* You may wonder whether `#.MyApp.(StartFromCmdLine GetCommandLineArgs ⍬)` is better than `#.MyApp.StartFromCmdLine #.MyApp.GetCommandLineArgs ⍬` because it is shorter. Good point, but there is a drawback: you cannot <Shift+Enter> on either of the two functions within the shorter expression but you can with the longer one.
+* You may wonder whether `#.MyApp.(StartFromCmdLine GetCommandLineArgs ⍬)` is better than `#.MyApp.StartFromCmdLine #.MyApp.GetCommandLineArgs ⍬` because it is shorter. 
+
+  Good point, but there is a drawback: you cannot <Shift+Enter> on either of the two functions within the shorter expression but you can with the longer one.
 
 * Currently we allow only one file (or folder) to be specified. That's supposed to be the last parameter specified on the command line. We'll improve on this later.
 
 * Note that we set now `⎕IO`, `⎕ML`, `⎕WX`, `⎕PP` and `⎕DIV` in `#` (!) as soon as possible. 
 
-  The reason is that we want to be sure that when we create a namespace with `#.⎕NS ''` those system variables carries the expected values. Alternatively you could make sure that you execute `⎕NS ''` within a namespace that is known to have system variables with the "right" values.
+  The reason is that we want to be sure that when we create a namespace with `#.⎕NS ''` those system variables carries the expected values. 
+
+  Alternatively you could make sure that you execute `⎕NS ''` within a namespace that is known to have system variables with the "right" values.
+
 
 W> # Inheriting system variables.
 W> 
-W> A common source of confusion is that code relies on the system variables having expected values. For example, you can specify your favourite values for those system variables in the Dyalog configuration. Whenever you execute then, say, `#.⎕NS ''` you can expect the resulting namespace to inherit those settings from the hosting namespace, so that's fine.
+W> A common source of confusion is that code relies on the system variables having expected values. For example, you can specify your favourite values for those system variables in the Dyalog configuration. 
+W>
+W> Whenever you execute then, say, `#.⎕NS ''` you can expect the resulting namespace to inherit those settings from the hosting namespace, so that's fine.
 W>
 W> If you send your WS elsewhere then somebeody with different values might load your WS and execute your code. Now `#.⎕NS ''` would create a namespace that carries different values; that's a recipe for disaster.
 
@@ -164,7 +175,9 @@ We're now nearly ready to create the first version of our EXE. Note that in Dyal
 7. Make sure that the "Console application" check box is _not_ ticked.
 8. Click "Save". 
 
-You should see a message: _File Z:\\code\\v03\\MyApp.exe successfully created._ This occasionally (rarely) fails for no obvious reason. If it does fail just try again and you should be fine. If it keeps failing then the by far most common reason is that the EXE is running - you cannot replace an EXE while it is running. 
+You should see a message: _File Z:\\code\\v03\\MyApp.exe successfully created._ This occasionally (rarely) fails for no obvious reason. If it does fail just try again and you should be fine. 
+
+If it keeps failing then the by far most common reason is that the EXE is running - you cannot replace an EXE while it is running. 
 
 I> Although you cannot replace a running exe what you _can_ do is to rename it; that's possible. You can then create a new EXE with the original name.
 
@@ -199,6 +212,18 @@ Z:\code\v03\MyApp.exe texts\en
 Looking in Windows Explorer at `Z:\texts\en.csv`, we see its timestamp just changed. Our EXE works! 
 
 [^folder]: Note that in the Dyalog Cookbook the words "folder" and "directory" are used interchangeably. 
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

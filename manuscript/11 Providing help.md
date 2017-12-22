@@ -23,7 +23,9 @@ In order to use `Markdown2Help` you need to download it from <http://download.ap
 
 ![Download target](Images/DownloadTarget.png)
 
-Within that folder you will find a workspace `Markdown2Help` (from which we are going to copy the module) and a folder "help". This folder contains in turn a sub folder "files" (which contains `Markdown2Help`'s own help system) and the file `ViewHelp.exe`; that is the external viewer you need in case you want to view your help system independently from your application.
+Within that folder you will find a workspace `Markdown2Help` (from which we are going to copy the module) and a folder "help". 
+
+This folder contains in turn a sub folder "files" (which contains `Markdown2Help`'s own help system) and the file `ViewHelp.exe`; that is the external viewer you need in case you want to view your help system independently from your application.
 
 Double-click `ViewHelp.exe` in order to see `Markdown2Help2`'s own help system:
 
@@ -67,7 +69,9 @@ Double-click the DYAPP to get started.
 
 ## Creating a new help system
 
-`Markdown2Help` comes with a function `CreateStub` that will create a new help system for us. All we need to do is finding a good name which is not in use. In our case the obvious candidate is "MyHelp". We also want the help system to be managed by SALT, and for that we need to define a folder where all the help files are going to be saved. For that we call `CreateParms` and then specify that folder by setting the parameter `saltFolder`:
+`Markdown2Help` comes with a function `CreateStub` that will create a new help system for us. All we need to do is finding a good name which is not in use. In our case the obvious candidate is "MyHelp". 
+
+We also want the help system to be managed by SALT, and for that we need to define a folder where all the help files are going to be saved. For that we call `CreateParms` and then specify that folder by setting the parameter `saltFolder`:
 
 ~~~
 parms←#.Markdown2Help.CreateParms ⍬
@@ -118,7 +122,9 @@ Notes:
 * `# Copyright` defines a header of level one. Every help page must have such a header.
 * `(c) Copyright 2017 xyz` is a simple paragraph.
 
-Make some changes, for example add another paragraph `Go to →[Overview]`, and then press <escape>. `Markdown2Help` takes your changes, converts the Markdown to HTML and shows the changed page straight away. This gives you an idea of how easy it actually is to change help pages. Adding, renaming and deleting help pages -- and nodes -- can be achieved via the context menu.
+Make some changes, for example add another paragraph `Go to →[Overview]`, and then press <escape>. `Markdown2Help` takes your changes, converts the Markdown to HTML and shows the changed page straight away. 
+
+This gives you an idea of how easy it actually is to change help pages. Adding, renaming and deleting help pages -- and nodes -- can be achieved via the context menu.
 
 Note also that `→[Overview]` is a link. For the link to work "Overview" must be the name of an existing page. If the title of the page is different from the name, the title is going to be shown as link text in the help page.
 
@@ -127,7 +133,9 @@ Even if you are familiar with Markdown you should read `Markdown2Help`'s own hel
 
 ## Changing title and sequence
 
-Note that the "Copyright" page comes first. That's because by default the pages are ordered alphabetically. You can change this with a right-click on either the "Copyright" or the " Overview" page and then select "Manage ∆TopicProperties". After confirming that this is really what you want to do you will see something like this:
+Note that the "Copyright" page comes first. That's because by default the pages are ordered alphabetically. You can change this with a right-click on either the "Copyright" or the " Overview" page and then select "Manage ∆TopicProperties". 
+
+After confirming that this is really what you want to do you will see something like this:
 
 ~~~
  ∆TopicProperties←{
@@ -194,9 +202,13 @@ As a developer you should have no problem mastering these commands.
 
 "Compiling the help system" means to convert the pieces of information represented by the structure of the help system plus the variables holding Markdown plus the additional rules defined by any `∆TopicProperties` function into a single component file that contains the HTML generated from the Markdown plus some more pieces of information.
 
-It's more than just converting Markdown to HTML. For example, the words of all pages are extracted, words like "and", "then", "it" etc. are removed (because searching for them does not make too much sense) and then the list is, together with the information to which page(s) they belong to, saved in a component. This allows `Markdown2Help` to provide a very fast search function. Actually the list is saved twice, once "as is" and once with all words lowercased: that speeds up any case insensitive search operations.
+It's more than just converting Markdown to HTML. For example, the words of all pages are extracted, words like "and", "then", "it" etc. are removed (because searching for them does not make too much sense) and then the list is, together with the information to which page(s) they belong to, saved in a component. 
+
+This allows `Markdown2Help` to provide a very fast search function. Actually the list is saved twice, once "as is" and once with all words lowercased: that speeds up any case insensitive search operations.
  
-Without specifying a particular folder `Markdown2Help` would create a temporary folder and compile into that folder. It is better to define a permanent location because it means that the help system does not need to compile the Markdown into HTML over and over again whenever it is called. Such a permanent location is also the pre-condition for being able to put the help system on display with the external viewer, something you _must_ do for obvious reasons when your help system is supposed to offer help on how to install your application.
+Without specifying a particular folder `Markdown2Help` would create a temporary folder and compile into that folder. It is better to define a permanent location because it means that the help system does not need to compile the Markdown into HTML over and over again whenever it is called. 
+
+Such a permanent location is also the pre-condition for being able to put the help system on display with the external viewer, something you _must_ do for obvious reasons when your help system is supposed to offer help on how to install your application.
 
 Note that for converting the Markdown to HTML `Markdown2Help` needs the `MarkAPL` class, but once the help system has been compiled this class is not needed any more. Therefore the final version of your application would not need `MarkAPL`, and because `MarkAPL` comprises roughly 3,000 lines of code this is good news.
 
@@ -205,7 +217,11 @@ Note that for converting the Markdown to HTML `Markdown2Help` needs the `MarkAPL
 
 What we actually mean by that is for example editing a variable with a double-click in the Workspace Explorer but also editing it with `)ED` from the session. Our advice: **don't!**
 
-The reason is simple: when you change a help system via the context menu then all necessary steps are carried out for you. An example is when you have a `∆TopicProperties` function in a perticular node and you want to add a new help page to that node. You have to right-click on a page and select the "Inject new help page (stub)" command from the context menu. You will then be prompted for a valid name and finally the new help page is injected after the page you have clicked at. But there is more to it than just that: the page is also added for you to the `∆TopicProperties` function. That's one reason why you are advised to perform all changes via the context menu rather than manipulating the help system directly.
+The reason is simple: when you change a help system via the context menu then all necessary steps are carried out for you. An example is when you have a `∆TopicProperties` function in a perticular node and you want to add a new help page to that node. 
+
+You have to right-click on a page and select the "Inject new help page (stub)" command from the context menu. You will then be prompted for a valid name and finally the new help page is injected after the page you have clicked at. 
+
+But there is more to it than just that: the page is also added for you to the `∆TopicProperties` function. That's one reason why you are advised to perform all changes via the context menu rather than manipulating the help system directly.
 
 Maybe even more important: `Markdown2Help` also executes the necessary steps in order to keep the files and folders in `saltFolder` in sync with the help system _and_ will automaticall re-compile the help system for you.
 
@@ -260,7 +276,9 @@ And a page regarding copyright:
 
 ## How to view the  help system
 
-We want to make sure that we can call the help system from within our application. For that we need a new function, and the obvious name for this function is `ShowHelp`. The function accepts a right argument which might be an empty vector but can be a page name instead. If a page name is provided then of course `Markdown2Help` does not show the first page of the help system but the page specified. It returns an instance of the help system. The function goes into the `MyApp.dyalog` script:
+We want to make sure that we can call the help system from within our application. For that we need a new function, and the obvious name for this function is `ShowHelp`.
+
+The function accepts a right argument which might be an empty vector but can be a page name instead. If a page name is provided then of course `Markdown2Help` does not show the first page of the help system but the page specified. It returns an instance of the help system. The function goes into the `MyApp.dyalog` script:
 
 ~~~
 :Namespace MyApp
@@ -457,6 +475,18 @@ leanpub-end-insert
 
 
 [^ham]: <http://www.helpandmanual.com/>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -125,7 +125,9 @@ A> Also, if you have not one but quite a number of applications to deal with it 
 
 We are going to create a DYAPP file `Make.dyapp` that performs the "Make".
 
-However, if you want to make sure that you can specify explicitly the version of Dyalog that should run this DYAPP rather than relying on what happens to be associated with the file extensions DWS, DYALOG and DYAPP at the time you double-click it then you need a batch file that starts the correct version of Dyalog. Create such a batch file as `Make.bat`. This is the contents:
+However, if you want to make sure that you can specify explicitly the version of Dyalog that should run this DYAPP rather than relying on what happens to be associated with the file extensions DWS, DYALOG and DYAPP at the time you double-click it then you need a batch file that starts the correct version of Dyalog. 
+
+Create such a batch file as `Make.bat`. This is the contents:
 
 ~~~
 "C:\Program Files\Dyalog\Dyalog APL{yourPreferredVersion}\Dyalog.exe" DYAPP="%~dp0Make.dyapp"
@@ -158,6 +160,7 @@ Notes:
   Now when an error occurs it will pause. In addition it will pass the value of `errorlevel` as return code of the batch script.
 
   However, this technique is suitable only for scripts that are supposed to be executed by a WCU [^WCU]; you don't want to have a pause in scripts that are called by other scripts.
+
 
 A> # The current directory
 A> 
@@ -446,6 +449,10 @@ With the two DYAPPs and the BAT file, your development cycle now looks like this
    
 [^WCU]: Worst Case User, also known as Dumbest Assumable User (DAU).
 [^9]: The [MSDN](https://msdn.microsoft.com/en-us/library/windows/desktop/aa381058(v=vs.85).aspx) provides more information on what names are actually recognized.
+
+
+
+
 
 
 *[HTML]: Hyper Text Mark-up language

@@ -7,11 +7,14 @@ Our application here is simple – just count letter frequency in text files.
 
 All the other code has been written to configure the application, package it for shipment, and to control how it behaves when it encounters problems. 
 
-Developing code refines and extends it. We have more developing to do. Some of that developing might break what we already have working. Too bad. No one’s perfect. But we would at least like to know when we’ve broken something – to hear the sound of breaking glass behind us. Then we can fix the error before going any further. 
+Developing code refines and extends it. We have more developing to do. Some of that developing might break what we already have working. Too bad. No one’s perfect. 
+
+But we would at least like to know when we’ve broken something – to hear the sound of breaking glass behind us. Then we can fix the error before going any further. 
 
 In our ideal world we would have a team of testers continually testing and retesting our latest build to see if it still does what it’s supposed to do. The testers would tell us if we broke anything. In the real world we have programs – tests – to do that. 
 
-What should we write tests for? “Anything you think might break,” says Kent Beck[^beck], author of _Extreme Programming Explained_. We’ve already written code to allow for ways in which the file system might misbehave. We should write tests to discover if that code works. We’ll eventually discover conditions we haven’t foreseen and write fixes for them. Then those conditions too join the things we think might break, and get added to the test suite. 
+What should we write tests for? “Anything you think might break,” says Kent Beck[^beck], author of _Extreme Programming Explained_. 
+We’ve already written code to allow for ways in which the file system might misbehave. We should write tests to discover if that code works. We’ll eventually discover conditions we haven’t foreseen and write fixes for them. Then those conditions too join the things we think might break, and get added to the test suite. 
 
 
 ## Why you want to write tests
@@ -19,7 +22,11 @@ What should we write tests for? “Anything you think might break,” says Kent 
 
 ### Notice when you break things
 
-Some functions are more vulnerable than others to being broken under maintenance. Many functions are written to encapsulate complexity, bringing a common order to a range of different arguments. For example, you might write a function that takes as argument any of a string[^string], a vector of strings, a character matrix or a matrix of strings. If you later come to define another case, say, a string with embedded line breaks, it's easy enough inadvertently to change the function's behaviour with the original cases. 
+Some functions are more vulnerable than others to being broken under maintenance. Many functions are written to encapsulate complexity, bringing a common order to a range of different arguments. 
+
+For example, you might write a function that takes as argument any of a string[^string], a vector of strings, a character matrix or a matrix of strings. 
+
+If you later come to define another case, say, a string with embedded line breaks, it's easy enough inadvertently to change the function's behaviour with the original cases. 
 
 If you have tests that check the function's results with the original cases, it's easy to ensure your changes don't change the results unintentionally. 
 
@@ -33,16 +40,24 @@ But they do document with crystal clarity what it is _known_ to do. In a naughty
 
 ### Understand more 
 
-Test-Driven Design (TDD) is a high-discipline practice associated with Extreme Programming. TDD tells you to write the tests _before_ you write the code. Like all such rules, we recommend following TDD thoughtfully. The reward from writing an automated test is not _always_ worth the effort. But it is a very good practice and we recommend it given that the circumstances are right. For example, if you know from the start _exactly_ what your program is supposed to do then TDD is certainly an option. If you start prototyping in order to find out what the user actually wants the program to do TDD is no option at all.
+Test-Driven Design (TDD) is a high-discipline practice associated with Extreme Programming. TDD tells you to write the tests _before_ you write the code. Like all such rules, we recommend following TDD thoughtfully. 
 
-If you are writing the first version of a function, writing the tests first will clarify your understanding of what the code should be doing. It will also encourage you to consider boundary cases or edge conditions: for example, how should the function above handle an empty string? A character scalar? TDD first tests your understanding of your task. If you can't define tests for your new function, perhaps you're not ready to write the function either. 
+The reward from writing an automated test is not _always_ worth the effort. But it is a very good practice and we recommend it given that the circumstances are right. 
+
+For example, if you know from the start _exactly_ what your program is supposed to do then TDD is certainly an option. If you start prototyping in order to find out what the user actually wants the program to do TDD is no option at all.
+
+If you are writing the first version of a function, writing the tests first will clarify your understanding of what the code should be doing. It will also encourage you to consider boundary cases or edge conditions: for example, how should the function above handle an empty string? A character scalar? 
+
+TDD first tests your understanding of your task. If you can't define tests for your new function, perhaps you're not ready to write the function either. 
 
 If you are modifying an existing function, write new tests for the new things it is to do. Run the revised tests and see that the code fails the new tests. If the unchanged code _passes_ any of the new tests... review your understanding of what you're trying to do! 
 
 
 ## Readability
 
-Reading and understanding APL code is more difficult than in other programming language due to the higher abstraction level and the power of APL's primitives. However, as long as you have an example were the function is fed with correct data it's always possible to decipher the code. Things can become very nasty indeed if an application crashes because inappropriate data arrives at your function. However, before you can figure out whether the data is appropriate or not you need to understand the code - a chicken-egg problem.
+Reading and understanding APL code is more difficult than in other programming language due to the higher abstraction level and the power of APL's primitives. However, as long as you have an example were the function is fed with correct data it's always possible to decipher the code. 
+
+Things can become very nasty indeed if an application crashes because inappropriate data arrives at your function. However, before you can figure out whether the data is appropriate or not you need to understand the code - a chicken-egg problem.
 
 That's when test cases can be very useful as well, because they demonstrate which data a function is expected to process. It also emphasizes why it is important to have test cases for all the different types of data (or parameters) a function is supposed to process. In this respect test cases should be exhaustive.
 
@@ -63,18 +78,26 @@ In contrast, this line from `TxtToCsv` reads a value from a namespace external t
     #.ErrorParms.returnCode←EXIT.APPLICATION_CRASHED
 ~~~      
 
-In principle, `TxtToCsv` _could_ be written in purely functional style. References to classes and namespaces `#.HandleError`, `#.APLTreeUtils`, `#.FilesAndDirs`, `EXIT`, and `#.ErrorParms` could all be passed to it as arguments. If those references ever varied -- for example, if there were an alternative namespace `ReturnCodes` sometimes used instead of `EXIT` -- that might be a useful way to write `TxtToCsv`. But as things are, cluttering up the function's _signature_ -- its name and arguments -- with these references harms rather than helps readability. It is an example of the cure being worse than the disease. 
+In principle, `TxtToCsv` _could_ be written in purely functional style. References to classes and namespaces `#.HandleError`, `#.APLTreeUtils`, `#.FilesAndDirs`, `EXIT`, and `#.ErrorParms` could all be passed to it as arguments. 
+
+If those references ever varied -- for example, if there were an alternative namespace `ReturnCodes` sometimes used instead of `EXIT` -- that might be a useful way to write `TxtToCsv`. 
+
+But as things are, cluttering up the function's _signature_ -- its name and arguments -- with these references harms rather than helps readability. It is an example of the cure being worse than the disease. 
 
 You can't write _everything_ in pure functional style but the closer you stick to it, the better your code will be, and the easier to test. Functional style goes hand in hand with good abstractions, and ease of testing. 
 
 
 ## Why you don't want to write tests
 
-There is nothing magical about tests. Tests are just more code. The test code needs maintaining like everything else. If you refactor a portion of your application code, the associated tests need reviewing -- and possibly revising -- as well. In programming, the number of bugs is generally a linear function of code volume. Test code is no exception to this rule. Your tests are both an aid to development and a burden on it. 
+There is nothing magical about tests. Tests are just more code. The test code needs maintaining like everything else. If you refactor a portion of your application code, the associated tests need reviewing -- and possibly revising -- as well.
+
+In programming, the number of bugs is generally a linear function of code volume. Test code is no exception to this rule. Your tests are both an aid to development and a burden on it. 
 
 You want tests for everything you think might break, but no more tests than you need. 
 
-Beck's dictum -- test anything you think might break -- provides useful insight. Some expressions are simple enough not to need testing. If you need the indexes of a vector of flags, you can _see_ that `{⍵/⍳≢⍵}` [^where] will find them. It's as plain as `2+2` making four. You don't need to test that. APL's scalar extension and operators such as _outer product_ allow you to replace nested loops (a common source of error) with expressions which don't need tests. The higher level of abstraction enabled by working with collections allows not only fewer code lines but also fewer tests. 
+Beck's dictum -- test anything you think might break -- provides useful insight. Some expressions are simple enough not to need testing. If you need the indexes of a vector of flags, you can _see_ that `{⍵/⍳≢⍵}` [^where] will find them. It's as plain as `2+2` making four. You don't need to test that. 
+
+APL's scalar extension and operators such as _outer product_ allow you to replace nested loops (a common source of error) with expressions which don't need tests. The higher level of abstraction enabled by working with collections allows not only fewer code lines but also fewer tests. 
 
 Time for a new version of MyApp. Make a copy of `Z:\code\v07` as `Z:\code\v08`.
 
@@ -119,7 +142,9 @@ Run the DYAPP to build the workspace. In the session you might want to execute `
 
 I> Unit tests tell a developer that the code is _doing things right_; functional tests tell a developer that the code is _doing the right things_. 
 
-It's a question of perspective. Unit tests are written from the programmer's point of view. Does the function or method return the correct result for given arguments? Functional tests, on the other hand, are written from the user's point of view. Does the software do what its _user_ needs it to do?
+It's a question of perspective. Unit tests are written from the programmer's point of view. Does the function or method return the correct result for given arguments?
+
+Functional tests, on the other hand, are written from the user's point of view. Does the software do what its _user_ needs it to do?
 
 Both kinds of tests are important. If you are a professional programmer you need a user representative to write functional tests. If you are a domain-expert programmer [^domain] you can write both. 
 
@@ -130,7 +155,9 @@ In this chapter we'll tackle unit tests.
 
 Unit tests should execute _fast_: developers often want to execute them even when still working on a project in order to make sure that they have not broken anything, or to find out what they broke. When executing the test suite takes too long it defeats the purpose.
 
-Sometimes it cannot be avoided that tests take quite a while, for example when testing GUIs. In that case it might be an idea to create a group of tests that comprehend not all but just the most important ones. Those can then be executed while actually working on the code base while the full-blown test suite is only executed every now and then, maybe only before checking in the code.
+Sometimes it cannot be avoided that tests take quite a while, for example when testing GUIs. In that case it might be an idea to create a group of tests that comprehend not all but just the most important ones. 
+
+Those can then be executed while actually working on the code base while the full-blown test suite is only executed every now and then, maybe only before checking in the code.
 
 
 ## Preparing: helpers
@@ -173,7 +200,9 @@ The helpers can be categorized:
 * `FailsIf`, `PassesIf` and `GoToTidyUp` are used for flow control. 
 * Miscellaneous
 
-Some of the helpers (`G`, `L` and `ListHelpers`) are just helpful while others, like all the `Run*` functions and the flow control functions, are essential. We need them to be around before we can execute any test case. The fact that we had to establish them with a function call upfront contradicts this. But there is an escape route: we add a line to the DYAPP:
+Some of the helpers (`G`, `L` and `ListHelpers`) are just helpful while others, like all the `Run*` functions and the flow control functions, are essential. We need them to be around before we can execute any test case. 
+
+The fact that we had to establish them with a function call upfront contradicts this. But there is an escape route: we add a line to the DYAPP:
 
 ~~~
 ...
@@ -203,7 +232,9 @@ Let's look at an example: `FailsIf` takes a Boolean right argument and returns e
 
 That means that the statement `→FailsIf 1` will jump to 0, exiting the function carrying the statement.
 
-Since GoTo statements are rarely used these days because under most circumstances control structures are way better, it is probably worthwhile to mention that `→⍬` -- as well as `→''` -- makes the interpreter carry on with the next line. In other words the function just carries on. That's exactly what we want when the right argument of `FailsIf` is a `0` because in that case the test has not failed.
+Since GoTo statements are rarely used these days because under most circumstances control structures are way better, it is probably worthwhile to mention that `→⍬` -- as well as `→''` -- makes the interpreter carry on with the next line. 
+
+In other words the function just carries on. That's exactly what we want when the right argument of `FailsIf` is a `0` because in that case the test has not failed.
 
 `PassesIf` is exactly the same thing but just with a negated argument: it returns a `0` when the right argument is `0` and an empty vector in case the right argument is `1`.
 
@@ -233,7 +264,9 @@ But why are we using functions for all this anyway? We could do without, couldn'
 
 We have automated the way the helpers are established in `Tests`. Now we are ready to implement the first test case.
 
-Utilities are a good place to start writing tests. Many utility functions are simply names assigned to common expressions. Others encapsulate complexity, making similar transformations of different arguments. We'll start with `map` in `#.Utilities`. We know by now that in general it works although even that needs to be confirmed by a test of course. What we don't know yet is whether it works under all circumstances. We also need to make sure that it complains when it is fed with inappropriate data. 
+Utilities are a good place to start writing tests. Many utility functions are simply names assigned to common expressions. Others encapsulate complexity, making similar transformations of different arguments. 
+
+We'll start with `map` in `#.Utilities`. We know by now that in general it works although even that needs to be confirmed by a test of course. What we don't know yet is whether it works under all circumstances. We also need to make sure that it complains when it is fed with inappropriate data. 
 
 To make writing test cases as easy as possible you can ask `Tester` for providing a test case template.
 
@@ -288,12 +321,21 @@ The template covers all possibilities, and we will discuss all of them. However,
 What we changed:
 
 * We renamed the template from `Test_000` to `Test_001`.
-* We described in line 1 as thoroughly as possible what the test case is doing. The reason is that this line is later the only way to tell this test case from any other. In other words, it is really important to get this right. By the way: if you cannot describe in a single line what the test case is doing it's most likely doing too much.
+
+* We described in line 1 as thoroughly as possible what the test case is doing. The reason is that this line is later the only way to tell this test case from any other. 
+
+  In other words, it is really important to get this right. By the way: if you cannot describe in a single line what the test case is doing it's most likely doing too much.
+
 * We set `⎕TRAP` so that any error 999 will stop the interpreter with a deliberate error; we will soon see why and what for.
+
 * We also localize `⎕TRAP` so that any error 999 has an effect only within the test function. In fact any other error than 999 is passed through with the `N` option in order to allow `⎕TRAP`s further up the stack to take control.
+
 * We initialize the explicit result `R` by assigning the value returned by the niladic function `∆Failed`. That allows us to simply leave the function in case a test fails: the result will then tell.
+
 * We trap the call to `map` which we expect to fail with a length error because we provide a scalar as left argument.
+
 * In case there is no error we call the function `∆FailsIf` and provide a `1` as right argument. That makes `∆FailsIf` return a `0` and therefore leave `Test_001`.
+
 
 You might have noticed that we address, say, `Utilities` with `##.Utilities` rather than `#.Utilities`. Making this a habit is a good idea: currently it does not make a difference, but when you later decide to move everything in `#` into, say, a namespace `#.Container` (you never know!) then `##.` would still work while `#.` wouldn't.
 
@@ -302,12 +344,19 @@ The `:Else` part is not ready yet; the full stop will prevent the test function 
 Notes:
 
 * We also added a function `GetHelpers` to the script. The reason is that the helpers will disappear as soon as we fix the `Test` script. And we are going to fix it whenever we change something or add a new test case. Therefore we need an easy way to get them back: `GetHelpers` to the rescue.
-* The function `Initial` will be executed by the test framework before any test function is executed. This can be used to initialize stuff that all (or many) test cases need. Here we establish the references `A` (for the `APLTreeUtils` module), `F` (for the `FilesAndDirs` module) and `U` (for the `Utilities` module). `Initial` relies on naming conventions; in case there is a function around with that name it will be executed. More later.
+
+* The function `Initial` will be executed by the test framework before any test function is executed. This can be used to initialize stuff that all (or many) test cases need. Here we establish the references `A` (for the `APLTreeUtils` module), `F` (for the `FilesAndDirs` module) and `U` (for the `Utilities` module). 
+
+  `Initial` relies on naming conventions; in case there is a function around with that name it will be executed. More later.
+
 * The function `Cleanup` will be executed by the test framework after all test functions have been executed. This can be used to clean up stuff that's not needed any more. Here we delete the references `A`, `F` and `U`. More later.
+
 
 A> # Ordinary namespaces versus scripted ones 
 A>
-A> There's a difference between an ordinary namespace and a scripted namespace: imagine you've called `#.Tester.EstablishHelpersIn` within an ordinary namespace. Now you change/add/delete test functions; that would have no effect on anything else in that namespace. In other words, the helpers would continue to exist.
+A> There's a difference between an ordinary namespace and a scripted namespace: imagine you've called `#.Tester.EstablishHelpersIn` within an ordinary namespace. 
+A>
+A> Now you change/add/delete test functions; that would have no effect on anything else in that namespace. In other words, the helpers would continue to exist.
 A>
 A> When you change a namespace script on the other hand the namespace is re-created from the script, and that means that our helpers will disappear because they are not a part of the `Tests` script.
 
@@ -344,7 +393,9 @@ A>
 A> 1. In the simple case there are one or more digits after the `_`; nothing but digits. Therefore these all qualify as test cases: `Test_1`, `Test_01`, `Test_001` and so on. `Test_01A` however does not.
 A> 1. In case you have a large number of test cases you most probably want to group them in one way or another. You can add a group name after the first `_` and add a second `_` followed by one or more digits. Therefore `Test_map_1` is recognized as a test case, and so is `Test_Foo_9999`. `Test_Foo_Goo_1` however is not.
 
-What if we want to look into a broken or failing test case? Of course in our current scenario -- which is extremely simple -- we could just trace into `Test_001` and find out what's going on, but if we take advantage of the many features the test framework is actually offering then we cannot do this (soon it will become clear why). However, there is a way to do this no matter whether the scenario is simple, reasonably complex or extremely complex: we call `RunDebug`:
+What if we want to look into a broken or failing test case? Of course in our current scenario -- which is extremely simple -- we could just trace into `Test_001` and find out what's going on, but if we take advantage of the many features the test framework is actually offering then we cannot do this (soon it will become clear why). 
+
+However, there is a way to do this no matter whether the scenario is simple, reasonably complex or extremely complex: we call `RunDebug`:
 
 ~~~
 RunDebug 0
@@ -369,11 +420,17 @@ SYNTAX ERROR
 #.Tests.RunDebug[3]
 ~~~
 
-It stopped in line 6. Obviously the call to `FailsIf` has something to do with this, and so has the `⎕TRAP` setting, because apparently that's where the "Deliberate error" comes from. Indeed this is the case: all three flow control functions, `FailIf`, `PassesIf` and `GoToTidyUp` check whether they are running in debug mode and if that is the case then rather returning a result that indicates a failing test case they `⎕SIGNAL 999` which is then caught by the `⎕TRAP` which in turn first prints `⍝ Deliberate error` to the session and then hands over control to the user. You can now investigate variables or start the Tracer etc. in order to investigate why the test case failed.
+It stopped in line 6. Obviously the call to `FailsIf` has something to do with this, and so has the `⎕TRAP` setting, because apparently that's where the "Deliberate error" comes from. 
+
+Indeed this is the case: all three flow control functions, `FailIf`, `PassesIf` and `GoToTidyUp` check whether they are running in debug mode and if that is the case then rather returning a result that indicates a failing test case they `⎕SIGNAL 999` which is then caught by the `⎕TRAP` which in turn first prints `⍝ Deliberate error` to the session and then hands over control to the user. 
+
+You can now investigate variables or start the Tracer etc. in order to investigate why the test case failed.
 
 The difference between `Run` and `RunDebug` is the setting of the first of the two flags provided as right argument to the test function: `stopFlag`. This is `0` when `Run` executes the test cases, but it is `1` when `RunDebug` is in charge. The three flow control functions `FailsIf`, `PassesIf` and `GoToTidyUp` all honour `stopFlag` - that's how it works.
 
-Now sometimes you don't want the test function to go to the point where the error actually appears, for example in case the test function does a lot of precautioning, and you want to check this upfront because there might be something wrong with it, causing the failure. Note that so far we passed a `0` as right argument to `RunDebug`. If we pass a `1` instead then the test framework would stop just before it would execute the test case:
+Now sometimes you don't want the test function to go to the point where the error actually appears, for example in case the test function does a lot of precautioning, and you want to check this upfront because there might be something wrong with it, causing the failure. 
+
+Note that so far we passed a `0` as right argument to `RunDebug`. If we pass a `1` instead then the test framework would stop just before it would execute the test case:
 
 ~~~
       RunDebug 1
@@ -436,7 +493,9 @@ A> You have always used `⎕DM`, and it was perfectly fine, right? No need to sw
 
 This checks whether the error message is what we expect. Trace through the test function and watch what it is doing. After having left the test function you may click the green triangle in the Tracer ("Continue execution of all threads").
 
-Now what if you've executed, say, not one but 300 test cases with `Run`, and just one failed, say number 289? You expected them all to succeed but since one did not you need to check on the failing one. Calling `Run` as well as `RunDebug` would always execute _all_ test cases found. The function `RunThese` allows you to run just the specified test functions:
+Now what if you've executed, say, not one but 300 test cases with `Run`, and just one failed, say number 289? You expected them all to succeed but since one did not you need to check on the failing one. 
+
+Calling `Run` as well as `RunDebug` would always execute _all_ test cases found. The function `RunThese` allows you to run just the specified test functions:
 
 ~~~
       RunThese 1
@@ -461,9 +520,13 @@ Looking for a function "Cleanup"...
 
 This would run just test case number 1. If you specify it as `¯1` it would stop just before actually executing the test case. Same as before since we have just one test function yet but take our word for it, it would execute just `Test_001` no matter how many other test cases there are. 
 
-We have discussed the functions `Run`, `RunDebug` and `RunThese`. That leaves `RunBatchTests` and `RunBatchTestsInDebugMode`; what are they for? Imagine a test that would either require an enormous amount of effort to implement or alternatively you just build something up and then ask the human in front of the monitor: "Does this look alright?". That's certainly _not_ a batch test case because it needs a human sitting in front of the monitor. If you know upfront that there won't be a human paying attention then you can prevent non-batch test cases from being executed by calling either `RunBatchTests` or `RunBatchTestsInDebugMode`.
+We have discussed the functions `Run`, `RunDebug` and `RunThese`. That leaves `RunBatchTests` and `RunBatchTestsInDebugMode`; what are they for? Imagine a test that would either require an enormous amount of effort to implement or alternatively you just build something up and then ask the human in front of the monitor: "Does this look alright?". 
 
-But how does this work? We already learned that `stopFlag`, the first of the two flags passed to any test case as the right argument, is ruling whether any errors are trapped or not. The second flag is called `batchFlag`, and that gives you an idea what it's good for. If you have a test which interacts with a user (=cannot run without a human) then your test case would typically look like this:
+That's certainly _not_ a batch test case because it needs a human sitting in front of the monitor. If you know upfront that there won't be a human paying attention then you can prevent non-batch test cases from being executed by calling either `RunBatchTests` or `RunBatchTestsInDebugMode`.
+
+But how does this work? We already learned that `stopFlag`, the first of the two flags passed to any test case as the right argument, is ruling whether any errors are trapped or not. 
+
+The second flag is called `batchFlag`, and that gives you an idea what it's good for. If you have a test which interacts with a user (=cannot run without a human) then your test case would typically look like this:
 
 ~~~
  R←Test_001(stopFlag batchFlag);⎕TRAP
@@ -652,9 +715,11 @@ What we do in `Initial` apart from creating the references:
 * We copy all those files over to our temporary test folder.
 * Finally we check the return code of the copy operation; `R` gets 1 (indicating success) only in case they were successful.
 
+
 A> # Machine-dependent initialisation
 A> 
 A> What if you need to initialise something (say a database connection) but it is somehow different depending on what machine the tests are executed on (IP address, user-id, password...)?
+A>
 A> The test framework tries to find two different INI files in the current directory:
 A> First it looks for `testcase.ini`. It then tries to find `testcase_{computername}.ini`. "computername" is what you get when you execute `⊣ 2 ⎕nq # 'GetEnvironment' 'Computername'`.
 A>
@@ -791,7 +856,9 @@ leanpub-start-insert
 :EndNamespace
 ~~~
 
-This function now checks whether a global `∆Path` exists. If that's the case then the directory it is pointing to is removed and the global variable deleted. The `Tester` framework checks whether there is a function `Cleanup`. If that's the case the function is executed after the last test case has been executed. The function must be either monadic or niladic; in case it is a monadic function the right argument will be `⍬`. It must either return a shy result (ignored) or no result at all.
+This function now checks whether a global `∆Path` exists. If that's the case then the directory it is pointing to is removed and the global variable deleted. The `Tester` framework checks whether there is a function `Cleanup`. 
+
+If that's the case the function is executed after the last test case has been executed. The function must be either monadic or niladic; in case it is a monadic function the right argument will be `⍬`. It must either return a shy result (ignored) or no result at all.
 
 
 ### Markers
@@ -821,7 +888,9 @@ TxtToCsv
 
 ## TestCasesExecutedAt
 
-Whenever the test cases were executed `Tester` notifies the time on a global variable `TestCasesExecutedAt` in the hosting namespace. This can be used in order to find out whether part of the code has been changed since the last time the cases were executed. However, in order to do this you have to make sure that the variable is either saved somewhere or added to the script `Tests`. For example, it could be handled by a cover function that calls any of `Tester`s `Run*` functions and then handled that variable.
+Whenever the test cases were executed `Tester` notifies the time on a global variable `TestCasesExecutedAt` in the hosting namespace. This can be used in order to find out whether part of the code has been changed since the last time the cases were executed.
+
+However, in order to do this you have to make sure that the variable is either saved somewhere or added to the script `Tests`. For example, it could be handled by a cover function that calls any of `Tester`s `Run*` functions and then handled that variable.
 
 
 ## Conclusion
@@ -831,7 +900,9 @@ We have now a test suite available that allows us at any stage to call it in ord
 
 ## The sequence of tests
 
-Please note that there is always the possibility of test cases being dependent on another, even if you try to avoid that. That might be by mistake or due to an unnoticed side effect. That doesn't mean that you shouldn't aim for making all test cases completely independent from one another. Watch out: a future version of `Tester` might come with an option that shuffles the test cases before executing them.
+Please note that there is always the possibility of test cases being dependent on another, even if you try to avoid that. That might be by mistake or due to an unnoticed side effect.
+
+That doesn't mean that you shouldn't aim for making all test cases completely independent from one another. Watch out: a future version of `Tester` might come with an option that shuffles the test cases before executing them.
 
 
 ## Testing in different versions of Windows 
@@ -866,7 +937,9 @@ Contra
 
 That clearly means that we should incorporate the tests those modules come with into our own test suite, although we are sure that not too many people/companies using modules from the APLTree library are actually doing this. 
 
-Anyway, it's not difficult to do at all: every module has a workspace saved on GitHub that comes with all that's needed in order to carry out the test cases. All it requires it starting Dyalog (_your_ version of Dyalog that is), load that workspace, execute `#.TestCases.Run` (because all modules of the APLTree library host their test cases in an ordinary (non-scripted) namespace, catch the result and return it with `⎕OFF` to the calling environment. As long as that is `0` that's all what's required.
+Anyway, it's not difficult to do at all: every module has a workspace saved on GitHub that comes with all that's needed in order to carry out the test cases. 
+
+All it requires it starting Dyalog (_your_ version of Dyalog that is), load that workspace, execute `#.TestCases.Run` (because all modules of the APLTree library host their test cases in an ordinary (non-scripted) namespace, catch the result and return it with `⎕OFF` to the calling environment. As long as that is `0` that's all what's required.
 
 If it's not `0` you start your version of Dyalog, load the workspace of the module with one or more failing test cases and run `#.TestCases.RunDebug 0` in order to investigate what went wrong. 
 
@@ -880,6 +953,18 @@ If it's not `0` you start your version of Dyalog, load the workspace of the modu
 [^occam]: _Non sunt multiplicanda entia sine necessitate._
 
 [^where]: With version 16.0 the same can be achieved with the new primitive `⍸`.
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

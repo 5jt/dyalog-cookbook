@@ -127,7 +127,9 @@ What this handler does depends on what extension the file has:
 
 I> When you start Dyalog with admin rights then it's not possible to drop files onto the status bar. That's because Microsoft considers drag'n drop too dangerous for admins. Funny; one would think it's a better strategyy to leave the dangerous stuff to the admins.
 
-How you configure your development environment is of course very much a matter of personal preferences. However, you might consider to load a couple of scripts into `⎕SE` from within `Setup.dyalog`; the obvious candidates for this are `APLTreeUtils`, `FilesAndDirs`, `OS`, `WinSys`, `WinRegSimple` and `Events`. That would allow you to write user commands that can reference them with, say, `⎕SE.APLTreeUtils.Split`.
+How you configure your development environment is of course very much a matter of personal preferences. 
+
+However, you might consider to load a couple of scripts into `⎕SE` from within `Setup.dyalog`; the obvious candidates for this are `APLTreeUtils`, `FilesAndDirs`, `OS`, `WinSys`, `WinRegSimple` and `Events`. That would allow you to write user commands that can reference them with, say, `⎕SE.APLTreeUtils.Split`.
 
 
 ## Define your function keys
@@ -167,7 +169,9 @@ I> If you don't know what `LL` and `ER` actually are read the page "Keyboard sho
 
 If you always run just one instance of the interpreter you can safely ignore this. 
 
-If on the other hand you run occasionally (let alone often) more than one instance of Dyalog in parallel then you are familiar with how it feels when all of a sudden an unexpected dialog box pops up, be it an aplcore or a message box asking "Are you sure?" when you have no idea what you are expected to be sure about, or which instance has just crashed. There is a way to get around this. With version 14.0 windows captions became configurable. This is a screenshot from the online help:
+If on the other hand you run occasionally (let alone often) more than one instance of Dyalog in parallel then you are familiar with how it feels when all of a sudden an unexpected dialog box pops up, be it an aplcore or a message box asking "Are you sure?" when you have no idea what you are expected to be sure about, or which instance has just crashed. 
+
+There is a way to get around this. With version 14.0 windows captions became configurable. This is a screenshot from the online help:
 
 ![Dyalog's help on window captions](Images\HelpOnWindowCaptions.png)
 
@@ -195,7 +199,21 @@ The other pieces of information are less important. For details refer to the pag
 
 ![A typical dialog box](Images/WindowsCaptionsDialogBox.png)
 
-However, this cannot be configured in any way, you need to add subkeys and values to the Windows Registry. We do _not_ suggest that you add or modify those caption with the Registry Editor. It is a better idea to write them by program, even if you deal with just one version of Dyalog at a time because soon there will be a new version coming along requiring you to carry out the same actions again. See the chapter "[The Windows Registry](./15 The Windows Registry)" for how to solve this; that chapters uses this scenario as an example.
+However, this cannot be configured in any way, you need to add subkeys and values to the Windows Registry. We do _not_ suggest that you add or modify those caption with the Registry Editor. 
+
+It is a better idea to write them by program, even if you deal with just one version of Dyalog at a time because soon there will be a new version coming along requiring you to carry out the same actions again. See the chapter "[The Windows Registry](./15 The Windows Registry)" for how to solve this; that chapters uses this scenario as an example.
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

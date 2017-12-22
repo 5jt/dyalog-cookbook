@@ -7,7 +7,9 @@
 
 ## What is a Windows Service
 
-While the Windows Task Manager just starts any ordinary application, any application that runs as a Windows Service must be specifically designed in order to meet a number of requirements. In particular services are expected to communicate by exchanging messages with the Windows Service Control Manager (SCM). 
+While the Windows Task Manager just starts any ordinary application, any application that runs as a Windows Service must be specifically designed in order to meet a number of requirements. 
+
+In particular services are expected to communicate by exchanging messages with the Windows Service Control Manager (SCM). 
 
 Commands can be issued by the `SC.exe` (Service Controller) application or interactively via the "Services" application. This allows the user to not only start but also to pause, continue (also called resume) and stop a Windows Service. 
 
@@ -550,6 +552,7 @@ Notes:
 * We set `⎕LX` by calling `SetLXForService`.
 * We load the class `MakeService` and run `MakeService.Run`.
 
+
 That obviously requires the class `MakeService` to be introduced:
 
 ~~~
@@ -592,6 +595,7 @@ Notes:
 * (Re-)creates a folder with the name `DESTINATION`.
 * Copies over the INI file as well as the two BAT files.
 * Finally it sets `⎕WSID` and saves the workspace without the status indicator and without `MakeService` by deleting itself.
+
 
 A> # Self-deleting code
 A>
@@ -861,6 +865,18 @@ Looking for a function "Cleanup"...
 ~~~
 
 [^aplcore]: More information regarding aplcores is available in "[Appendix 3 — aplcores and WS integrity](52 Appendix 3 — aplcores and WS integrity.html).
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

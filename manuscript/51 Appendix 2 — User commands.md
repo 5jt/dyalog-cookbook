@@ -36,9 +36,13 @@ For these reasons you are advised to use a different folder.
 
 ## Use your own dedicated folder
 
-Let's assume that you have a folder `C:\MyUserCommands` that's supposed to hold all non-Dyalog user commands. Via the "Options > Configure" command you can select the "User Commands" tab and add that folder to the search path; don't forget to press the "Add" button once you have browsed to the right directory.
+Let's assume that you have a folder `C:\MyUserCommands` that's supposed to hold all non-Dyalog user commands. 
 
-If you use several versions of Dyalog in parallel then you are advised _not_ to add that folder via the configuration dialog box in each of those versions. Instead we recommend to write an APL function that adds the folder to all versions of Dyalog currently installed. See the chapter "[The Windows Registry](./15 The Windows Registry)" where this scenario is used as an example.
+Via the "Options > Configure" command you can select the "User Commands" tab and add that folder to the search path; don't forget to press the "Add" button once you have browsed to the right directory.
+
+If you use several versions of Dyalog in parallel then you are advised _not_ to add that folder via the configuration dialog box in each of those versions.
+
+Instead we recommend to write an APL function that adds the folder to all versions of Dyalog currently installed. See the chapter "[The Windows Registry](./15 The Windows Registry)" where this scenario is used as an example.
 
 
 ## Name clashes
@@ -69,18 +73,26 @@ Group names are not only useful in order to avoid name clashes, they also allow 
 
 ## Updates
 
-Note that once you've copied a new user command into that folder it is available straight away, even in instances of Dyalog that have already been running. However, auto-complete does not know about the new user command until it was called for the first time in an already running instance. You can at any time execute `]ureset` to make sure that even auto-complete knows about it.
+Note that once you've copied a new user command into that folder it is available straight away, even in instances of Dyalog that have already been running.
+
+However, auto-complete does not know about the new user command until it was called for the first time in an already running instance. You can at any time execute `]ureset` to make sure that even auto-complete knows about it.
 
 In case you change an existing user command, for example by modifying the parsing rules, you must execute `]ureset` in order to get access to the changes from any instance of Dyalog that has already been running by then.
 
 
 ## Writing your own user commands
 
-It's not difficult to write your own user commands, and there is an example script available that makes that easy and straightforward. However, if your user command is not too simple consider developing it as an independent application, living in a particular namespace (let's assume `Foo`) in a particular workspace (let's assume `Goo`). Then write a user command that creates a namespace local to the function in the user command script, copy the namespace `Foo` from the workspace `Goo` into that local namespace and finally run the required function. Make sure the workspace is a sibling of the user command script.
+It's not difficult to write your own user commands, and there is an example script available that makes that easy and straightforward. However, if your user command is not too simple consider developing it as an independent application, living in a particular namespace (let's assume `Foo`) in a particular workspace (let's assume `Goo`).
 
-This approach has the advantage that you can develop and test your user commands independently from the user command framework. This is particularly important because changing a user command script from the Tracer is a bit dangerous; you will see more aplcores than under normal circumstances. On the other hand it is difficult to execute the user command without the user command framework calling it: you need those arguments and sometimes even variables that live in the parent (`##`).
+Then write a user command that creates a namespace local to the function in the user command script, copy the namespace `Foo` from the workspace `Goo` into that local namespace and finally run the required function. Make sure the workspace is a sibling of the user command script.
+
+This approach has the advantage that you can develop and test your user commands independently from the user command framework.
+
+This is particularly important because changing a user command script from the Tracer is a bit dangerous; you will see more aplcores than under normal circumstances. On the other hand it is difficult to execute the user command without the user command framework calling it: you need those arguments and sometimes even variables that live in the parent (`##`).
   
-You are therefore advised to make sure that no function in `Foo` relies on anything provided by the user command framework. Instead the calling function (`Run` in your user command) must pass such values as arguments to any functions in `Foo` called by `Run`. That makes it easy to test all the public functions in `Foo`. Of course you should have proper test cases for them.
+You are therefore advised to make sure that no function in `Foo` relies on anything provided by the user command framework. Instead the calling function (`Run` in your user command) must pass such values as arguments to any functions in `Foo` called by `Run`. 
+
+That makes it easy to test all the public functions in `Foo`. Of course you should have proper test cases for them.
 
 The following code is a simple example that assumes the following conditions:
 
@@ -134,6 +146,18 @@ The workspace `Goo` can be tested independently from the user command framework,
 
 [^wiki]:Dyalog user commands from the APL wiki  
 <http://aplwiki.com//CategoryDyalogUserCommands>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
