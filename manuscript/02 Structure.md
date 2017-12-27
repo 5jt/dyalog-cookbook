@@ -67,12 +67,13 @@ We'll keep the program in manageable pieces – 'modules' – and keep those pie
 
 For this there are many _source-control management_ (SCM) systems and repositories available. Subversion, Git and Mercurial are presently popular. These SCMs support multiple programmers working on the same program, and have sophisticated features to help resolve conflicts between them. 
 
-A> # Source code management with acre
-A> Some members of the APL community prefer to use a source code management system that is tailored to solve the needs of an APL programmer, or a team of APL programmers: acre. 
+A> # Source code management with acre Desktop
+A> Some members of the APL community prefer to use a source code management system that is tailored to solve the needs of an APL programmer, or a team of APL programmers: acre Desktop. 
 A>
-A> APL code is very compact, teams are typically small, and work on APL applications tends to be very oriented towards functions rather than modules. 
+A> APL code is very compact, teams are typically small, and work on APL applications tends to be oriented towards functions rather than modules likes classes. 
 A>
-A> Other aspects of working in APL impact the importance of features of the SCM that you use. acre is an excellent alternative to Git etc., and it is available as Open Source; we will discuss acre in its own appendix. ⍝TODO⍝
+A> acre Desktop can be used as a source code management system in its own rights together with acre Server, but it can use other code management systems like Git or SubVersion as well.
+A> Both acre Desktop and acre Server are available as Open Source. We will discuss acre in its own appendix.
 
 Whichever SCM you use (we used GitHub for writing this book and the code in it) your source code will comprise class and namespace scripts (DYALOGs) for the application. The help system will be an ordinary --- non-scripted --- namespace. We us a _build script_ (DYAPP) to assemble the application as well as the development environment.
 
@@ -82,7 +83,7 @@ You'll keep your local working copy in whatever folder you please. We'll refer t
 
 We suppose you already have a workspace in which your program runs. We don't have your code to hand so we'll use ours. We'll use a very small and simple program, so we can focus on packaging the code as an application, not on writing the application itself.
 
-So we'll begin with the LetterCount workspace. It's trivially simple (we'll extend a bit what it does as we go) but for now it will stand in for your code. You can download it from the book's web site: <https://cookbook.dyalog.com>.
+So we'll begin with the LetterCount workspace. It's trivially simple but for now it will stand in for your code. You can download it from the book's web site: <https://cookbook.dyalog.com>.
 
 A> # On encryption
 A> 
@@ -101,7 +102,9 @@ In the real world, your users will have and use multiple versions. If you charge
 
 What does it mean to maintain a version? At the very minimum, you keep the source code for it, so you could recreate its EXE from scratch, exactly as it was distributed. There will be things you want to improve, and perhaps bugs you must fix. Those will all go into the next version, of course. But some you may need to put into the released version and re-issue it to current users as a patch. 
 
-So in _The Dyalog Cookbook_ we shall develop in successive versions. Our 'versions' are not ready to ship, so are probably better considered as milestones on the way to version 1.0. You could think of them as versions 0.1, 0.2 and so on. But we'll just refer to them as Versions 1, 2, and so on.
+So in _The Dyalog Cookbook_ we shall develop in successive versions until we manage to create an installer that is capable of installing the application on any machine running Windows 10. What's needed to achieve that is discussed in the chapters 1-16. Later chapters are independent.
+
+Our "versions" are not ready to ship, so are probably better considered as milestones on the way to version 1.0. You could think of them as versions 0.1, 0.2 and so on. But we'll just refer to them as Versions 1, 2, and so on.
 
 Our first version won't even be ready to export as an EXE. It will just create a workspace MyApp.dws from scripts: a DYAPP and some DYALOGs. We'll call it Version 1. 
 
@@ -735,65 +738,11 @@ We have reached our goal:
 [^csv]: With version 16.0 Dyalog has introduced a system function `⎕CSV` for both importing from and exporting to CSV files.
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 *[HTML]: Hyper Text Mark-up language
 *[DYALOG]: File with the extension 'dyalog' holding APL code
 *[TXT]: File with the extension 'txt' containing text
 *[INI]: File with the extension 'ini' containing configuration data
-*[DYAPP]: File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to compile an APL application
+*[DYAPP]: File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application
 *[EXE]: Executable file with the extension 'exe'
 *[BAT]: Executeabe file that contains batch commands
 *[CSS]: File that contains layout definitions (Cascading Style Sheet)
