@@ -230,3 +230,4 @@ A> This function does not make much sense but the point is that the right argume
 *[CHM]: Executable file with the extension 'chm' that contains Windows Help(Compiled Help) 
 *[DWS]: Dyalog workspace
 *[WS]: Short for Workspaces
+*[PF-key]: Programmable function key

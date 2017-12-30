@@ -199,9 +199,17 @@ The other pieces of information are less important. For details refer to the pag
 
 ![A typical dialog box](Images/WindowsCaptionsDialogBox.png)
 
-However, this cannot be configured in any way, you need to add subkeys and values to the Windows Registry. We do _not_ suggest that you add or modify those caption with the Registry Editor. 
+You can ask for the current settings with the user command `]caption`:
 
-It is a better idea to write them by program, even if you deal with just one version of Dyalog at a time because soon there will be a new version coming along requiring you to carry out the same actions again. See the chapter "[The Windows Registry](./15 The Windows Registry)" for how to solve this; that chapters uses this scenario as an example.
+~~~
+      ]caption
+~~~
+
+You can also change the settings with this user command. For details enter:
+
+~~~
+      ]??Caption
+~~~
 
 
 *[HTML]: Hyper Text Mark-up language
@@ -216,3 +224,4 @@ It is a better idea to write them by program, even if you deal with just one ver
 *[CHM]: Executable file with the extension 'chm' that contains Windows Help(Compiled Help) 
 *[DWS]: Dyalog workspace
 *[WS]: Short for Workspaces
+*[PF-key]: Programmable function key

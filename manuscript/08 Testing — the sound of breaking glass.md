@@ -967,3 +967,4 @@ If it's not `0` you start your version of Dyalog, load the workspace of the modu
 *[CHM]: Executable file with the extension 'chm' that contains Windows Help(Compiled Help) 
 *[DWS]: Dyalog workspace
 *[WS]: Short for Workspaces
+*[PF-key]: Programmable function key

@@ -489,3 +489,4 @@ leanpub-end-insert
 *[CHM]: Executable file with the extension 'chm' that contains Windows Help(Compiled Help) 
 *[DWS]: Dyalog workspace
 *[WS]: Short for Workspaces
+*[PF-key]: Programmable function key
