@@ -231,8 +231,7 @@ The upper part (until the blank line) is identical with `MyApp.dyapp` except tha
 
 ### Assertions
 
-It is common practice in any programming language to inject checks into the code to make sure that specific conditions are fulfilled because if not the program cannot succeed anyway. If a condition
-is not fulfilled an error is thrown.
+It is common practice in any programming language to inject checks into the code to make sure that specific conditions are fulfilled because if not the program cannot succeed anyway. If a condition is not fulfilled an error is thrown.
 
 The function `Assert` does not exist yet in `Utilities`:
 
@@ -245,14 +244,28 @@ The function `Assert` does not exist yet in `Utilities`:
           (new,nw)[(old,nw)⍳⍵]
       }      
 leanpub-start-insert      
-      Assert←{⍺←'' ⋄ ⊃⍵:r←1 ⋄ ⍺ ⎕SIGNAL 11}
+       Assert←{⍺←'' ⋄ (success errorNo)←2↑⍵,11 ⋄ (,1)≡,success:r←1 ⋄ ⍺ ⎕SIGNAL errorNo}
 leanpub-end-insert      
 :EndNamespace
 ~~~
 
-Note that `Assert` signals an error in case `⍵` is not `1` but returns `1` as a shy (!) result otherwise. Via the optional left argument you can specify a message.
+Notes:
 
-Because it's a one-liner you cannot trace into it, and that's a good thing.
+* The right argument of `Assert` must be one of:
+
+  * A scalar or a vector of length 1. This is the `success` flag.
+
+  * A vector of length two. 
+
+   The second item is supposed to be an `errorNo`. It defaults to `11` (DOMAIN ERROR).
+
+* The optional left argument must be, when specified, a character vector. This is used as message in case `⎕SIGNAL` is issued. This defaults to "DOMAIN ERROR".
+
+* In case the right argument is any flavour of `1` (scalar, vector, matrix, ...) `Assert` returns a shy (!) result: `1`.
+
+* In all other cases `Assert` will signal `errorNo` with the message specified in the left argument, if any.
+
+Because it's a one-liner you cannot trace into `Assert`, and that's a good thing.
 
 This is an easy way to make the calling function stop when something goes wrong. There is no point in doing anything but stopping the code from continuing since it is called by a programmer, and when it fails she wants to investigate straight away. 
 
