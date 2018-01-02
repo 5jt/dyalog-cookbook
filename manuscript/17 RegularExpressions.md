@@ -266,8 +266,13 @@ He said "
 That's because the engine would perform the following steps:
 
 1. Investigate until we find a `"`.
-1. Investigate any character after the first double quote. That is the second double quote so _that is consumed_ because it required _at least one_. Since all other characters are a match as well the `.+` consumes all characters to the end of the input string. 
-1. It then goes back the current position --- because it is lazy! --- which is because the second `"` was already consumed the space after (!) the second `"` and before the `a` of "and". From there it carries on until it finds a `"`. That is the first `"` after the "and". All that is then replaced by the `` character.
+
+1. Investigate the character right after the first double quote. That is the second double quote so _that is consumed_ because the regular expression required _at least one_. Since all other characters are a match as well the `.+` consumes all characters to the very end of the input string. 
+
+1. Because it is lazy it then goes back the current position which by then is the space to the _right of the second double-quote_!
+
+   From there it carries on until it finds a `"`. That is the _first_ `"` _after_ the word <<and>>. All that is then replaced by the `` character.
+
 1. The engine then carries on but because there is only a single `"` left there is no other match.
 
 If we want to ignore any `""` pairs then we need to use a look-ahead, something we will discuss soon.
@@ -454,7 +459,6 @@ Note that there are only a few meta characters inside character classes:
 | Backslash         | `\`    | Escape next character      |
 | Caret             | `^`    | Negate the character class but only after the opening `[` |
 | Minus             | `-`    | From-to if there is something to both the left & right. |
-| Pipe              | `|`    | Logical OR if there is something to both the left & right. |
 
 We already worked out that the engine is smart enough to take a minus literally when it makes an appearance somewhere where it cannot mean from-to: the beginning and the end of a character class. 
 
@@ -837,8 +841,6 @@ Note that in order to specify `('DotAll' 1)` it is necessary to set `('Mode' 'M'
 
 ### Alternations
 
-We've discussed the logical OR already in the context of character classes, but you can use them outside of character classes as well.
-
 Let's assum we want to match either the word "cat" or the word "dog":
 
 ~~~
@@ -877,6 +879,8 @@ Or even shorter:
       '\b(cat|catfish)\b' ⎕R ''⊣ 'donkey, bird, cat, rat, dog, catfish'
 donkey, bird, , rat, dog, 
 ~~~
+
+Note that the parentheses are used here for grouping.
 
 
 ### Optional items
@@ -981,6 +985,8 @@ If you want a stricter correspondence between input and output you need to proce
 │ └─┘ └──────────────────┘ └─┘ │
 └∊─────────────────────────────┘
 ~~~
+
+This is about version 16.0. I dare to say that this is going to change corrected) in a future version of Dyalog.
 
 
 ## Misc
