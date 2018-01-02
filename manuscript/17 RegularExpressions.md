@@ -23,11 +23,11 @@ Having said this it is amazing how many APLers do not realize how often they act
 
 ## What you can expect
 
-In this chapter we take the approach to explain regular expressions mostly by example. The examples start simple and grow complex. Along the line we introduce more features of regular expressions in general and Dyalog's implementation in particular. 
+In this chapter we take the approach to explain regular expressions mostly by example. The examples start simple and grow complex. Along the line we introduce more features of regular expressions in general and Dyalog's implementation in particular. Note that even mastering just the very basic features of regular expressions might already improve your APL applications.
 
-Your best strategy is to read the following stuff from start to end. It will introduce you to the basic concepts and provide you with the necessary knowledge to become a keen amateur. 
+Your best strategy is to read the following stuff from start to end, though not necessarily in one go. It will introduce you to the basic concepts and provide you with the necessary knowledge to become a keen amateur. 
 
-From there constant usage of regular expressions --- together with plenty of reasearch on the Internet -- will convert you into an expert, though it will take a bit of time and effort. Be assured that this time will be well invested.
+From there constant usage of regular expressions --- together with plenty of research on the Internet -- will convert you into an expert, though it will take a bit of time and effort. Be assured that this time will be well invested.
 
 This chapter is by no means a comprehensive introduction to regular expressions, but it should get you to a point where you can take advantage of examples, documents and books that are not addressing Dyalog's implementation.
 
@@ -80,7 +80,7 @@ In the first expression the result is empty because the string `notfound` was no
 cat sat on the medallion
 ~~~
 
-That was easy, wasn't it! Obviously regular expressions are nothing to be afraid off. 
+That was easy, wasn't it! Obviously regular expressions are nothing to be afraid of. 
 
 ### What's between the double quotes
 
@@ -116,7 +116,7 @@ So we try:
 
 ~~~
 
-Opps - no hit. If your are surprised keep reading, otherwise skip over the list.
+Opps - no hit. If you are surprised keep reading, otherwise skip over the list.
 
 In order to understand this we have to know _exactly_ what the regular expression engine did:
 
@@ -219,7 +219,12 @@ We can achieve that by specifying the "Greedy" option with a zero (default is on
 He said  and !
 ~~~
 
-A> # The Options operator
+A> # Specifying options
+A>
+A>
+A> Various options are available to control aspects of Search and Replace; these are selected using the Variant operator `⍠`.
+A>
+A> Note that if you use Classic Dyalog, or you just want to make sure that your code would run in a classic interpreter, `⎕OPT` is a synonym for `⍠`.
 A>
 A> Between the right operand and the right argument you may specify options. They are marked by the `⍠` operator. These are the options available:
 A>
@@ -251,7 +256,7 @@ Alle the quantifiers we've discussed earlier are greedy, but you can make them l
 
 ### The "+" can be dangerous!
 
-But wouldn't it be better to use `+` rather than `*` here? After all we are not interested in `""` because their is nothing between the two double quotes? Good point except that it does not work:
+But wouldn't it be better to use `+` rather than `*` here? After all we are not interested in `""` because there is nothing between the two double quotes? Good point except that it does not work:
 
 ~~~
       '".+"' ⎕R '' ⍠('Greedy' 0) ⊣ 'He said "" and ""'
@@ -262,7 +267,7 @@ That's because the engine would perform the following steps:
 
 1. Investigate until we find a `"`.
 1. Investigate any character after the first double quote. That is the second double quote so _that is consumed_ because it required _at least one_. Since all other characters are a match as well the `.+` consumes all characters to the end of the input string. 
-1. It then goes back the the current position --- because it is lazy! --- which is bacause the second `"` was already consumed the space after (!) the second `"` and before the `a` of "and". From there it carries on until it finds a `"`. That is the first `"` after the "and". All that is then replaced by the `` character.
+1. It then goes back the current position --- because it is lazy! --- which is because the second `"` was already consumed the space after (!) the second `"` and before the `a` of "and". From there it carries on until it finds a `"`. That is the first `"` after the "and". All that is then replaced by the `` character.
 1. The engine then carries on but because there is only a single `"` left there is no other match.
 
 If we want to ignore any `""` pairs then we need to use a look-ahead, something we will discuss soon.
@@ -301,7 +306,7 @@ There are _two_ double quotes after the word "Yes"; that seems to be a typo. Wat
  He said No"
 ~~~
 
-This example highlights a potential problem with input strings: many regular expressions work perfectly well as long as the input string is syntacially correct (or matches your expectations).
+This example highlights a potential problem with input strings: many regular expressions work perfectly well as long as the input string is syntactically correct (or matches your expectations).
 
 That's the reason (among others) why regular expressions are not recommended for processing HTML because HTML is very often full of syntactical errors. 
 
@@ -382,7 +387,7 @@ Note also that the `.` is not escaped either: inside the pair of `[]` the `.` is
 
 A> # Escaping several characters
 A>
-A> Say you nee to escape all the meta characters because you want to search them. Escaping every single one of them with a backslash is laborious and decreases readability, but there is a better way:
+A> Say you need to escape all the meta characters because you want to search them. Escaping every single one of them with a backslash is laborious and decreases readability, but there is a better way:
 A> ~~~
 A>       '\Q\^$.|?*+()[{\E'
 A> ~~~
@@ -415,6 +420,13 @@ Notes:
 
 * For APLers the caret is a bit tricky because it can easily be confused with the logical AND (`∧`) primitive. Only next to each other it becomes apparent what it what: `^∧`: the caret is a bit higher than the logical AND.
 
+  ~~~
+      ⎕UCS '^'     ⍝ The caret
+   94
+         ⎕UCS '∧'  ⍝ Logical OR
+   8743
+  ~~~
+
 ### Negate with digits and dots
 
 ~~~
@@ -425,13 +437,11 @@ Notes:
 Want to search for "gray" and "grey" in a document?
 
 ~~~
-      'gr[a|e]y'⎕S 0⊣'Americans spell it "gray" and Brits "grey".'
+      'gr[ae]y'⎕S 0⊣'Americans spell it "gray" and Brits "grey".'
 20 37
-      'gr[a|e]y'⎕R '' ⊣'Americans spell it "gray" and Brits "grey".'
+      'gr[ae]y'⎕R '' ⊣'Americans spell it "gray" and Brits "grey".'
 Americans spell it "" and Brits "".      
 ~~~
-
-So the pipe symbol (`|`) has a special meaning inside a character class: it means logical "OR".
 
 
 ### Meta characters within a character class
@@ -481,7 +491,7 @@ We've learned that the `.` matched any character but not end of line.
  "Foo  Goo" 
 ~~~
 
-I> Specifying a vector of text vectors is internally processed like a file with two records.
+I> Specifying a vector of text vectors is internally processed like a file with multiple records.
 
 Because the `.` does not match end-of-line it finds `"Foo` but then stops rather than carrying on trying to match the pattern with `Goo"`, so no hit is found.
 
@@ -492,9 +502,9 @@ With the "DotAll" option --- which defaults to 0 --- we can tell the RegEx engin
  
 ~~~
 
-Note that we had to specify the "Mode" option as well because `DotAll←` is invalid with `Mode←L` and that's the default. 
+Note that we had to specify the "Mode" option as well because `DotAll←1` is invalid with `Mode←L` and that's the default. 
 
-It is important to understand the different modes and their influence on `^` (start of document or line), `$` (end of document or line) and `DotAll`; please refer to the Help for this.
+It is important to understand the different modes and their influence on `^` (start of document or line), `$` (end of document or line) and `DotAll` see [Document mode](#) for details.
 
 It's not difficult to imagine a situation where you have a single search pattern but in one part you want the `.` to match end-of-line and in others you won't.
 
@@ -566,7 +576,7 @@ In case only a single vector is specified then this vector is taken thrice. Kind
 
 ### Analyzing APL code: Search
 
-The extremely powerful syntax discussed above is also available whith `⎕S`:
+The extremely powerful syntax discussed above is also available with `⎕S`:
 
 ~~~
       '''\N*''' '⍝\N*$' 'foo'⎕S 0 1 2⍠('Greedy' 0)⊣is
@@ -692,7 +702,7 @@ Both then need either a `=` for "equal" or a `!` for "not equal" followed by the
 It's  plus .      
 ~~~
 
-That works! We use two expression here: first we look for all digits and then we look for dots that have a digit to their right and their left. 
+That works! We use two expressions here: first we look for all digits and then we look for dots that have a digit to their right and their left. 
 
 
 I> What is important to realize is that the current position does not change when a look-behind or a look-ahead is performed; that's why they are called zero-length assertions.
@@ -888,7 +898,7 @@ For plurals:
 
 ### Extract what's between HTML tags
 
-Let's assume that we have a piece of HTML code, and that we are interested in any text betwen anchor tags (`<a>`). Let's also assume that we know that there is no other tag inside the `<a>`, just simple text.
+Let's assume that we have a piece of HTML code, and that we are interested in any text between anchor tags (`<a>`). Let's also assume that we know that there is no other tag inside the `<a>`, just simple text.
 
 Now an `<a>` tag has always either an `href="..."` or an `id="..."` because otherwise it has no purpose.
 
@@ -911,7 +921,7 @@ This </abbr>
 
 That might come as a nasty surprise but when you think it through it's obvious why that is: the expression `<a.*>` does indeed catch not only `<a` but also `<abbr>`. This example emphasizes how important it is to be precise.
 
-We can get arround this quite easily: because any `<a>` tag must have at least one attribute in order to make sense there _must_ be a space after the `a`; therefore we can rewrite the expression as follows:
+We can get around this quite easily: because any `<a>` tag must have at least one attribute in order to make sense there _must_ be a space after the `a`; therefore we can rewrite the expression as follows:
 
 ~~~
       '<a .*>.*</a>'⎕R''⊣txt
@@ -920,7 +930,7 @@ This <abbr title="FooGoo"></abbr>
 
 What a difference a simple space can make!
 
-But sombody _might_ put in an `<a>` tag without any attribute at all, and then this would not work. So we are still in need not for a better but a perfect solution.
+But somebody _might_ put in an `<a>` tag without any attribute at all, and then this would not work. So we are still in need not for a better but a perfect solution.
 
 Here it is:
 
@@ -983,7 +993,7 @@ Given that complex regular expressions are hard to read and maintain you should 
 
 ### Performance
 
-Don't expect regular expressions to be faster than a taylored APL solution; instead expect them to be slightly slower.
+Don't expect regular expressions to be faster than a tailored APL solution; instead expect them to be slightly slower.
 
 However, many regular expressions like finding a simple string in another simple string or uppercasing or lowercasing characters are converted by the interpreter into a native (read: faster) APL expression (`⍷` and `⌶ 819` respectively).
 
