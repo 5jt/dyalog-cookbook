@@ -1,7 +1,7 @@
-{:: encoding="utf-8" /}
+1{:: encoding="utf-8" /}
 [parm]:title='Testing'
 
-# Testing --- the sound of breaking glass
+# Testing – the sound of breaking glass
 
 Our application here is simple – just count letter frequency in text files. 
 
@@ -14,7 +14,7 @@ But we would at least like to know when we’ve broken something – to hear th
 In our ideal world we would have a team of testers continually testing and retesting our latest build to see if it still does what it’s supposed to do. The testers would tell us if we broke anything. In the real world we have programs – tests – to do that. 
 
 What should we write tests for? “Anything you think might break,” says Kent Beck[^beck], author of _Extreme Programming Explained_. 
-We’ve already written code to allow for ways in which the file system might misbehave. We should write tests to discover if that code works. We’ll eventually discover conditions we haven’t foreseen and write fixes for them. Then those conditions too join the things we think might break, and get added to the test suite. 
+We’ve already written code to allow for ways in which the file system might misbehave. We should write tests to discover if that code works. We’ll eventually discover conditions we haven’t foreseen and write fixes for them. Then those conditions too will join the things we think might break, and get added to the test suite. 
 
 
 ## Why you want to write tests
@@ -26,40 +26,40 @@ Some functions are more vulnerable than others to being broken under maintenance
 
 For example, you might write a function that takes as argument any of a string[^string], a vector of strings, a character matrix or a matrix of strings. 
 
-If you later come to define another case, say, a string with embedded line breaks, it's easy enough inadvertently to change the function's behaviour with the original cases. 
+If you later come to define another case, say, a string with embedded line breaks, it’s easy enough inadvertently to change the function’s behaviour with the original cases. 
 
-If you have tests that check the function's results with the original cases, it's easy to ensure your changes don't change the results unintentionally. 
+If you have tests that check the function’s results with the original cases, it’s easy to ensure your changes don't change the results unintentionally. 
 
 
 ### More reliable than documentation
 
-No, tests don't replace documentation. They don't convey your intent in writing a class or function. They don't record your ideas for how it should and should not be used, references you consulted before writing it, or thoughts about how it might later be improved.
+No, tests don’t replace documentation. They don’t convey your intent in writing a class or function. They don’t record your ideas for how it should and should not be used, references you consulted before writing it, or thoughts about how it might later be improved.
 
 But they do document with crystal clarity what it is _known_ to do. In a naughty world in which documentation is rarely complete and even less often revised when the code is altered, it has been said the _only_ thing we know with certainty about any given piece of software is what tests it passes. 
 
 
 ### Understand more 
 
-Test-Driven Design (TDD) is a high-discipline practice associated with Extreme Programming. TDD tells you to write the tests _before_ you write the code. Like all such rules, we recommend following TDD thoughtfully. 
+Test-Driven Design (TDD) is a high-discipline practice associated with Extreme Programming. TDD tells you to write the tests _before_ you write the code. Like all such rules, we recommend following TDD – thoughtfully. 
 
 The reward from writing an automated test is not _always_ worth the effort. But it is a very good practice and we recommend it given that the circumstances are right. 
 
-For example, if you know from the start _exactly_ what your program is supposed to do then TDD is certainly an option. If you start prototyping in order to find out what the user actually wants the program to do TDD is no option at all.
+For example, if you know from the start _exactly_ what your program is supposed to do then TDD is certainly an option. If you start prototyping in order to find out what the user actually wants the program to do, TDD is no option at all.
 
 If you are writing the first version of a function, writing the tests first will clarify your understanding of what the code should be doing. It will also encourage you to consider boundary cases or edge conditions: for example, how should the function above handle an empty string? A character scalar? 
 
-TDD first tests your understanding of your task. If you can't define tests for your new function, perhaps you're not ready to write the function either. 
+TDD first tests your understanding of your task. If you can't define tests for your new function, perhaps you’re not ready to write the function either. 
 
-If you are modifying an existing function, write new tests for the new things it is to do. Run the revised tests and see that the code fails the new tests. If the unchanged code _passes_ any of the new tests... review your understanding of what you're trying to do! 
+If you are modifying an existing function, write new tests for the new things it is to do. Run the revised tests and see that the code fails the new tests. If the unchanged code _passes_ any of the new tests… review your understanding of what you’re trying to do! 
 
 
 ## Readability
 
-Reading and understanding APL code is more difficult than in other programming language due to the higher abstraction level and the power of APL's primitives. However, as long as you have an example were the function is fed with correct data it's always possible to decipher the code. 
+Reading and understanding APL code is more difficult than in other programming language due to the higher abstraction level and the power of APL’s primitives. However, as long as you have at least one example with correct arguments, it’s always possible to decipher the code. 
 
-Things can become very nasty indeed if an application crashes because inappropriate data arrives at your function. However, before you can figure out whether the data is appropriate or not you need to understand the code - a chicken-egg problem.
+Things can become very nasty indeed if an application crashes because inappropriate data arrives at your function. However, before you can figure out whether the data is appropriate or not you need to understand the code – a chicken-egg problem.
 
-That's when test cases can be very useful as well, because they demonstrate which data a function is expected to process. It also emphasizes why it is important to have test cases for all the different types of data (or parameters) a function is supposed to process. In this respect test cases should be exhaustive.
+That’s when test cases can be very useful as well, because they demonstrate which data a function is expected to process. It also emphasises why it is important to have test cases for all the different types of data (or parameters) a function is supposed to process. In this respect test cases should be exhaustive.
 
 
 ### Write better 
@@ -70,41 +70,41 @@ Writing functions with a view to passing formal tests will encourage you to writ
   ∇ Z←mean R;r
    [1] Z←((+/r)÷≢r←,R)
   ∇
-~~~	  
+~~~
 
 In contrast, this line from `TxtToCsv` reads a value from a namespace external to the function (`EXIT.APPLICATION_CRASHED`) and sets another: `#.ErrorParms.returnCode`. 
 
 ~~~
     #.ErrorParms.returnCode←EXIT.APPLICATION_CRASHED
-~~~      
+~~~
 
 In principle, `TxtToCsv` _could_ be written in purely functional style. References to classes and namespaces `#.HandleError`, `#.APLTreeUtils`, `#.FilesAndDirs`, `EXIT`, and `#.ErrorParms` could all be passed to it as arguments. 
 
-If those references ever varied -- for example, if there were an alternative namespace `ReturnCodes` sometimes used instead of `EXIT` -- that might be a useful way to write `TxtToCsv`. 
+If those references ever varied – for example, if there were an alternative namespace `ReturnCodes` sometimes used instead of `EXIT` – that might be a useful way to write `TxtToCsv`. 
 
-But as things are, cluttering up the function's _signature_ -- its name and arguments -- with these references harms rather than helps readability. It is an example of the cure being worse than the disease. 
+But as things are, cluttering up the function’s _signature_ – its name and arguments – with these references harms rather than helps readability. It is an example of the cure being worse than the disease. 
 
-You can't write _everything_ in pure functional style but the closer you stick to it, the better your code will be, and the easier to test. Functional style goes hand in hand with good abstractions, and ease of testing. 
+You shouldn’t write _everything_ in pure functional style but the closer you stick to it, the better your code will be, and the easier to test. Functional style goes hand in hand with good abstractions, and ease of testing. 
 
 
-## Why you don't want to write tests
+## Why you don’t want to write tests
 
-There is nothing magical about tests. Tests are just more code. The test code needs maintaining like everything else. If you refactor a portion of your application code, the associated tests need reviewing -- and possibly revising -- as well.
+There is nothing magical about tests. Tests are just more code. The test code needs maintaining like everything else. If you refactor a portion of your application code, the associated tests need reviewing – and possibly revising – as well.
 
 In programming, the number of bugs is generally a linear function of code volume. Test code is no exception to this rule. Your tests are both an aid to development and a burden on it. 
 
 You want tests for everything you think might break, but no more tests than you need. 
 
-Beck's dictum -- test anything you think might break -- provides useful insight. Some expressions are simple enough not to need testing. If you need the indexes of a vector of flags, you can _see_ that `{⍵/⍳≢⍵}` [^where] will find them. It's as plain as `2+2` making four. You don't need to test that. 
+Beck’s answer – test anything you think might break – provides useful insight. Some expressions are simple enough not to need testing. If you need the indexes of a vector of flags, you can _see_ that `{⍵/⍳≢⍵}` [^where] will find them. It’s as plain as `2+2` making four. You don’t need to test that. 
 
-APL's scalar extension and operators such as _outer product_ allow you to replace nested loops (a common source of error) with expressions which don't need tests. The higher level of abstraction enabled by working with collections allows not only fewer code lines but also fewer tests. 
+APL’s scalar extension and operators such as _outer product_ allow you to replace nested loops (a common source of error) with expressions which don’t need tests. The higher level of abstraction enabled by working with collections allows not only fewer code lines but also fewer tests. 
 
 Time for a new version of MyApp. Make a copy of `Z:\code\v07` as `Z:\code\v08`.
 
 
 ## Setting up the test environment
 
-We'll need the `Tester` class from the APLTree library. And a namespace of tests, which we'll dub `#.Tests`. 
+We’ll need the `Tester` class from the APLTree library. And a namespace of tests, which we’ll dub `#.Tests`. 
 
 Create `Z:\code\v08\Tests.dyalog`:
 
@@ -112,7 +112,7 @@ Create `Z:\code\v08\Tests.dyalog`:
     :Namespace Tests
     
     :EndNamespace
-~~~	
+~~~
 
 Save this as `Z:\code\v08\Tests.dyalog` and include both scripts in the DYAPP:
 
@@ -133,18 +133,18 @@ leanpub-start-insert
 leanpub-end-insert
     Load MyApp
     Run MyApp.Start 'Session'
-~~~	
+~~~
 
-Run the DYAPP to build the workspace. In the session you might want to execute `]ADoc #.Tester` to see the documentation for the Tester class if you are in doubt about any of the methods and helpers in `Tester` later on.
+Run the DYAPP to build the workspace. In the session you might want to execute `]ADoc #.Tester` to see the documentation for the Tester class.
 
 
 ## Unit and functional tests 
 
 I> Unit tests tell a developer that the code is _doing things right_; functional tests tell a developer that the code is _doing the right things_. 
 
-It's a question of perspective. Unit tests are written from the programmer's point of view. Does the function or method return the correct result for given arguments?
+It’s a question of perspective. Unit tests are written from the programmer’s point of view. Does the function or method return the correct result for given arguments?
 
-Functional tests, on the other hand, are written from the user's point of view. Does the software do what its _user_ needs it to do?
+Functional tests, on the other hand, are written from the user’s point of view. Does the software do what its _user_ needs it to do?
 
 Both kinds of tests are important. If you are a professional programmer you need a user representative to write functional tests. If you are a domain-expert programmer [^domain] you can write both. 
 
@@ -153,9 +153,9 @@ In this chapter we'll tackle unit tests.
 
 ## Speed
 
-Unit tests should execute _fast_: developers often want to execute them even when still working on a project in order to make sure that they have not broken anything, or to find out what they broke. When executing the test suite takes too long it defeats the purpose.
+Unit tests should execute _fast_: developers often want to execute them even when still working on a project in order to make sure that they have not broken anything, or to find out what they broke. If executing the test suite takes too long it defeats the purpose.
 
-Sometimes it cannot be avoided that tests take quite a while, for example when testing GUIs. In that case it might be an idea to create a group of tests that comprehend not all but just the most important ones. 
+Sometimes it cannot be avoided that tests take quite a while, for example when testing GUIs. In that case it might be an idea to create a group of tests that comprehend not all, but just the most important ones. 
 
 Those can then be executed while actually working on the code base while the full-blown test suite is only executed every now and then, maybe only before checking in the code.
 
@@ -212,14 +212,14 @@ Run #.Tester.EstablishHelpersIn #.Tests
 leanpub-end-insert
 ~~~
 
-Of course we don't need this when DYAPP is supposed to assemble the workspace for a productive environment; we will address this problem later.
+Of course we don’t need this when the DYAPP is supposed to assemble the workspace for a productive environment; we will address this problem later.
 
 We will discuss all helpers in detail, and we start with the flow control helpers.
 
 
 ### Flow control helpers
 
-Let's look at an example: `FailsIf` takes a Boolean right argument and returns either `0` in case the right argument is `1` or an empty vector in case the right argument is `0`:
+Let’s look at an example: `FailsIf` takes a boolean right argument and returns either `0` in case the right argument is `1` or an empty vector in case the right argument is `0`:
 
 ~~~
       FailsIf 1
@@ -232,13 +232,13 @@ Let's look at an example: `FailsIf` takes a Boolean right argument and returns e
 
 That means that the statement `→FailsIf 1` will jump to 0, exiting the function carrying the statement.
 
-Since GoTo statements are rarely used these days because under most circumstances control structures are way better, it is probably worthwhile to mention that `→⍬` -- as well as `→''` -- makes the interpreter carry on with the next line. 
+Since GoTo statements are rarely used these days because under most circumstances control structures are far better, it is probably worthwhile to mention that `→⍬` -- as well as `→''` -- makes the interpreter carry on with the next line. 
 
-In other words the function just carries on. That's exactly what we want when the right argument of `FailsIf` is a `0` because in that case the test has not failed.
+In other words the function just carries on. That’s exactly what we want when the right argument of `FailsIf` is a `0` because in that case the test has not failed.
 
 `PassesIf` is exactly the same thing but just with a negated argument: it returns a `0` when the right argument is `0` and an empty vector in case the right argument is `1`.
 
-`GoToTidyUp` is a special case. It returns an empty vector in case the right argument is `0`. If the right argument is `1` it expects the function where it was called from to have a line that carries a label `∆TidyUp`; the line number of that label is then returned.
+`GoToTidyUp` is a special case. It returns an empty vector when the right argument is `0`. If the right argument is `1` by convention the function that calls it has a line labelled `∆TidyUp`; the line number of that label is then returned.
 
 This is useful in case a test function needs to do some cleaning up, no matter whether it has failed or not. Imagine you need a temporary file for a test but want to delete it after carrying out the test case. In that case the bottom of your test function might look like this:
 
@@ -256,19 +256,18 @@ When everything goes according to plan the function would eventually execute the
 
 Like `FailsIf` the test function would just carry on in case `expected≢result` returns a `0` but jump to the label `∆TidyUp` in case the test fails (=the condition is true).
 
-But why are we using functions for all this anyway? We could do without, couldn't we? Yes, so far we could, but there is just one more thing. Stay with us...
+But why are we using functions for all this anyway? We could do without, couldn’t we? Yes, so far we could, but there is just one more thing. 
 
 
 ## Writing unit tests
 
-
 We have automated the way the helpers are established in `Tests`. Now we are ready to implement the first test case.
 
-Utilities are a good place to start writing tests. Many utility functions are simply names assigned to common expressions. Others encapsulate complexity, making similar transformations of different arguments. 
+Utilities are a good place to start writing tests. Many utility functions are simply names assigned to common expressions. Other utilities encapsulate complexity, making similar transformations of different arguments. 
 
-We'll start with `map` in `#.Utilities`. We know by now that in general it works although even that needs to be confirmed by a test of course. What we don't know yet is whether it works under all circumstances. We also need to make sure that it complains when it is fed with inappropriate data. 
+We’ll start with `map` in `#.Utilities`. We know by now that in general it works although even that needs confirmation by a test of course. What we don’t know yet is whether it works under all circumstances. We also need to ensure it complains when given inappropriate arguments. 
 
-To make writing test cases as easy as possible you can ask `Tester` for providing a test case template.
+To make writing test cases as easy as possible you can ask `Tester` to provide a test case template.
 
 ~~~
     ⎕←⍪#.Tester.GetTestFnsTemplate
@@ -324,20 +323,20 @@ What we changed:
 
 * We described in line 1 as thoroughly as possible what the test case is doing. The reason is that this line is later the only way to tell this test case from any other. 
 
-  In other words, it is really important to get this right. By the way: if you cannot describe in a single line what the test case is doing it's most likely doing too much.
+  In other words, it is really important to get this right. And if you cannot describe in a single line what the test case is doing, it may be doing too much.
 
 * We set `⎕TRAP` so that any error 999 will stop the interpreter with a deliberate error; we will soon see why and what for.
 
-* We also localize `⎕TRAP` so that any error 999 has an effect only within the test function. In fact any other error than 999 is passed through with the `N` option in order to allow `⎕TRAP`s further up the stack to take control.
+* We also localise `⎕TRAP` so that any error 999 has an effect only within the test function. In fact, any error other than 999 is passed through with the `N` option in order to allow traps further up the stack to take control.
 
-* We initialize the explicit result `R` by assigning the value returned by the niladic function `∆Failed`. That allows us to simply leave the function in case a test fails: the result will then tell.
+* We initialise the explicit result `R` by assigning the value returned by the niladic function `∆Failed`. That allows us simply to leave the function in case a test fails: the result will then tell.
 
-* We trap the call to `map` which we expect to fail with a length error because we provide a scalar as left argument.
+* We trap the call to `map`, which we expect to fail with a length error because we provide a scalar as left argument.
 
 * In case there is no error we call the function `∆FailsIf` and provide a `1` as right argument. That makes `∆FailsIf` return a `0` and therefore leave `Test_001`.
 
 
-You might have noticed that we address, say, `Utilities` with `##.Utilities` rather than `#.Utilities`. Making this a habit is a good idea: currently it does not make a difference, but when you later decide to move everything in `#` into, say, a namespace `#.Container` (you never know!) then `##.` would still work while `#.` wouldn't.
+You might have noticed we address, say, `Utilities` with `##.Utilities` rather than `#.Utilities`. Making this a habit is a good idea: currently it does not make a difference, but when you later decide to move everything in `#` into, say, a namespace `#.Container` (you never know!) then `##.` would still work while `#.` wouldn't.
 
 The `:Else` part is not ready yet; the full stop will prevent the test function from carrying on when we get there.
 
@@ -345,22 +344,22 @@ Notes:
 
 * We also added a function `GetHelpers` to the script. The reason is that the helpers will disappear as soon as we fix the `Test` script. And we are going to fix it whenever we change something or add a new test case. Therefore we need an easy way to get them back: `GetHelpers` to the rescue.
 
-* The function `Initial` will be executed by the test framework before any test function is executed. This can be used to initialize stuff that all (or many) test cases need. Here we establish the references `A` (for the `APLTreeUtils` module), `F` (for the `FilesAndDirs` module) and `U` (for the `Utilities` module). 
+* The function `Initial` will be executed by the test framework before any test function is executed. This can be used to initialise stuff that all (or many) test cases need. Here we establish the references `A` (for the `APLTreeUtils` module), `F` (for the `FilesAndDirs` module) and `U` (for the `Utilities` module). 
 
-  `Initial` relies on naming conventions; in case there is a function around with that name it will be executed. More later.
+  `Initial` relies on naming conventions; if there is a function in scope with that name, it will be executed. More later.
 
-* The function `Cleanup` will be executed by the test framework after all test functions have been executed. This can be used to clean up stuff that's not needed any more. Here we delete the references `A`, `F` and `U`. More later.
+* The function `Cleanup` will be executed by the test framework after all test functions have been executed. This can be used to clean up stuff that’ no longer needed. Here we delete the references `A`, `F` and `U`. More later.
 
 
 A> # Ordinary namespaces versus scripted ones 
 A>
-A> There's a difference between an ordinary namespace and a scripted namespace: imagine you've called `#.Tester.EstablishHelpersIn` within an ordinary namespace. 
+A> There’s a difference between an ordinary namespace and a scripted namespace: imagine you've called `#.Tester.EstablishHelpersIn` within an ordinary namespace. 
 A>
 A> Now you change/add/delete test functions; that would have no effect on anything else in that namespace. In other words, the helpers would continue to exist.
 A>
 A> When you change a namespace script on the other hand the namespace is re-created from the script, and that means that our helpers will disappear because they are not a part of the `Tests` script.
 
-Let's call our test case. We do this by running the `Run` method first:
+Let’s call our test case. We do this by running the `Run` method first:
 
 ~~~
 Run
@@ -383,17 +382,17 @@ Looking for a function "Cleanup"...
 *** Tests done
 ~~~
 
-That's what we expect. 
+That’s what we expect. 
 
 I> Note that there are INI files mentioned. Ignore this for the time being; we will discuss this later on.
 
 A> # What is a test case?!
-A> You might wonder how `Run` established what is a test case and what isn't: that's achieved by naming conventions. Any test function _must_ start their name with `Test_`. After that there are two possibilities:
+A> You might wonder how `Run` established what is a test case and what isn’t: that’s achieved by naming conventions. Al test functions start their names with `Test_`. After that there are two possibilities:
 A> 
-A> 1. In the simple case there are one or more digits after the `_`; nothing but digits. Therefore these all qualify as test cases: `Test_1`, `Test_01`, `Test_001` and so on. `Test_01A` however does not.
-A> 1. In case you have a large number of test cases you most probably want to group them in one way or another. You can add a group name after the first `_` and add a second `_` followed by one or more digits. Therefore `Test_map_1` is recognized as a test case, and so is `Test_Foo_9999`. `Test_Foo_Goo_1` however is not.
+A> 1. In the simple case the `_` is followed by nothing but digits. All these qualify as test cases: `Test_1`, `Test_01`, `Test_001` and so on. (`Test_01A` however does not.)
+A> 1. If you have a large number of test cases you most probably want to group them. You can insert a group name between two underscores, followed by one or more digits. So `Test_map_1` is recognized as a test case, and so is `Test_Foo_9999`. `Test_Foo_Goo_1` however is not.
 
-What if we want to look into a broken or failing test case? Of course in our current scenario -- which is extremely simple -- we could just trace into `Test_001` and find out what's going on, but if we take advantage of the many features the test framework is actually offering then we cannot do this (soon it will become clear why). 
+What if we want to look into a broken or failing test case? Of course in our current scenario – which is extremely simple – we could just trace into `Test_001` and find out what’s going on, but if we take advantage of the many features the test framework offers, we cannot do this. (Soon to become clear why.) 
 
 However, there is a way to do this no matter whether the scenario is simple, reasonably complex or extremely complex: we call `RunDebug`:
 
@@ -420,17 +419,17 @@ SYNTAX ERROR
 #.Tests.RunDebug[3]
 ~~~
 
-It stopped in line 6. Obviously the call to `FailsIf` has something to do with this, and so has the `⎕TRAP` setting, because apparently that's where the "Deliberate error" comes from. 
+It stopped in line 6. Obviously the call to `FailsIf` has something to do with this, and so has the `⎕TRAP` setting, because apparently that’s where the “Deliberate error” comes from. 
 
-Indeed this is the case: all three flow control functions, `FailIf`, `PassesIf` and `GoToTidyUp` check whether they are running in debug mode and if that is the case then rather returning a result that indicates a failing test case they `⎕SIGNAL 999` which is then caught by the `⎕TRAP` which in turn first prints `⍝ Deliberate error` to the session and then hands over control to the user. 
+This is indeed the case. All three flow-control functions, `FailIf`, `PassesIf` and `GoToTidyUp` check whether they are running in debug mode; if so, rather than return a result that indicates a failing test case, they `⎕SIGNAL 999`, which is then caught by the `⎕TRAP`, which in turn first prints `⍝ Deliberate error` to the session and then hands over control to the user. 
 
-You can now investigate variables or start the Tracer etc. in order to investigate why the test case failed.
+You can now investigate variables or start the Tracer, etc. to investigate the problem.
 
-The difference between `Run` and `RunDebug` is the setting of the first of the two flags provided as right argument to the test function: `stopFlag`. This is `0` when `Run` executes the test cases, but it is `1` when `RunDebug` is in charge. The three flow control functions `FailsIf`, `PassesIf` and `GoToTidyUp` all honour `stopFlag` - that's how it works.
+The difference between `Run` and `RunDebug` is the setting of the first of the two flags provided as right argument to the test function: `stopFlag`. This is `0` when `Run` executes the test cases, but it is `1` when `RunDebug` is in charge. The three flow-control functions `FailsIf`, `PassesIf` and `GoToTidyUp` all honour `stopFlag` – that’s how it works.
 
-Now sometimes you don't want the test function to go to the point where the error actually appears, for example in case the test function does a lot of precautioning, and you want to check this upfront because there might be something wrong with it, causing the failure. 
+Now sometimes you don’t want the test function to go to the point where the error actually appears, for example if the test function does a lot of precautioning, and you want to check this upfront because there might be something wrong with it, causing the failure. 
 
-Note that so far we passed a `0` as right argument to `RunDebug`. If we pass a `1` instead then the test framework would stop just before it would execute the test case:
+Note that so far we passed a `0` as right argument to `RunDebug`. If we pass a `1` instead, then the test framework would stop just before executing the test case:
 
 ~~~
       RunDebug 1
@@ -452,7 +451,7 @@ ExecuteTestFunction[6]
 #.Tests.RunDebug[3]
 ~~~
 
-You could now trace into `Test_001` and investigate. Instead enter `→0`. You should see something like this: 
+You could now trace into `Test_001` and investigate. Instead, enter `→0`. You should see something like this: 
 
 ~~~
 * Test_001 (1 of 1) : Is the length of the left argument of the `map` function checked?
@@ -466,7 +465,7 @@ Looking for a function "Cleanup"...
 *** Tests done
 ~~~
 
-Let's make sure that `map` is checking its left argument:
+Let’s have `map` check its left argument:
 
 ~~~
 :Namespace Utilities
@@ -489,11 +488,11 @@ Now run `RunDebug 1`. Trace into `Test_001` and watch whether now any error 5 (L
 
 A> # ⎕DM versus ⎕DMX
 A>
-A> You have always used `⎕DM`, and it was perfectly fine, right? No need to switch to the (relatively) new `⎕DMX`, right? Well, the problem with `⎕DM` is that it is not thread save while `⎕DMX` is. That's why we suggest that you stop using `⎕DM` and use just `⎕DMX`. It also provides more and more precise information.
+A> You have always used `⎕DM`, and it was fine, right? No need to switch to the (relatively) new `⎕DMX`, right? Well, the problem with `⎕DM` is that it is not thread-safe, while `⎕DMX` is. That’s why we suggest you stop using `⎕DM` and use just `⎕DMX`. It also provides more, and more precise, information.
 
-This checks whether the error message is what we expect. Trace through the test function and watch what it is doing. After having left the test function you may click the green triangle in the Tracer ("Continue execution of all threads").
+This checks whether the error message is what we expect. Trace through the test function and watch what it is doing. After having left the test function you may click the green triangle in the Tracer. (Continues execution of all threads.)
 
-Now what if you've executed, say, not one but 300 test cases with `Run`, and just one failed, say number 289? You expected them all to succeed but since one did not you need to check on the failing one. 
+Now what if you’ve executed, say, not one but 300 test cases with `Run`, and just one failed, say number 289? You expected them all to succeed; now you need to check on the failing one. 
 
 Calling `Run` as well as `RunDebug` would always execute _all_ test cases found. The function `RunThese` allows you to run just the specified test functions:
 
@@ -520,13 +519,15 @@ Looking for a function "Cleanup"...
 
 This would run just test case number 1. If you specify it as `¯1` it would stop just before actually executing the test case. Same as before since we have just one test function yet but take our word for it, it would execute just `Test_001` no matter how many other test cases there are. 
 
-We have discussed the functions `Run`, `RunDebug` and `RunThese`. That leaves `RunBatchTests` and `RunBatchTestsInDebugMode`; what are they for? Imagine a test that would either require an enormous amount of effort to implement or alternatively you just build something up and then ask the human in front of the monitor: "Does this look alright?". 
+We have discussed the functions `Run`, `RunDebug` and `RunThese`. That leaves `RunBatchTests` and `RunBatchTestsInDebugMode`; what are they for? 
 
-That's certainly _not_ a batch test case because it needs a human sitting in front of the monitor. If you know upfront that there won't be a human paying attention then you can prevent non-batch test cases from being executed by calling either `RunBatchTests` or `RunBatchTestsInDebugMode`.
+Imagine a test that would either require an enormous amount of effort to implement – or alternatively you just build something up and ask the human in front of the monitor: _Does this look alright?_. 
 
-But how does this work? We already learned that `stopFlag`, the first of the two flags passed to any test case as the right argument, is ruling whether any errors are trapped or not. 
+That’s certainly _not_ a batch test case because it needs a human sitting in front of the monitor. If you know upfront that there won’t be a human paying attention then you can prevent non-batch test cases from being executed by calling either `RunBatchTests` or `RunBatchTestsInDebugMode`.
 
-The second flag is called `batchFlag`, and that gives you an idea what it's good for. If you have a test which interacts with a user (=cannot run without a human) then your test case would typically look like this:
+How does this work? We already learned that `stopFlag`, the first of the two flags passed to any test case as the right argument, governs whether any errors are trapped or not. 
+
+The second flag is called `batchFlag`, and that gives you an idea of what it’s good for. If you have a test that interacts with a user (i.e. cannot run without a human) then your test case would typically look like this:
 
 ~~~
  R←Test_001(stopFlag batchFlag);⎕TRAP
@@ -541,11 +542,11 @@ The second flag is called `batchFlag`, and that gives you an idea what it's good
  :EndIf
 ~~~
 
-The test function checks the `batchFlag` and tells via the explicit result that it did not execute because it is not suitable for batch testing.
+The test function checks the `batchFlag` and sees from the explicit result that it did not execute because it is not suitable for batch testing.
 
 One can argue whether the test case we have implemented makes much sense, but it allowed us to investigate the basic features of the test framework. We are now ready to investigate the more sophisticated features.
 
-Of course we also need a test case that checks whether `map` does what it's supposed to do when appropriate arrays are passed as arguments, therefore we add this to `Tests`:
+Of course we also need a test case that checks whether `map` does what it’s supposed to do when appropriate arrays are passed as arguments, therefore we add this to `Tests`:
 
 ~~~
 Namespace Tests
@@ -564,11 +565,11 @@ Namespace Tests
   R←∆OK
 ∇
 ...
-~~~	
+~~~
 
 I> Note how using the references `U` and `A` here simplifies the code greatly.
 
-Now we try to execute this test cases:
+Now we try to execute these test cases:
 
 ~~~
       #.Tests.GetHelpers
@@ -590,7 +591,7 @@ Looking for a function "Initial"...
 
 Works fine. Excellent.
 
-Now let's make sure that the workhorse is doing okay; for this we add another test case:
+Now let’s make sure the workhorse is doing okay; for this we add another test case:
 
 ~~~
 :Namespace Tests
@@ -608,7 +609,7 @@ Now let's make sure that the workhorse is doing okay; for this we add another te
 ...
 ~~~
 
-Let's call this test:
+Let’s call this test:
 
 ~~~
       )CS #.Tests
@@ -619,9 +620,9 @@ Let's call this test:
 VALUE ERROR
 TxtToCsv[4] MyLogger.Log'Source: ',fullfilepath
             ∧
-~~~					  
+~~~
 
-Oops. `MyLogger` is undefined. In the envisaged use in production, it is defined by and local to `StartFromCmdLine`. That design followed Occam's Razor[^occam]: (entities are not to be needlessly multiplied) in keeping the log object in existence only while needed. But it now prevents us from testing `TxtToCsv` independently. So we'll refactor:
+Oops. `MyLogger` is undefined. In the envisaged use in production, it is defined by, and local to, `StartFromCmdLine`. That design followed Occam’s Razor[^occam]: (entities are not to be needlessly multiplied) in keeping the log object in existence only while needed. But it now prevents us from testing `TxtToCsv` independently. So we’ll refactor:
 
 ~~~
 :Namespace Tests
@@ -638,11 +639,11 @@ leanpub-end-insert
       R←∆OK
     ∇      
 ...
-~~~	  
+~~~
 
-Note that now both `Config` and `MyLogger` exist within `MyApp`, not in `Tests`. Therefore we don't even have to keep them local within `Test_003`. They are however not part of the script, therefore they will cease to exist as soon as the script `Tests` is fixed again, very much like the helpers. 
+Note that now both `Config` and `MyLogger` exist within `MyApp`, not in `Tests`. Therefore we don't even have to keep them local within `Test_003`. They are however not part of the script, so will disapear as soon as the script `Tests` is fixed again, very much like the helpers. 
 
-Let's try again:
+Let’s try again:
 
 ~~~
       RunThese 3
@@ -664,15 +665,15 @@ Looking for a function "Cleanup"...
   Function "Cleanup" found and executed.
 ~~~
 
-Clearly we need to have one test case for every result the function `TxtToCsv` might return but we leave that as an exercise to you. We have more important test cases to write: we want to make sure that whenever we create a new version of the EXE it will keep working.
+Clearly we need to have one test case for every result the function `TxtToCsv` might return but we leave that as an exercise to you. We have more important test cases to write: we want to ensure whenever we create a new version of the EXE that it will keep working.
 
-Let's rename the test functions we have so far: 
+Let’s rename the test functions we have so far: 
 
 * `Test_001` becomes `Test_map_01` 
 * `Test_002` becomes `Test_map_02` 
 * `Test_003` becomes `Test_TxtToCsv_01` 
 
-The new test cases we are about to add will be named `Test_exe_01` etc. For our application we could get  away without grouping, but once you have more than, say, 20 test cases grouping is a must. Therefore we take the opportunity to demonstrate how this can be done.
+The new test cases we are about to add will be named `Test_exe_01`, etc. For our application we could manage without grouping, but once you have more than, say, 20 test cases, grouping is a must. So we demonstrate now how this can be done.
 
 
 ### The "Initial" function
@@ -700,32 +701,32 @@ leanpub-end-insert
 ...
 ~~~
 
-`Initial` does not have to return a result but if it does it must be a Boolean. For "success" it should return a `1` and otherwise a `0`. If it does return `0` then no test cases are executed but if there is a function `Cleanup` it will be executed. Therefore `Cleanup` should be ready to clean up in case `Initial` was only partly or not at all successful. 
+`Initial` does not have to return a result but if it does it must be a Boolean. For "success" it should return a `1` and otherwise a `0`. If it does return `0` then no test cases are executed, but if there is a function `Cleanup` it will be executed. Therefore `Cleanup` should be ready to clean up in case `Initial` was only partly or not at all successful. 
 
-We have changed `Initial` so that it now returns a result because copying the files over might fail for all sorts of reasons, and we cannot do without.
+We have changed `Initial` so that it now returns a result because copying the files over might fail for all sorts of reasons – and we cannot do without them.
 
-`Initial` may or may not accept a right argument. If it does it will be fed with a namespace that holds all the parameters.
+`Initial` may or may not accept a right argument. If it does it will be passed a namespace that holds all the parameters.
 
-What we do in `Initial` apart from creating the references:
+What to do in `Initial`, apart from creating the references:
 
-* First we create a global variable `∆Path` which holds a path to a folder `MyApp_Tests` within the Windows temp folder.
-* We then remove that folder in case it still exists from any previously failing test cases.
-* We then create it.
-* We ask for a list of all text files in the `texts\en\` folder.
-* We copy all those files over to our temporary test folder.
-* Finally we check the return code of the copy operation; `R` gets 1 (indicating success) only in case they were successful.
+* Create a global variable `∆Path` which holds a path to a folder `MyApp_Tests` within the Windows temp folder.
+* Remove that folder, in case it persists from previously failing test cases.
+* Create it.
+* Get a list of all text files in the `texts\en\` folder.
+* Copy those files to our temporary test folder.
+* Check the return code of the copy operation; `R` gets 1 (indicating success) only if it was successful.
 
 
 A> # Machine-dependent initialisation
 A> 
-A> What if you need to initialise something (say a database connection) but it is somehow different depending on what machine the tests are executed on (IP address, user-id, password...)?
+A> What if you need to initialise something (say a database connection) but it is depends on the machine the tests are executed on  – its IP address, user-id, password…?
 A>
-A> The test framework tries to find two different INI files in the current directory:
-A> First it looks for `testcase.ini`. It then tries to find `testcase_{computername}.ini`. "computername" is what you get when you execute `⊣ 2 ⎕nq # 'GetEnvironment' 'Computername'`.
+A> The test framework looks for two different INI files in the current directory:
+A> First it looks for `testcase.ini`. It then tries to find `testcase_{computername}.ini`. `computername` here is what you get when you execute `⊣ 2 ⎕nq # 'GetEnvironment' 'Computername'`.
 A>
-A> If it finds any of them (or both) it instantiates the `IniFile` class as `INI` on these INI files within the namespace that hosts your test cases. In case of a name clash the setting in `testcase_{computername}.ini` will win because it is the last one.
+A> If it finds any of them (or both) it instantiates the `IniFile` class as `INI` on these INI files within the namespace that hosts your test cases. In the case of a clash, the setting in `testcase_{computername}.ini` prevails.
 
-Now we are ready to test the EXE; create it from scratch. Our first test case will process the file "ulysses.txt":
+Now we are ready to test the EXE; create it from scratch. Our first test case will process the file `ulysses.txt`:
 
 ~~~
 :Namespace Tests
@@ -735,26 +736,26 @@ Now we are ready to test the EXE; create it from scratch. Our first test case wi
       ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
       R←∆Failed
      ⍝ Precautions:
-      F.DeleteFile⊃F.Dir ∆Path,'\*.csv'
-      rc←##.Execute.Application'MyApp.exe ',∆Path,'\ulysses.txt'
-      →GoToTidyUp ##.MyApp.EXIT.OK≠⊃rc
-      →GoToTidyUp~F.Exists ∆Path,'\ulysses.csv'
+      F.DeleteFile⊃F.Dir ∆Path,'\*.csv' ⍝ (1)
+      rc←##.Execute.Application'MyApp.exe ',∆Path,'\ulysses.txt' ⍝ (2)
+      →GoToTidyUp ##.MyApp.EXIT.OK≠⊃rc ⍝ (3)
+      →GoToTidyUp~F.Exists ∆Path,'\ulysses.csv' ⍝ (4)
       R←∆OK
      ∆TidyUp:
-      F.DeleteFile⊃F.Dir ∆Path,'\*.csv'
+      F.DeleteFile⊃F.Dir ∆Path,'\*.csv' ⍝ (5)
     ∇
 ...
 ~~~
 
 Notes:
 
-* First we make sure that there are no CSV files in `∆Path`.
-* Then we call the EXE and pass the filename of "ulysses" as a command line parameter.
-* We check the return code and jump to `∆TidyUp` in case it's not what we expect.
-* We then check whether there is now a file "ulysses.cvs" in `∆Path`.
-* Finally we clean up and delete (again) all CSV files in `∆Path`.
+1. Ensure there are no CSVs in `∆Path`.
+2. Call the EXE with `ulysses.txt` as a command line parameter.
+3. Check the return code and jump to `∆TidyUp` if it’s not what we expect.
+4. Check whether there is now a file `ulysses.cvs` in `∆Path`.
+5. Clean up and delete (again) all CSV files in `∆Path`.
 
-Let's run our new test case:
+Let’s run our new test case:
 
 ~~~
       GetHelpers
@@ -802,7 +803,7 @@ We need one more test case:
 ...
 ~~~
 
-This one will process _all_ TXT files in `∆Path` and create a file `total.csv`. We check whether this is the case and we are done. Almost: in a real world application we most likely would also check for a path that contains spaces in its name. We don't do this, instead we execute the full test suite:
+This one will process _all_ TXTs in `∆Path` and write a file `total.csv`. We check whether this is the case and we are done. Almost: in a real-world application we most likely would also check for a path that contains spaces in its name. We don’t do this, instead we execute the full test suite:
 
 ~~~
       GetHelpers
@@ -830,15 +831,15 @@ Looking for a function "Cleanup"...
 0   
 ~~~
 
-Note that the function `Run` prints its findings to the session but also returns a result. That's a two-item vector:
+Note that the function `Run` prints its findings to the session but also returns a result. That’s a two-item vector:
 
-1. Is a return code. `0` means "okay".
-2. Is a vector of vectors that is identical with what's printed to the session.
+1. Is a return code. `0` means OK.
+2. Is a vector of vectors, identical to what’s printed to the session.
 
 
 ### Cleaning up
 
-Although we have been careful and made sure that every single test case cleans up after itself (in particular those that failed), we have not removed the directory `∆Path` points to. We add some code to the `Cleanup` function in order to achieve that:
+Although we have been careful and made sure that every single test case cleans up after itself (in particular those that failed), we have not removed the directory that `∆Path` points to. We add some code to the `Cleanup` function in order to achieve that:
 
 ~~~
 :Namespace Tests
@@ -856,14 +857,14 @@ leanpub-start-insert
 :EndNamespace
 ~~~
 
-This function now checks whether a global `∆Path` exists. If that's the case then the directory it is pointing to is removed and the global variable deleted. The `Tester` framework checks whether there is a function `Cleanup`. 
+This function now checks whether a global `∆Path` exists. If so, the directory it points to is removed and the global variable deleted. The `Tester` framework checks whether there is a function `Cleanup`. 
 
-If that's the case the function is executed after the last test case has been executed. The function must be either monadic or niladic; in case it is a monadic function the right argument will be `⍬`. It must either return a shy result (ignored) or no result at all.
+If so, the function is executed after the last test case has been executed. The function must be either monadic or niladic; if it is a monadic function the right argument will be `⍬`. It must either return a shy result (ignored) or no result at all.
 
 
 ### Markers
 
-We've already mentioned elsewhere that it is useful to mark code in particular ways, like `⍝FIXME⍝` or `⍝TODO⍝`. It is an excellent idea to have a test case that checks for such markers. Before something makes it to a customer such strings should probably be removed from the code.
+We’ve already mentioned elsewhere that it is useful to mark code in particular ways, like `⍝FIXME⍝` or `⍝TODO⍝`. It is an excellent idea to have a test case that checks for such markers. Before something makes it to a customer such strings should probably be removed from the code.
 
 ### The "L" and "G" helpers
 
@@ -895,21 +896,21 @@ However, in order to do this you have to make sure that the variable is either s
 
 ## Conclusion
 
-We have now a test suite available that allows us at any stage to call it in order to make sure that everything still works. This is invaluable.
+We have now a test suite available that allows us at any stage to call it in order to make sure that everything still works. Invaluable.
 
 
 ## The sequence of tests
 
-Please note that there is always the possibility of test cases being dependent on another, even if you try to avoid that. That might be by mistake or due to an unnoticed side effect.
+Please note that there is always the possibility of dependencies between test cases, however you try to avoid that. That might be a mistake – or due to an unnoticed side effect.
 
-That doesn't mean that you shouldn't aim for making all test cases completely independent from one another. Watch out: a future version of `Tester` might come with an option that shuffles the test cases before executing them.
+That doesn’t mean that you shouldn’t aim for making all test cases completely independent from one another. A future version of `Tester` might have an option to shuffle the test cases before executing them. That would help find dependencies.
 
 
 ## Testing in different versions of Windows 
 
-When you wrote for yourself, your code needed to run only on the version of Windows you use yourself. To ship it as a product you will have to support it on the versions your customers use. 
+When you wrote for yourself, your code needed to run only on the version of Windows you use yourself. To ship it as a product, you will support it on the versions your customers use. 
 
-You need to pick the versions of Windows you will support, and run your tests on all those versions. If you are not already a fan of automated tests, you are about to become one. 
+You need to pick the versions of Windows you will support, and run your tests on all those versions. (If you are not already a fan of automated tests, you are about to become one.) 
 
 For this you will need one of:
 
@@ -925,23 +926,32 @@ The machine images are large, about 10 GB each. So you want several hundred giga
 
 ## Testing APLTree modules
 
-By now we are using quite a number of modules from the APLTree project. Shouldn't we test them as well? After all if they break our application will stop working! Well, there are pros and cons:
+By now we are using quite a number of modules from the APLTree project. Shouldn’t we test them as well? After all if they break, our application will stop working! Well, there are pros and cons:
 
 Pro
 : The modules have their own unit tests, and those are exhaustive. An update is published only after all the test cases have passed.
 
-: The modules are constantly adapted to new demands or changes in the environment etc. Therefore a new version of Windows or Dyalog won't break them, although you need to allow some time for this to happen. "Some time" just means that you cannot expect the APLTree modules to be ready on the day a new version of either Windows or Dyalog becomes available.
+: The modules are constantly adapted to new demands or changes in the environment, etc. Therefore a new version of Windows or Dyalog won’t break them, although you need to allow some time for this to happen. “Some time” just means that you cannot expect the APLTree modules to be ready on the day a new version of either Windows or Dyalog becomes available.
 
 Contra
-: We cannot know whether those test cases cover the same environment(s) (different versions of Windows, different versions of Dyalog, domain-managed network or not, network drives or not, multi-threaded versus single-threaded, you name it) our application will run in. 
+: We cannot know whether those test cases cover the same environment/s (different versions of Windows, different versions of Dyalog, domain-managed network or not, network drives or not, multi-threaded versus single-threaded, you name it) our application will run in. 
 
-That clearly means that we should incorporate the tests those modules come with into our own test suite, although we are sure that not too many people/companies using modules from the APLTree library are actually doing this. 
+That suggests we should incorporate the tests the modules come with into our own test suite. <!-- , although we are sure that not too many people/companies using modules from the APLTree library are actually doing this. --> 
 
-Anyway, it's not difficult to do at all: every module has a workspace saved on GitHub that comes with all that's needed in order to carry out the test cases. 
+It’s not difficult to do: every module has a workspace saved on GitHub that comes with everything needed to run the test cases. 
 
-All it requires it starting Dyalog (_your_ version of Dyalog that is), load that workspace, execute `#.TestCases.Run` (because all modules of the APLTree library host their test cases in an ordinary (non-scripted) namespace, catch the result and return it with `⎕OFF` to the calling environment. As long as that is `0` that's all what's required.
+All it requires is 
 
-If it's not `0` you start your version of Dyalog, load the workspace of the module with one or more failing test cases and run `#.TestCases.RunDebug 0` in order to investigate what went wrong. 
+* start Dyalog (_your_ version of Dyalog that is)
+* load that workspace
+* execute `#.TestCases.Run` (because all modules of the APLTree library host their test cases in an ordinary (non-scripted) namespace
+* catch the result and return it with `⎕OFF` to the calling environment: as long as it’s `0`, all is well
+
+If it’s not `0`:
+
+* start your version of Dyalog
+* load the workspace of the module that has one or more failing test cases
+* run `#.TestCases.RunDebug 0` to investigate what went wrong
 
 
 [^beck]: Kent Beck, in conversation with one of the authors.
@@ -955,16 +965,21 @@ If it's not `0` you start your version of Dyalog, load the workspace of the modu
 [^where]: With version 16.0 the same can be achieved with the new primitive `⍸`.
 
 
-*[HTML]: Hyper Text Mark-up language
-*[DYALOG]: File with the extension 'dyalog' holding APL code
-*[TXT]: File with the extension 'txt' containing text
-*[INI]: File with the extension 'ini' containing configuration data
-*[DYAPP]: File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application
-*[EXE]: Executable file with the extension 'exe'
-*[BAT]: Executeabe file that contains batch commands
+
+## Common abbreviations
+
+*[BAT]: Executable file that contains batch commands
+*[CHM]: Executable file with the extension `.chm` that contains Windows Help (Compiled Help) 
 *[CSS]: File that contains layout definitions (Cascading Style Sheet)
-*[MD]: File with the extension 'md' that contains markdown
-*[CHM]: Executable file with the extension 'chm' that contains Windows Help(Compiled Help) 
 *[DWS]: Dyalog workspace
-*[WS]: Short for Workspaces
+*[DYALOG]: File with the extension `.dyalog` holding APL code
+*[DYAPP]: File with the extension `.dyapp` that contains `Load` and `Run` commands in order to put together an APL application
+*[EXE]: Executable file with the extension `.exe`
+*[HTM]: File in HTML format
+*[HTML]: HyperText Mark-up language
+*[INI]: File with the extension `.ini` containing configuration data
+*[MD]: File with the extension `.md` that contains markdown
 *[PF-key]: Programmable function key
+*[TXT]: File with the extension `.txt` containing text
+*[WS]: Workspaces
+
