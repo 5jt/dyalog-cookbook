@@ -3,38 +3,37 @@
 
 # The Windows Event Log
 
-Now that we have managed to establish `MyApp` as a Windows Service we have to make sure that it behaves. That means we need to make it report to the Windows Event Log.
+
+Now that we have managed to establish `MyApp` as a Windows Service we need to ensure it behaves. We shall make it report to the Windows Event Log.
 
 
-## What exactly is the Windows Event Log?
+## What… is the Windows Event Log?
 
-In case you've never heard of it, or you are not sure what exactly the purpose of it is, this is for you; otherwise jump to "Why is the Windows Event Log important?".
-
-The Windows Event Log is by no means an alternative to application specific log files. Most ordinary applications do not write to the Windows Event Log at all, some only when things go wrong and very few always. 
+The Windows Event Log is by no means an alternative to application-specific log files. Most ordinary applications do not write to the Windows Event Log at all, some do only when things go wrong, and a very few, always. 
 
 In other words, for ordinary applications you may or may not find useful information in the Windows Event Log.
 
-That's very different for any application that runs as a Windows Service: those are _expected_ to write to the Windows Event Log when it starts, when it quits and when it encounters problems, and it might add even more information. You will find it hard to find an exception.
+In contrast,  any application that runs as a Windows Service is _expected_ to write to the Windows Event Log when it starts, when it quits and when it encounters problems, and it might add even more information. There are few exceptions.
 
-Similarly Scheduled Tasks are expected to do the same, although some don't, or report just errors.
+Similarly, Scheduled Tasks are expected to do the same, although some don't, or report only errors.
 
 
 ## Is the Windows Event Log important?
 
-On a server all applications run either as Windows Services (most likely all of them) or as Windows Scheduled Tasks. Since no human is sitting in front of a server we need a way to detect problems on servers automatically. 
+On a server, all applications run either as Windows Services (most likely all of them) or as Windows Scheduled Tasks. Since no human is sitting in front of a server we need a way to detect problems on servers automatically. 
 
 That can be achieved by using software that constantly scans the Windows Event Log. It can email or text admins when an application that's supposed to run doesn't, or when an application goes astray, drawing attention to that server.
 
-In large companies, which usually run some to many servers, it is common to use a software which checks on the Windows Event Logs of _all_ those servers.
+In large companies, which usually manage many servers, it is common to use software that checks the Windows Event Logs of _all_ those servers.
 
-So yes, the Windows Event Log is indeed really important.
+So yes, the Windows Event Log is indeed important. Really important.
 
 
 ## How to investigate the Windows Event Log
 
-In modern versions of Windows you just press the Win key and then type "Event". That brings up a list which contains at least "Event Viewer".
+In modern versions of Windows you just press the Win key and type `Event`. That brings up a list which contains at least _Event Viewer_.
 
-By default the Event Viewer displays all Event Logs on the current (local) machine. However, you can connect to another computer and investigate its Event Log, rights permitted. We keep it simple and focus just on the local Windows Event Log.
+By default, the Event Viewer displays all Event Logs on the current (local) machine. However, you can connect to another computer and investigate its Event Log, if you have the right permissions. Here we keep it simple, and focus just on the local Windows Event Log.
 
 
 ## Terms used
@@ -48,11 +47,11 @@ From the Microsoft documentation:
 
 ## Application log versus custom log
 
-The vast majority of applications that write to the Windows Event Log write into "Windows Logs\\Application", but if you wish you can create your own log under "Applications and services logs". 
+The great majority of applications that write to the Windows Event Log write into `Windows Logs\Application`, but if you wish you can create your own log under `Applications and services logs`. 
 
-However, be aware that for creating a custom log you need admin rights. Therefore creating a custom log is something that is usually done by the installer installing your software since that needs admin rights by definition anyway.
+For creating a custom log you need admin rights. So creating a custom log is something usually done by the installer for your software, since it needs admin rights by definition anyway.
 
-We keep it simple here and write to the "Application" log.
+We keep it simple here, and write to the `Application` log.
 
 
 ## Let's do it
@@ -61,12 +60,12 @@ Copy `Z:\code\v13` to `Z:\code\v14`.
 
 ### Preconditions
 
-Note that any attempt to write to the Windows Event Log with the `WindowsEventLog` class requires the Dyalog .NET bridge to be a sibling of the EXE, be it the Dyalog EXE or a taylor-made stand-alone EXE.
+Note that any attempt to write to the Windows Event Log with the `WindowsEventLog` class requires the Dyalog .NET bridge to be a sibling of the EXE, be it the Dyalog EXE or a custom stand-alone EXE.
 
 
 ### Loading WindowsEventLog
 
-We are going to make `MyApp` writing to the Windows Event Log only when it runs as a Service. Therefore we need to load the class `WindowsEventLog` from within `MakeService.dyapp` (but not `MyApp.dyapp`):
+We are going to make `MyApp` write to the Windows Event Log only when it runs as a Service. Therefore we need to load the class `WindowsEventLog` from within `MakeService.dyapp` (but not `MyApp.dyapp`):
 
 ~~~
 ...
@@ -81,7 +80,7 @@ Load ..\AplTree\Logger
 
 ### Modify the INI file
 
-We need to add a flag to the INI file that allows us to toggle writing to the Window Event Log:
+We need to add to the INI a flag that allows us to toggle writing to the Window Event Log:
 
 ~~~
 ...
@@ -96,12 +95,12 @@ write       = 1 ; Has an affect only when it's running as a Service
 leanpub-end-insert  
 ~~~
 
-Why can this be useful? During development, when you potentially run the Service in order to check what it's doing, you might not want the application to write to your Windows Event Log, for example.
+Why would this be useful? During development, when you run the Service to see what it's doing, you might not want the application to write to your Windows Event Log, for example.
 
 
 ### Get the INI entry into the "Config" namespace
 
-We modify the `MyApp.CreateConfig` function so that it creates `Config.WriteToWindowsEventLog` from that INI file entry:
+We modify the `MyApp.CreateConfig` function so that it creates `Config.WriteToWindowsEventLog` from that INI entry:
 
 ~~~
 ∇ Config←CreateConfig isService;myIni;iniFilename
@@ -123,9 +122,9 @@ leanpub-end-insert
 ~~~
 
 
-### The functions "Log" and "LogError"
+### Functions Log and LogError
 
-For logging purposes we introduce two new functions, `Log` and `LogError`. First `Log`:
+For logging we introduce two new functions, `Log` and `LogError`. First `Log`:
 
 ~~~
 ∇ {r}←{both}Log msg
@@ -149,9 +148,9 @@ For logging purposes we introduce two new functions, `Log` and `LogError`. First
 ∇
 ~~~
 
-Note that this function always writes to the application's log file. By specifying "both" as left argument one can enforce the function to also write to the Windows Event Log, given that `Config.WriteToWindowsEventLog` is true. 
+Note that this function always writes to the application's log file. By specifying `'both'` as left argument one can get the function to also write to the Windows Event Log, given that `Config.WriteToWindowsEventLog` is true. 
 
-That allows us to use `Log` for logging all events but errors, and to specify "both" as left argument when we want the function to record the Service starting, pausing and stopping. In other words, all calls to `MyLogger.Log` will be replaced by `Log`, although some calls require "both" to be passed as left argument.
+That allows us to use `Log` for logging all events but errors, and to specify `'both'` as left argument when we want the function to record the Service starting, pausing and stopping. In other words, all calls to `MyLogger.Log` will be replaced by `Log`, although some calls require `'both'` to be passed as the left argument.
 
 We also introduce a function `LogError`:
 
@@ -170,11 +169,11 @@ We also introduce a function `LogError`:
 ∇
 ~~~
 
-Note that the `Logger` class traps any errors that might occur. The `WindowsEventClass` does not do this, and the calls to `WriteInfo` and `WriteError` might fail for all sorts of reasons: invalid data type, invalid depth, lack of rights, you name it. 
+Note that the `Logger` class traps any errors that occur. The `WindowsEventClass` does not do this, and the calls to `WriteInfo` and `WriteError` might fail for all sorts of reasons: invalid data type, invalid depth, lack of rights – you name it. 
 
-Therefore both `Log` and `LogError` trap any errors and write to the log file in case something goes wrong. Note also that in this particular case it's okay to trap all possible errors (0) because we cannot possibly foresee what might go wrong. In a real-world application you still want to be able to switch this kind of error trapping of via an INI entry etc.
+Therefore both `Log` and `LogError` trap any errors and write to the log file in case something goes wrong. Note also that in this particular case it's okay to trap all possible errors (0) because we cannot possibly foresee what might go wrong. In a real-world application you still want to be able to switch this kind of error trapping off via an INI entry etc.
 
-In case of an error we now want the function `LogError` to be called, so we change `SetTrap` accordingly:
+In the case of an error we now want the function `LogError` to be called, so we change `SetTrap` accordingly:
 
 ~~~
 ∇ trap←{force}SetTrap Config
@@ -188,7 +187,7 @@ leanpub-end-insert
 ∇
 ~~~
 
-Now it's time to replace the call to `MyLogger.Log` by a call to `Log` in the `MyApp` class; use the "Replace" feature of the editor in order to achieve that.
+Now it's time to replace the call to `MyLogger.Log` by a call to `Log` in the `MyApp` class; use the replace feature of the editor in order to achieve that.
 
 There are however three functions where we need to add `'both'` as left argument:
 
@@ -213,7 +212,7 @@ leanpub-end-insert
 ∇
 ~~~
 
-Note that we have to make use of the "compose" (`∘`) operator here: only by "gluing" the left argument (`'both'`) to the function name with the compose operator can we make sure that everything that's passed on to the `Log` function will be written not only to the log file but also to the Windows Event Log when `ServiceState` is managing the communication between the SCM and the application.
+Note that use the _compose_ (`∘`) operator here: only by ‘gluing’ the left argument (`'both'`) to the function name with the compose operator can we ensure everything's passed to the `Log` function is written not only to the log file but also to the Windows Event Log when `ServiceState` is managing the communication between the SCM and the application.
 
 The second function to be changed is `Off`:
 
@@ -226,7 +225,7 @@ leanpub-end-insert
       :Else
 ~~~
 
-Now we change `Initial`: in case the application is running as a service we let `Initial` create an instance of `WindowsEventLog` and return it as part of the result.
+Now we change `Initial`: if the application is running as a service we let `Initial` create an instance of `WindowsEventLog` and return it as part of the result.
 
 ~~~
 leanpub-start-insert
@@ -258,9 +257,9 @@ leanpub-end-insert
 ∇
 ~~~
 
-`Initial` is called by `RunAsService` and `StartFromCmdLine` but because the result of `Initial` remains unchanged if the application is not running as a Service we need to amend just `RunAsService`. 
+`Initial` is called by `RunAsService` and `StartFromCmdLine`, but because the result of `Initial` remains unchanged if the application is not running as a Service we need to amend just `RunAsService`. 
 
-We localize `MyWinEventLog` (the name of the instance) and change the call to `Initial` since it now returns a three-item vector:
+We localise `MyWinEventLog` (the name of the instance) and change the call to `Initial` since it now returns a three-item vector:
 
 ~~~
 leanpub-start-insert
@@ -284,7 +283,7 @@ Having made all these changes we should check whether the basics still work:
 
 1. Double-click `Make.bat` in order to re-compile the EXE.
 1. Double-click `MyApp.dyapp`. This assembles the workspace, including the test cases.
-1. Answer the question whether all test cases shall be executed with "y".
+1. Answer with `y` the question whether all test cases shall be executed.
 
 Ideally the test cases should pass.
 
@@ -340,37 +339,37 @@ We shall add a test case that checks whether the new logging feature works. For 
 Notes:
 
 1. First we save the number of records currently saved in the Windows Event Log "Application".
-1. We then start and stop the server in order to make sure that we get some fresh records written.
+1. We then start and stop the server to make sure we get some fresh records written.
 1. We then read the number of records plus 10 (others write to the Windows Event Log as well) and investigate them.
 
 
 ## Tips, tricks and traps
 
-No doubt you feel now confident with the Windows Event Log, right? Well, keep reading:
+Feel confident with the Windows Event Log? Well, a few more wrinkles yet:
 
-* When you create a new source in a (new) custom log then in the Registry the new log is listed as expected but it has _two_ keys, one carrying the name of the source you intended to create and a second one with the same name as the log itself. In the Event Viewer however only the intended source is listed.
+* When you create a new source in a (new) custom log then in the Registry the new log is listed as expected but it has _two_ keys. One has the name of the source you intended to create; the second has the same name as the log itself. In the Event Viewer however only the former is listed.
 
-* The names of sources must be _unique_ across _all_ logs.
+* Names of sources must be _unique_ across _all_ logs.
 
-* Only the first 8 characters of the name of a source are really taken into account; everything else is ignored. That means that when you have a source `S1234567_1` and you want to register `S1234567_2` you will get an error "Source already exists".
+* Only the first 8 characters of the name of a source are really taken into account; everything else is ignored. If you have a source `S1234567_1` and try to register `S1234567_2` you get an error _Source already exists_.
 
-* When the Event Viewer is up and running and you either create or delete a log or a source and then press F5 then the Event Viewer GUI flickers, and you might expect that to be an indicator for the GUI having updated itself.
+* The Event Viewer is up and running. You either create or delete a log or a source and press F5. The Event Viewer GUI flickers. You might suppose the GUI just updated itself.
 
-  However, that's not the case, at least not at the time of writing (2017-03). You have to close the Event Viewer and re-open it to actually see your changes.
+  That's not the case, at the time of writing (2017-03). You have to close the Event Viewer and re-open it to actually see your changes.
 
-* Even when your user ID has admin rights and you've started Dyalog in elevated mode ("Run as administrator" in the context menu) you _cannot_ delete a custom log with calls to `WinReg` or `WinRegSimple` (the APLTree classes that deal with the Windows Registry). The only way to delete custom logs is with the Registry Editor: go to the key
+* Even when your user ID has admin rights and you've started Dyalog in elevated mode (_Run as administrator_ in the context menu) you _cannot_ delete a custom log with calls to `WinReg` or `WinRegSimple`, the APLTree classes that deal with the Windows Registry. The only way to delete custom logs is with the Registry Editor: go to the key
 
   `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\EventLog\`
   
-  and delete the key(s) (=children) you want to get rid of. It's not a bad idea to create a system restore point [^restore] before you do that. 
+  and delete the key/s (i.e. children) you want to get rid of. (Probably wise to create a system restore point [^restore] before you do that.) 
 
-  By the way, if you never payed attention to System Restore Points you really need to follow the link because under Windows 10 System Restore Points are not generated automaticelly by default any more; they need to be switched on explicitly, and they really should.
+  Worth folllowing that link and reviewing System Restore Points. Under Windows 10, System Restore Points are no longer generated by default; they need to be switched on explicitly. And they should be.
   
-* Once you have written events to a source and then deleted the log the source pretends to belong to, the events remain saved anyway. They are just not visible anymore. That can be proven by re-creating the log: all the events make a come-back and show up again as they did before. 
+* Once you have written events to a source and deleted the log the source apears to belong to, the events remain saved anyway. They are just not visible anymore. That can be shown by re-creating the log: all the events appear as they were before. 
 
-  If you really want to get rid of the logs then you have to select the "Clear log" command from the context menu in the Event Viewer (tree only!) before you delete the log.
+  If you want really to get rid of a log, select the _Clear log_ command from the context menu in the Event Viewer (tree only!) before you delete the log.
 
-* If you want to analyze the contents of a log in APL you will find the instance methods `Read` (which reads the whole log) and `ReadThese` (which takes line numbers and reads just those specified) useful. 
+* To analyse the content of a log in APL, the instance methods `Read` (which reads the whole log) and `ReadThese` (which takes line numbers and reads just those specified) are useful. 
  
 
 [^winlog]: Microsoft on the Windows Event Log: <https://msdn.microsoft.com/en-us/library/windows/desktop/aa363648(v=vs.85).aspx>
@@ -378,16 +377,20 @@ No doubt you feel now confident with the Windows Event Log, right? Well, keep re
 [^restore]: Details about System Restore Point: <https://en.wikipedia.org/wiki/System_Restore>
 
 
-*[HTML]: Hyper Text Mark-up language
-*[DYALOG]: File with the extension 'dyalog' holding APL code
-*[TXT]: File with the extension 'txt' containing text
-*[INI]: File with the extension 'ini' containing configuration data
-*[DYAPP]: File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application
-*[EXE]: Executable file with the extension 'exe'
-*[BAT]: Executeabe file that contains batch commands
+## Common abbreviations
+
+*[BAT]: Executable file that contains batch commands
+*[CHM]: Executable file with the extension `.chm` that contains Windows Help (Compiled Help) 
 *[CSS]: File that contains layout definitions (Cascading Style Sheet)
-*[MD]: File with the extension 'md' that contains markdown
-*[CHM]: Executable file with the extension 'chm' that contains Windows Help(Compiled Help) 
 *[DWS]: Dyalog workspace
-*[WS]: Short for Workspaces
+*[DYALOG]: File with the extension `.dyalog` holding APL code
+*[DYAPP]: File with the extension `.dyapp` that contains `Load` and `Run` commands in order to put together an APL application
+*[EXE]: Executable file with the extension `.exe`
+*[HTM]: File in HTML format
+*[HTML]: HyperText Mark-up language
+*[INI]: File with the extension `.ini` containing configuration data
+*[MD]: File with the extension `.md` that contains markdown
 *[PF-key]: Programmable function key
+*[TXT]: File with the extension `.txt` containing text
+*[WS]: Workspaces
+

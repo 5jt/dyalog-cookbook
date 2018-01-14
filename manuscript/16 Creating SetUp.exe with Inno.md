@@ -10,186 +10,172 @@ Defining the goal
 ------------------
 
 
-Our application is now ready for being installed on a client's machine. What we need is a piece of software that does a couple of things for us:
+Our application is now ready to be installed on a client's machine. What we need is a tool that:
 
-1. Collect all the files that need to go onto a client's machine.
-1. Create a file `SetUp.exe` (you might choose a different name) that contains the program that is capable of installing our application on a client's machine and also carries all those files after compressing them.
+1. Collects all the files needed on a target machine
+1. Writes an installer `SetUp.exe` (you could choose a different name) that installs MyApp on the target machine with all its files
 
-There are many more things an installer might or might not do, but these are the essential tasks.
+There are other things an installer might do, but these are the essential tasks.
 
 
 Which tool
 ----------
 
-There are quite a number of installers available. The market leader seems to be Wix[^wix] which is a must in case you need to roll out your software to large corporations.
+There are quite a number of tools available to write installers. Wix[^wix] is popular, and a good candidate if you need to install your application in a large corporations.
 
-Wix is very powerful, but the power has a price: it's also very complex. We reckon that you start smaller than with large corporations; if this assumption is wrong it would mean you are most likely in a position that allows you to hire a professional doing the job for you anyway.
+Wix is very powerful, but its power has a price: complexity. We reckon your first customers are unlikely to have the complex installation requirements of a large corporation. You can start with something simpler. 
 
-To start smaller means choosing a tool that is less complicated and can be mastered fast. Inno has made a name for itself as a tool that combines powerful features with an easy-to-use interface.
+If that’s not so, and you need to install your application in a complex corporate IT environment, consider consulting an IT professional for this part of the work. 
 
-To download Inno visit <http://www.jrsoftware.org/isdl.php>. We suggest to go for the "QuickStart Pack". That does not only install the Inno compiler and its help but also Inno Script Studio from Kymoto (<https://www.kymoto.org/>).
+Starting smaller allows you to choose a tool that is less complicated and can be mastered fast. Inno has made a name for itself as a tool that combines powerful features with an easy-to-use interface.
 
-It also comes with an encrypting DLL although we don't see the point of encrypting the installer. After the installation has been carried out a user can access all the files anyway.
+To download Inno visit <http://www.jrsoftware.org/isdl.php>. We recommend the 'QuickStart Pack'. That not only installs the Inno compiler and its help but also Inno Script Studio from Kymoto (<https://www.kymoto.org/>).
 
-The Script Studio does not only make it easier to use Inno, it comes also with a debugger which can be very helpful if you want to get to the bottom of a problem.
+It also comes with an encrypting DLL – although we don't see the point of encrypting the installer: after installation user can access all the files anyway.
 
-Note that both packages are free, even for commercial usage. However, you are encouraged to donate to both Inno and Script Studio as soon as you start to make money with your software.
+The Script Studio not only makes it easier to use Inno, it also comes with a  very helpful debugger.
+
+At the time of writing both packages are free, even for commercial usage. We encourage you to donate to both Inno and Script Studio as soon as you start to make money with your software.
 
 
 Inno and Script Studio
 ----------------------
 
-The easiest way to start with Inno is to take an existing script and study it. Trial and error and Inno's old-fashioned looking but otherwise excellent help are your friends.
+The easiest way to start with Inno is to take an existing script and study it. Trial and error and Inno's old-fashioned-looking but otherwise excellent help are your friends.
 
 
 Sources of information
 ----------------------
 
-When you run into an issue or need badly a particular feature then googling for it is of course a good idea, even better than referring to Inno's help: the help is excellent as a reference, you just type a term you need help with and press F1, but in case you don't know exactly what to search for Google is your friend. 
+When you run into an issue or badly need a particular feature, then Googling for it is of course a good idea, and can be even better than referring to Inno's help. The help is excellent as a reference – you just type a term you need help with and press F1 – but if you don't know exactly what to search for, Google is your friend. 
 
-You will find that Google often enough suggests Inno's help anyway, but Google gets you straight to the right page. In other words, Google does an excellent job when you search for something like "Inno src".
+Often enough Google points you to Inno's help anyway, getting you straight to the right page. In For example, Google does an excellent job when you search for something like _Inno src_.
 
-We found that's enough to get advice on all the problems we've run into while getting acquainted to Inno.
+We have found that all we needed while getting acquainted with Inno.
 
 
 Considerations
 --------------
 
-Normally an installer needs by definition admin rights. That's because installing a program is a potentially dangerous thing. 
+An installer needs admin rights. Installing a program is a potentially dangerous thing. 
 
-I> It is pretty rare to install an application in an unusual place like, say, `C:\MyFolder`. Under those rare circumstances it might be possible to install an application without admin rights.
+I> It is rare these days to install an application in, say, `C:\MyFolder`. Under such rare circumstances it might be possible to install an application without admin rights.
 I>
 I> However, even installing a font requires admin rights.
-
 
 Programs are usually installed in one of:
 
 * `C:\Program Files` 
 * `C:\Program Files (x86)`
 
-Those directories are protected by Windows, and only an administrator can therefore install programs, although an installer might well do other things that require more rights than the usual user account has, for example...
+Those directories are protected by Windows, so only an administrator can install programs. An installer might do other things that require admin rights, for example...
 
-* installing a Windows Service
-* creating an Event Log 
-* create certain entries in the Windows Registry
+* install a Windows Service
+* create an Event Log 
+* create entries in the Windows Registry
 
-Again you must consider where certain things should be written to. Log files cannot and should not go into either `C:\Program Files` and `C:\Program Files (x86)`, so they need to go elsewhere. 
+Again, you must consider where certain things should be written to. Log files cannot and should not go into either `C:\Program Files` and `C:\Program Files (x86)`, so they need to go elsewhere. 
 
-Let's assume that we want to install an application "Foo". These are your options: create a folder `Foo` within...
+Let's suppose we want to install an application Foo. Your options are to create a folder `Foo` within...
 
 * `C:\ProgramData`
 * `C:\Users\{username}\AppData\Local`
 * `C:\Users\{username}\AppData\Roaming`
 
-The `Roaming` folder is the right choice if a user wants the application to be available no matter on which computer she logs on to.
+The `Roaming` folder is the right choice if a user wants the application to be available regardless of which computer she logs on to.
 
 A> # About C:\ProgramData
-A> There is only one difference between the "AppData" and the "ProgramData" folders: every user has its own "AppData" folder but there is only one "ProgramData" folder which is therefore shared by all users.
+A> There is only one difference between the _AppData_ and the _ProgramData_ folders: every user has her own _AppData_ folder but there is only a single _ProgramData_ folder, shared by all users.
 A>
-A> The folder `C:\ProgramData` is hidden by default, so you will see it only when you tick the "Hidden items" check box on the "View" tab of the Windows Explorer.
+A> The folder `C:\ProgramData` is hidden by default, so you will see it only when you tick the _Hidden items_ check box on the _View_ tab of the Windows Explorer.
 
-Of course you can put that folder in any place you want --- as long as you own the necessary rights --- but by choosing one of these two locations you stick to what's usual under Windows.
+Of course you can put that folder in any place you want --- provided you have the necessary rights --- but by choosing one of these two locations you stick to what's usual under Windows.
 
 
 Sample application
 ------------------
 
-We use a very simple application for this chapter: the application "Foo" just puts up a form:
+We use a very simple application for this chapter: the application Foo just puts up a form:
 
 ![Sample application "Foo"](Images/foo.png)
 
-As soon as you press either <enter> or <escape> or click the "Close" button it will quit. That's all it is doing.
+As soon as you press either Enter or Esc or click the _Close_ button it will quit. That's all it does.
 
 The application comes with several files. This is a list of <http://cookbook.dyalog.com/code/v16/>:
 
 `Foo.dws`
-
-: The workspace from which `Foo.exe` was created with the File > Export menu command.
+: The workspace from which `Foo.exe` was created with the _File > Export_ menu command
 
 `Foo.exe`
-
-: The application's EXE, created from the aforementioned workspace.
+: The application's EXE, created from the aforementioned workspace
 
 `foo.ico`
-
 : The icon used by the application
 
 `Foo.iss`
-
 : The Inno file that defines how to create the installer EXE. It is this file we are going to discuss in detail.
 
 `foo.ini.remove_me`
-
-: Foo's INI file.
+: Foo's INI
 
 `ReadMe.html`
+: An HTM with basic information about the application
 
-: An HTML with basic information about the application.
-
-: With the exception of `Foo.exe` and `Foo.iss` the file are included for illustrating purposes only. The INI file for example is not processed at all by Foo.
+: With the exception of `Foo.exe` and `Foo.iss` the files are included for illustrative purposes only. The INI, for example, is not processed at all by Foo.
 
 
 
 Using Inno
 ----------
 
-Before we go into any details let's briefly look at a typical Inno script.
+Before going into any detail let's look briefly at a typical Inno script.
 
 
 ### Structure of an Inno script
 
-Inno requires, similar to good old fashioned INI files, a number of sections:
+An Inno script, like a good old-fashioned INI, has sections:
 
 
 Setup
-: In this section you are supposed to define constants that carry all the pieces of information that are specific to your application. There should be no other place where, say, a path or a filename is specified; that should all be done in the `[Setup]` section.
-
+: In this section you define all the constants specific to your application. There should be no other place where, say, a path or a filename is specified; it should all be done in the `[Setup]` section.
 
 Language
-: Used to define the language and the message file.
-
+: Defines the language and the message file
 
 Registry
-: This section can be used to write information to the Windows Registry.
-
+: Information to be written to the Windows Registry
 
 Dirs
-: Used to define constants that point to particular directories, and to specify permissions.
-
+: Constants that point to particular directories and specify permissions
 
 Files
-: Specifies all the files that are going to be collected within `SetUp.exe`.
-
+: Files that are going to be collected within `SetUp.exe`
 
 Icons
-: Specifies the icons that are required.
-
+: Icons required
 
 Run
-: Run other programs, either during installation or afterwards.
-
+: Other programs to be run, either during installation or afterwards
 
 Tasks
-: Add check boxes or radio buttons to the installation wizard's windows so that the user can decide whether those tasks should be carried out or not.
-
+: Check boxes or radio buttons for the installation wizard's windows so that the user can decide whether those tasks should be performed
 
 Code
-: Used to define programs in a scripting language similar to Pascal for doing more complex things.
+: Defines programs (in a scripting language similar to Pascal) for doing more complex things
 
-: Inno has powerful built-in capabilities which allow us to reach all our goals without writing any code, therefore we won't use the scripting capabilities. Note however that for many common tasks there are scripts available on the Internet.
+: Inno’s powerful built-in capabilities allow us to achieve our goals without writing any code, so we won't use the scripting capabilities. Note however that for many common tasks there are scripts available on the Internet.
 
 
 ### The file `Foo.iss`
 
-`Foo.iss` does not cover anything fancy, but it does cover the normal stuff. Note that the file has the extension ".iss" - that's Inno's extension. 
+Double-clicking the file's icon should open it in Inno Script Studio, the Inno IDE, with its execution and debugging tools.
 
-Therefore double-clicking it should bring up Inno Script Studio which does not only act as a special editor, it also allows you to execute the script, and it comes with debugging features as well.
 
-### Defining variables
+### Define variables
 
-It is recommended to define some variables at the top of any Inno script which will later be used one or more times.
+As a preamble, define as variables all the values you will use in the script. 
 
-This technique allows to reduce typing and is a safeguard against typos.
+This makes the script more readable, and guards against typos and conflicts. 
 
 ~~~
 #define MyAppVersion "1.0.0"
@@ -201,7 +187,8 @@ This technique allows to reduce typing and is a safeguard against typos.
 #define MyBlank " "
 ~~~
 
-`MyBlank` is included in order to improve readability: without it it can be difficult to spot a blank character in a name or path.
+`MyBlank` is included to improve readability. It makes it easier to spot a blank character in a name or path.
+
 
 ### The section [Setup]{#setup}
 
@@ -229,25 +216,26 @@ SetupIconFile={#MyAppIcoName}
 UninstallDisplayIcon={app}\{#MyAppIcoName}
 ~~~
 
-We don't discuss every single topic here because their names should make it pretty obvious what they are used for. It is worth mentioning however that all those names _must_ be be defined: Inno needs them.
+The meaning of much of the above is pretty obvious. 
+All those names _must_ be be defined, however: Inno needs them.
 
 Notes:
 
-* The variables defined at the top of the Inno script (before the first section) are referred to here by `{#varsname}`.
+* The variables defined at the top of the Inno script (before the first section) are dereferenced here as `{#varsname}`.
 
-* The `AppId` is used to identify an application, in particular for un-installing it. It can be anything as long as it is less than 128 characters long but using a GUID[^guid] is not a bad idea at all. Tip: don't add a version number to it.
+* The `AppId` is used to identify an application, in particular for un-installing it. It can be anything as long as it is less than 128 characters long but using a GUID[^guid] is a good idea. Tip: don't add a version number to it.
 
-  Note that you can create a GUID from within Inno Script Studio: check the Tools > Generate GUID menu command.
+  You can create a GUID from within Inno Script Studio: check the _Tools > Generate GUID_ menu item.
 
-*  `pf32` is an internal Inno constant. The name stands for "The 32-bit program folder" which defaults to `C:\Program folder (x86)`.
+*  `pf32` is an internal Inno constant. It points to the machine's 32-bit program folder, by default `C:\Program folder (x86)`.
 
-   If you want it to be a 64-bit application then use `pf64` instead. Don't use `pf`: although this has a default and therefore might work it's just not obvious, so it's better to avoid this and be explicit.
+   If you are packaging a 64-bit application, use `pf64` instead. Don't use `pf`. Although this does have a default and might work it's just not obvious: better to avoid this and be explicit.
 
-* `AllowNoIcons←1` will add a check box "Don't create a Start Menu folder" to the installer. That leaves it to the user whether the installer should create such a folder and under which name.
+* `AllowNoIcons←1` will add a check box _Don't create a Start Menu folder_ to the installer. That leaves it up to the user whether the installer should create such a folder, and under which name.
 
-* `app` is a constant that points to the folder where the user wants to install the application. It defaults to `DefaultDirName` which is just a suggestion the user might or might not accept. 
+* `app` is a constant that points to the folder where the user wants to install the application. It defaults to `DefaultDirName`: that is just a suggestion the user might or might not accept. 
 
-  However, whatever the user decides, `app` will point to that folder. In other words, the user might choose a different folder, but whatever she does, `app` is pointing to that folder.
+  `app` will point to the default, or whatever folder the user chooses instead.
 
 
 ### The section [Languages]{#lang}
@@ -260,15 +248,15 @@ Name: "english"; MessagesFile: "compiler:Default.isl"; \
   InfoAfterFile: "ReadMe_After.txt";
 ~~~
 
-Inno supports multilingual  installations. However, this is beyond the scope of this chapter. We define just one language here. The parameters for a single language must be defined on a single line but you can avoid very long lines by splitting them with a `\` at the end of a line as shown above.
+Inno supports multilingual installations but this is beyond the scope of this chapter. We define just one language here. The parameters for a single language must be defined on a single line but you can avoid very long lines by splitting them with a `\` at the end of a line as shown above.
 
-While the two parameters `Name` and `MessageFile` are mandatory the other three parameters are optional:
+While the two parameters `Name` and `MessageFile` are required, the other three parameters are optional:
 
 * `LicenseFile` 
 * `InfoBeforeFile`
 * `InfoAfterFile`
 
-When we execute `Setup.exe` you will see when exactly the contents of them is displayed. Note that if `LicenseFile` is defined the user must accept the conditions, otherwise she cannot go ahead.
+When we execute `Setup.exe` you will see when exactly their content is displayed. If `LicenseFile` is defined the user must accept the conditions before installation completes.
 
 
 ### The section [Registry]{#registry}
@@ -285,11 +273,11 @@ This section allows you to add settings to the Windows Registry.
 
 Notes:
 
-* With `Root:` you define the root key. See the chapter "[The Windows Registry: root keys](./15 The Windows Registry#root-keys])" for details which root keys you may specify.
-* With `Subkey` you define the remaining part but the value.
-* What's a `Value` in Microsoft speech is called `ValueName` by Inno.
-* The actual data is called `ValueData` by Inno.
-* `ValueType` specifies the data type of `ValueData`. Note that without `ValueType` being specified (or it being "none") Inno will create the key but _not_ the value.
+* With `Root:` you define the root key. See [The Windows Registry: root keys](./15 The Windows Registry#root-keys]) for details of which root keys you can specify.
+* With `Subkey` you define the remaining part but the value. <!-- FIXME Clarify -->
+* A _value_ in Microsoft terminology is called `ValueName` by Inno.
+* The _data_ is called `ValueData` by Inno.
+* `ValueType` specifies the data type of `ValueData`. If `ValueType` is unspecified (or `none`) Inno will create the key but _not_ the value. <FIXME Clarify: is it the _value_ or the _data_ Inno omits?)
 
    Inno supports the following data types:
    * none
@@ -301,12 +289,12 @@ Notes:
    * binary
 
   For details refer to the Inno help regarding the `[Registry]` setting.
-* The keyword `uninsdeletekey` tells Inno that it is supposed to delete the Registry key when the application is uninstalled. Without that keyword Inno would **not** delete any Registry keys and values when the application is uninstalled.
+* The keyword `uninsdeletekey` tells Inno that to delete the Registry key when the application is uninstalled. Without that keyword Inno would _not_ delete any Registry keys and values when the application is uninstalled.
 * The `uninsdeletekeyifempty` keyword is similar but let Inno delete the Registry key only when it is empty. 
 
-  This comes handy when you use the Registry for saving user preferences: as long as the user has not defined any preferences the key can be deleted safely. 
+  This comes in handy when you use the Registry for saving user preferences: as long as the user has not defined any preferences the key can be deleted safely. 
 
-  If she has then you might consider leaving them alone. After all the user might uninstall just in order to install a better version, expecting her preferences to survive the procedure.
+  If she has defined preferences, you might prefer to leave them alone. She might uninstall just to install a better version, expecting her preferences to survive the procedure.
 
 
 ### The section [Dirs]{#dirs}
@@ -322,13 +310,13 @@ From the Inno Help:
 
 With the above line we tell Inno to create a folder `{#MyAppName}` which in our case will be "My Company Ltd". Note that `commonappdata` defaults to `ProgramData\`, usually on the `C:\` drive. 
 
-Instead we could have used `localappdata` which defaults to `C:\Users\{username}\AppData\Local`. There are many more constants available; refer to "Constants" in the Inno Help for details.
+Instead we could have used `localappdata`, which defaults to `C:\Users\{username}\AppData\Local`. There are many more constants available; refer to _Constants_ in the Inno Help for details.
 
-We also tell Inno that it should give any user who belongs to the "Users" group the right to modify files in this directory.
+We also tell Inno to give any user in the `Users` group the right to modify files in this directory.
 
-W> Of course you are not supposed to grant "modify" rights to the folder where your application's EXE lives, let alone to folders that are not associated with your application.
+W> Of course you must not grant Modify rights to the folder where your application's EXE lives, let alone to folders not associated with your application.
 
-Note that in case you install the application _again_ then the folder **won't** be created, and you won't see an error message either.
+Note that if you install the application _again_ the folder _won't_ be created – and you won't see an error message either.
 
 
 ### The section [Files]{#files}
@@ -350,22 +338,22 @@ Source: "C:\Windows\Fonts\apl385.ttf"; DestDir: "{fonts}"; FontInstall: "APL385 
 ; -------------------------------------
 ~~~
 
-We have included here a number of files that are quite common in any APL application:
+We have included here a number of files quite common in any APL application:
 
-* These days you see the `ReadMe.html` frequently.
-* The icon is used by the GUI.
-* The `bridge*` as well as the `DyalogtNet.dll` are needed in case you want to use even the most simple .NET call.
-* Naturally the EXE needs to be included.
-* The file `foo.ini.remove_me` is included as well but will be renamed to `foo.ini` but only when it does not already exist.
+* A `ReadMe.html` 
+* The icon used by the GUI
+* `bridge*` and `DyalogtNet.dll`, needed for even the simplest .NET call
+* The EXE of course
+* `foo.ini.remove_me`, to be renamed to `foo.ini` if one does not already exist
 
-  That way you make sure that any already existing INI file is not overwritten. This is an important step in case the user installs a better version over an already existing one.
-* With `{#MyAppIcoName}; DestDir: "{app}";` you make sure that a folder etc is inserted into the Start menu. However, you may allow the user to have a say on this; refer to "AllowNoIcons" in the "[The section [SetUp]](#setup)".
-* We include the font "APL385 Unicode" but only if it does not already exist (`onlyifdoesntexist`) and we make sure that the font is not uninstalled even if the application is (`uninsneveruninstall`).
-* Note that in case you want to Ride into your application you also need to include the Conga DLLs. Usually this well be done only while the application is still under development or is tested.
+  This way you ensure no existing INI file is overwritten. This is importantif the user installs a better version over an earlier one.
+* With `{#MyAppIcoName}; DestDir: "{app}";` you make sure that a folder, etc., is inserted into the Start menu. However, you may give the user a say in this; see `AllowNoIcons` in the [The section [SetUp]](#setup).
+* We include the font `APL385 Unicode` if it does not already exist (`onlyifdoesntexist`) and we ensure the font is not uninstalled, even if the application is (`uninsneveruninstall`).
+* If you want to Ride into your application you also need the Conga DLLs. Usually this would be done only while the application is still under development or being tested.
 
 W> # .NET 
 W>
-W> In case your applications calls any .NET methods make sure you include the Dyalog .NET bridge files!
+W> If your applications calls any .NET methods make sure you include the Dyalog .NET bridge files!
 
 
 ### The section [Icons]{#icons}
@@ -376,7 +364,7 @@ Name: "{group}\Start Foo"; Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}
 Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\{#MyAppIcoName}"; Tasks: desktopicon
 ~~~
 
-The first line inserts group and application name into the Windows Start menu. Read up on "group" in the Inno help for details what the group names means and where it is installed; there are differences between users who install the application with admin rights and those who don't.
+The first line inserts group and application name into the Windows Start menu. Read up on _group_ in the Inno help for what the group name means and where it is installed: there are differences between users who install the application with admin rights and those who don't.
 
 
 ### The section [Run]{#run}
@@ -389,13 +377,13 @@ Filename: "{app}\{#MyAppExeName}"; Description: "Launch Foo"; Flags: postinstall
 
 Notes:
 
-* The first entry displays the file "ReadMe.html" with the default browser (`shellexec` on an HTML file) after the application has been installed (`postinstall`).
+* The first entry displays the file `ReadMe.html` with the default browser (`shellexec` on an HTML file) after the application has been installed (`postinstall`).
 
-  If the command line options `silent` or `verysilent` are specified then "ReadMe.html" is **not** put on display (`skipifsilent`).
+  If the command-line options `silent` or `verysilent` are specified then `ReadMe.html` is _not_ put on display (`skipifsilent`).
 
 * The second entry offers to launch the application after the installation (`postinstall`) but only if neither `silent` nor `verysilent` were specified (`skipifsilent`) and Inno is not waiting for the application (`nowait`).
 
-* Both entries are offered as check boxes which are ticked by default; the user might un-tick them in order to prevent the associated action from being carried out.
+* Both entries are offered as check boxes ticked by default; the user may clear them to prevent the associated action from being carried out.
 
 
 ### The section [Tasks]{#tasks}
@@ -419,11 +407,11 @@ However, this is a much more powerful feature than it looks like at first glance
 
 or any combination of them. 
 
-In order to achieve that you need to add the (optional) section `[Components]` and list all the files involved there. You can then create additional lines in the `[Task]` section that link to those lines in `[Components]`. 
+To achieve that you need to add the (optional) section `[Components]` and list all the files involved there. You can then create additional lines in the `[Task]` section that link to those lines in `[Components]`. 
 
-The user is then presented a list of check boxes that allow her to select the options she's after.
+The user is then presented with a list of check boxes that allow her to select the options she's after.
 
-Note that `cm:CreateDesktopIcon` refers to a message `CreateDesktopIcon` which can be modified if you wish so; the `cm` stands for "Custom Message". For that you would insert the (optional) section `[CustomMessages]` like this:
+Note that `cm:CreateDesktopIcon` refers to a message `CreateDesktopIcon` which can be modified if you wish. The `cm` stands for _Custom Message_. For that, you would insert the (optional) section `[CustomMessages]` like this:
 
 ~~~
 [CustomMessages]
@@ -441,7 +429,7 @@ Inno comes with a built-in script language that allows you to do pretty much wha
 Conclusion
 ----------
 
-Although Inno is significantly easier to master than the top dog Wix is offers a large array of features and options. This chapter is just scratching the surface, but it should be enough to get you going.
+Although Inno is significantly easier to master than the top dog Wix, it provides a large selection of features and options. This chapter only scratches the surface, but it will get you going.
 
 [^wix]:<http://wixtoolset.org/>:
 Windows Installer
@@ -450,16 +438,20 @@ Windows Installer
 About GUIDs
 
 
-*[HTML]: Hyper Text Mark-up language
-*[DYALOG]: File with the extension 'dyalog' holding APL code
-*[TXT]: File with the extension 'txt' containing text
-*[INI]: File with the extension 'ini' containing configuration data
-*[DYAPP]: File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application
-*[EXE]: Executable file with the extension 'exe'
-*[BAT]: Executeabe file that contains batch commands
+## Common abbreviations
+
+*[BAT]: Executable file that contains batch commands
+*[CHM]: Executable file with the extension `.chm` that contains Windows Help (Compiled Help) 
 *[CSS]: File that contains layout definitions (Cascading Style Sheet)
-*[MD]: File with the extension 'md' that contains markdown
-*[CHM]: Executable file with the extension 'chm' that contains Windows Help(Compiled Help) 
 *[DWS]: Dyalog workspace
-*[WS]: Short for Workspaces
+*[DYALOG]: File with the extension `.dyalog` holding APL code
+*[DYAPP]: File with the extension `.dyapp` that contains `Load` and `Run` commands in order to put together an APL application
+*[EXE]: Executable file with the extension `.exe`
+*[HTM]: File in HTML format
+*[HTML]: HyperText Mark-up language
+*[INI]: File with the extension `.ini` containing configuration data
+*[MD]: File with the extension `.md` that contains markdown
 *[PF-key]: Programmable function key
+*[TXT]: File with the extension `.txt` containing text
+*[WS]: Workspaces
+

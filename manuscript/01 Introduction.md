@@ -43,6 +43,8 @@ Later on we’ll introduce some professional writing techniques that might make 
 
 * The Dyalog Version 16.0 Unicode interpreter or later.
 
+* Microsoft Windows 10
+
 * Good knowledge of APL – the Cookbook is by no means an introduction.
   
 * To know how to use namespaces, classes and instances. The utility code in the Cookbook is packaged as namespaces and classes. 
