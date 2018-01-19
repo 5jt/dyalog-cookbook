@@ -834,7 +834,7 @@ This is the real work horse:
      ∇
 ~~~
 
-An important thing to discuss is the function `CollectData`. We want our 'business logic' to be independent from the GUI. So we don't want anything ine `##.BusinessLogic` to access the `n` namespace.
+An important thing to discuss is the function `CollectData`. We want our 'business logic' to be independent from the GUI. So we don't want anything in `##.BusinessLogic` to access the `N` namespace.
 
 But it needs access to the data entered and decisions made by the user on the GUI. So we collect all the data and assign them to variables inside a newly created anonymous namespace, which we assign to `G`.
 
