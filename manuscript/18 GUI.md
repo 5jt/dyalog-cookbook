@@ -89,7 +89,7 @@ Our aim is simple: code that is easy to understand and easy to change.
 
 For that we do the following:
 
-* We keep all controls and all data in a single namespace `n`.
+* We keep all controls and all data in a single namespace `N`; we've already discussed that, now we need to put this into practice.
 
 * Define no more than one property at the time when creating a GUI control.
 
@@ -131,15 +131,15 @@ We need three subspaces within `MyApp`:
 We start with the function `Run`:
 
 ~~~
-     ∇ {n}←Run testFlag
+     ∇ {N}←Run testFlag
 [1]    ⎕IO←1 ⋄ ⎕ML←1
 [2]    'Invalid right argument'⎕SIGNAL 11/⍨~(⊂testFlag)∊0 1
-[3]    n←Init ⍬
-[4]    n.∆TestFlag←testFlag
-[5]    n←CreateGUI n
+[3]    N←Init ⍬
+[4]    N.∆TestFlag←testFlag
+[5]    N←CreateGUI N
 [6]    :If 0=testFlag
-[7]        n.SearchFor U.DQ n.∆Form
-[8]        Shutdown n
+[7]        N.SearchFor U.DQ N.∆Form
+[8]        Shutdown N
 [9]    :EndIf
 [10]  ⍝Done
      ∇
@@ -151,13 +151,13 @@ What this function does:
 
 * Prepares (initialises) the application by calling `Init`.
 
-* Assigns `testFlag` to `n.∆TestFlag` so that all GUI callbacks have access to this; we'll discuss soon how this magic works --- it's _not_ because `n` is global.
+* It assigns `testFlag` to `N.∆TestFlag` so that all GUI callbacks will have access to this; we'll discuss soon how this magic works --- it's _not_ because `N` is global.
 
 * Creates the GUI by calling `CreateGUI`.
   
-  * `n.SearchFor` points to the "Search for:" field in the GUI we are about to create. That is going to get the focus.
+  * `N.SearchFor` points to the "Search for:" field in the GUI we are about to create. That is going to get the focus.
   
-  * `n.∆form` points to the main form.
+  * `N.∆form` points to the main form.
 
 * Hands control over to the user by calling `DQ`.
 
@@ -165,7 +165,7 @@ What this function does:
 
 Notes:
 
-* The function returns a shy result, the namespace `n`; this is only needed for test cases.
+* The function returns a shy result, the namespace `N`; this is only needed for test cases.
 
 * Neither `U.DQ` nor `Shutdown` is executed if the right argument is `1`. We will discuss this later.
 
@@ -175,34 +175,34 @@ Notes:
 Next we introduce the `Init` function:
 
 ~~~
-     ∇ n←Init dummy
+     ∇ N←Init dummy
 [1]    U←GuiUtils
-[2]    n←U.CreateNamespace
-[3]    n.∆Buttons←''
-[4]    n.∆Labels←n.⎕NS''
-[5]    n.(∆V_Gap ∆H_Gap)←5 10
-[6]    n.∆Posn←80 30
-[7]    n.∆Size←600 800
-[8]    n.InputFont←'InputFont'⎕WC'Font'('PName' 'APL385 Unicode')('Size' 17)
+[2]    N←U.CreateNamespace
+[3]    N.∆Buttons←''
+[4]    N.∆Labels←N.⎕NS''
+[5]    N.(∆V_Gap ∆H_Gap)←5 10
+[6]    N.∆Posn←80 30
+[7]    N.∆Size←600 800
+[8]    N.InputFont←'InputFont'⎕WC'Font'('PName' 'APL385 Unicode')('Size' 17)
 [9]   ⍝Done
      ∇
 ~~~
 
 * It creates a reference `U` which points to the namespace `GuiUtils`. Note  `U` is _not_ local to `Run`; otherwise the test cases --- which we will eventually introduce --- would have a problem.
 
-* It calls a method `CreateNamespace` in `GuiUtils` which returns a namespace which is assigned to `n`. 
+* It calls a method `CreateNamespace` in `GuiUtils` which returns a namespace which is assigned to `N`. 
 
   **Watch out:** it is this namespace that represents the GUI in the workspace. It will keep references to all controls and variables related to the GUI.
 
-* It creates an empty global variable `∆Buttons` in `n` which we will use to collect references to all push buttons on the GUI when we create them.
+* It creates an empty global variable `∆Buttons` in `N` which we will use to collect references to all push buttons on the GUI when we create them.
 
-* It creates an anonymous namespace in `n` which is assigned to `∆Labels`. We will use this to collect references to all labels on the GUI when we create them. 
+* It creates an anonymous namespace in `N` which is assigned to `∆Labels`. We will use this to collect references to all labels on the GUI when we create them. 
 
   The reason: normally we don't handle the labels after creating them, but occasionally we have to. So we separate them from the more important ones. That way they are not in our way but are still available if needed.
 
-* It creates two global variables `∆V_Gap` and `∆H_Gap` in `n`. These are used for the vertical (`∆V_Gap`) and horizontal (`∆H_Gap`) distances between controls on our form.
+* It creates two global variables `∆V_Gap` and `∆H_Gap` in `N`. These are used for the vertical (`∆V_Gap`) and horizontal (`∆H_Gap`) distances between controls on our form.
 
-* It defines two globals `∆Posn` and `∆Size` inside `n`; they will define the position and the size of the main form.
+* It defines two globals `∆Posn` and `∆Size` inside `N`; they will define the position and the size of the main form.
 
 * It creates an instance of the font APL385 Unicode with an appropriate size.
 
@@ -213,7 +213,7 @@ Next we introduce the `Init` function:
 
 ### The function `GuiUtils.CreateNamespace`
 
-`CreateNamespace` is used to create the namespace `n`:
+`CreateNamespace` is used to create the namespace `N`:
 
 ~~~
      ∇ r←CreateNamespace                                                                                         
@@ -231,10 +231,10 @@ This function creates an unnamed namespace and populates it with a function `∆
 | [;2] | The value of that name |
 
 
-After `Init` runs the `n` namespace does not yet contain any GUI controls but it does contains some variables that will define certain properties of the GUI:
+After `Init` runs the `N` namespace does not yet contain any GUI controls but it does contains some variables that will define certain properties of the GUI:
 
 ~~~
-      n.∆List
+      N.∆List
  InputFont                         #._MyApp.MyApp.GUI.InputFont 
  ∆Buttons                                                       
  ∆H_Gap                                                      10 
@@ -250,30 +250,30 @@ After `Init` runs the `n` namespace does not yet contain any GUI controls but it
 This function calls all the functions that create controls. They all start their names with `Create`.
 
 ~~~
-     ∇ n←CreateGUI n
-[1]    n←CreateMainForm n
-[2]    n←CreateSearch n
-[3]    n←CreateStartLookingHere n
-[4]    n.∆Groups←⎕NS''
-[5]    n←CreateOptionsGroup n
-[6]    n←CreateObjectTypesGroup n
-[7]    n←CreateScanGroup n
-[8]    n←CreateRegExGroup n
-[9]    {⍵.Size←(⌈/1⊃¨⍵.Size),¨1+2⊃¨⍵.Size}'Group'⎕WN n.∆Form
-[10]   n←CreateList n
-[11]   n←CreatePushButtons n
-[12]   n←CreateHiddenButtons n
-[13]   n.HitList.Size[1]-←(2×n.∆V_Gap)+n.∆Form.Size[1]-n.Find.Posn[1]
-[14]   n.(⍎¨↓⎕NL 9).onKeyPress←⊂'OnKeyPress'
-[15]   n.∆WriteToStatusbar←n∘{⍺.Statusbar.StatusField1.Text←⍵ ⋄ 1:r←⍬}
-[16]   n.∆Form.onConfigure←'OnConfigure'(335,CalculateMinWidth n)
+     ∇ N←CreateGUI N
+[1]    N←CreateMainForm N
+[2]    N←CreateSearch N
+[3]    N←CreateStartLookingHere N
+[4]    N.∆Groups←⎕NS''
+[5]    N←CreateOptionsGroup N
+[6]    N←CreateObjectTypesGroup N
+[7]    N←CreateScanGroup N
+[8]    N←CreateRegExGroup N
+[9]    {⍵.Size←(⌈/1⊃¨⍵.Size),¨1+2⊃¨⍵.Size}'Group'⎕WN N.∆Form
+[10]   N←CreateList N
+[11]   N←CreatePushButtons N
+[12]   N←CreateHiddenButtons N
+[13]   N.HitList.Size[1]-←(2×N.∆V_Gap)+N.∆Form.Size[1]-N.Find.Posn[1]
+[14]   N.(⍎¨↓⎕NL 9).onKeyPress←⊂'OnKeyPress'
+[15]   N.∆WriteToStatusbar←N∘{⍺.Statusbar.StatusField1.Text←⍵ ⋄ 1:r←⍬}
+[16]   N.∆Form.onConfigure←'OnConfigure'(335,CalculateMinWidth N)
 [17]  ⍝Done
      ∇
 ~~~
 
 Notes:
 
-* An anonymous namespace is created and assigned to `∆Groups` within `n`. We will create all groups within this subspace.
+* An anonymous namespace is created and assigned to `∆Groups` within `N`. We will create all groups within this subspace.
 
 * The height of all groups is calculated dynamically in line [9]: it's defined by the size of the tallest group plus 1 pixel.
 
@@ -281,9 +281,9 @@ Notes:
 
 * Line [14] assigns the callback `OnKeyPress` to all controls on the form.
 
-* Line [15] defines dynamically a function `∆WriteToStatusbar` inside `n` with `n` glued to the function as left argument. 
+* Line [15] defines dynamically a function `∆WriteToStatusbar` inside `N` with `N` glued to the function as left argument. 
 
-  With this construct we _always_ have `n` as left argument at our disposal inside `∆WriteToStatusbar`.
+  With this construct we _always_ have `N` as left argument at our disposal inside `∆WriteToStatusbar`.
 
 * Line [16] assigns a callback `OnConfigure` to the Configure event. The callback gets a left argument which is a two-item vector with the constant 335 and a dynamically calculated value for the width.
 
@@ -299,34 +299,37 @@ That callback is very important: without it any Configure event would cause a VA
 ∇                                                        
 ~~~
 
-As already mentioned≤ it is absolutely essential this function be a one-liner: that makes the Tracer ignore it.
+Since the Tracer cannot (currently) step into one line dfns, defining the `OnConfigure` callback as a one liner is exceedingly useful as it allows you to avoid stepping into the callback, which is itself likely to result in even more configure events being generated.
+As already mentioned it is absolutely essential that this function is a one-liner because that makes the Tracer ignore this function.
 
 
 ### All the `GUI.Create*` functions
 
-We list all the functions here. You might not necessarily follow each of them in detail. We recommend scanning through them for their gist, at least until  `GUI.AdjustGroupSize`, before continuing to [The callback functions](#).
+Although we list all functions here you might not necessarily follow us on each of them in detail, but you should at least keep reading until you reach `GUI.AdjustGroupSize`.
+
+However, we suggest to scan through them rather than skipping them and carrying on with [the callback functions](#The callback functions).
 
 
 #### The function `CreateMainForm`
 
 ~~~
-     ∇ n←CreateMainForm n;∆
+     ∇ N←CreateMainForm N;∆
 [1]    ∆←⊂'Form'
 [2]    ∆,←⊂'Coord' 'Pixel'
 [3]    ∆,←⊂'Caption' 'MyApp'
-[4]    ∆,←⊂'Posn'n.∆Posn
-[5]    ∆,←⊂'Size'n.∆Size
-[6]    n.∆Form←⍎'Form'⎕WC ∆
-[7]    n.∆Form.n←n
-[8]    n←CreateMenubar n
-[9]    n←CreateStatusbar n
+[4]    ∆,←⊂'Posn'N.∆Posn
+[5]    ∆,←⊂'Size'N.∆Size
+[6]    N.∆Form←⍎'Form'⎕WC ∆
+[7]    N.∆Form.N←N
+[8]    N←CreateMenubar N
+[9]    N←CreateStatusbar N
 [10]  ⍝Done
      ∇
 ~~~
 
-One statement needs discussion: line [7] assigns `n` to `n.∆Form.n` -- what for?
+One statement needs discussion: line [7] assigns `N` to `N.∆Form.N` -- what for?
 
-This allows us to find `n` with ease: we know that there is always a reference to `n` available inside the main form. When we introduce the callback functions we will need `n` is almost all of them, and this will make is easy for them to find it.
+This allows us to find `N` with ease: we know that there is always a reference to `N` available inside the main form. When we introduce the callback functions we will need `N` is almost all of them, and this will make is easy for them to find it.
 
 
 ##### Collecting properties
@@ -336,7 +339,7 @@ Note that the function collects properties which are assigned to a local variabl
 Why are we not assigning the properties in one go? Something like this:
 
 ~~~
-n.∆Form←⍎'Form'⎕WC 'Form'('Coord' 'Pixel')('Caption' 'MyApp')('Posn'∆Posn)('Size'∆Size)
+N.∆Form←⍎'Form'⎕WC 'Form'('Coord' 'Pixel')('Caption' 'MyApp')('Posn'∆Posn)('Size'∆Size)
 ~~~
 
 Are shorter programs not better? They are, but there are exceptions. 
@@ -348,10 +351,10 @@ Besides being more readable, having just one property on a line has the big adva
 
 We are not using a visual designer to create the GUI; we use APL code. Wherever possible, we calculate position and size dynamically, or assign constants.
 
-The name we use as left argument of `⎕WC` is also used within `n` when we assign the reference that is created with the `⍎` primitive on the (shy) result of `⎕WC`. That's what a statement like this does:
+The name we use as left argument of `⎕WC` is also used within `N` when we assign the reference that is created with the `⍎` primitive on the (shy) result of `⎕WC`. That's what a statement like this does:
 
 ~~~
-      n.∆Form←⍎'Form'⎕WC ∆
+      N.∆Form←⍎'Form'⎕WC ∆
 ~~~
 
 `CreateMainForm` calls two functions which we introduce next.
@@ -360,35 +363,35 @@ The name we use as left argument of `⎕WC` is also used within `n` when we assi
 #### The function `GUI.CreateMenubar`
 
 ~~~
-     ∇ n←CreateMenubar n;TAB;∆
+     ∇ N←CreateMenubar N;TAB;∆
 [1]    TAB←⎕UCS 9
-[2]    n.∆Menubar←⍎'∆Menubar'n.∆Form.⎕WC⊂'Menubar'
-[3]    n.∆Menubar.FileMenu←⍎'FileMenu'n.∆Menubar.⎕WC'Menu'('Caption' '&File')
+[2]    N.∆Menubar←⍎'∆Menubar'N.∆Form.⎕WC⊂'Menubar'
+[3]    N.∆Menubar.FileMenu←⍎'FileMenu'N.∆Menubar.⎕WC'Menu'('Caption' '&File')
 [4]    ∆←⊂'MenuItem'
 [5]    ∆,←⊂'Caption'('Quit',TAB,'Escape')
 [6]    ∆,←⊂'Accelerator'(27 0)
-[7]    n.∆Menubar.Quit←⍎'Quit'n.∆Menubar.FileMenu.⎕WC ∆
-[8]    n.∆Menubar.Quit.onSelect←1
+[7]    N.∆Menubar.Quit←⍎'Quit'N.∆Menubar.FileMenu.⎕WC ∆
+[8]    N.∆Menubar.Quit.onSelect←1
 [9]   ⍝Done
      ∇
 ~~~
 
-Note that we assign the result of `⍎'∆Menubar'n.∆Form.⎕WC⊂'Menubar'` (which is actually _the_ menubar on our form) to `∆Menubar` rather than `Menubar` as you might have expected. 
+Note that we assign the result of `⍎'∆Menubar'N.∆Form.⎕WC⊂'Menubar'` (which is actually _the_ menubar on our form) to `∆Menubar` rather than `Menubar` as you might have expected. 
 
-The reason is that we do not assign the "Menu" and "MenuItem" and "Separator" objects to `n` but to the menubar itself; because it's a static menu we don't want matters to be blurred, so we keep them separate, similar to the labels.
+The reason is that we do not assign the "Menu" and "MenuItem" and "Separator" objects to `N` but to the menubar itself; because it's a static menu we don't want matters to be blurred, so we keep them separate, similar to the labels.
 
 
 #### The function `GUI.CreateStatusbar`
 
 ~~~
-     ∇ n←CreateStatusbar n;∆
-[1]    n.Statusbar←⍎'Statusbar'n.∆Form.⎕WC⊂'Statusbar'
+     ∇ N←CreateStatusbar N;∆
+[1]    N.Statusbar←⍎'Statusbar'N.∆Form.⎕WC⊂'Statusbar'
 [2]    ∆←⊂'StatusField'
 [3]    ∆,←⊂'Coord' 'Prop'
 [4]    ∆,←⊂'Posn'(0 0)
 [5]    ∆,←⊂'Size'(⍬ 100)
 [6]    ∆,←⊂'Attach'('Bottom' 'Left' 'Bottom' 'Right')
-[7]    n.StatusField1←⍎'StatusField1'n.Statusbar.⎕WC ∆
+[7]    N.StatusField1←⍎'StatusField1'N.Statusbar.⎕WC ∆
 [8]   ⍝Done
      ∇
 ~~~
@@ -397,19 +400,19 @@ The reason is that we do not assign the "Menu" and "MenuItem" and "Separator" ob
 #### The function `GUI.CreateSearch`
 
 ~~~
-     ∇ n←CreateSearch n;∆
+     ∇ N←CreateSearch N;∆
 [1]    ∆←⊂'Label'
-[2]    ∆,←⊂'Posn'n.(∆V_Gap ∆H_Gap)
+[2]    ∆,←⊂'Posn'N.(∆V_Gap ∆H_Gap)
 [3]    ∆,←⊂'Caption' '&Search for:'
 [4]    ∆,←⊂'Attach'('Top' 'Left' 'Top' 'Left')
-[5]    n.∆Labels.SearchFor←⍎'SearchFor'n.∆Form.⎕WC ∆
+[5]    N.∆Labels.SearchFor←⍎'SearchFor'N.∆Form.⎕WC ∆
 [6]
 [7]    ∆←⊂'Edit'
-[8]    ∆,←⊂'Posn'((⊃U.AddPosnAndSize n.∆Labels.SearchFor)n.∆H_Gap)
-[9]    ∆,←⊂'Size'(⍬(n.∆Form.Size[2]-2×n.∆H_Gap))
-[10]   ∆,←⊂'FontObj'n.InputFont
+[8]    ∆,←⊂'Posn'((⊃U.AddPosnAndSize N.∆Labels.SearchFor)N.∆H_Gap)
+[9]    ∆,←⊂'Size'(⍬(N.∆Form.Size[2]-2×N.∆H_Gap))
+[10]   ∆,←⊂'FontObj'N.InputFont
 [11]   ∆,←⊂'Attach'('Top' 'Left' 'Top' 'Right')
-[12]   n.SearchFor←⍎'SearchFor'n.∆Form.⎕WC ∆
+[12]   N.SearchFor←⍎'SearchFor'N.∆Form.⎕WC ∆
 [13]  ⍝Done
      ∇
 ~~~
@@ -418,9 +421,9 @@ This function creates the label _Search for_ and the associated edit field.
 
 Notes:
 
-* The position of the label on the form is defined by the global variables `n.∆V_Gap` and `n.∆H_Gap`.
+* The position of the label on the form is defined by the global variables `N.∆V_Gap` and `N.∆H_Gap`.
 
-* Note that the reference for the label is assigned to the subspace `∆Labels` within `n` as discussed earlier.
+* Note that the reference for the label is assigned to the subspace `∆Labels` within `N` as discussed earlier.
 
 * The position of the Edit control is calculated dynamically from the position and size of the label by the function `GuiUtils.AddPosnAndSize` which we therefore need to introduce.
 
@@ -436,60 +439,60 @@ Notes:
 
 Not much code, but very helpful and used over and over again, so it makes sense to make it a function.
 
-It just makes position and size a matrix and sums up the rows. That is exactly what we need for positioning the Edit control vertically. Its horizontal position  is of course defined by `n.∆H_Gap`.
+It just makes position and size a matrix and sums up the rows. That is exactly what we need for positioning the Edit control vertically. Its horizontal position  is of course defined by `N.∆H_Gap`.
 
 
 #### The function `GUI.CreateStartLookingHere`
 
 ~~~
- n←CreateStartLookingHere n;∆
+ N←CreateStartLookingHere N;∆
  ∆←⊂'Label'
- ∆,←⊂'Posn'((n.∆V_Gap+⊃U.AddPosnAndSize n.SearchFor)n.∆H_Gap)
+ ∆,←⊂'Posn'((N.∆V_Gap+⊃U.AddPosnAndSize N.SearchFor)N.∆H_Gap)
  ∆,←⊂'Caption' 'Start &looking here:'
  ∆,←⊂'Attach'('Top' 'Left' 'Top' 'Left')
- n.∆Labels.StartLookingHere←⍎'StartLookingHere'n.∆Form.⎕WC ∆
+ N.∆Labels.StartLookingHere←⍎'StartLookingHere'N.∆Form.⎕WC ∆
 
  ∆←⊂'Edit'
- ∆,←⊂'Posn'((⊃U.AddPosnAndSize n.∆Labels.StartLookingHere)n.∆H_Gap)
- ∆,←⊂'Size'(⍬(n.∆Form.Size[2]-2×n.∆H_Gap))
- ∆,←⊂'FontObj'n.InputFont
+ ∆,←⊂'Posn'((⊃U.AddPosnAndSize N.∆Labels.StartLookingHere)N.∆H_Gap)
+ ∆,←⊂'Size'(⍬(N.∆Form.Size[2]-2×N.∆H_Gap))
+ ∆,←⊂'FontObj'N.InputFont
  ∆,←⊂'Attach'('Top' 'Left' 'Top' 'Right')
- n.StartLookingHere←⍎'StartLookingHere'n.∆Form.⎕WC ∆
+ N.StartLookingHere←⍎'StartLookingHere'N.∆Form.⎕WC ∆
 ⍝Done
 ~~~
 
-Note that this time the vertical position of the label is defined by the total of the `Posn` and `Size` of the _Search for_ edit control plus `n.∆V_Gap`.
+Note that this time the vertical position of the label is defined by the total of the `Posn` and `Size` of the _Search for_ edit control plus `N.∆V_Gap`.
 
 
 #### The function `GUI.CreateOptionsGroup`
 
 ~~~
-     ∇ n←CreateOptionsGroup n;∆
+     ∇ N←CreateOptionsGroup N;∆
 [1]    ∆←⊂'Group'
 [2]    ∆,←⊂'Caption' 'Options'
-[3]    ∆,←⊂'Posn'((n.∆V_Gap+⊃U.AddPosnAndSize n.StartLookingHere),n.∆H_Gap)
+[3]    ∆,←⊂'Posn'((N.∆V_Gap+⊃U.AddPosnAndSize N.StartLookingHere),N.∆H_Gap)
 [4]    ∆,←⊂'Size'(300 400)
 [5]    ∆,←⊂'Attach'('Top' 'Left' 'Top' 'Left')
-[6]    n.∆Groups.OptionsGroup←⍎'OptionsGroup'n.∆Form.⎕WC ∆
+[6]    N.∆Groups.OptionsGroup←⍎'OptionsGroup'N.∆Form.⎕WC ∆
 [7]
 [8]    ∆←⊂'Button'
 [9]    ∆,←⊂'Style' 'Check'
-[10]   ∆,←⊂'Posn'(3 1×n.(∆V_Gap ∆H_Gap))
+[10]   ∆,←⊂'Posn'(3 1×N.(∆V_Gap ∆H_Gap))
 [11]   ∆,←⊂'Caption' '&Match case'
-[12]   n.MatchCase←⍎'MatchCase'n.∆Groups.OptionsGroup.⎕WC ∆
+[12]   N.MatchCase←⍎'MatchCase'N.∆Groups.OptionsGroup.⎕WC ∆
 [13]
 [14]   ∆←⊂'Button'
 [15]   ∆,←⊂'Style' 'Check'
-[16]   ∆,←⊂'Posn'((⊃U.AddPosnAndSize n.MatchCase),n.∆H_Gap)
+[16]   ∆,←⊂'Posn'((⊃U.AddPosnAndSize N.MatchCase),N.∆H_Gap)
 [17]   ∆,←⊂'Caption' 'Match &APL name'
-[18]   n.MatchAPLname←⍎'MatchAPLname'n.∆Groups.OptionsGroup.⎕WC ∆
+[18]   N.MatchAPLname←⍎'MatchAPLname'N.∆Groups.OptionsGroup.⎕WC ∆
 [19]
-[20]   AdjustGroupSize n.∆Groups.OptionsGroup
+[20]   AdjustGroupSize N.∆Groups.OptionsGroup
 [21]  ⍝Done
      ∇
 ~~~
 
-The group as such is assigned to `OptionsGroup` inside `n.∆Groups` as discussed earlier.
+The group as such is assigned to `OptionsGroup` inside `N.∆Groups` as discussed earlier.
 
 The function calls `AdjustGroupSize` which we therefore need to introduce.
 
@@ -499,7 +502,7 @@ The function calls `AdjustGroupSize` which we therefore need to introduce.
 ~~~
      ∇ AdjustGroupSize←{
 [1]    ⍝ Ensures that the group is just big enough to host all its children
-[2]        ⍵.Size←n.(∆H_Gap ∆V_Gap)+⊃⌈/{+⌿↑⍵.(Posn Size)}¨⎕WN ⍵
+[2]        ⍵.Size←N.(∆H_Gap ∆V_Gap)+⊃⌈/{+⌿↑⍵.(Posn Size)}¨⎕WN ⍵
 [3]        1:r←⍬
 [4]    }
      ∇
@@ -513,33 +516,33 @@ Note that the system function `⎕WN` gets a reference as right argument rather 
 #### The function `GUI.CreateObjectTypesGroup`
 
 ~~~
-     ∇ n←CreateObjectTypesGroup n;∆
+     ∇ N←CreateObjectTypesGroup N;∆
 [1]    ∆←⊂'Group'
 [2]    ∆,←⊂'Caption' 'Object &types'
-[3]    ∆,←⊂'Posn'({⍵.Posn[1],(2×n.∆V_Gap)+2⊃U.AddPosnAndSize ⍵}n.∆Groups.OptionsGroup)
+[3]    ∆,←⊂'Posn'({⍵.Posn[1],(2×N.∆V_Gap)+2⊃U.AddPosnAndSize ⍵}N.∆Groups.OptionsGroup)
 [4]    ∆,←⊂'Size'(300 400)
 [5]    ∆,←⊂'Attach'('Top' 'Left' 'Top' 'Left')
-[6]    n.∆Groups.ObjectTypes←⍎'ObjectTypes'n.∆Form.⎕WC ∆
+[6]    N.∆Groups.ObjectTypes←⍎'ObjectTypes'N.∆Form.⎕WC ∆
 [7]
 [8]    ∆←⊂'Button'
 [9]    ∆,←⊂'Style' 'Check'
-[10]   ∆,←⊂'Posn'(3 1×n.(∆V_Gap ∆H_Gap))
+[10]   ∆,←⊂'Posn'(3 1×N.(∆V_Gap ∆H_Gap))
 [11]   ∆,←⊂'Caption' 'Fns, opr and scripts'
-[12]   n.FnsOprScripts←⍎'FnsOprScripts'n.∆Groups.ObjectTypes.⎕WC ∆
+[12]   N.FnsOprScripts←⍎'FnsOprScripts'N.∆Groups.ObjectTypes.⎕WC ∆
 [13]
 [14]   ∆←⊂'Button'
 [15]   ∆,←⊂'Style' 'Check'
-[16]   ∆,←⊂'Posn'((⊃U.AddPosnAndSize n.FnsOprScripts),n.∆H_Gap)
+[16]   ∆,←⊂'Posn'((⊃U.AddPosnAndSize N.FnsOprScripts),N.∆H_Gap)
 [17]   ∆,←⊂'Caption' 'Variables'
-[18]   n.Variables←⍎'Variables'n.∆Groups.ObjectTypes.⎕WC ∆
+[18]   N.Variables←⍎'Variables'N.∆Groups.ObjectTypes.⎕WC ∆
 [19]
 [20]   ∆←⊂'Button'
 [21]   ∆,←⊂'Style' 'Check'
-[22]   ∆,←⊂'Posn'((⊃U.AddPosnAndSize n.Variables),n.∆H_Gap)
+[22]   ∆,←⊂'Posn'((⊃U.AddPosnAndSize N.Variables),N.∆H_Gap)
 [23]   ∆,←⊂'Caption' 'Name list &only (⎕NL)'
-[24]   n.NameList←⍎'NameList'n.∆Groups.ObjectTypes.⎕WC ∆
+[24]   N.NameList←⍎'NameList'N.∆Groups.ObjectTypes.⎕WC ∆
 [25]
-[26]   AdjustGroupSize n.∆Groups.ObjectTypes
+[26]   AdjustGroupSize N.∆Groups.ObjectTypes
 [27]  ⍝Done
      ∇
 ~~~
@@ -548,33 +551,33 @@ Note that the system function `⎕WN` gets a reference as right argument rather 
 #### The function `GUI.CreateScanGroup`
 
 ~~~
-      ∇ n←CreateScanGroup n;∆
+      ∇ N←CreateScanGroup N;∆
 [1]    ∆←⊂'Group'
 [2]    ∆,←⊂'Caption' 'Scan... '
-[3]    ∆,←⊂'Posn'({⍵.Posn[1],(2×n.∆V_Gap)+2⊃U.AddPosnAndSize ⍵}n.∆Groups.ObjectTypes)
+[3]    ∆,←⊂'Posn'({⍵.Posn[1],(2×N.∆V_Gap)+2⊃U.AddPosnAndSize ⍵}N.∆Groups.ObjectTypes)
 [4]    ∆,←⊂'Size'(300 400)
 [5]    ∆,←⊂'Attach'('Top' 'Left' 'Top' 'Left')
-[6]    n.∆Groups.ScanGroup←⍎'ScanGroup'n.∆Form.⎕WC ∆
+[6]    N.∆Groups.ScanGroup←⍎'ScanGroup'N.∆Form.⎕WC ∆
 [7]
 [8]    ∆←⊂'Button'
 [9]    ∆,←⊂'Style' 'Check'
-[10]   ∆,←⊂'Posn'(3 1×n.(∆V_Gap ∆H_Gap))
+[10]   ∆,←⊂'Posn'(3 1×N.(∆V_Gap ∆H_Gap))
 [11]   ∆,←⊂'Caption' 'APL'
-[12]   n.APL←⍎'APL'n.∆Groups.ScanGroup.⎕WC ∆
+[12]   N.APL←⍎'APL'N.∆Groups.ScanGroup.⎕WC ∆
 [13]
 [14]   ∆←⊂'Button'
 [15]   ∆,←⊂'Style' 'Check'
-[16]   ∆,←⊂'Posn'((⊃U.AddPosnAndSize n.APL),n.∆H_Gap)
+[16]   ∆,←⊂'Posn'((⊃U.AddPosnAndSize N.APL),N.∆H_Gap)
 [17]   ∆,←⊂'Caption' 'Comments'
-[18]   n.Comments←⍎'Comments'n.∆Groups.ScanGroup.⎕WC ∆
+[18]   N.Comments←⍎'Comments'N.∆Groups.ScanGroup.⎕WC ∆
 [19]
 [20]   ∆←⊂'Button'
 [21]   ∆,←⊂'Style' 'Check'
-[22]   ∆,←⊂'Posn'((⊃U.AddPosnAndSize n.Comments),n.∆H_Gap)
+[22]   ∆,←⊂'Posn'((⊃U.AddPosnAndSize N.Comments),N.∆H_Gap)
 [23]   ∆,←⊂'Caption' 'Text'
-[24]   n.Text←⍎'Text'n.∆Groups.ScanGroup.⎕WC ∆
+[24]   N.Text←⍎'Text'N.∆Groups.ScanGroup.⎕WC ∆
 [25]
-[26]   AdjustGroupSize n.∆Groups.ScanGroup
+[26]   AdjustGroupSize N.∆Groups.ScanGroup
 [27]  ⍝Done
      ∇
 ~~~
@@ -583,34 +586,34 @@ Note that the system function `⎕WN` gets a reference as right argument rather 
 #### The function `GUI.CreateRegExGroup`
 
 ~~~
-     ∇ n←CreateRegExGroup n;∆
+     ∇ N←CreateRegExGroup N;∆
 [1]    ∆←⊂'Group'
 [2]    ∆,←⊂'Caption' 'RegEx'
-[3]    ∆,←⊂'Posn'({⍵.Posn[1],n.∆V_Gap+2⊃U.AddPosnAndSize ⍵}n.∆Groups.ScanGroup)
+[3]    ∆,←⊂'Posn'({⍵.Posn[1],N.∆V_Gap+2⊃U.AddPosnAndSize ⍵}N.∆Groups.ScanGroup)
 [4]    ∆,←⊂'Size'(300 400)
 [5]    ∆,←⊂'Attach'('Top' 'Left' 'Top' 'Left')
-[6]    n.∆RegEx←⍎'ObjectTypes'n.∆Form.⎕WC ∆
+[6]    N.∆RegEx←⍎'ObjectTypes'N.∆Form.⎕WC ∆
 [7]
 [8]    ∆←⊂'Button'
 [9]    ∆,←⊂'Style' 'Check'
-[10]   ∆,←⊂'Posn'(2 1×n.(∆V_Gap ∆H_Gap))
+[10]   ∆,←⊂'Posn'(2 1×N.(∆V_Gap ∆H_Gap))
 [11]   ∆,←⊂'Caption' 'Is RegE&x'
-[12]   n.IsRegEx←⍎'IsRegEx'n.∆RegEx.⎕WC ∆
-[13]   n.IsRegEx.onSelect←'OnToggleIsRegEx'
+[12]   N.IsRegEx←⍎'IsRegEx'N.∆RegEx.⎕WC ∆
+[13]   N.IsRegEx.onSelect←'OnToggleIsRegEx'
 [14]
 [15]   ∆←⊂'Button'
 [16]   ∆,←⊂'Style' 'Check'
-[17]   ∆,←⊂'Posn'((⊃U.AddPosnAndSize n.IsRegEx),4×n.∆H_Gap)
+[17]   ∆,←⊂'Posn'((⊃U.AddPosnAndSize N.IsRegEx),4×N.∆H_Gap)
 [18]   ∆,←⊂'Caption' 'Dot&All'
-[19]   n.DotAll←⍎'DotAll'n.∆RegEx.⎕WC ∆
+[19]   N.DotAll←⍎'DotAll'N.∆RegEx.⎕WC ∆
 [20]
 [21]   ∆←⊂'Button'
 [22]   ∆,←⊂'Style' 'Check'
-[23]   ∆,←⊂'Posn'((⊃U.AddPosnAndSize n.DotAll),4×n.∆H_Gap)
+[23]   ∆,←⊂'Posn'((⊃U.AddPosnAndSize N.DotAll),4×N.∆H_Gap)
 [24]   ∆,←⊂'Caption' '&Greedy'
-[25]   n.Greedy←⍎'Greedy'n.∆RegEx.⎕WC ∆
+[25]   N.Greedy←⍎'Greedy'N.∆RegEx.⎕WC ∆
 [26]
-[27]   AdjustGroupSize n.∆RegEx
+[27]   AdjustGroupSize N.∆RegEx
 [28]  ⍝Done
      ∇
 ~~~
@@ -623,14 +626,14 @@ The callback `OnToggleRegEx` will toggle the `Active` property of these two chec
 #### The function `GUI.CreateList`
 
 ~~~
-     ∇ n←CreateList n;∆;h
+     ∇ N←CreateList N;∆;h
 [1]    ∆←⊂'ListView'
-[2]    h←⊃n.∆V_Gap+U.AddPosnAndSize n.MatchCase.##
-[3]    ∆,←⊂'Posn'(h,n.∆H_Gap)
-[4]    ∆,←⊂'Size'((n.∆Form.Size[1]-h),n.∆Form.Size[2]-n.∆H_Gap×2)
+[2]    h←⊃N.∆V_Gap+U.AddPosnAndSize N.MatchCase.##
+[3]    ∆,←⊂'Posn'(h,N.∆H_Gap)
+[4]    ∆,←⊂'Size'((N.∆Form.Size[1]-h),N.∆Form.Size[2]-N.∆H_Gap×2)
 [5]    ∆,←⊂'ColTitles'('Name' 'Location' 'Type' '⎕NS' 'Hits')
 [6]    ∆,←⊂'Attach'('Top' 'Left' 'Bottom' 'Right')
-[7]    n.HitList←⍎'HitList'n.∆Form.⎕WC ∆
+[7]    N.HitList←⍎'HitList'N.∆Form.⎕WC ∆
 [8]   ⍝Done
      ∇
 ~~~
@@ -639,24 +642,24 @@ The callback `OnToggleRegEx` will toggle the `Active` property of these two chec
 #### The function `GUI.CreatePushButtons`
 
 ~~~
-     ∇ n←CreatePushButtons n;∆
-[1]    n.∆Buttons←''
+     ∇ N←CreatePushButtons N;∆
+[1]    N.∆Buttons←''
 [2]    ∆←⊂'Button'
 [3]    ∆,←⊂'Caption' 'Find'
 [4]    ∆,←⊂'Size'(⍬ 120)
 [5]    ∆,←⊂'Default' 1
 [6]    ∆,←⊂'Attach'(4⍴'Bottom' 'Left')
-[7]    n.∆Buttons,←n.Find←⍎'Find'n.∆Form.⎕WC ∆
-[8]    n.Find.Posn←(n.∆Form.Size[1]-n.Find.Size[1]+n.Statusbar.Size[1]+n.∆V_Gap),n.∆V_Gap
-[9]    n.Find.onSelect←'OnFind'
+[7]    N.∆Buttons,←N.Find←⍎'Find'N.∆Form.⎕WC ∆
+[8]    N.Find.Posn←(N.∆Form.Size[1]-N.Find.Size[1]+N.Statusbar.Size[1]+N.∆V_Gap),N.∆V_Gap
+[9]    N.Find.onSelect←'OnFind'
 [10]
 [11]   ∆←⊂'Button'
 [12]   ∆,←⊂'Caption' 'Replace'
 [13]   ∆,←⊂'Size'(⍬ 120)
 [14]   ∆,←⊂'Active' 0
 [15]   ∆,←⊂'Attach'(4⍴'Bottom' 'Left')
-[16]   n.∆Buttons,←n.Replace←⍎'Replace'n.∆Form.⎕WC ∆
-[17]   n.Replace.Posn←(n.Find.Posn[1]),n.∆V_Gap+2⊃U.AddPosnAndSize n.Find
+[16]   N.∆Buttons,←N.Replace←⍎'Replace'N.∆Form.⎕WC ∆
+[17]   N.Replace.Posn←(N.Find.Posn[1]),N.∆V_Gap+2⊃U.AddPosnAndSize N.Find
 [18]  ⍝Done
      ∇
 ~~~
@@ -665,7 +668,7 @@ Note that the _Find_ button gets a callback `OnFind` assigned to the Select even
 
 A> # On callbacks
 A>
-A> Rather than doing all the hard work in the callback we could have assigned a 1 to `n.Find.onSelect` (so that clicking the button quits `⎕DQ` or `Wait`) and doing the hard work after that. At first glance there seems to be little difference between the two approaches.
+A> Rather than doing all the hard work in the callback we could have assigned a 1 to `N.Find.onSelect` (so that clicking the button quits `⎕DQ` or `Wait`) and doing the hard work after that. At first glance there seems to be little difference between the two approaches.
 A>
 A> However, if you want to test your GUI automatically then you _must_ execute the 'business logic' in a callback and avoid calling `⎕DQ` or `Wait` altogether.
 A> 
@@ -675,21 +678,23 @@ A> That allows us in test mode to...
 A> 1. call `Run`
 A> 1. populate the _Search for_ and _Start looking here_ fields
 A> 1. "click" the _Find_ button programmatically
-A> 1. check the contents of `n.HitList`
+A> 1. populate the "Search for" and "Start looking here" fields
+A> 1. "click" the "Find" button programmatically
+A> 1. check the contents of `N.HitList`
 
 
 #### The function `GUI.CreateHiddenButtons`
 
 ~~~
-     ∇ n←CreateHiddenButtons n;∆
+     ∇ N←CreateHiddenButtons N;∆
 [1]    ∆←⊂'Button'
 [2]    ∆,←⊂'Caption' 'Resize (F12)'
 [3]    ∆,←⊂'Size'(0 0)
 [4]    ∆,←⊂'Posn'(¯5 ¯5)
 [5]    ∆,←⊂'Attach'(4⍴'Top' 'Left')
 [6]    ∆,←⊂'Accelerator'(123 0)
-[7]    n.Resize←⍎'Resize'n.∆Form.⎕WC ∆
-[8]    n.Resize.onSelect←'OnResize'
+[7]    N.Resize←⍎'Resize'N.∆Form.⎕WC ∆
+[8]    N.Resize.onSelect←'OnResize'
 [9]   ⍝Done
      ∇
 ~~~
@@ -698,31 +703,31 @@ Note that this button has no size (`(0 0)`) and is positioned _outside_ the GUI.
 
 Well, it has an accelerator key attached to it which, according to the caption, is F12. This is an easy and straightforward way to implement a PF-key without overloading any "onKeyPress" callback.
 
-It also makes it easy to disable F12: just execute `n.Resize.Active←0`.
+It also makes it easy to disable F12: just execute `N.Resize.Active←0`.
 
 
 ### The function `GuiUtils.GetRef2n`
 
 We introduce this function here because almost all callbacks --- which we will introduce next --- will call `GetRef2n`. 
 
-Earlier on we saw that a reference to `n` was assigned to `n.∆form.n`. Now all callbacks, by definition, get a reference pointing to the control the callback is associated with as the first element of its right argument. 
+Earlier on we saw that a reference to `N` was assigned to `N.∆form.N`. Now all callbacks, by definition, get a reference pointing to the control the callback is associated with as the first element of its right argument. 
 
 We also know that the control is owned by the main form, either directly, like _Search for_, or indirectly like the _DotAll_ checkbox which is owned by the _RegEx_ group, which in turn is owned by the main form.
 
-That means that in order to find `n` we just need to check whether it exists at the current level. If not we go up one level (with `.##`) and try again.
+That means that in order to find `N` we just need to check whether it exists at the current level. If not we go up one level (with `.##`) and try again.
 
-`GetRef2n` is doing just that with a recursive call to itself until it finds `n`:
+`GetRef2n` is doing just that with a recursive call to itself until it finds `N`:
 
 ~~~
      ∇ GetRef2n←{                                                                                                               
-[1]        9=⍵.⎕NC'n':⍵.n                                                                                                       
+[1]        9=⍵.⎕NC'N':⍵.N                                                                                                       
 [2]        ⍵≡⍵.##:''           ⍝ Can happen in context menus, for example                                                       
 [3]        ∇ ⍵.##                                                                                                               
 [4]    }                                                                                                                        
      ∇
 ~~~
 
-Of course this means that you should not use the name `n` --- or whatever name _you_ prefer instead for this namespace --- anywhere in the hierarchy.
+Of course this means that you should not use the name `N` --- or whatever name _you_ prefer instead for this namespace --- anywhere in the hierarchy.
 
 Note that line [2] is an insurance against `GetRef2n` being called inside a callback that is associated with a control that is _not_ owned by the main form. Of course that should not happen -- because it makes no sense -- but if you do it by accident then without that line the function would call itself recursively forever.
 
@@ -735,10 +740,10 @@ Note that line [2] is an insurance against `GetRef2n` being called inside a call
 ~~~
       ∇ OnKeyPress←{
 [1]        (obj key)←⍵[1 3]
-[2]        n←U.GetRef2n obj
-[3]        _←n.∆WriteToStatusbar''
+[2]        N←U.GetRef2n obj
+[3]        _←N.∆WriteToStatusbar''
 [4]        'EP'≢key:1                ⍝ Not Escape? Done!
-[5]        _←2 ⎕NQ n.∆Form'Close'    ⍝ Close the main form...
+[5]        _←2 ⎕NQ N.∆Form'Close'    ⍝ Close the main form...
 [6]        0                         ⍝ ... and suppress the <esacape> key.
 [7]    }
      ∇
@@ -751,8 +756,8 @@ This function just handles the Esc key.
 
 ~~~
      ∇ OnToggleIsRegEx←{
-[1]        n←U.GetRef2n⊃⍵
-[2]        n.(DotAll Greedy).Active←~n.IsRegEx.State
+[1]        N←U.GetRef2n⊃⍵
+[2]        N.(DotAll Greedy).Active←~N.IsRegEx.State
 [3]        ⍬
 [4]    }                       
      ∇
@@ -765,11 +770,11 @@ This callback toggles the `Active` property of both `DotAll` and `Greedy` so tha
 
 ~~~
       ∇ OnResize←{
-[1]        n←⎕NS''
+[1]        N←⎕NS''
 [2]        list←CollectControls(⊃⍵).##
-[3]        n.∆Form←(⊃⍵).##
-[4]        width←CalculateMinWidth n.∆Form.n
-[5]        ⎕NQ n.∆Form,(⊂'Configure'),n.∆Form.Posn,(n.∆Form.Size[1]),width
+[3]        N.∆Form←(⊃⍵).##
+[4]        width←CalculateMinWidth N.∆Form.N
+[5]        ⎕NQ N.∆Form,(⊂'Configure'),N.∆Form.Posn,(N.∆Form.Size[1]),width
 [6]    }
      ∇
 ~~~
@@ -780,25 +785,25 @@ This function makes sure that the width of the GUI is reduced to the minimum req
 #### The function `GUI.OnFind`
 
 ~~~
-     ∇ r←OnFind msg;n
+     ∇ r←OnFind msg;N
 [1]    r←0
-[2]    n←U.GetRef2n⊃msg
-[3]    n.∆WriteToStatusbar''
-[4]    :If 0∊⍴n.SearchFor.Text
-[5]        Dialogs.ShowMsg n'"Search for" is empty - nothing to look for...'
-[6]    :ElseIf 0∊⍴n.StartLookingHere.Text
-[7]        Dialogs.ShowMsg n'"Start looking here" is empty?!'
-[8]    :ElseIf 9≠⎕NC n.StartLookingHere.Text
-[9]    :AndIf (,'#')≢,n.StartLookingHere.Text
-[10]       Dialogs.ShowMsg n'Contents of "Start looking here" is not a namespace'
+[2]    N←U.GetRef2n⊃msg
+[3]    N.∆WriteToStatusbar''
+[4]    :If 0∊⍴N.SearchFor.Text
+[5]        Dialogs.ShowMsg N'"Search for" is empty - nothing to look for...'
+[6]    :ElseIf 0∊⍴N.StartLookingHere.Text
+[7]        Dialogs.ShowMsg N'"Start looking here" is empty?!'
+[8]    :ElseIf 9≠⎕NC N.StartLookingHere.Text
+[9]    :AndIf (,'#')≢,N.StartLookingHere.Text
+[10]       Dialogs.ShowMsg N'Contents of "Start looking here" is not a namespace'
 [11]   :Else
-[12]       Find n
+[12]       Find N
 [13]   :EndIf
 [14]  ⍝Done
      ∇
 ~~~
 
-The callback performs some checks and either puts an error message on display by calling a function `Dialogs.ShowMsg` or executes the `Find` function, providing `n` as the right argument.
+The callback performs some checks and either puts an error message on display by calling a function `Dialogs.ShowMsg` or executes the `Find` function, providing `N` as the right argument.
 
 Note that `Dialog.ShowMsg` follows exactly the same principles we have outlines in this chapter, so we do not discuss it in detail, but you can download the code and look at it if you want to.
 
@@ -815,21 +820,21 @@ This is the real work horse:
 
 ~~~
      ∇ Find←{
-[1]        n←⍵
-[2]        G←CollectData n
-[3]        was←n.∆Buttons.Active
-[4]        n.∆Buttons.Active←0
-[5]        _←n.∆WriteToStatusbar'Searching...'
-[6]        n.∆Result←(noOfHits noOfObjects cpuTime)←##.BusinessLogic.Find G
-[7]        n.∆Buttons.Active←was
+[1]        N←⍵
+[2]        G←CollectData N
+[3]        was←N.∆Buttons.Active
+[4]        N.∆Buttons.Active←0
+[5]        _←N.∆WriteToStatusbar'Searching...'
+[6]        N.∆Result←(noOfHits noOfObjects cpuTime)←##.BusinessLogic.Find G
+[7]        N.∆Buttons.Active←was
 [8]        txt←(⍕noOfHits),' hits in ',(⍕noOfObjects),' objects. Search time ',(⍕cpuTime),' seconds.'
-[9]        _←n.∆WriteToStatusbar txt
+[9]        _←N.∆WriteToStatusbar txt
 [10]       1:r←⍬
 [11]   }
      ∇
 ~~~
 
-An important thing to discuss is the function `CollectData`. We want our 'business logic' to be independent from the GUI. So we don't want anything ine `##.BusinessLogic` to access the `n` namespace. 
+An important thing to discuss is the function `CollectData`. We want our 'business logic' to be independent from the GUI. So we don't want anything ine `##.BusinessLogic` to access the `n` namespace.
 
 But it needs access to the data entered and decisions made by the user on the GUI. So we collect all the data and assign them to variables inside a newly created anonymous namespace, which we assign to `G`.
 
@@ -838,22 +843,22 @@ But it needs access to the data entered and decisions made by the user on the GU
 
 ~~~
      ∇ CollectData←{
-[1]        n←⍵
+[1]        N←⍵
 [2]        G←⎕NS''
 [3]        _←G.⎕FX'r←∆List' 'r←{⍵,[1.5]⍎¨⍵}'' ''~¨⍨↓⎕NL 2'
-[4]        G.APL←n.APL.State
-[5]        G.Comments←n.Comments.State
-[6]        G.DotAll←n.DotAll.State
-[7]        G.FnsOprScripts←n.FnsOprScripts.State
-[8]        G.Greedy←n.Greedy.State
-[9]        G.IsRegEx←n.Greedy.State
-[10]       G.MatchAPLname←n.MatchAPLname.State
-[11]       G.MatchCase←n.MatchCase.State
-[12]       G.NameList←n.NameList.State
-[13]       G.SearchFor←n.SearchFor.Text
-[14]       G.StartLookingHere←n.StartLookingHere.Text
-[15]       G.Text←n.Text.State
-[16]       G.Variables←n.Variables.State
+[4]        G.APL←N.APL.State
+[5]        G.Comments←N.Comments.State
+[6]        G.DotAll←N.DotAll.State
+[7]        G.FnsOprScripts←N.FnsOprScripts.State
+[8]        G.Greedy←N.Greedy.State
+[9]        G.IsRegEx←N.Greedy.State
+[10]       G.MatchAPLname←N.MatchAPLname.State
+[11]       G.MatchCase←N.MatchCase.State
+[12]       G.NameList←N.NameList.State
+[13]       G.SearchFor←N.SearchFor.Text
+[14]       G.StartLookingHere←N.StartLookingHere.Text
+[15]       G.Text←N.Text.State
+[16]       G.Variables←N.Variables.State
 [17]       G
 [18]   }
      ∇
@@ -885,10 +890,10 @@ Of course nothing is really happening in `##.BusinessLogic.Find`, we just mock s
 
 ~~~
      ∇ CalculateMinWidth←{
-[1]        n←⍵
+[1]        N←⍵
 [2]        ignore←'HitList' 'SearchFor' 'StartLookingHere' 'Statusbar' 'StatusField1' '∆Form'
-[3]        list2←n.{⍎¨(' '~¨⍨↓⎕NL 9)~⍵}ignore
-[4]        (2×n.∆V_Gap)+⌈/{0::0 0 ⋄ 2⊃+⌿↑⍵.(Posn Size)}¨list2
+[3]        list2←N.{⍎¨(' '~¨⍨↓⎕NL 9)~⍵}ignore
+[4]        (2×N.∆V_Gap)+⌈/{0::0 0 ⋄ 2⊃+⌿↑⍵.(Posn Size)}¨list2
 [5]    }
      ∇
 ~~~
@@ -927,9 +932,9 @@ We put this into a separate function so that we can at any time interrupt the fu
 ### The function `GUI.Shutdown`
 
 ~~~
-     ∇ {r}←Shutdown n                                                                   
+     ∇ {r}←Shutdown N                                                                   
 [1]    r←⍬                                                                              
-[2]    :Trap 6 ⋄ 2 ⎕NQ n.∆Form'Close' ⋄ :EndTrap                                        
+[2]    :Trap 6 ⋄ 2 ⎕NQ N.∆Form'Close' ⋄ :EndTrap                                        
      ∇
 ~~~
 
@@ -955,13 +960,13 @@ How much work is required to make these changes?
 First we double the vertical and horizontal distance between the controls on the main form:
 
 ~~~
-     ∇ n←Init dummy
+     ∇ N←Init dummy
 ...
-[4]    n.∆Labels←n.⎕NS''
+[4]    N.∆Labels←N.⎕NS''
 leanpub-start-insert
-[5]    n.(∆V_Gap ∆H_Gap)←10 20
+[5]    N.(∆V_Gap ∆H_Gap)←10 20
 leanpub-end-insert
-[6]    n.∆Posn←80 30
+[6]    N.∆Posn←80 30
 ...
      ∇
 ~~~
@@ -970,28 +975,28 @@ Then we change the sequence in which the groups are created:
 
 ~~~
 leanpub-start-insert
-     ∇ n←CreateGUI n;groups
+     ∇ N←CreateGUI N;groups
 leanpub-end-insert
-[1]    n←CreateMainForm n
-[2]    n←CreateSearch n
-[3]    n←CreateStartLookingHere n
-[4]    n.∆Groups←⎕NS''
+[1]    N←CreateMainForm N
+[2]    N←CreateSearch N
+[3]    N←CreateStartLookingHere N
+[4]    N.∆Groups←⎕NS''
 leanpub-start-insert
-[5]    n←CreateOptionsGroup n
-[6]    n←CreateRegExGroup n
-[7]    groups←'Group'⎕WN n.∆Form
+[5]    N←CreateOptionsGroup N
+[6]    N←CreateRegExGroup N
+[7]    groups←'Group'⎕WN N.∆Form
 [8]    {⍵.Size←(⌈/1⊃¨⍵.Size),¨1+2⊃¨⍵.Size}groups
-[9]    n←CreateObjectTypesGroup n
-[10]   n←CreateScanGroup n
-[11]   {⍵.Size←(⌈/1⊃¨⍵.Size),¨1+2⊃¨⍵.Size}('Group'⎕WN n.∆Form)~groups
+[9]    N←CreateObjectTypesGroup N
+[10]   N←CreateScanGroup N
+[11]   {⍵.Size←(⌈/1⊃¨⍵.Size),¨1+2⊃¨⍵.Size}('Group'⎕WN N.∆Form)~groups
 leanpub-end-insert
-[12]   n←CreateList n
-[13]   n←CreatePushButtons n
-[14]   n←CreateHiddenButtons n
-[15]   n.HitList.Size[1]-←(2×n.∆V_Gap)+n.∆Form.Size[1]-n.Find.Posn[1]
-[16]   n.(⍎¨↓⎕NL 9).onKeyPress←⊂'OnKeyPress'
-[17]   n.∆WriteToStatusbar←n∘{⍺.Statusbar.StatusField1.Text←⍵ ⋄ 1:r←⍬}
-[18]   n.∆Form.onConfigure←'OnConfigure'(335,CalculateMinWidth n)
+[12]   N←CreateList N
+[13]   N←CreatePushButtons N
+[14]   N←CreateHiddenButtons N
+[15]   N.HitList.Size[1]-←(2×N.∆V_Gap)+N.∆Form.Size[1]-N.Find.Posn[1]
+[16]   N.(⍎¨↓⎕NL 9).onKeyPress←⊂'OnKeyPress'
+[17]   N.∆WriteToStatusbar←N∘{⍺.Statusbar.StatusField1.Text←⍵ ⋄ 1:r←⍬}
+[18]   N.∆Form.onConfigure←'OnConfigure'(335,CalculateMinWidth N)
 [19]  ⍝Done
      ∇
 ~~~
@@ -1001,27 +1006,27 @@ We need to calculate the height of the groups here twice: once in line [8], afte
 We then tell the _RegEx_ group where it should go, and we adjust the positions of the _DotAll_ and the _Greedy_ check boxes:
 
 ~~~
-     ∇ n←CreateRegExGroup n;∆
+     ∇ N←CreateRegExGroup N;∆
 [1]    ∆←⊂'Group'
 [2]    ∆,←⊂'Caption' 'RegEx'
 leanpub-start-insert
-[3]   ⍝∆,←⊂'Posn'({⍵.Posn[1],(2×n.∆V_Gap)+2⊃U.AddPosnAndSize ⍵}n.∆Groups.ScanGroup)
-[4]    ∆,←⊂'Posn'({⍵.Posn[1],(2×n.∆V_Gap)+2⊃U.AddPosnAndSize ⍵}n.∆Groups.OptionsGroup)
+[3]   ⍝∆,←⊂'Posn'({⍵.Posn[1],(2×N.∆V_Gap)+2⊃U.AddPosnAndSize ⍵}N.∆Groups.ScanGroup)
+[4]    ∆,←⊂'Posn'({⍵.Posn[1],(2×N.∆V_Gap)+2⊃U.AddPosnAndSize ⍵}N.∆Groups.OptionsGroup)
 leanpub-end-insert
 [5]    ∆,←⊂'Size'(300 400)
 ...
 [16]   ∆←⊂'Button'
 [17]   ∆,←⊂'Style' 'Check'
 leanpub-start-insert
-[18]  ⍝∆,←⊂'Posn'((⊃U.AddPosnAndSize n.IsRegEx),4×n.∆H_Gap)
-[19]   ∆,←⊂'Posn'((⊃U.AddPosnAndSize n.IsRegEx),2×n.∆H_Gap)
+[18]  ⍝∆,←⊂'Posn'((⊃U.AddPosnAndSize N.IsRegEx),4×N.∆H_Gap)
+[19]   ∆,←⊂'Posn'((⊃U.AddPosnAndSize N.IsRegEx),2×N.∆H_Gap)
 leanpub-end-insert
 [20]   ∆,←⊂'Caption' 'Dot&All'
 ...
 [24]   ∆,←⊂'Style' 'Check'
 leanpub-start-insert
-[25]  ⍝∆,←⊂'Posn'((⊃U.AddPosnAndSize n.DotAll),4×n.∆H_Gap)
-[26]   ∆,←⊂'Posn'((⊃U.AddPosnAndSize n.DotAll),2×n.∆H_Gap)
+[25]  ⍝∆,←⊂'Posn'((⊃U.AddPosnAndSize N.DotAll),4×N.∆H_Gap)
+[26]   ∆,←⊂'Posn'((⊃U.AddPosnAndSize N.DotAll),2×N.∆H_Gap)
 leanpub-end-insert
 [27]   ∆,←⊂'Caption' '&Greedy'
 ...
@@ -1039,12 +1044,12 @@ W> In a real-world scenario, rather than cluttering the code, it should be left 
 For `CreateObjectTypesGroup` we just need to change the `Posn` property:
 
 ~~~
-     ∇ n←CreateObjectTypesGroup n;∆
+     ∇ N←CreateObjectTypesGroup N;∆
 [1]    ∆←⊂'Group'
 [2]    ∆,←⊂'Caption' 'Object &types'
 leanpub-start-insert
-[3]   ⍝∆,←⊂'Posn'({⍵.Posn[1],(2×n.∆V_Gap)+2⊃U.AddPosnAndSize ⍵}n.∆Groups.OptionsGroup)
-[4]    ∆,←⊂'Posn'((n.∆V_Gap+1⊃U.AddPosnAndSize n.∆Groups.OptionsGroup),n.∆H_Gap)
+[3]   ⍝∆,←⊂'Posn'({⍵.Posn[1],(2×N.∆V_Gap)+2⊃U.AddPosnAndSize ⍵}N.∆Groups.OptionsGroup)
+[4]    ∆,←⊂'Posn'((N.∆V_Gap+1⊃U.AddPosnAndSize N.∆Groups.OptionsGroup),N.∆H_Gap)
 leanpub-end-insert
 [5]    ∆,←⊂'Size'(300 400)
 ...
@@ -1056,13 +1061,13 @@ The last group-related function, `CreateScanGroup`, does not change at all becau
 Since we now have significantly less space available for the `HitList` we need to change `CreateList` as well:
 
 ~~~
-     ∇ n←CreateList n;∆;h
+     ∇ N←CreateList N;∆;h
 [1]    ∆←⊂'ListView'
 leanpub-start-insert
-[2]   ⍝h←⊃n.∆V_Gap+U.AddPosnAndSize n.MatchCase.##
-[3]    h←⊃n.∆V_Gap+U.AddPosnAndSize n.FnsOprScripts.##
+[2]   ⍝h←⊃N.∆V_Gap+U.AddPosnAndSize N.MatchCase.##
+[3]    h←⊃N.∆V_Gap+U.AddPosnAndSize N.FnsOprScripts.##
 leanpub-end-insert
-[4]    ∆,←⊂'Posn'(h,n.∆H_Gap)
+[4]    ∆,←⊂'Posn'(h,N.∆H_Gap)
 ...
      ∇
 ~~~
@@ -1098,26 +1103,26 @@ For implementing tests execute the following steps:
  Edit `#._MyApp.TestCases.Test_000` and make it look like this:
 
 ~~~
-     ∇ R←Test_01(stopFlag batchFlag);⎕TRAP;n
+     ∇ R←Test_01(stopFlag batchFlag);⎕TRAP;N
 [1]   ⍝ Test that the GUI comes up and the "Find" works well
 [2]    ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
 [3]    R←∆Failed
 [4]
-[5]    n←##.MyApp.GUI.Run 1
-[6]    n.SearchFor.Text←'⎕IO'
-[7]    n.StartLookingHere.Text←'#'
-[8]    1 ⎕NQ n.Find'Select'
-[9]    →GoToTidyUp 123 645 2.3≢n.∆Result
+[5]    N←##.MyApp.GUI.Run 1
+[6]    N.SearchFor.Text←'⎕IO'
+[7]    N.StartLookingHere.Text←'#'
+[8]    1 ⎕NQ N.Find'Select'
+[9]    →GoToTidyUp 123 645 2.3≢N.∆Result
 [10]   R←∆OK
 [11]
 [12]  ∆TidyUp:
-[13]   1 ⎕NQ n.∆Form'Close'
+[13]   1 ⎕NQ N.∆Form'Close'
      ∇
 ~~~
 
 Of course this is not how a real test would look  (line [9]) but it demonstrates the principles.
 
-Note that `n.∆Result` was set in the `GUI.Find` function.
+Note that `N.∆Result` was set in the `GUI.Find` function.
 
 After having executed `Init` there is a global reference `GUI.U` around that points to the namespace `GUI.GuiUtils`; that's necessary because otherwise later calls might well fail with a VALUE ERROR when `GUI.U` is not available.
 
@@ -1129,20 +1134,20 @@ That's not a problem because we don't save the workspace, we recompile it from s
 Take a copy of the first test and make it look like this:
 
 ~~~
-     ∇ R←Test_02(stopFlag batchFlag);⎕TRAP;n;G
+     ∇ R←Test_02(stopFlag batchFlag);⎕TRAP;N;G
 [1]   ⍝ Test the business logic
 [2]    ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
 [3]    R←∆Failed
 [4]
-[5]    n←##.MyApp.GUI.Run 1
-[6]    n.SearchFor.Text←'⎕IO'
-[7]    n.StartLookingHere.Text←'#'
-[8]    G←##.MyApp.GUI.CollectData n
+[5]    N←##.MyApp.GUI.Run 1
+[6]    N.SearchFor.Text←'⎕IO'
+[7]    N.StartLookingHere.Text←'#'
+[8]    G←##.MyApp.GUI.CollectData N
 [9]    →GoToTidyUp 123 645 2.3≢##.MyApp.BusinessLogic.Find G
 [10]   R←∆OK
 [11]
 [12]  ∆TidyUp:
-[13]   1 ⎕NQ n.∆Form'Close'
+[13]   1 ⎕NQ N.∆Form'Close'
      ∇
 ~~~
 
@@ -1152,52 +1157,52 @@ Take a copy of the first test and make it look like this:
 Take a copy of the first test and make it look like this:
 
 ~~~
-     ∇ R←Test_03(stopFlag batchFlag);⎕TRAP;n
+     ∇ R←Test_03(stopFlag batchFlag);⎕TRAP;N
 [1]   ⍝ Test whether an empty "Search for" field leads to an error message.
 [2]    ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
 [3]    R←∆Failed
 [4]
-[5]    n←##.MyApp.GUI.Run 1
-[6]    n.StartLookingHere.Text←'#'
-[7]    1 ⎕NQ n.Find'Select'
-[8]    →GoToTidyUp 0=n.⎕NC'∆ErrorMsg'
-[9]    →GoToTidyUp'"Search for" is empty - nothing to look for...'≢n.∆ErrorMsg
+[5]    N←##.MyApp.GUI.Run 1
+[6]    N.StartLookingHere.Text←'#'
+[7]    1 ⎕NQ N.Find'Select'
+[8]    →GoToTidyUp 0=N.⎕NC'∆ErrorMsg'
+[9]    →GoToTidyUp'"Search for" is empty - nothing to look for...'≢N.∆ErrorMsg
 [10]   R←∆OK
 [11]
 [12]  ∆TidyUp:
-[13]   1 ⎕NQ n.∆Form'Close'
+[13]   1 ⎕NQ N.∆Form'Close'
      ∇
 ~~~
 
-This works because when `testFlag` -- the right argument of `GUI.Run` --- is 1 then the function `Dialog.ShowMsg` does nothing but set a global variable `n.∆ErrorMsg` which we use in the test case in order to check whether our actions triggered the correct behaviour.
+This works because when `testFlag` -- the right argument of `GUI.Run` --- is 1 then the function `Dialog.ShowMsg` does nothing but set a global variable `N.∆ErrorMsg` which we use in the test case in order to check whether our actions triggered the correct behaviour.
 
 We have eariler stated that we won't discuss `Dialogs.ShowMsg` in details but we list it here because the function illustrates an important concept of how GUIs can be tested at all:
 
 ~~~
-     ∇ {r}←{caption}ShowMsg(n msg);n2;U
-[1]   ⍝ Takes `n` and a message to be displayed as mandatory right arguments.
+     ∇ {r}←{caption}ShowMsg(N msg);n2;U
+[1]   ⍝ Takes `N` and a message to be displayed as mandatory right arguments.
 [2]   ⍝ Takes an optional `caption` as left argument.
 [3]   ⍝ Returns 1 when running under test conditions and 0 otherwise.
-[4]   ⍝ In test mode no GUI is created at all but a global `n.∆ErrorMsg` is set to `msg`.
+[4]   ⍝ In test mode no GUI is created at all but a global `N.∆ErrorMsg` is set to `msg`.
 [5]    r←0
 [6]    caption←{0<⎕NC ⍵:⍎⍵ ⋄ 'Attention!'}'caption'
 leanpub-start-insert
-[7]    :If n.∆TestFlag
-[8]        n.∆ErrorMsg←msg
+[7]    :If N.∆TestFlag
+[8]        N.∆ErrorMsg←msg
 [9]        r←1
 [10]   :Else
 leanpub-end-insert
 [11]       U←##.GuiUtils
 [12]       n2←U.CreateNamespace
-[13]       n2.(∆V_Gap ∆H_Gap)←n.(∆V_Gap ∆H_Gap)
-[14]       n2←n2 CreateGUI n msg caption
+[13]       n2.(∆V_Gap ∆H_Gap)←N.(∆V_Gap ∆H_Gap)
+[14]       n2←n2 CreateGUI N msg caption
 [15]       {}n2.OK U.DQ n2.∆Form
 [16]       Close n2.∆Form
 [17]   :EndIf
      ∇
 ~~~
 
-Now it becomes apparent why we assigned the right argument of `GUI.Run` --- `testFlag` --- to `n.∆TestFlag`: we need this potentially in order to avoid handing over control to the user; in test cases we don't want to do this.
+Now it becomes apparent why we assigned the right argument of `GUI.Run` --- `testFlag` --- to `N.∆TestFlag`: we need this potentially in order to avoid handing over control to the user; in test cases we don't want to do this.
 
 
 ### Final steps
@@ -1224,7 +1229,7 @@ Having said this, the approach outlined here is insufficient if the GUI of an ap
 
 However, the principal ideas can still be used but the list of controls were better compiled from scratch at the start of each callback function rather than having them as a static list in a namespace.
 
-Paul Mansour came up with many of the ideas outlined here. We stole plenty from him and owe him a big thank you.
+It was Paul Mansour came up with many of the ideas outlined here. We stole plenty from him and owe him a big thank you.
 
 
 
@@ -1233,18 +1238,17 @@ Paul Mansour came up with many of the ideas outlined here. We stole plenty from 
 
 ## Common abbreviations
 
-*[BAT]: Executable file that contains batch commands
-*[CHM]: Executable file with the extension `.chm` that contains Windows Help (Compiled Help) 
-*[CSS]: File that contains layout definitions (Cascading Style Sheet)
-*[DWS]: Dyalog workspace
-*[DYALOG]: File with the extension `.dyalog` holding APL code
-*[DYAPP]: File with the extension `.dyapp` that contains `Load` and `Run` commands in order to put together an APL application
-*[EXE]: Executable file with the extension `.exe`
-*[HTM]: File in HTML format
-*[HTML]: HyperText Mark-up language
-*[INI]: File with the extension `.ini` containing configuration data
-*[MD]: File with the extension `.md` that contains markdown
-*[PF-key]: Programmable function key
-*[TXT]: File with the extension `.txt` containing text
-*[WS]: Workspaces
 
+*[HTML]: Hyper Text Mark-up language
+*[DYALOG]: File with the extension 'dyalog' holding APL code
+*[TXT]: File with the extension 'txt' containing text
+*[INI]: File with the extension 'ini' containing configuration data
+*[DYAPP]: File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application
+*[EXE]: Executable file with the extension 'exe'
+*[BAT]: Executeabe file that contains batch commands
+*[CSS]: File that contains layout definitions (Cascading Style Sheet)
+*[MD]: File with the extension 'md' that contains markdown
+*[CHM]: Executable file with the extension 'chm' that contains Windows Help(Compiled Help) 
+*[DWS]: Dyalog workspace
+*[WS]: Short for Workspaces
+*[PF-key]: Programmable function key

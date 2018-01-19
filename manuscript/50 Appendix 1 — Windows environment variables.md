@@ -31,7 +31,7 @@ Some consider environment variables an outdated technology. We don't want to get
 `AllUserProfile`
 : Defaults to `C:\ProgramData`: see [ProgramData](#programdata)
 
-`AppData{#appdata}`
+`AppData`{#appdata}
 : Defaults to `C:\Users\{yourName}\AppData\Roaming`
 
 : Use this to store data that is both application **and** user specific that is supposed to roam [^roaming] with the user. An INI might be an example.
@@ -59,7 +59,7 @@ Some consider environment variables an outdated technology. We don't want to get
 `HomePath`
 : Defaults to `\Users\{yourName}`
 
-`LocalAppData{#localappdata}`
+`LocalAppData`{#localappdata}
 : Defaults to `C:\Users\{yourName}\AppData\Local`
 
 : Use this to store data that is both application **and** user specific that is **not** supposed to roam [^roaming] with the user. 
@@ -80,13 +80,13 @@ Some consider environment variables an outdated technology. We don't want to get
 `PathExt`
 : A list of the file extensions the operating system considers executable, for example: `.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC`.
 
-`ProgramData{#programdata}`
+`ProgramData`{#programdata}
 : Defaults to `C:\ProgramData`. Use this for information that is application-specific and needs write access after installation. For Dyalog, this would be the right place to store the session file, workspaces and user commands.
 
-`ProgramFiles{#programfiles}`
+`ProgramFiles`{#programfiles}
 : Defaults to `C:\Program Files`. On a 64-bit version of Windows this is where 64-bit programs are installed. Note however that on a 32-bit version of Windows this points to [ProgramFiles(x86)](#x86).
 
-`ProgramFiles(x86){#x86}`
+`ProgramFiles(x86)`{#x86}
  : Defaults to `C:\Program Files (x86)`. This is where 32-bit programs are installed.
 
 `ProgramW6432`
@@ -100,7 +100,7 @@ For details see _WOW64 Implementation Detail_ [^wow].
 `Public`
 : Defaults to `C:\Users\Public`. It contains folders like `Public Documents`, `Public Music`, `Public Pictures`, `Public Videos`, ... well, you get the picture.
 
-`SystemRoot{#systemroot}`
+`SystemRoot`{#systemroot}
 : Specifies the folder in which Windows is installed. Defaults to `C:\WINDOWS`.
 
 `Temp`
@@ -129,18 +129,17 @@ For details see _WOW64 Implementation Detail_ [^wow].
 
 ## Common abbreviations
 
-*[BAT]: Executable file that contains batch commands
-*[CHM]: Executable file with the extension `.chm` that contains Windows Help (Compiled Help) 
-*[CSS]: File that contains layout definitions (Cascading Style Sheet)
-*[DWS]: Dyalog workspace
-*[DYALOG]: File with the extension `.dyalog` holding APL code
-*[DYAPP]: File with the extension `.dyapp` that contains `Load` and `Run` commands in order to put together an APL application
-*[EXE]: Executable file with the extension `.exe`
-*[HTM]: File in HTML format
-*[HTML]: HyperText Mark-up language
-*[INI]: File with the extension `.ini` containing configuration data
-*[MD]: File with the extension `.md` that contains markdown
-*[PF-key]: Programmable function key
-*[TXT]: File with the extension `.txt` containing text
-*[WS]: Workspaces
 
+*[HTML]: Hyper Text Mark-up language
+*[DYALOG]: File with the extension 'dyalog' holding APL code
+*[TXT]: File with the extension 'txt' containing text
+*[INI]: File with the extension 'ini' containing configuration data
+*[DYAPP]: File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application
+*[EXE]: Executable file with the extension 'exe'
+*[BAT]: Executeabe file that contains batch commands
+*[CSS]: File that contains layout definitions (Cascading Style Sheet)
+*[MD]: File with the extension 'md' that contains markdown
+*[CHM]: Executable file with the extension 'chm' that contains Windows Help(Compiled Help) 
+*[DWS]: Dyalog workspace
+*[WS]: Short for Workspaces
+*[PF-key]: Programmable function key
