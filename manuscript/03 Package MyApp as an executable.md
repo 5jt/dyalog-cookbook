@@ -209,9 +209,6 @@ Looking in Windows Explorer at `Z:\texts\en.csv`, we see its timestamp just chan
 [^folder]: Note that in the Dyalog Cookbook the words _folder_ and _directory_ are used interchangeably. 
 
 
-## Common abbreviations
-
-
 *[HTML]: Hyper Text Mark-up language
 *[DYALOG]: File with the extension 'dyalog' holding APL code
 *[TXT]: File with the extension 'txt' containing text

@@ -127,8 +127,6 @@ For details see _WOW64 Implementation Detail_ [^wow].
 
 
 
-## Common abbreviations
-
 
 *[HTML]: Hyper Text Mark-up language
 *[DYALOG]: File with the extension 'dyalog' holding APL code

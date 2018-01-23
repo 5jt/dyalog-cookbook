@@ -845,8 +845,6 @@ windowsEventSource
 [^stop]: The English poets among us love that the tersest way to bring a function to a full stop is to type one. (American poets will of course have typed a period and will think of it as calling time out.)
 
 
-## Common abbreviations
-
 
 *[HTML]: Hyper Text Mark-up language
 *[DYALOG]: File with the extension 'dyalog' holding APL code

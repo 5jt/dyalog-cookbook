@@ -456,8 +456,6 @@ A> `MyLogger` is localized in the header of `TxtToCsv`, meaning that when `TxtTo
 [^bom]: Details regarding the BOM: <https://en.wikipedia.org/wiki/Byte_order_mark>
 
 
-## Common abbreviations
-
 
 *[HTML]: Hyper Text Mark-up language
 *[DYALOG]: File with the extension 'dyalog' holding APL code

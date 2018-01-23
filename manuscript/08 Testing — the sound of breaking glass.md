@@ -965,10 +965,6 @@ If it’s not `0`:
 [^where]: With version 16.0 the same can be achieved with the new primitive `⍸`.
 
 
-
-## Common abbreviations
-
-
 *[HTML]: Hyper Text Mark-up language
 *[DYALOG]: File with the extension 'dyalog' holding APL code
 *[TXT]: File with the extension 'txt' containing text

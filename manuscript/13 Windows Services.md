@@ -614,7 +614,7 @@ A> Even if the code of a class executes `⎕EX ⍕⎕THIS` or a function or oper
 
 ## Testing the Service
 
-We have test cases that tell us the 'business logi'" of `MyApp` works just fine. What we also need are tests that it runs fine as a Service as well.
+We have test cases that tell us the "business logig" of `MyApp` works just fine. What we also need are tests that it runs fine as a Service as well.
 
 Since the two test scenarios are only loosely related we want to keep those tests separate. It is easy to see a way: testing the Service means assembling all the needed stuff, installing the Service, carrying out the tests and finally un-installing the tests and cleaning up. 
 
@@ -873,9 +873,6 @@ Looking for a function "Cleanup"...
 
 [^aplcore]: More information regarding aplcores is available in [_Appendix 3 — aplcores and WS integrity_](52 Appendix 3 — aplcores and WS integrity.html).
 
-
-
-## Common abbreviations
 
 
 *[HTML]: Hyper Text Mark-up language

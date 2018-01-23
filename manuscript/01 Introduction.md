@@ -111,8 +111,6 @@ Kai Jaeger & Stephen Taylor
   We have seen friendships broken on these issues. In this book we take a mixed approach.
 
 
-## Common abbreviations
-
 
 *[HTML]: Hyper Text Mark-up language
 *[DYALOG]: File with the extension 'dyalog' holding APL code

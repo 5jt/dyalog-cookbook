@@ -399,9 +399,6 @@ And finally we create a new standalone EXE as before and run it to make sure tha
 [^fire]: Fire stands for _Find and Replace_. It is a powerful tool for both search and replace operations in the workspace. It is also a member of the APLTree Open Source Library. For details see <http://aplwiki.com/Fire>. Fire is discussed in the chapter _Useful user commands_.
 
 
-## Common abbreviations
-
-
 *[HTML]: Hyper Text Mark-up language
 *[DYALOG]: File with the extension 'dyalog' holding APL code
 *[TXT]: File with the extension 'txt' containing text

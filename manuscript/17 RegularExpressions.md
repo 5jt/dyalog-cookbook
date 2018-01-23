@@ -1014,8 +1014,6 @@ RegexBuddy
 : The web site also comes with detailed book reviews: <http://www.regular-expressions.info/hipowls.html>
 
 
-## Common abbreviations
-
 
 *[HTML]: Hyper Text Mark-up language
 *[DYALOG]: File with the extension 'dyalog' holding APL code

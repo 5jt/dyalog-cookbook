@@ -411,8 +411,6 @@ We can now write `captionValues` to all versions:
 <https://en.wikipedia.org/wiki/Windows_Script_Host>
 
 
-## Common abbreviations
-
 
 *[HTML]: Hyper Text Mark-up language
 *[DYALOG]: File with the extension 'dyalog' holding APL code

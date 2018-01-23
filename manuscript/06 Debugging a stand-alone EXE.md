@@ -221,8 +221,6 @@ A>
 A> This function does not make much sense but the point is that the right argument is overwritten; so one cannot restart this function with `→1`. Don’t do overwrite an argument without a _very_ good reason. In this example, a counter is a better way to iterate. (Faster, too.)
 
 
-## Common abbreviations
-
 
 *[HTML]: Hyper Text Mark-up language
 *[DYALOG]: File with the extension 'dyalog' holding APL code

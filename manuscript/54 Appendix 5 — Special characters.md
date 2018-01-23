@@ -36,9 +36,6 @@ The following table contains everything you need to know about how different ope
 Strictly speaking, a file should always end with such characters. However, for example under Windows even different software packages from Microsoft handle this differently. 
 
 
-## Common abbreviations
-
-
 *[HTML]: Hyper Text Mark-up language
 *[DYALOG]: File with the extension 'dyalog' holding APL code
 *[TXT]: File with the extension 'txt' containing text

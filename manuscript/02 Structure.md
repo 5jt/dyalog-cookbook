@@ -745,8 +745,6 @@ We have reached our goal:
 [^csv]: With version 16.0 Dyalog has introduced a system function `⎕CSV` for both importing from and exporting to CSV files.
 
 
-## Common abbreviations
-
 
 *[HTML]: Hyper Text Mark-up language
 *[DYALOG]: File with the extension 'dyalog' holding APL code

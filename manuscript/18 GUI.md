@@ -1236,9 +1236,6 @@ It was Paul Mansour came up with many of the ideas outlined here. We stole plent
 [^appstream]: <https://aws.amazon.com/appstream2/>
 
 
-## Common abbreviations
-
-
 *[HTML]: Hyper Text Mark-up language
 *[DYALOG]: File with the extension 'dyalog' holding APL code
 *[TXT]: File with the extension 'txt' containing text
