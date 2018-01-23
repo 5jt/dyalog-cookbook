@@ -164,11 +164,20 @@
 
     ∇ r←Version
       :Access Public shared
-      r←(Last⍕⎕THIS)'3.6.0' '2017-10-28'
+      r←(Last⍕⎕THIS)'3.7.0' '2018-01-23'
     ∇
 
     ∇ History
       :Access Public shared
+      ⍝ * 3.7.0
+      ⍝   Output improved. Mark-up is explained and non-active tests explain themselves.
+      ⍝ * 3.6.2
+      ⍝   * The helpers crashed in case `APLTreeUtils` was not available in `#`. The helpers need to make an effort
+      ⍝     in order to find it anywhere sensible.
+      ⍝   * The `Run*` functions relied on a particular setting of `⎕IO` and `⎕ML`.
+      ⍝   * Some of the helpers  relied on a certain setting of `⎕IO` and `⎕ML`.
+      ⍝ * 3.6.1
+      ⍝   Function `G` ignores all test functions that carry more than one `_`.
       ⍝ * 3.6.0
       ⍝   * `Cleanup` may now also be a monadic function.
       ⍝ * 3.5.0
@@ -189,17 +198,18 @@
       ⍝   * Project is now managed by acre 3.
     ∇
 
-    ∇ {(rc log)}←Run refToTestNamespace;flags
+    ∇ {(rc log)}←Run refToTestNamespace;flags;⎕IO;⎕ML
     ⍝ Runs all test cases in `refToTestNamespace` with error trapping. Broken
     ⍝ as well as failing tests are reported in the session as such but they
     ⍝ don't stop the program from carrying on.
       :Access Public Shared
+      ⎕IO←1 ⋄ ⎕ML←3
       flags←1 0 0 0
       (rc log)←refToTestNamespace Run__ flags,⊂⍬
      ⍝Done
     ∇
 
-    ∇ {(rc log)}←{trapAndDebugFlag}RunBatchTests refToTestNamespace;flags
+    ∇ {(rc log)}←{trapAndDebugFlag}RunBatchTests refToTestNamespace;flags;⎕IO;⎕ML
     ⍝ Runs all test cases in `refToTestNamespace` but tells the test functions
     ⍝ that this is a batch run meaning that test cases in need for any human
     ⍝ being for interaction should not execute the test case and return `∆NoBatchTest`.\\
@@ -208,18 +218,20 @@
     ⍝ The left argument defaults to 0 but can be set to 1. It sets both, `stopFlag`\\
     ⍝ and `trapFlag` when specified. It can be a scalar or a two-item vector.
       :Access Public Shared
+      ⎕IO←1 ⋄ ⎕ML←3
       trapAndDebugFlag←{(0<⎕NC ⍵):⍎⍵ ⋄ 1 0}'trapAndDebugFlag'
       flags←(1↑trapAndDebugFlag),(¯1↑trapAndDebugFlag),1 0
       (rc log)←refToTestNamespace Run__ flags,⊂⍬
     ∇
 
-    ∇ {log}←{x}RunDebug refToTestNamespace;flags;rc;stopAt;stop
+    ∇ {log}←{x}RunDebug refToTestNamespace;flags;rc;stopAt;stop;⎕ML;⎕IO
     ⍝ Runs all test cases in `refToTestNamespace` **without** error trapping.
     ⍝ If a test case encounters an invalid result it stops. Use this function
     ⍝ to investigate the details after `Run` detected a problem.\\
     ⍝ This will work only if you use a particualar strategy when checking results
     ⍝ in a test case; see <http://aplwiki.com/Tester> for details.
       :Access Public Shared
+      ⎕IO←1 ⋄ ⎕ML←3
       stop←0 ⋄ stopAt←⊂⍬
       :If 0<⎕NC'x'
           :If 0>x
@@ -233,7 +245,7 @@
       (rc log)←refToTestNamespace Run__ flags
     ∇
 
-    ∇ {log}←testCaseNos RunTheseIn refToTestNamespace;flags;rc
+    ∇ {log}←testCaseNos RunTheseIn refToTestNamespace;flags;rc;⎕ML;⎕IO
     ⍝ Same as `RunDebug` but it runs just `testCaseNos` in `refToTestNamespace`.\\
     ⍝ Example that executes `Test_special_02` and `Test_999`:\\
     ⍝ ~~~
@@ -245,6 +257,7 @@
     ⍝  'Special' (2 3) RunTheseIn ⎕THIS
     ⍝ ~~~
       :Access Public Shared
+      ⎕IO←1 ⋄ ⎕ML←3
       flags←0 1 0 0
       (rc log)←refToTestNamespace Run__ flags,⊂testCaseNos
     ∇
@@ -282,14 +295,14 @@
      ⍝ Note that the search will be case insensitive in any case.
       r←''
       (refToTestNamespace full)←2↑y,(⍴,y)↓'' 1
-      searchString←##.APLTreeUtils.Lowercase{0<⎕NC ⍵:⍎⍵ ⋄ ''}'searchString'
+      searchString←Lowercase{0<⎕NC ⍵:⍎⍵ ⋄ ''}'searchString'
       :If ~0∊⍴list←'Test_'{⍵⌿⍨⍺∧.=⍨⍵↑[2]⍨⍴⍺}'T'refToTestNamespace.⎕NL 3
-      :AndIf ~0∊⍴list←' '~¨⍨↓('Test_'{∧/((⍴⍺)↓[2]⍵)∊' ',⎕D,⎕A,'_',##.APLTreeUtils.Lowercase ⎕A}list)⌿list
+      :AndIf ~0∊⍴list←' '~¨⍨↓('Test_'{∧/((⍴⍺)↓[2]⍵)∊' ',⎕D,⎕A,'_',Lowercase ⎕A}list)⌿list
           r←2⊃¨refToTestNamespace.⎕NR¨list
           r←{⍵↓⍨+/∧\⍵∊' ⍝'}¨{⍵↓⍨⍵⍳'⍝'}¨r
           :If ~0∊⍴searchString
-              b←∨/searchString⍷##.APLTreeUtils.Lowercase⊃r          ⍝ Either in comment...
-              b∨←∨/searchString⍷⊃##.APLTreeUtils.Lowercase list     ⍝ ... or in the name.
+              b←∨/searchString⍷Lowercase⊃r          ⍝ Either in comment...
+              b∨←∨/searchString⍷⊃Lowercase list     ⍝ ... or in the name.
               r←b⌿r
               list←b⌿list
           :EndIf
@@ -498,7 +511,7 @@
               ps.group←''
           :EndIf
           :If ~0∊⍴ps.group
-              :If 3=ref.⎕NC ps.group
+              :If 3=ref.⎕NC'Test_'{((⍺≢(⍴⍺)↑⍵)/⍺),⍵}ps.group
                   ps.list←,⊂ps.group
                   ps.group←''
               :Else
@@ -544,15 +557,17 @@
                   ps.returnCodes,←rc
               :EndIf
               msg←{⍵↓⍨+/∧\' '=⍵}{⍵↓⍨⍵⍳'⍝'}2⊃ref.⎕NR this
-              ps.log,←⊂('* '[1+rc∊0 ¯1]),' ',this,' (',(⍕i),' of ',(⍕noOf),') : ',msg
+              :If rc∊0 1 ¯1
+                  ps.log,←⊂('* '[1+rc∊0 ¯1]),' ',this,' (',(⍕i),' of ',(⍕noOf),') : ',msg
+              :Else
+                  ps.log,←⊂'- ',this,' (',(⍕i),' of ',(⍕noOf),') : ',msg     
+              :EndIf
               :If 0>rc
                   :If 0<ps.errCounter
                       rc←1
-                      :Continue
                   :EndIf
-              :Else
-                  ¯1 ShowLog ps.log
               :EndIf
+              ¯1 ShowLog ps.log
           :Else
               ps.errCounter+←1
               msg←{⍵↓⍨+/∧\' '=⍵}{⍵↓⍨⍵⍳'⍝'}2⊃ref.⎕NR this
@@ -579,38 +594,38 @@
       log←ps.log
       log,←⊂(⎕PW-2)⍴'-'
       log,←⊂'  ',(⍕1⊃⍴ps.list),' test case',((1≠1⊃⍴ps.list)/'s'),' executed'
-      log,←⊂'  ',(⍕ps.failedCounter),' test case',((1≠+/ps.failedCounter)/'s'),' failed'
-      log,←⊂'  ',(⍕ps.errCounter),' test case',((1≠+/ps.errCounter)/'s'),' broken'
+      log,←⊂'  ',(⍕ps.failedCounter),' test case',((1≠+/ps.failedCounter)/'s'),' failed',(0<ps.failedCounter)/' (flagged with leading "*")'
+      log,←⊂'  ',(⍕ps.errCounter),' test case',((1≠+/ps.errCounter)/'s'),' broken',(0<ps.errCounter)/' (flagged with leading "#")'
       :If ~0∊⍴ps.returnCodes
           :If ∆NoBatchTest∊ps.returnCodes
-              log,←⊂'  ',(⍕¯1+.=ps.returnCodes),' test cases not executed because they are not "batchable"'
+              log,←⊂'  ',(⍕¯1+.=ps.returnCodes),' test cases not executed because they are not "batchable" (flagged with leading "-")'
           :EndIf
           :If ∆Inactive∊ps.returnCodes
-              log,←⊂'  ',(⍕¯2+.=ps.returnCodes),' test cases not executed because they were inactive'
+              log,←⊂'  ',(⍕¯2+.=ps.returnCodes),' test cases not executed because they were inactive (flagged with leading "-")'
           :EndIf
           :If ∆WindowsOnly∊ps.returnCodes
-              log,←⊂'  ',(⍕∆WindowsOnly+.=ps.returnCodes),' test cases not executed because they can only run under Window'
+              log,←⊂'  ',(⍕∆WindowsOnly+.=ps.returnCodes),' test cases not executed because they can only run under Window (flagged with leading "-")'
           :EndIf
           :If ∆LinuxOnly∊ps.returnCodes
-              log,←⊂'  ',(⍕∆LinuxOnly+.=ps.returnCodes),' test cases not executed because they can only run under Linux'
+              log,←⊂'  ',(⍕∆LinuxOnly+.=ps.returnCodes),' test cases not executed because they can only run under Linux (flagged with leading "-")'
           :EndIf
           :If ∆MacOnly∊ps.returnCodes
-              log,←⊂'  ',(⍕∆MacOnly+.=ps.returnCodes),' test cases not executed because they can only run under Mac OS'
+              log,←⊂'  ',(⍕∆MacOnly+.=ps.returnCodes),' test cases not executed because they can only run under Mac OS (flagged with leading "-")'
           :EndIf
           :If ∆LinuxOrMacOnly∊ps.returnCodes
-              log,←⊂'  ',(⍕∆LinuxOrMacOnly+.=ps.returnCodes),' test cases not executed because they can only run under Linux or Mac OS'
+              log,←⊂'  ',(⍕∆LinuxOrMacOnly+.=ps.returnCodes),' test cases not executed because they can only run under Linux or Mac OS (flagged with leading "-")'
           :EndIf
           :If ∆LinuxOrWindowsOnly∊ps.returnCodes
-              log,←⊂'  ',(⍕∆LinuxOrWindowsOnly+.=ps.returnCodes),' test cases not executed because they can only run under Linux or Windows'
+              log,←⊂'  ',(⍕∆LinuxOrWindowsOnly+.=ps.returnCodes),' test cases not executed because they can only run under Linux or Windows (flagged with leading "-")'
           :EndIf
           :If ∆MacOrWindowsOnly∊ps.returnCodes
-              log,←⊂'  ',(⍕∆MacOrWindowsOnly+.=ps.returnCodes),' test cases not executed because they can only run under Mac OS or Windows'
+              log,←⊂'  ',(⍕∆MacOrWindowsOnly+.=ps.returnCodes),' test cases not executed because they can only run under Mac OS or Windows (flagged with leading "-")'
           :EndIf
           :If ∆NoAcreTests∊ps.returnCodes
-              log,←⊂'  ',(⍕∆NoAcreTests+.=ps.returnCodes),' test cases not executed because they are acre-related'
+              log,←⊂'  ',(⍕∆NoAcreTests+.=ps.returnCodes),' test cases not executed because they are acre-related (flagged with leading "-")'
           :EndIf
           :If ∆NotApplicable∊ps.returnCodes
-              log,←⊂'  ',(⍕∆NotApplicable+.=ps.returnCodes),' test cases not executed because they were not applicable'
+              log,←⊂'  ',(⍕∆NotApplicable+.=ps.returnCodes),' test cases not executed because they were not applicable (flagged with leading "-")'
           :EndIf
       :EndIf
       :If ~ps.batchFlag
@@ -694,32 +709,36 @@
           r←flag/label
         ∇
 
-        ∇ {r}←Run;ref
+        ∇ {r}←Run;ref;⎕IO;⎕ML
 ⍝ Run all test cases
+          ⎕IO←1 ⋄ ⎕ML←3
           ref←{9=#.⎕NC ⍵:# ⋄ 9=(↑⎕RSI).⎕NC ⍵:↑⎕RSI ⋄ 9=##.⎕NC ⍵:## ⋄ 'Cannot find "Tester"'⎕SIGNAL 6}'Tester'
           r←ref.Tester.Run ⎕THIS
         ∇
 
-        ∇ {r}←RunDebug debugFlag;ref
+        ∇ {r}←RunDebug debugFlag;ref;⎕IO;⎕ML
 ⍝ Run all test cases with DEBUG flag on
 ⍝ If `debugFlag` is 1 then `RunDebug` stops just before executing any specific test case.
+          ⎕IO←1 ⋄ ⎕ML←3
           ref←{9=#.⎕NC ⍵:# ⋄ 9=(↑⎕RSI).⎕NC ⍵:↑⎕RSI ⋄ 9=##.⎕NC ⍵:## ⋄ 'Cannot find "Tester"'⎕SIGNAL 6}'Tester'
           r←debugFlag ref.Tester.RunDebug ⎕THIS
         ∇
 
-        ∇ {r}←RunBatchTestsInDebugMode;ref
+        ∇ {r}←RunBatchTestsInDebugMode;ref;⎕IO;⎕ML
 ⍝ Run all batch tests in debug mode (no error trapping) and with stopFlag←1.
+          ⎕IO←1 ⋄ ⎕ML←3
           ref←{9=#.⎕NC ⍵:# ⋄ 9=(↑⎕RSI).⎕NC ⍵:↑⎕RSI ⋄ 9=##.⎕NC ⍵:## ⋄ 'Cannot find "Tester"'⎕SIGNAL 6}'Tester'
           r←0 1 ref.Tester.RunBatchTests ⎕THIS
         ∇
 
-        ∇ {r}←RunBatchTests;ref
+        ∇ {r}←RunBatchTests;ref;⎕IO;⎕ML
 ⍝ Run all batch tests
+          ⎕IO←1 ⋄ ⎕ML←3
           ref←{9=#.⎕NC ⍵:# ⋄ 9=(↑⎕RSI).⎕NC ⍵:↑⎕RSI ⋄ 9=##.⎕NC ⍵:## ⋄ 'Cannot find "Tester"'⎕SIGNAL 6}'Tester'
           r←ref.Tester.RunBatchTests ⎕THIS
         ∇
 
-        ∇ {r}←RunThese ids;ref
+        ∇ {r}←RunThese ids;ref;⎕IO;⎕ML
 ⍝ Run just the specified tests.
 ⍝
 ⍝ `ids` can be one of:
@@ -733,6 +752,7 @@
 ⍝ If negative numbers are used then they would still idendify the test cases but
 ⍝ `Tester` would stop just before any test case it actually executed,
 ⍝ allowing the user to investigate.
+          ⎕IO←1 ⋄ ⎕ML←3
           ref←{9=#.⎕NC ⍵:# ⋄ 9=(↑⎕RSI).⎕NC ⍵:↑⎕RSI ⋄ 9=##.⎕NC ⍵:## ⋄ 'Cannot find "Tester"'⎕SIGNAL 6}'Tester'
           r←ids ref.Tester.RunTheseIn ⎕THIS
         ∇
@@ -749,32 +769,58 @@
           {(0∊⍴⍵): ⋄ ⎕ML←3 ⋄ ⎕ED⊃⍵}&↓'Test_'{⍵⌿⍨⍺∧.=⍨(⍴,⍺)↑[1+⎕IO]⍵}list
         ∇
 
-        ∇ r←{numbers}L group
+        ∇ r←{numbers}L group;A
 ⍝ Prints a list with all test cases and the first comment line to the session.
 ⍝ If "group" is not empty then it will print only that group (case independent).
 ⍝ May or may not start with "Test_"
 ⍝ If "numbers" is defined only those number are printed.
+          :If 9=#.⎕NC'APLTreeUtils'
+              A←#.APLTreeUtils
+          :ElseIf 9=⎕NC'APLTreeUtils'
+              A←APLTreeUtils
+          :ElseIf 9=##.⎕NC'APLTreeUtils'
+              A←##.APLTreeUtils
+          :ElseIf 9∊⊃¨⎕RSI.⎕NC⊂'APLTreeUtils'
+              A←(⊃(9=⊃¨⎕RSI.⎕NC⊂'APLTreeUtils')/⎕RSI).APLTreeUtils
+          :ElseIf 9∊⊃¨⎕RSI.##.⎕NC⊂'APLTreeUtils'
+              A←(⊃(9=⊃¨⎕RSI.##.⎕NC⊂'APLTreeUtils')/⎕RSI.##).APLTreeUtils
+          :Else
+              'Missing: APLTreeUtils'⎕SIGNAL 6
+          :EndIf
           numbers←{(0<⎕NC ⍵):⍎⍵ ⋄ ⍬}'numbers'
           r←↓'Test_'{⍵⌿⍨((⍴⍺)↑[1+⎕IO]⍵)∧.=⍺}'T'⎕NL 3
           :If ~0∊⍴group
-              group←#.APLTreeUtils.Lowercase'test_'{((⍺≢(⍴⍺)↑⍵)/⍺),⍵}group
-              r←(({⎕ML←1 ⋄ ↑⍵}#.APLTreeUtils.Lowercase(⍴group)↑¨r)∧.=group)⌿r
+              group←A.Lowercase'test_'{((⍺≢(⍴⍺)↑⍵)/⍺),⍵}group
+              r←(({⎕ML←1 ⋄ ↑⍵}A.Lowercase(⍴group)↑¨r)∧.=group)⌿r
           :EndIf
           :If ~0∊⍴r
           :AndIf ~0∊⍴numbers
               r←(({⍎⍵↑⍨-(-⎕IO)+'_'⍳⍨⌽⍵}¨r)∊numbers)⌿r
           :EndIf
           r←r,⍪{⎕ML←3 ⋄ {⍵↓⍨+/∧\' '=⍵}{⎕IO←1 ⋄ ⍵↓⍨⍵⍳'⍝'}∊1↑1↓⎕NR ⍵}¨r
-          r←r[⍋{⎕ML←1 ⋄ ↑⍵}##.APLTreeUtils.Lowercase r[;⎕IO];]
+          r←r[⍋{⎕ML←1 ⋄ ↑⍵}A.Lowercase r[;⎕IO];]
         ∇
 
-        ∇ r←G;⎕IO
+        ∇ r←G;⎕IO;A;⎕ML
 ⍝ Prints all groups to the session.
-          ⎕IO←0
+          ⎕IO←0 ⋄ ⎕ML←1
+          :If 9=#.⎕NC'APLTreeUtils'
+              A←#.APLTreeUtils
+          :ElseIf 9=⎕NC'APLTreeUtils'
+              A←APLTreeUtils
+          :ElseIf 9=##.⎕NC'APLTreeUtils'
+              A←##.APLTreeUtils
+          :ElseIf 9∊⊃¨⎕RSI.⎕NC⊂'APLTreeUtils'
+              A←(⊃(9=⊃¨⎕RSI.⎕NC⊂'APLTreeUtils')/⎕RSI).APLTreeUtils
+          :ElseIf 9∊⊃¨⎕RSI.##.⎕NC⊂'APLTreeUtils'
+              A←(⊃(9=⊃¨⎕RSI.##.⎕NC⊂'APLTreeUtils')/⎕RSI.##).APLTreeUtils
+          :Else
+              'Missing: APLTreeUtils'⎕SIGNAL 6
+          :EndIf
           r←↓'Test_'{⍵⌿⍨((⍴⍺)↑[1]⍵)∧.=⍺}'T'⎕NL 3
-          :If ~0∊⍴r←(2='_'+.=⍉{⎕ML←1 ⋄ ↑⍵}r)⌿r
-          :AndIf ~0∊⍴r←{⎕ML←1 ⋄ ↑⍵}∪{⍵↑⍨⍵⍳'_'}¨{⍵↓⍨1+⍵⍳'_'}¨r
-              r←r[⍋#.APLTreeUtils.Lowercase r;]
+          :If ~0∊⍴r←(2≤'_'+.=⍉{⎕ML←1 ⋄ ↑⍵}r)⌿r
+          :AndIf ~0∊⍴r←↑∪{⍵↓⍨-1+(⌽⍵)⍳'_'}¨' '~⍨¨r
+              r←r[⍋A.Lowercase r;]
           :EndIf
         ∇
 
@@ -791,20 +837,33 @@
           :EndIf
         ∇
 
-        ∇ {r}←oldName RenameTestFnsTo newName;⎕IO;body;rc;⎕ML;header;comment;res;name;right;left;newParent;oldParent;delFilanme
+        ∇ {r}←oldName RenameTestFnsTo newName;⎕IO;body;rc;⎕ML;header;comment;res;name;right;left;newParent;oldParent;delFilanme;A
 ⍝ Renames a test function and tells acre.
 ⍝ r ← ⍬
           ⎕IO←0 ⋄ ⎕ML←3
+          :If 9=#.⎕NC'APLTreeUtils'
+              A←#.APLTreeUtils
+          :ElseIf 9=⎕NC'APLTreeUtils'
+              A←APLTreeUtils
+          :ElseIf 9=##.⎕NC'APLTreeUtils'
+              A←##.APLTreeUtils
+          :ElseIf 9∊⊃¨⎕RSI.⎕NC⊂'APLTreeUtils'
+              A←(⊃(9=⊃¨⎕RSI.⎕NC⊂'APLTreeUtils')/⎕RSI).APLTreeUtils
+          :ElseIf 9∊⊃¨⎕RSI.##.⎕NC⊂'APLTreeUtils'
+              A←(⊃(9=⊃¨⎕RSI.##.⎕NC⊂'APLTreeUtils')/⎕RSI.##).APLTreeUtils
+          :Else
+              'Missing: APLTreeUtils'⎕SIGNAL 6
+          :EndIf
           r←⍬
           (oldName newName)←oldName newName~¨' '
           :If '.'∊oldName
-              (oldParent oldName)←¯1 0↓¨'.'#.APLTreeUtils.SplitPath oldName
+              (oldParent oldName)←¯1 0↓¨'.'A.SplitPath oldName
               oldParent←⍎oldParent
           :Else
               oldParent←↑⎕RSI
           :EndIf
           :If '.'∊newName
-              (newParent newName)←¯1 0↓¨'.'#.APLTreeUtils.SplitPath newName
+              (newParent newName)←¯1 0↓¨'.'A.SplitPath newName
               newParent←⍎newParent
           :Else
               newParent←↑⎕RSI
@@ -892,7 +951,7 @@
           :EndIf
         ∇
 
-        ∇ r←ListHelpers force;list;⎕IO;⎕ML;force
+        ∇ r←ListHelpers force;list;⎕IO;⎕ML;force;A
 ⍝ Lists all helpers available from the `Tester` class.
 ⍝ When called by a user pass a `0` as right argument to see all helpers that are actually available.
 ⍝ Specify a `1` in case you want to see all Helpers that **might** be available.
@@ -909,7 +968,20 @@
           :If 'Tester.Helpers'≢{⍵↑⍨-+/∧\2>+\⌽'.'=⍵}⍕⊃⎕RSI
               list/⍨←force∨0<⊃∘⎕NC¨list   ⍝ List only those that are around
           :EndIf
-          r←↑{⍵(#.APLTreeUtils.dlb{⍺⍺{⍵↓⍨¯1+⍵⍳'⍝'}⍺⍺ ⍵}1⊃(1↓⎕NR ⍵),⊂'')}¨list
+          :If 9=#.⎕NC'APLTreeUtils'
+              A←#.APLTreeUtils
+          :ElseIf 9=⎕NC'APLTreeUtils'
+              A←APLTreeUtils
+          :ElseIf 9=##.⎕NC'APLTreeUtils'
+              A←##.APLTreeUtils
+          :ElseIf 9∊⊃¨⎕RSI.⎕NC⊂'APLTreeUtils'
+              A←(⊃(9=⊃¨⎕RSI.⎕NC⊂'APLTreeUtils')/⎕RSI).APLTreeUtils
+          :ElseIf 9∊⊃¨⎕RSI.##.⎕NC⊂'APLTreeUtils'
+              A←(⊃(9=⊃¨⎕RSI.##.⎕NC⊂'APLTreeUtils')/⎕RSI.##).APLTreeUtils
+          :Else
+              'Missing: APLTreeUtils'⎕SIGNAL 6
+          :EndIf
+          r←↑{⍵(A.dlb{⍺⍺{⍵↓⍨¯1+⍵⍳'⍝'}⍺⍺ ⍵}1⊃(1↓⎕NR ⍵),⊂'')}¨list
         ∇
 
         ∇ r←GetCode name
@@ -922,7 +994,7 @@
           :Access Public Shared
 ⍝ Returns a list of **all** helper functions.
 ⍝ These are defined as all private functions of the sub class `Helpers`.
-
+         
 ⍝ ↓↓↓↓ Circumvention of Dyalog bug <01154> (⎕nl 3 does NOT list the private functions of `Helpers`!)
           r←(ListHelpers 1)[;1]
         ∇
@@ -931,18 +1003,18 @@
 ⍝ Model for a test function.
           ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
           R←∆Failed
-
+         
 ⍝ Preconditions...
 ⍝ ...
-
+         
           →PassesIf 1≡1
           →FailsIf 1≢1
           →GoToTidyUp 1≢1
           R←∆OK
-
+         
          ∆TidyUp: ⍝ Clean up after this label
           ⍝ ...
-
+         
         ∇
 
         ∇ r←∆OK

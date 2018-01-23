@@ -3,7 +3,7 @@
 ⍝ ### Overview
 ⍝ This class provides a kind of APL-like INI files.
 ⍝ ~~~
-⍝ MyInstance1←⎕NEW IniFiles (⊂,'MyIniFile.ini')
+⍝ MyInstance1←⎕NEW IniFiles (,⊂'MyIniFile.ini')
 ⍝ MyInstance2←⎕NEW IniFiles ('MyIniFile1.ini' 'MyIniFile2.ini')
 ⍝ AsNamespace←MyInstance2.Convert ⎕NS ''
 ⍝ ~~~
@@ -16,11 +16,17 @@
 
     ∇ r←Version
       :Access Public Shared
-      r←(Last⍕⎕THIS)'3.1.0' '2017-05-19'
+      r←(Last⍕⎕THIS)'3.1.1' '2017-12-31'
     ∇
 
     ∇ History
       :Access Public Shared
+      ⍝ * 3.1.1:
+      ⍝
+      ⍝   * Bug fixes:
+      ⍝     * The `List` method crashed when there are no sections.
+      ⍝     * Typo in documentation fixed.
+      ⍝     * Clarified what happens in case an INI file has no sections at all
       ⍝ * 3.1.0:
       ⍝   * Method `History` introduced.
       ⍝   * `IniFiles` is now managed by acre 3.
@@ -36,20 +42,17 @@
       r←Uppercase 1↓¨_Sections
     ∇
 
-    ∇ r←GetIniFiles filename;p;fn;ext;fn2;fn1;f1;f2
+    ∇ r←GetIniFiles filename;p;fn;ext;fn2;fn1;f1;f2;assume
       :Access Public Shared
-    ⍝ Returns a list of INI files. Assume that "foo.ini" ←→ filename.
-    ⍝ Assume also that the current computer's name is "JohnDoe". Assume
-    ⍝ further that there are two INI files in the current directory:
+    ⍝ Returns a list of INI files.\\
+    ⍝ Let's assume that "foo.ini" ←→ filename. Let's also assume that the current computer's name is "JohnDoe".
+    ⍝ Finally let's a ssumes that there are two INI files in the current directory:
     ⍝ * foo.ini
     ⍝ * foo_johndoe.ini
     ⍝
-    ⍝ Then `GetIniFiles` returns:
-    ⍝
-    ⍝ `'foo.ini' 'foo_johndoe,ini' ← #.IniFiles.GetIniFiles`
-    ⍝
-    ⍝ If there is no file foo_johndoe.ini however then the result is:
-    ⍝
+    ⍝ Then `GetIniFiles` returns:\\
+    ⍝ `'foo.ini' 'foo_johndoe,ini' ← #.IniFiles.GetIniFiles`\\
+    ⍝ If there is no file foo_johndoe.ini however then the result is:\\
     ⍝ `'foo.ini' ← #.IniFiles.GetIniFiles`
       (p fn)←{('\'∊⍵):SplitPath ⍵ ⋄ ''⍵}filename
       (fn ext)←{('.'∊⍵):'.'SplitPath ⍵ ⋄ (⍵,'.')'ini'}fn
@@ -296,9 +299,9 @@
       :Implements Constructor
       :Access Public
       ⍝ Takes the name of the INI file and what originally was supposed
-      ⍝ to be a reference to the `UnicodeFile` class as parameters.
+      ⍝ to be a reference to the `UnicodeFile` class as parameters.\\
       ⍝ However, that property is not needed any longer (since version 1.6),
-      ⍝ and for that reason the argument "debugFlag" is ignored when it is
+      ⍝ and for that reason the argument `debugFlag` is ignored when it is
       ⍝ a string. If it is a Boolean then however it is treated as a debug
       ⍝ flag. It default is 0 but one can specify a 1.
       ⍝
@@ -442,16 +445,12 @@
     ∇ r←{type}Convert r;data;thisSection;s;noOf;n;v;rf;allValues;this;theseNames;theseValues;code
       :Access Public
     ⍝ Takes a ref to a (typically empty) namespace and populates it with the values
-    ⍝ defined by the INI file entries.
-    ⍝
+    ⍝ defined by the INI file entries.\\
     ⍝ If the optional left argument is "flat", sections are ignored and every entry
-    ⍝ gets a simple variable.
-    ⍝
-    ⍝ If it's not "flat" then section names are used as names for sub-namespaces.
-    ⍝
+    ⍝ gets a simple variable.\\
+    ⍝ If it's not "flat" then section names are used as names for sub-namespaces.\\
     ⍝ Note that `Convert` will fail if the names used for sections and values
-    ⍝ are not proper APL names.
-    ⍝
+    ⍝ are not proper APL names.\\
     ⍝ `Convert` injects a method `List` into the resulting namespace which
     ⍝ prints a matrix to the session with all names and values.
       type←{0<⎕NC ⍵:⍎⍵ ⋄ ''}'type'
@@ -484,7 +483,9 @@
           code,←⊂' ⎕IO←1 ⋄ ⎕ML←3'
           code,←⊂' r←'''''
           code,←⊂' :If (0∊⍴section)∨(,''*'')≡,section'
-          code,←⊂'     r←⊃⍪/{⍵,⍵.{{⎕IO←0 ⋄ ⎕ML←3 ⋄ ⍵,[0.5]⍎¨⍵}⎕NL-2}⍵}¨⍎¨⎕NL-9'
+          code,←⊂'     :If ~0∊⍴⎕NL-9'
+          code,←⊂'         r←⊃⍪/{⍵,⍵.{{⎕IO←0 ⋄ ⎕ML←3 ⋄ ⍵,[0.5]⍎¨⍵}⎕NL-2}⍵}¨⍎¨⎕NL-9'
+          code,←⊂'     :EndIf'
           code,←⊂' :Else'
           code,←⊂'     ''Invalid right argument''⎕SIGNAL 11/⍨~(≡section)∊0 1'
           code,←⊂'     toc←⎕NL-9'
@@ -570,8 +571,7 @@
 
     ∇ r←{default}Get name
     ⍝ Returns the (enclosed) value for a single value or a vector of values
-    ⍝ if more than one key was provided.
-    ⍝
+    ⍝ if more than one key was provided.\\
     ⍝ `name` might be one of:
     ⍝ * `('sectionName' 'key')`
     ⍝ * `(('sectionName' 'key1')('sectionName' 'key2'))`
@@ -579,13 +579,11 @@
     ⍝ * `('sectionName:key1' 'sectionName:key2')`
     ⍝
     ⍝ Note that mixed syntax is not supported:
-    ⍝
     ⍝ ~~~
     ⍝ ('sectionName' ('key1' 'key2')) ⍝  invalid!
     ⍝ ('sectionName' 'key1') 'sectionName:key2' ⍝  invalid!
     ⍝ ~~~
-    ⍝ If "key" is empty, **all** values of that sections are returned.
-    ⍝
+    ⍝ If "key" is empty, **all** values of that sections are returned.\\
     ⍝ If a requested value is not available, "default" (the left argument)
     ⍝ is returned if specified, otherwise the property "Default" is returned
     ⍝ if specified; otherwise an interrupt is signalled.
@@ -598,8 +596,7 @@
     ∇
 
     ∇ {r}←data Put name
-    ⍝ Set `name` to `data`.
-    ⍝
+    ⍝ Set `name` to `data`.\\
     ⍝ Note that `name` can be:
     ⍝ * A simple string. Must provide both, a "section" and a `name`,
     ⍝   separated by a colon as in "section:key"

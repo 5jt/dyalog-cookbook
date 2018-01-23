@@ -62,12 +62,31 @@
     ∇ r←Version
       :Access Public Shared
       ⍝ See `History`
-      r←(Last⍕⎕THIS)'3.9.1' '2017-12-19'
+      r←(Last⍕⎕THIS)'4.2.0' '2018-01-23'
     ∇
 
     ∇ History
       :Access Public Shared
-      ⍝ * 3.9.1
+      ⍝ * 4.2.0
+      ⍝   * Style sheeys massively improved. They carry only one px definition of the font size now (body), everything
+      ⍝     else is relative to that defininition (mostly em, very few rem).
+      ⍝   * Bug fix: the print style sheet "MarkAPL_print.css" printed way too big.
+      ⍝ Note that the code in the MarkAPL script has not changed at all.
+      ⍝ * 4.1.1
+      ⍝   * Bug fixes:
+      ⍝     * HTML blocks where not recognized correctly unless they were <div>s.
+      ⍝     * mailto links where not processed correctlly under some circumstances.
+      ⍝     * A line starting with `⍝` with a <pre> HTML block was removed from the markdown before processing it.
+      ⍝ * 4.1.0
+      ⍝   * Print style sheets improved: new class `page_break_before` introduced which can you used to force a page break.
+      ⍝   * Bug fixes
+      ⍝     * A link with "mailto" was not handled correctly.
+      ⍝     * A line starting with `⍝` within an HTML <pre> block was ignored.
+      ⍝ * 4.0.0
+      ⍝   * New parameter `lineNumberOffset` introduced. Allows adjusting line numbers in case of recursive calls.
+      ⍝   * Problem reports got lost in transit when MarkAPL called itself recursively.
+      ⍝   * Line numbers are now reported consistently and correctly throughout, with the exception of any LeanPub
+      ⍝     extensions: for those a range of line numbers is reported.
       ⍝   * Bug fixes
       ⍝     * Under some circumstances an abbreviation definition had no effect.
       ⍝     * Headers were sometimes wrongly reported as invalid.
@@ -96,18 +115,6 @@
       ⍝     * References pointing to a footnote accidentally got an ID assigned.
       ⍝     * A word that is part of an <Hn> tag **and** is defined as an abbreviation caused havoc.
       ⍝     * A link was not correctly identified in case there were `[]` in front of them.
-      ⍝ * 3.8.1
-      ⍝   * Bug fixes
-      ⍝     * Any LeanPub encoding line prevented LeanPub extensions from being processed.
-      ⍝     * An ALT text with " in it did not show properly.
-      ⍝ * 3.8.0
-      ⍝   * In-line mark-up in footers is now supported.
-      ⍝     * Bug fixes
-      ⍝       * So far in-line mark-up was not supported for footnotes but when assigned anyway the result was havoc.
-      ⍝       * The introduction of the LeanPub extension could de-sync line numbers from the markdown. As a side effect
-      ⍝         a click on a header in the markdown positioned after any LeanPub extension had not the desired effect.
-      ⍝       * The result of functions returning an HTML block was handled incorrectly.
-      ⍝       * A link text that carries a `]` was handled incorrectly.
     ∇
 
     :Field Public Shared ReadOnly PartOfNames←⎕A,⎕D,'_∆⍙','qwertyuiopasdfghjklzxcvbnm'
@@ -309,6 +316,7 @@
       'lang'SetTo'en'
       'leanpubExtensions'SetTo 0
       'leanpubIconsUrl'SetTo'https://download.aplwiki.com/LeanPub/Images/'
+      'lineNumberOffset'SetTo 0
       'linkToCSS'SetTo 0
       'markdownStrict'SetTo 0
       'numberHeaders'SetTo 0
@@ -353,9 +361,9 @@
       markdown←GetMarkdown markdown
       ns←Create_NS ⍬
       ns.markdown←dtb(Nest markdown),⊂''
+      ns.lineNumbers←⍳⍴ns.markdown                  ⍝ Useful for reporting problems
       ns←parms ProcessLeanPubExtensions ns
       (⊃ns.markdown)←'^ *{:: encoding=".*$'⎕R'⍝&'⊣⊃ns.markdown
-      ns.lineNumbers←⍳⍴ns.markdown                  ⍝ Useful for reporting problems
       ns←RemoveAllComments ns
       ns.markdownLC←Lowercase ns.markdown           ⍝ We need this often, so we do this ONCE
       buffer←dlb ns.markdown
@@ -678,13 +686,14 @@
           parms.checkFootnotes←0
           parms.subTocs←0
           parms.syntaxSugar←ns.parms.syntaxSugar
+          parms.lineNumberOffset←⊃ns.lineNumbers
           md←ns.noOf↑ns.markdown
           (1⊃md)←2↓1⊃md
           (1↓md)←(2×'> '∘≡¨2↑¨1↓md)↓¨1↓md
           ns2←Init parms md
           ns2←Process ns2
           ns.html,←(⊂'<blockquote>'),ns2.html,⊂'</blockquote>'
-          ns.report,←(⊃ns.lineNumbers)PolishLineNumbersInReport ns2.report
+          ns.report,←ns2.report
           ns←Drop ns
           r←1
       :EndIf
@@ -823,9 +832,12 @@
                           :AndIf (+/∧\' '=buff)≥⊃noOfBlanks                 ⍝ Max number of spaces is the indentation
                               drop←+/∧\'|'=,1↑[2]dlb↑bl
                               buff←drop↑bl
-                              ns2←Init ns.parms(dlb buff)
+                              parms←CreateParms
+                              parms←ns.parms CopyTo parms
+                              parms.lineNumberOffset←⊃ns.lineNumbers
+                              ns2←Init parms(dlb buff)
                               ns2←Process ns2
-                              report,←((⊃ns.lineNumbers)+ns.noOf-⍴bl)PolishLineNumbersInReport ns2.report
+                              report,←ns2.report
                               ((⍴html)⊃html)←(-⍴'</li>')↓(⍴html)⊃html
                               html,←ns2.html
                               ((⍴html)⊃html),←'</li>'
@@ -841,13 +853,14 @@
                               parms.checkFootnotes←0
                               parms.subTocs←0
                               parms.syntaxSugar←ns.parms.syntaxSugar
+                              parms.lineNumberOffset←⊃ns.lineNumbers
                               md←noOfBlanks↓¨drop↑ns3.markdown
                               ns2←Init parms md
                               ns2←Process ns2
                               ((⍴html)⊃html)←(-⍴'</li>')↓(⍴html)⊃html
                               html,←ns2.html
                               ((⍴html)⊃html),←'</li>'
-                              report,←((⊃ns.lineNumbers)+ns.noOf-⍴bl)PolishLineNumbersInReport ns2.report
+                              report,←ns2.report
                           :Else
                               (drop para)←CollectItemPara bl
                               i←i+drop-1
@@ -1406,6 +1419,8 @@
     ∇
 
     ∇ ns←ProcessEmbeddedParms ns;mask;buff;bool;noOf;def;i;id;value;b;v
+    ⍝ Here we do not need to add ns.parms.lineNumberOffset because there are no
+    ⍝ embedded parameters with recursive calls anyway!
       :If 0<noOf←+/∧\'['=⊃¨ns.leadingChars
           buff←noOf↑ns.markdown
           noOf←'[parm]:'{+/∧\⍺∘≡¨{(Lowercase 5↑¨⍵),¨5↓¨⍵}(⍴⍺)↑¨⍵}buff
@@ -1426,7 +1441,7 @@
                           value←¯1↓1↓value
                       :Else
                           value←''
-                          ns.report,←⊂'Data value definition for line ',(⍕⊃ns.lineNumbers),' is invalid'
+                          ns.report,←⊂'Data value definition for line ',(⍕⊃i),' is invalid'
                       :EndIf
                   :Else
                       (b v)←⎕VFI value
@@ -1459,7 +1474,7 @@
                           value←¯1↓1↓value
                       :Else
                           value←''
-                          ns.report,←⊂'Data value definition for line ',(⍕⊃ns.lineNumbers),' is invalid'
+                          ns.report,←⊂'Data value definition for line ',(⍕ns.parms.lineNumberOffset+⊃ns.lineNumbers),' is invalid'
                       :EndIf
                   :Else
                       (b v)←⎕VFI value
@@ -1469,7 +1484,7 @@
                   :EndIf
                   ns.data,←⊂id value
               :Else
-                  ns.report,←⊂'Data definition on line ',(⍕⊃ns.lineNumbers),' is invalid'
+                  ns.report,←⊂'Data definition on line ',(⍕ns.parms.lineNumberOffset+⊃ns.lineNumbers),' is invalid'
               :EndIf
               ns←Drop ns
               r←1
@@ -1486,7 +1501,7 @@
               (abbr comment)←dlb∘dtb¨abbr comment
               ns.abbreviations⍪←abbr comment
           :Else
-              ns.report,←⊂'Invalid abbreviation in line ',⍕⊃ns.lineNumbers
+              ns.report,←⊂'Invalid abbreviation in line ',⍕ns.parms.lineNumberOffset+⊃ns.lineNumbers
           :EndIf
           ns←Drop ns
       :EndIf
@@ -1641,18 +1656,19 @@
                   :Else
                       tag←⊂,'<'~⍨(¯1+⌊/buff⍳AllWhiteSpaceChars,'/>')↑buff
                   :EndIf
+                  tag←{⍵↑⍨¯1+⍵⍳' '}¨tag
                 ⍝ Most frequently used tags first:
                   :If tag∊,¨'div' 'h1' 'h2' 'h3' 'h4' 'h5' 'h6' 'li' 'ol' 'p' 'table' 'tbody' 'td' 'tfoot' 'th' 'thead' 'tr' 'ul'
                   :OrIf tag∊,¨'address' 'article' 'aside' 'basefont' 'blockquote' 'caption' 'center' 'colgroup' 'col'
                   :OrIf tag∊,¨'dd' 'details' 'dialog' 'dir' 'dl' 'dt' 'fieldset' 'figcaption' 'figure' 'footer' 'form' 'frame'
                   :OrIf tag∊,¨'frameset' 'head' 'header' 'hr' 'html' 'iframe' 'legend' 'link' 'main' 'menu' 'menuitem' 'meta' 'nav'
-                  :OrIf tag∊,¨'noframes' 'optgroup' 'option' 'param' 'section' 'source' 'summary' 'title' 'track' 'pre'
+                  :OrIf tag∊,¨'noframes' 'optgroup' 'option' 'param' 'section' 'source' 'summary' 'title' 'track' 'pre' 'a' 'img'
                       buff←(⍴↑tag)↓buff
                       :If 0∊⍴buff
                       :OrIf '>'=¯1↑buff
                       :OrIf '/>'≡2⍴buff
                       :OrIf (1⍴buff)∊AllWhiteSpaceChars
-                          ns.noOf←CalcNumberOfLinesOfHtmlBlock tag ns.markdown
+                          ns.noOf←CalcNumberOfLinesOfHtmlBlock (⊃tag) ns.markdown
                           ∆LastLineWasEmpty←1
                           ns.html,←ns.noOf↑ns.markdown
                           ns←Drop ns
@@ -1687,7 +1703,7 @@
       :If 0∊⍴⊃2↓markdown
           noOf←3            ⍝ The tag stands on its own (=is followed by an empty line)
       :Else
-          noOf←{+/∧\0<⍵}(+\{⊃⍴'<div>' '<div.*>'⎕S 0⍠('Greedy' 0)('Mode' 'L')('IC' 1)⊣⍵}¨1↓ns.markdown)-+\({⊃⍴'</div>'⎕S 0⍠('Greedy' 0)('Mode' 'L')('IC' 1)⊣⍵}¨1↓markdown)
+          noOf←{+/∧\0<⍵}(+\{⊃⍴('<',tag,'>')( '<',tag,'.*>')⎕S 0⍠('Greedy' 0)('Mode' 'L')('IC' 1)⊣⍵}¨1↓ns.markdown)-+\({⊃⍴('</',tag,'>')⎕S 0⍠('Greedy' 0)('Mode' 'L')('IC' 1)⊣⍵}¨1↓markdown)
           noOf+←2                               ⍝ One for the empty line and 1 for ⎕IO (⎕S is ⎕IO←0!)
       :EndIf
     ∇
@@ -2152,18 +2168,29 @@
     ⍝ Convert all alphabetic characters to lowercase.
     ⍝ Remove everything up to the first letter or `∆⍙`.
     ⍝ If nothing is left after this, use `section` as identifier.
-      ns←{0<⎕NC ⍵:⍎⍵ ⋄ r←⎕NS'' ⋄ r.headerLineNos←⍬ ⋄ r.headers←0 3⍴'' ⋄ r.lineNumbers←0 ⋄ r.report←'' ⋄ r.parms←⎕NS'' ⋄ r.parms.bookmarkMayStartWithDigit←1 ⋄ r}'ns'
+      ns←{
+          0<⎕NC ⍵:⍎⍵
+          r←⎕NS''
+          r.headerLineNos←⍬
+          r.headers←0 3⍴''
+          r.lineNumbers←0
+          r.report←''
+          r.parms←⎕NS''
+          r.parms.bookmarkMayStartWithDigit←1
+          r.parms.lineNumberOffset←0
+          r
+      }'ns'
       :If 0={0=⍵.⎕NC'parms.bookmarkLink':1 ⋄ ⍵.parms.bookmarkLink}ns
           name←''
       :Else
           name←ns.parms.bookmarkMayStartWithDigit CompileBookMarkName txt specialAttrs
           :If 0∊⍴name                              ⍝ Nothing left?
               name←'section'                       ⍝ Go for the name section
-              ns.report,←⊂'Warning: header on line ',(⍕⊃ns.lineNumbers),': no bookmark name left; name assigned'
+              ns.report,←⊂'Warning: header on line ',(⍕ns.parms.lineNumberOffset+⊃ns.lineNumbers),': no bookmark name left; name assigned'
           :EndIf
           :If (⊂name)∊ns.headers[;2]               ⍝ Does this bookmark already exist?
               name←1{n←⍵,'-',⍕⍺ ⋄ ~(⊂n)∊ns.headers[;2]:n ⋄ (1+⍺)∇ ⍵}name  ⍝ Append a number
-              ns.report,←⊂'Warning: header on line ',(⍕⊃ns.lineNumbers),': ambiguous name; number added'
+              ns.report,←⊂'Warning: header on line ',(⍕ns.parms.lineNumberOffset+⊃ns.lineNumbers),': ambiguous name; number added'
           :EndIf
       :EndIf
     ∇
@@ -2388,7 +2415,7 @@
               tag2←'<abbr title="',comment,'">',abbr,'</abbr>'
               match2←{0=+/b←'&'=w←⍵:w ⋄ (b/w)←⊂'&amp;' ⋄ ⊃,/w}abbr
               match1←'"',match2,'"'
-              ignore←'<img.*>' '<a .*>.*</a>' '<code.*>.*?</code>'
+              ignore←'<img.*>' '<a .*>.*</a>' '<code>.*</code>' '<code .*>.*</code>'
               html←(ignore,match1 match2)⎕R((,¨(⍴ignore)⍴'&'),tag1 tag2)⍠('Mode' 'D')('DotAll' 1)('Greedy' 0)⊣html
           :EndFor
           ns.html←html
@@ -2876,7 +2903,7 @@
       :ElseIf 1=⍴ind                                        ⍝ Just one double quote? Done!
           r←'`(.*?)`' '"'⎕R'&' '\\"'⊣txt                    ⍝ Escapes the " but ignores `code`
           msg←'Warning: single double quotes found in ',type
-          ns.report,←⊂msg,' (line ',(⍕⊃ns.lineNumbers),')'
+          ns.report,←⊂msg,' (line ',(⍕ns.parms.lineNumberOffset+⊃ns.lineNumbers),')'
       :Else
           :If '\'∧.≠r[ind-1]                                ⍝ Nothing escaped?
               :If 0=2|⍴ind                                  ⍝ Even number of "?
@@ -2885,7 +2912,7 @@
                   (txt[¯1+¯1↑ind])←⊂'\"'                    ⍝ Escape the last one.
                   r←⊃,/txt
                   msg←'Warning: odd number of double quotes found in ',type
-                  ns.report,←⊂msg,' (line ',(⍕⊃ns.lineNumbers),')'
+                  ns.report,←⊂msg,' (line ',(⍕¯1+ns.parms.lineNumberOffset+⊃ns.lineNumbers),')'
               :EndIf
           :Else                                             ⍝ We have some `\"` so we need a loop
               openFlag←1
@@ -2903,16 +2930,6 @@
           :EndIf
       :EndIf
     ∇
-
-      PolishLineNumbersInReport←{
-      ⍝ When MarkAPL call itself recursively (blockquotes, TOC) then ns.report cannot simply be appended
-      ⍝ to the one from the called because the line number ar wrong. This functions fixes this problem.
-          report←⍵
-          0∊⍴report:report
-          ln←⍺                                                  ⍝ linenumber to be added
-          oln←{⊃⊃(//)⎕VFI ⍵/⍨⍵∊⎕D}¨{⍵/⍨Between ⍵∊'()'}¨report    ⍝ Original line numbers
-          ({⍵↓⍨-'('⍳⍨⌽⍵}¨report),¨{'(line ',(⍕⍵),')'}¨ln+oln    ⍝ Put them back
-      }
 
     ∇ ns←CheckForInvalidFootnotes ns;ind;ids;mask;html
     ⍝ At this point if we find any footnote refs they must be invalid, otherwise we wouldn't find them.
@@ -3086,6 +3103,8 @@
           title←''
       :EndIf
       :If 0=+/'://'⍷url         ⍝ Protocol
+
+      :AndIf 'mailto:'{⍺≢(⍴,⍺)↑⍵}url ⍝ Is not a "mailto" link
       :AndIf '#'≠1⍴url          ⍝ Bookmark
       :AndIf ':/'≢2⍴1↓url,'  '  ⍝ Absolute Windows path
       :AndIf './'≢2⍴url,'  '    ⍝ Relative path
@@ -3180,6 +3199,8 @@
           markdown←ns.markdown
           markdown←1↓∊(⎕UCS 10),¨markdown
           ind←1+'^\s{0,3}[~`]{3,}\s{0,}({.*?})?\s{0,}$'⎕S 0⍠('Mode' 'M')('DotAll' 1)('EOL' 'LF')⊣markdown
+          ind,←1+'<pre\b' '</pre>'⎕S 0⍠('Mode' 'M')('DotAll' 1)⊣markdown
+          ind←ind[⍋ind]
           b←(⍴markdown)⍴0
           b[ind]←1
           b←Between b
@@ -3280,18 +3301,6 @@
       r∧←~WhereAreCodeBlocks md
     ∇
 
-⍝      CheckForCodeBlocks←{
-⍝          0∊⍴⍵:⍵
-⍝          pattern←'^\s{0,3}',⍺,'{3,}'
-⍝          bool←{0<⊃⍴,pattern ⎕S 0⊣⍵}¨⍵
-⍝          odd←{⍵/⍨(⍴⍵)⍴1 0}Where bool
-⍝          even←{⍵/⍨(⍴⍵)⍴0 1}Where bool
-⍝          bool[odd]←⍺{~⍺∊'{[^}]*}'⎕R''{⍵↓⍨+/∧\(⊃⍵)=⍵}dmb ⍵}¨⍵[odd]
-⍝          min←{(⊃dlb ⍵)+.=⍵}¨⍵[odd]
-⍝          bool[even]←(⍺{0=⊃⍴⍵~⍺,' '}¨⍵[even])×min{⍺≤{(⊃⍵)+.=⍵}dlb ⍵}¨⍵[even]
-⍝          bool
-⍝      }
-⍝
     ∇ r←indendations GetCodeBlockFrom list;fence;pattern;bool;noOf
       r←''
       fence←⊃(⊃list)~' '
@@ -3339,7 +3348,7 @@
       :EndIf
     ∇
 
-    ∇ ns←parms ProcessLeanPubExtensions_ ns;leanPubExtensions;extension;isNotCodeBlock;bool;start;lengths;i;ind;noOf;openDiv;body;html;img;closeDiv;after;buff
+    ∇ ns←parms ProcessLeanPubExtensions_ ns;leanPubExtensions;extension;isNotCodeBlock;bool;start;lengths;i;ind;noOf;openDiv;body;html;img;after;report
       leanPubExtensions←'AWTEIQDX'
       :For extension :In leanPubExtensions
           isNotCodeBlock←~WhereAreCodeBlocks ns.markdown
@@ -3352,17 +3361,20 @@
                       noOf←i⊃lengths
                       after←1+ind+noOf
                       :If 0∊⍴after⊃ns.markdown      ⍝ The line after must be empty
-                          openDiv←'<div class="leanpub',((extension≡'A')/'_A'),'">'
+                          openDiv←⊂'<div class="leanpub',((extension≡'A')/'_A'),'">'
                           body←3↓¨ns.markdown[ind+⍳lengths[i]]
-                          html←ConvertLeanpubExtension2Markdown body
+                          (html report)←ConvertLeanpubExtension2Markdown body
                           :If extension≠'A'
                               img←'<img src="',(parms LeanPubImageFor extension),'" alt="',(LeanPubAltTextFor extension),'">'
                               html←img'<div>',html,⊂'</div>'
                           :EndIf
-                          closeDiv←'</div>'
-                          buff←⊂openDiv,(⊃,/html),closeDiv
-                          buff,←(¯1+⍴body)⍴⊂''              ⍝ Add missing items in order to keep the line numbers in sync.
-                          ns.markdown←(ind↑ns.markdown),buff,(ind+noOf)↓ns.markdown
+                          html←openDiv,html,⊂'</div>'
+                          ns.markdown←(ind↑ns.markdown),html,(ind+noOf)↓ns.markdown
+                          ns.lineNumbers←(ind↑ns.lineNumbers),((⍴html)⍴⊂(1+ind),ind+noOf),(ind+noOf)↓ns.lineNumbers
+                          :If ~0∊⍴report
+                              ns.report,←((ind+1)⊃ns.lineNumbers)∘{i←-(⌽⍵)⍳' ' ⋄ (i↓⍵),' ',({1=⍴,⍵:⍕⍵ ⋄ ⊃{⍺,'-',⍵}/⍕¨⍵}⍺),')'}¨report
+                          :EndIf
+                          (i↓start)←(i↓start)+(⍴html)-noOf
                       :EndIf
                   :EndIf
               :EndFor
@@ -3370,7 +3382,7 @@
       :EndFor
     ∇
 
-    ∇ html←ConvertLeanpubExtension2Markdown markdown;parms;ns
+    ∇ (html report)←ConvertLeanpubExtension2Markdown markdown;parms;ns
     ⍝ `markdown` comes from an aside (= LeanPub extension like `A> `).
     ⍝ This requires to be converted to HTML with MarkAPL but without...
     ⍝ * header anchors
@@ -3384,8 +3396,8 @@
       parms.ignoreEmbeddedParms←1
       parms.div_h_tag←0
       (html ns)←parms Markdown2HTML markdown
-      html←PreserveMultiLineCodeBlocks html
       html←ConvertH1AndH2HeadersToH3 html
+      report←ns.report
     ⍝Done
     ∇
 
@@ -3395,19 +3407,6 @@
           html←⍵
           html←'<h1>' '<h2>'⎕R'<h3>'⊣html
           '</h1>' '</h2>'⎕R'</h3>'⊣html
-      }
-
-      PreserveMultiLineCodeBlocks←{
-      ⍝ This is called on code blocks within any Asid (LeanPub extension).
-      ⍝ We have to make sure that multi-line code blocks remain so.
-      ⍝ Since the tags of any LeanPub extension are finally plugged into a
-      ⍝ single line of HTML (!) this means adding `<br>` tags.
-          html←⍵
-          0=+/bool←{⍵∨≠\⍵}⊃∨/html∘{∨/¨⍵∘⍷¨⍺}¨'<pre><code>' '</code></pre>':html
-          ((1 0⍷bool)/bool)←0
-          0=+/bool:html
-          (bool/html)←(bool/html),¨⊂'<br>'
-          html
       }
 
       LeanPubImageFor←{
@@ -3499,7 +3498,7 @@
           row←⊃(⊃emptyLines)↓markdown
           flag←'<'=1⍴row
           :If flag
-              flag←~{('>'∊⍵)∧∨/'://'⍷⍵↑⍨⍵⍳'>'}row                               ⍝ Tell implicit link (like <http://aplwiki.com>) from an HTML block!
+              flag←0∊⍴'<([a-zA-Z0-9]){3,5}://'⎕S 0⊣row                         ⍝ Tell implicit link (like <http://aplwiki.com>) from an HTML block!
           :EndIf
       :EndIf
     ∇

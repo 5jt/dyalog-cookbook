@@ -20,9 +20,10 @@
 ⍝   In case of a threaded application this and the HTML page might all you get
 ⍝   for analysing the problem.
 ⍝
-⍝ * Attempt to save an error workspace. In order to achieve that, all
-⍝   running threads are killed except the main thread and, if different, the
-⍝   thread running `Process`.
+⍝ * Attempt to save an error workspace. Since no workspace can be saved when threads
+⍝   are running `HandleError` will kill all running threads but the main thraeds. That
+⍝   means that even in a multi-threaded application you might still get a saved workspace
+⍝   for analyzing purposes if the error happened to occur in the main thread.
 ⍝
 ⍝ ## Parameters
 ⍝ All parameters can be changed by setting variables in the namespace
@@ -34,12 +35,12 @@
 ⍝ and / or a custom function for other purposes:
 ⍝ * `logFunction` is supposed to be the name of a monadic function that
 ⍝   returns a shy result. That function must be able to deal with a simple
-⍝   string as well as vectors of strings. As the name suggest it will be called by
+⍝   string as well as vectors of strings. As the name suggests it will be called by
 ⍝   `Process` when something needs to be logged.
 ⍝ * `customFns` can be used to do anything you like. A typical application for this
 ⍝   is sending an email to notify certain people about the crash.
 ⍝
-⍝   The `customFns` must expect a right argument. This is the parameter namespace
+⍝   The `customFns` must accept  a right argument. This is the parameter namespace
 ⍝   which holds all the parameters plus two additional variables:
 ⍝   * `LastError` hold `⎕DM` at the moment of the crash.
 ⍝   * `LastErrorNumber` holds `⎕EN` at the moment of the crash.
@@ -51,8 +52,14 @@
 ⍝   the result will be ignored.
 ⍝
 ⍝ Although both function names may use dotted syntax that would not help in case
-⍝ they live in an instance of a class. In that case use `logFunctionParent`
+⍝ they live in an instance of a class. For such case use `logFunctionParent`
 ⍝ and `customFnsParent` respectively in order to define the parent of the functions.
+⍝
+⍝ ## Windows Event Log
+⍝ `HandleError` will attempt to write to the Windows Event Log when `windowsEventSource`
+⍝ is not empty. For that to work .NET is needed (that shouldn't be a problem these days)
+⍝ and the Dyalog bridge DLLs are requiered. That means you need to take action, it would
+⍝ not work out of the box in a runtime application, though it would work in development.
 ⍝
 ⍝ ## How tos
 ⍝ * At an early stage (we don't know yet where to save stuff etc) specify an
@@ -66,23 +73,17 @@
 ⍝   `⎕TRAP←0 'E' '#.HandleError.Process' '#.MyParms'`
 ⍝
 ⍝ ## Notes
-⍝ * The attempt to save an error WS will fail if there are any open acre
-⍝   projects. In a production environment that will hardly ever be the case.
-⍝   If you do not share this opinion then use your own function (see the
-⍝   `customFns` parameter) to close all open acre projects.
+⍝ * The attempt to save an error WS will fail if there are any open acre projects. acre is
+⍝   designed to make any saved workspace superfluous anyway but if you do not share this
+⍝   opinion then use your own function (see the `customFns` parameter) to close all open
+⍝   acre projects.
 ⍝ * Prior to version 2.2.0 `HandleError` saved crash files in a folder `Errors`
 ⍝   that was created as a sibling of either the workspace or the stabnd-alone
 ⍝   EXE. While this policy still holds true under Linux and Mac OS, under Windows
 ⍝   a folder with the name of either the EXE or the WS is created
-⍝   within %LOCALAPPDATA%, with a sub-folder "Errors" inside it.
-⍝ * If the crashing application is multi-threaded then saving an error WS is
-⍝   not possible. However, `HandleError` tries to overcome this by deleting
-⍝   all threads but the main thead (0) and the thread `HandleError` is
-⍝   actually running in. If that leaves just the main thread then you might
-⍝   be lucky and an error WS can be saved anyway. Or unlucky because although
-⍝   the application crashed in the main thread it might have been caused by
-⍝   something that happened in another thread, and you won't be able to
-⍝   figure that out.
+⍝   within %LOCALAPPDATA%, with a sub-folder "Errors" inside it.\\
+⍝   This is because under Windows the application is unlikely to have the right to write to
+⍝   the directory the EXE is coming from.
 ⍝
 ⍝ Kai Jaeger ⋄ APL Team Ltd
 ⍝
@@ -92,11 +93,13 @@
 
     ∇ r←Version
       :Access Public Shared
-      r←(Last⍕⎕THIS)'2.3.0' '2017-05-18'
+      r←(Last⍕⎕THIS)'2.3.1' '2017-12-31'
     ∇
 
     ∇ History
       :Access Public Shared
+      ⍝ * 2.3.1
+      ⍝   * Documention now points out prerequisites needed for writing to the Windows Event Log.
       ⍝ * 2.3.0
       ⍝   * `crash` now contains `SaveFailed` with a message in case saving an error WS failed.
       ⍝   * Method `History` introduced.
@@ -127,7 +130,7 @@
 
     ∇ {filename}←{signal}Process parms;crash;TRAP;⎕IO;⎕ML;⎕TRAP
       :Access Public Shared
-    ⍝ Returns the name of the error workspace saved by this function as shy result.
+    ⍝ Returns the name of the error workspace saved by `Process` as shy result.
     ⍝
     ⍝ `⎕OFF`s in runtime or if `enforceOff` is 1 but not otherwise.
     ⍝
@@ -176,12 +179,9 @@
 
     ∇ r←{force}SetTrap parameterSpaceName;⎕TRAP;⎕ML;⎕IO;calledFrom
       :Access Public Shared
-    ⍝ Returns a vector useful to set `⎕TRAP` depending on whether it's
-    ⍝ a development session or not.
-    ⍝
-    ⍝ The right argument can be either an empty vector or the name of
-    ⍝ a parameter space - **not** a reference!
-    ⍝
+    ⍝ Returns a vector useful to set `⎕TRAP`.
+    ⍝ It behaves differently depending on whether it's a development session or not.\\
+    ⍝ The right argument can be either an empty vector or the **name** of a parameter space - **not** a reference!\\
     ⍝ The left argument defaults to 0. Setting this to 1 enforces error
     ⍝ trapping even under a development exe. Useful for test cases.
       ⎕TRAP←0⍴⎕TRAP
@@ -228,7 +228,7 @@
     ⍝ | `windowsEventSource` | Name of the Windows Event Log to write to. Ignored when empty.|
     ⍝ | `addToMsg`           | Will be added to the log file as well as the Windows Event Log messages.<<br>>Mainly for test cases.|
     ⍝
-    ⍝ Since version 2.2.0 `errorFolder` defaults to an e,pty vector. Assuming that the WS or the stand-alone EXE have the name "Foo" the the following rules hold true:
+    ⍝ Since version 2.2.0 `errorFolder` defaults to an empty vector. Assuming that the WS or the stand-alone EXE have the name "Foo" the the following rules hold true:
     ⍝ * If `errorFolder` is empty then it defaults to "%LOCALAPPDATA%/Foo/Errors" under Windows and "Errors/" in the current
     ⍝   directory otherwise.
     ⍝ * If `errorFolder` is "Errors/" then this folder will be expected in the current directory.
@@ -260,7 +260,8 @@
     ∇
 
     ∇ {r}←ReportErrorToWindowsLog(appName message);⎕USING
-    ⍝ Reports an error to the Windows Event Log, by default to source="APL"
+    ⍝ Reports an error to the Windows Event Log, by default to source="APL".\\
+    ⍝ Note that the Dyalog bridge DLLs are required for this to work.
       :Access Public Shared
       r←⍬
       ⎕USING←'System,system.dll' 'System.Diagnostics,system.dll'
