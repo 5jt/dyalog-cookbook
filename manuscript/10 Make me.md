@@ -474,7 +474,6 @@ With the two DYAPPs and the BAT file, your development cycle now looks like this
 [^9]: The [MSDN](https://msdn.microsoft.com/en-us/library/windows/desktop/aa381058(v=vs.85).aspx) provides more information on what names are actually recognized.
 
 
-
 *[HTML]: Hyper Text Mark-up language
 *[DYALOG]: File with the extension 'dyalog' holding APL code
 *[TXT]: File with the extension 'txt' containing text

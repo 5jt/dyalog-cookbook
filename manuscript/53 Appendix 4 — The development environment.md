@@ -3,7 +3,7 @@
 [parm]:title  = 'Quad-SE'
 
 
-# Appendix 4 --- The development environment.
+# Appendix 4 --- The development environment
 
 
 
@@ -18,8 +18,22 @@ Most developers adapt the development environment in one way or another:
 
 There are several ways to achieve this:
 
-1. Modify and save a copy of the default session file (by default `def_{countryCode}.dse` in the installation directory) and edit the configuration so that this new DSE is loaded. 
-1. Modify and save a copy of the build workspace; that is typically something like `C:\Program Files\Dyalog\...\ws\buildse.dws`. Then use it to create your own tailored version of a DSE.
+1. Save a copy of the default session file somewhere _outside_ the installation directory.
+
+   By default this is `def_{countryCode}.dse` in the installation directory, for example `def_uk.dse` for the UK.
+
+   Edit the configuration so that this copy is loaded. 
+
+
+2. Save a copy of the build workspace (that is typically something like `C:\Program Files\Dyalog\...\ws\buildse.dws`) _outside_ the installation directory. Then use it to create your own tailored version of a DSE.
+
+   Then follow the advice in 1)
+
+W> ### Leave the Dyalog installation directory alone
+W>
+W> Do _not_ alter any files in the Dyalog installation directory, and don't add your own files there either: Dyalog may update files in there in any patch. 
+W>
+W> Although this is not strictly true in 16.0 and earlier, Dyalog _may_ start to issue .msp files which might change any file in the installation directory without warning!
 
 Both approaches have their own problems, the most obvious being that with a new version of Dyalog you start from scratch. However, there is a better way: save a function `Setup` in either `C:\Users\{UserName}\Documents\MyUCMDs\setup.dyalog` or one of the SALT work directories and it will be executed when...
 

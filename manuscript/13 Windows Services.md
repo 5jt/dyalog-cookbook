@@ -874,7 +874,6 @@ Looking for a function "Cleanup"...
 [^aplcore]: More information regarding aplcores is available in [_Appendix 3 — aplcores and WS integrity_](52 Appendix 3 — aplcores and WS integrity.html).
 
 
-
 *[HTML]: Hyper Text Mark-up language
 *[DYALOG]: File with the extension 'dyalog' holding APL code
 *[TXT]: File with the extension 'txt' containing text

@@ -15,7 +15,7 @@ If you are fluent in regular expressions but unfamiliar with Dyalog's implementa
 If you are heavily involved in number crunching and never search strings for certain patterns you probably don’t need regular expressions.
 
 Regular expressions are an extremely powerful tool, but the level of abstraction is high. They are hard to master without regular use. 
-If you need to find a pattern in a string twice a year, you are probably better off finding a riend you can ask for advice.
+If you need to find a pattern in a string twice a year, you are probably better off finding a friend you can ask for advice.
 
 Having said this, it is amazing how few APLers realize how often they actually _do_ search for patterns in strings.
 
@@ -147,10 +147,10 @@ For example, in order to match a minimum of one to a maximum of three underscore
 It is actually easier to check the result by _replacing_ the hits with something that stands out:
 
 ~~~
-      '_{1,3}' ⎕R '' ⊢'_one__two___three____four'
-onetwothreefour  
-      '_{2,3}' ⎕R '' ⊢'_one__two___three____four'
-_onetwothree_four
+      '_{1,3}' ⎕R '⍈' ⊢'_one__two___three____four'
+⍈one⍈two⍈three⍈⍈four  
+      '_{2,3}' ⎕R '⍈' ⊢'_one__two___three____four'
+_one⍈two⍈three⍈_four
 ~~~
 
 A> ### The right operand of ⎕R
@@ -174,13 +174,13 @@ Then there are the abbreviations that make life a bit easier:
 So:
 
 ~~~
-      '".*"' ⎕R '' ⊣ 'He said "Yes"!'
-He said !
+      '".*"' ⎕R '⍈' ⊣ 'He said "Yes"!'
+He said ⍈!
 ~~~
 
 ~~~
-      '".*"' ⎕R '' ⊣ 'He said "Yes" and "No"!'
-He said !
+      '".*"' ⎕R '⍈' ⊣ 'He said "Yes" and "No"!'
+He said ⍈!
 ~~~
 
 Just one hit, and that hit spans `"Yes" and "No"`?! 
@@ -211,8 +211,8 @@ You can see how we end up at the _first_ double quote rather than the last one.
 We can achieve that by specifying the "Greedy" option with a zero (default is one):
 
 ~~~
-      '".*"' ⎕R '' ⍠('Greedy' 0) ⊣ 'He said "Yes" and "No"!'
-He said  and !
+      '".*"' ⎕R '⍈' ⍠('Greedy' 0) ⊣ 'He said "Yes" and "No"!'
+He said ⍈ and ⍈!
 ~~~
 
 A> # Specifying options
@@ -255,8 +255,8 @@ The quantifiers we discussed earlier are all greedy, but you can make them lazy 
 But wouldn't it be better to use `+` rather than `*` here? After all we are not interested in `""` because there is nothing between the two double quotes? Good point except that it does not work:
 
 ~~~
-      '".+"' ⎕R '' ⍠('Greedy' 0) ⊣ 'He said "" and ""'
-He said "
+      '".+"' ⎕R '⍈' ⍠('Greedy' 0) ⊣ 'He said "" and ""'
+He said ⍈"
 ~~~
 
 That's because the engine would perform the following steps:
@@ -267,7 +267,7 @@ That's because the engine would perform the following steps:
 
 1. Because it is lazy it then goes back the current position which by then is the space to the _right of the second double-quote_!
 
-   From there it carries on until it finds a `"`. That is the _first_ `"` _after_ the word <<and>>. All that is then replaced by the `` character.
+   From there it carries on until it finds a `"`. That is the _first_ `"` _after_ the word <<and>>. All that is then replaced by the `⍈` character.
 
 1. The engine then carries on but because there is only a single `"` left there is no other match.
 
@@ -279,7 +279,7 @@ If we want to ignore any `""` pairs then we need to use a look-ahead, something 
 Hhere is another --- and better --- way to solve our problem:
 
 ~~~
-      '"[^"]*"'⎕R''⊣'He said "" and ""'
+      '"[^"]*"'⎕R'⍈'⊣'He said "" and ""'
 ~~~
 
 * The engine carries on until it finds a `"`.
@@ -303,8 +303,8 @@ Let's modify the input string:
 There are _two_ double quotes after the word "Yes"; that seems to be a typo. Watch what our RegEx is making of this:
 
 ~~~
-      '".*"' ⎕R '' ⍠('Greedy' 0) ⊣ is
- He said No"
+      '".*"' ⎕R '⍈' ⍠('Greedy' 0) ⊣ is
+ He said ⍈⍈No"
 ~~~
 
 This example highlights a potential problem with input strings: many regular expressions work perfectly well as long as the input string is syntactically correct (or matches your expectations).
@@ -350,8 +350,8 @@ Note that both `}` and `]` are considered meta characters only after an opening 
 Let's suppose we want to match all digits in a string:
 
 ~~~
-      '[0123456789]'⎕R '' ⊣ 'It''s 23.45 plus 99.12.'
-It's . plus ..
+      '[0123456789]'⎕R '⍈' ⊣ 'It''s 23.45 plus 99.12.'
+It's ⍈⍈.⍈⍈ plus ⍈⍈.⍈⍈.
 ~~~
 
 Everything between the `[` and the `]` is treated as a simple character - with a few exceptions we'll soon discuss. That makes both `[` and `]` meta characters.
@@ -359,8 +359,8 @@ Everything between the `[` and the `]` is treated as a simple character - with a
 The same but shorter:
 
 ~~~
-      '[0-9]'⎕R '' ⊣ 'It''s 23.45 plus 99.12.'
-It's . plus ..
+      '[0-9]'⎕R '⍈' ⊣ 'It''s 23.45 plus 99.12.'
+It's ⍈⍈.⍈⍈ plus ⍈⍈.⍈⍈.
 ~~~
 
 The minus is treated as a meta character here: it means "all digits from 0 to 9".
@@ -371,8 +371,8 @@ The minus is treated as a meta character here: it means "all digits from 0 to 9"
 Even shorter:
 
 ~~~
-      '\d'⎕R '' ⊣ 'It''s 23.45 plus 99.12.'
-It's . plus ..
+      '\d'⎕R '⍈' ⊣ 'It''s 23.45 plus 99.12.'
+It's ⍈⍈.⍈⍈ plus ⍈⍈.⍈⍈.
 ~~~
 
 Note that the meta character backslash (`\` ) is used for two different purposes:
@@ -397,8 +397,8 @@ A> ~~~
 A> This escapes all characters between the `\Q` and the `\E`.
 
 ~~~
-      '[\d.-]'⎕R '' ⊣ 'It''s 23.45 plus -99.12.'
-It's  plus 
+      '[\d.-]'⎕R '⍈' ⊣ 'It''s 23.45 plus -99.12.'
+It's ⍈⍈⍈⍈⍈ plus ⍈⍈⍈⍈⍈⍈⍈
 ~~~
 
 Here we have another problem: we want the dot only to be a match when there is a digit to both the left and the right of the dot. Our search pattern does not deal with this, so the trailing `.` is a match. We will tackle this problem soon.
@@ -406,15 +406,15 @@ Here we have another problem: we want the dot only to be a match when there is a
 Character classes work for letters as well:
 
 ~~~
-      '[a-zA-Z]'⎕R '' ⊣'It''s 23.45 plus 99.12.'
-' 23.45  99.12.
+      '[a-zA-Z]'⎕R '⍈' ⊣'It''s 23.45 plus 99.12.'
+⍈⍈'⍈ 23.45 ⍈⍈⍈⍈ 99.12.
 ~~~
 
 We can negate with `^` right after the opening `[`:
 
 ~~~
-    '[^a-zA-Z]'⎕R '' ⊣'It''s 23.45 plus 99.12.'
-Itsplus
+    '[^a-zA-Z]'⎕R '⍈' ⊣'It''s 23.45 plus 99.12.'
+It⍈s⍈⍈⍈⍈⍈⍈⍈plus⍈⍈⍈⍈⍈⍈⍈
 ~~~
 
 Notes:
@@ -434,8 +434,8 @@ Notes:
 ### Negate with digits and dots
 
 ~~~
-      '[^.0-9]'⎕R '' ⊣'It''s 23.45 plus 99.12.'
-23.4599.12.
+      '[^.0-9]'⎕R '⍈' ⊣'It''s 23.45 plus 99.12.'
+⍈⍈⍈⍈⍈23.45⍈⍈⍈⍈⍈⍈99.12.
 ~~~
 
 Want to search for _gray_ and _grey_ in a document?
@@ -443,8 +443,8 @@ Want to search for _gray_ and _grey_ in a document?
 ~~~
       'gr[ae]y'⎕S 0⊣'Americans spell it "gray" and Brits "grey".'
 20 37
-      'gr[ae]y'⎕R '' ⊣'Americans spell it "gray" and Brits "grey".'
-Americans spell it "" and Brits "".      
+      'gr[ae]y'⎕R '⍈' ⊣'Americans spell it "gray" and Brits "grey".'
+Americans spell it "⍈" and Brits "⍈".      
 ~~~
 
 
@@ -471,8 +471,8 @@ Therefore the expression `[0-9^1]` does _not_ mean "all digits but 1", it means 
 Finding 0 to 3 whitespace characters followed by an ASCII letter at the beginning of a line:
 
 ~~~
-      {'^\s{0,3}[a-zA-Z]' ⎕R '' ⊣ ⍵}¨'Zero' ' One' '  Two' '   Three' '    four'
-ero  ne  wo  hree      four 
+      {'^\s{0,3}[a-zA-Z]' ⎕R '⍈' ⊣ ⍵}¨'Zero' ' One' '  Two' '   Three' '    four'
+⍈ero  ⍈ne  ⍈wo  ⍈hree      four 
 ~~~
 
 `\s` escapes the ASCII letter `s`, meaning that the `s` takes on a special meaning: `\s` stands for any whitespace character. That is at the very least the space character (`⎕UCS 32`) and the tab character (`⎕UCS 9`).
@@ -490,7 +490,7 @@ Both will be discussed soon.
 We've learned that the `.` matched any character but not end of line.
 
 ~~~
-      '".*"'⎕R''⊣ '"Foo' 'Goo"'
+      '".*"'⎕R'⍈'⊣ '"Foo' 'Goo"'
  "Foo  Goo" 
 ~~~
 
@@ -501,8 +501,8 @@ Because the `.` does not match end-of-line it finds `"Foo` but then stops rather
 With the DotAll option --- which defaults to 0 --- we can tell the RegEx engine to let `.` even match the end of a line:
 
 ~~~
-      '".*"'⎕R''⍠('DotAll' 1)('Mode' 'D')⊣'"Foo' 'Goo "'
- 
+      '".*"'⎕R'⍈'⍠('DotAll' 1)('Mode' 'D')⊣'"Foo' 'Goo "'
+ ⍈
 ~~~
 
 Note that we had to specify the Mode option as well because `DotAll←1` is invalid with `Mode←L`, which is the default. 
@@ -517,7 +517,7 @@ It's not difficult to imagine a situation where you have a single search pattern
 `\N` has almost the same meaning as the `.` except that it never matches the end of a line. That means it's independent from the setting of DotAll:
 
 ~~~
-      '"\N*"'⎕R''⍠('DotAll' 1)('Mode' 'D')⊣'"Foo' 'Goo "'
+      '"\N*"'⎕R'⍈'⍠('DotAll' 1)('Mode' 'D')⊣'"Foo' 'Goo "'
  "Foo  Goo " 
 ~~~
 
@@ -537,15 +537,15 @@ We want `foo←1 2` to be found or changed while the text and the comment remain
 A naïve approach does not work:
 
 ~~~
-      'foo' ⎕R '' ⊣ is
-a←1 ⋄ ←1 2 ⋄ txt←'The ⍝ marks a comment; ' ⍝ set up vars a, , txt
+      'foo' ⎕R '⍈' ⊣ is
+a←1 ⋄ ⍈←1 2 ⋄ txt←'The ⍝ marks a comment; ⍈' ⍝ set up vars a, ⍈, txt
 ~~~
 
 Dyalog's implementation of regular expressions offers an elegant solution to the problem:
 
 ~~~
-      '''\N*''' '⍝\N*$' 'foo'⎕R(,¨'&&')⍠('Greedy' 0)⊣is
-a←1 ⋄ ←1 2 ⋄ txt←'The ⍝ marks a comment; foo' ⍝ set up vars a, foo, txt
+      '''\N*''' '⍝\N*$' 'foo'⎕R(,¨'&&⍈')⍠('Greedy' 0)⊣is
+a←1 ⋄ ⍈←1 2 ⋄ txt←'The ⍝ marks a comment; foo' ⍝ set up vars a, foo, txt
 ~~~
 
 This needs some explanation:
@@ -571,7 +571,7 @@ As far as we know, this powerful feature is specific to Dyalog, but we have only
 
 ### Regular expressions and scalar extension
 
-Note that the `,¨` in `,¨'&&'` is essential: without it the RegEx engine would use the pattern `'&&'` thrice. 
+Note that the `,¨` in `,¨'&&⍈'` is essential: without it the RegEx engine would use the pattern `'&&⍈'` thrice. 
 
 The reason is that `⎕R` actually does not accept scalars, it only accepts vectors. So if you specify three search patterns on the left, then you need to specify not four and not two but three replace patterns as well. 
 
@@ -600,8 +600,8 @@ A>
 A> Luckily this can be achieved with the meta character question mark (`?`):
 A> 
 A>  ~~~
-A>       '"\N*?"'⎕R '' ⊣ is
-A> He said  and 
+A>       '"\N*?"'⎕R '⍈' ⊣ is
+A> He said ⍈ and ⍈
 A> ~~~
 A>
 A> Since the engine is greedy by default, you need specify the `?` only for those parts of your search pattern you want to be lazy.
@@ -612,8 +612,8 @@ A> Since the engine is greedy by default, you need specify the `?` only for thos
 Our search pattern is still not perfect since it would work on `boofoogoo` as well:
 
 ~~~
-      '''\N*''' '⍝\N*$' 'foo'⎕R(,¨'&&')⍠('Greedy' 0)⊣'This boofoogoo is found as well'
-This boogoo is found as well
+      '''\N*''' '⍝\N*$' 'foo'⎕R(,¨'&&⍈')⍠('Greedy' 0)⊣'This boofoogoo is found as well'
+This boo⍈goo is found as well
 ~~~
 
 We can solve this problem with `\b` (word boundaries). `\b` does not attempt to match a particular character on a particular position. Instead it checks whether there is a word boundary either before are after the current position – but not both.
@@ -646,8 +646,8 @@ Now `ä` and `ß` no longer qualify as word boundaries.
 Suppose you want to search for three digits:
 
 ~~~
-      '[0-9]{3,}' ⎕R '' ⊣ ' 3 digits: 123;'
- 3 digits: ;
+      '[0-9]{3,}' ⎕R '⍈' ⊣ ' 3 digits: 123;'
+ 3 digits: ⍈;
 ~~~
 
 But what if you want to ensure it's always the _same_ digits? 
@@ -655,8 +655,8 @@ But what if you want to ensure it's always the _same_ digits?
 For that you need back references:
 
 ~~~
-      '([0-9])\1{2,}' ⎕R '' ⊣ ' 3 digits: 333; 444; 123;'
- 3 digits: ; ; 123;
+      '([0-9])\1{2,}' ⎕R '⍈' ⊣ ' 3 digits: 333; 444; 123;'
+ 3 digits: ⍈; ⍈; 123;
 ~~~
 
 The first two groups of digits are found while the last one is ignored --- exactly what we want.
@@ -672,15 +672,15 @@ I> You can define and use up to 99 groups.
 If you want to find only numbers that consist of exactly three digits which have to be the same then this would work:
 
 ~~~
-      '([0-9])\1{2,}' ⎕R '' ⊣ '333; 444; 123;'
-; ; 123;
+      '([0-9])\1{2,}' ⎕R '⍈' ⊣ '333; 444; 123;'
+⍈; ⍈; 123;
 ~~~
 
 But be aware:
 
 ~~~
-      '([0-9])\1{2,}' ⎕R '' ⊣ '3333; 4444; 1234;'
-; ; 1234;
+      '([0-9])\1{2,}' ⎕R '⍈' ⊣ '3333; 4444; 1234;'
+⍈; ⍈; 1234;
 ~~~
 
 To solve this problem you need to master look-arounds.
@@ -691,8 +691,8 @@ To solve this problem you need to master look-arounds.
 We can use look-ahead and look-behind to solve a problem we ran into earlier with numbers. This did not really work because _all_ dots got replaced when we wanted only those with digits to the right and the left being a match:
 
 ~~~
-      '[\d.¯-]'⎕R''⊣'It''s 23.45 plus 99.12.'
-It's  plus 
+      '[\d.¯-]'⎕R'⍈'⊣'It''s 23.45 plus 99.12.'
+It's ⍈⍈⍈⍈⍈ plus ⍈⍈⍈⍈⍈⍈
 ~~~
 
 We don't want the last dot to be a match. Obviously we need to check the characters to the left and to the right of each dot.
@@ -702,8 +702,8 @@ Both look-ahead and look behind start with `(?`. A look-behind then needs a `<` 
 Both then need either a `=` for _equal_ or a `!` for _not equal_ followed by the search token and finally a closing `)`. Hence `(?<=\d)` for the look-behind and `(?=\d)` for the look-ahead:
 
 ~~~
-      '\d' '(?<=\d).(?=\d)'⎕R''⊣'It''s 23.45 plus 99.12.'
-It's  plus .      
+      '\d' '(?<=\d).(?=\d)'⎕R'⍈'⊣'It''s 23.45 plus 99.12.'
+It's ⍈⍈⍈⍈⍈ plus ⍈⍈⍈⍈⍈.      
 ~~~
 
 That works! We use two expressions here: first we look for all digits and then we look for dots that have a digit to their right and their left. 
@@ -721,8 +721,8 @@ However, if you need `⎕S` to return the start and the length of any matches th
 We need an expression that identifies any vector of digits as one unit, no matter whether there is a dot between the digits or not:
 
 ~~~
-      '\d+(?<=\d).(?=\d)\d+' ⎕R '' ⊣ 'It''s 23.45 plus 99.12.'
-It's  plus .
+      '\d+(?<=\d).(?=\d)\d+' ⎕R '⍈' ⊣ 'It''s 23.45 plus 99.12.'
+It's ⍈ plus ⍈.
       '\d+(?<=\d).(?=\d)\d+' ⎕S 0 1 ⊣ 'It''s 23.45 plus 99.12.'
  5 5  16 5 
 ~~~
@@ -734,78 +734,174 @@ As mentioned earlier a look-ahead as well as a look-behind can be negated by usi
 Lets' try this. Assuming we look for `x` and `y`:
 
 ~~~
-      'x(?<=y)' ⎕R'' ⊣ 'abxycxd' ⍝ Exchange all "x" when followed by a "y"
-abycxd
-      'x(?!y)' ⎕R'' ⊣ 'abxycxd' ⍝ Exchange all "x" when NOT followed by a "y"
-abxycd      
-      '(?<=x)y' ⎕R'' ⊣ 'abxycyd' ⍝ Exchange all "y" when preceeded by an "x"
-abxcyd
-      '(?<!x)y' ⎕R'' ⊣ 'abxycyd' ⍝ Exchange all "y" when NOT preceeded by an "x"
-abxycd       
+      'x(?<=y)' ⎕R'⍈' ⊣ 'abxycxd' ⍝ Exchange all "x" when followed by a "y"
+ab⍈ycxd
+      'x(?!y)' ⎕R'⍈' ⊣ 'abxycxd' ⍝ Exchange all "x" when NOT followed by a "y"
+abxyc⍈d      
+      '(?<=x)y' ⎕R'⍈' ⊣ 'abxycyd' ⍝ Exchange all "y" when preceeded by an "x"
+abx⍈cyd
+      '(?<!x)y' ⎕R'⍈' ⊣ 'abxycyd' ⍝ Exchange all "y" when NOT preceeded by an "x"
+abxyc⍈d       
 ~~~
 
 
-### Transformation function
+### Transformation functions
 
-Instead of providing a replace string one can also pass a function as operand to `⎕R` (and `⎕S` as well). The powerful feature is again Dyalog-only.
+Instead of providing a replace string one can also pass a function as operand to `⎕R` (and `⎕S` as well). This feature is particularly useful when not only pattern matching is required but also calculations based on the findings.
 
-Our earlier example:
-
-~~~
-      is←'a←1 ⋄ foo←1 ⋄ txt←''text; foo'' ⍝ comment'
-~~~
-
-Let's replace just the variable name with something else with a transformation function:
+Look at this piece of CSS code:
 
 ~~~
-      ∇test[⎕]∇
-[0]   r←{x}test y
-[1]   .
-
-      '''.*''' '⍝.*$' 'foo'⎕R  test⊣is
-SYNTAX ERROR
-test[1] .
-       ∧
-      y.(⊃{⍵ (⍎⍵)}¨↓⎕nl 2 9)
- Block        a←1 ⋄ foo←1 ⋄ txt←'text; foo' ⍝ comment 
- BlockNum                                           0 
- Lengths                                            3 
- Match                                            foo 
- Names                                                
- Offsets                                            6 
- Pattern                                          foo 
- PatternNum                                         2 
- ReplaceMode                                        0 
- TextOnly                                           0       
+p {
+    /* font-size: 12px; */
+    font-size: 12px;
+    border: 1px solid black;
+}
 ~~~
 
-The right argument contains all the pieces of information that you will possibly need.
+Though using "px" always was and still is quite common, these days you are advised to used "em" (and sometimes "rem") instead. The reason is that "em" refers to the parent of the current object. 
 
-We modify `test` to leave the text and the comment untouched:
+For example, this:
 
 ~~~
-      )reset
-      ∇test[⎕]∇
-[0]   r←{x}test y
-[1]   :If ''''''≡2⍴¯1⌽y.Match
-[2]       ⎕←r←y.Match
-[3]   :ElseIf '⍝'=1⍴y.Match
-[4]       ⎕←r←y.Match
-[5]   :Else
-[6]       r←'Hello world'
-[7]   :EndIf
-
-      '''.*''' '⍝.*$' 'foo'⎕R test⊣is
-'text; foo'
-⍝ comment
-a←1 ⋄ Hello world←1 ⋄ txt←'text; foo' ⍝ comment
+p {
+    font-size: 0.9em;
+}
 ~~~
 
-Since any match that starts and ends with a quote is text by definition the function returns those untouched. Anything that starts with a lamp symbol is a comment, so they are returned untouched as well. That leaves the hits for the real variable names: they are exchanged against `Hello world`.
+means that the size is 90% oif the font size defined for <p>'s parent. 
+
+But there has to be at least one absolute definition, and that's usually to be found in the <body> tag:
+
+~~~
+body {
+    font-size: 18px;
+}
+~~~
+
+I> If such a definition is missing then it falls back to the browser's default which these days usually is 16px.
+
+The advantage is that in order to change the size of the fonts used you have to change one single value.
+
+Now lets assume that we want to convert "px" into "em". Just replacing "px" against "em" doesn't do the job, we also need to calculate the correct value (we ignore the inheritance problem here).
+
+This is where a transformation functions come in handy:
+
+~~~
+     ∇ r←Change arg;v;em;baseFontSize
+[1]    baseFontSize←18        ⍝ What's defined for body; that should be defined in "px".
+[2]    :If 0=arg.PatternNum
+[3]        r←arg.Match
+[4]    :Else
+[5]        v←⊃(//)⎕VFI¯2↓arg.Match
+[6]        :If v∊1 2          ⍝ Those should be left alone.
+[7]            r←arg.Match
+[8]        :Else
+[9]            em←0.01×⌊0.5+100×v÷baseFontSize
+[10]           r←(⍕em),'em'
+[11]       :EndIf
+[12]   :EndIf
+[13]  ⍝Done
+     ∇
+~~~
+
+We assign the CSS code we've discussed earlier on a variable `∆`:
+
+~~~
+∆←''
+∆,←⊂'p {'
+∆,←⊂'    /* font-size: 12px; */'
+∆,←⊂'    font-size: 12px;'
+∆,←⊂'    border: 1px solid black;'
+∆,←⊂'}'
+∆←,¨∆
+~~~
+
+Note that the last statement is essential, otherwise you'll get a `RANK ERROR: Invalid input source`: the input vector _must not_ contain scalars.
+
+We want to investigate the right argument `Change` is going to get, therefore we set a stop vector on line 1 of `Change`:
+
+~~~
+      1 ⎕STOP 'Change'
+~~~
+
+Now we run this expression:
+
+~~~
+      ∆2←'/\*.*\*/' '\b[0-9]{1,3}px'⎕R Change⍠('DotAll' 1)('Mode' 'M')('Greedy' 0)⊣∆
+~~~
+
+The left operand of `⎕R` is a two-element vector:
+
+* The first item matches comments; remember that we need to escape any `*` character we want to be taken literally.
+* The second item matches a word boundary followed by one, two or three digits followed by "px".
+
+Because of the stop vector execution stops on line 1 of `Change`. That allows us to investigate the right argument:
+
+~~~
+      arg.(⊃{⍵ (⍎⍵)}¨↓⎕nl 2 9)
+ Block       p { 
+                /* font-size: 12px; */
+                font-size: 12px;
+                border: 1px solid black;
+             }
+ BlockNum                                                                         0 
+ Lengths                                                                         22 
+ Match                                                       /* font-size: 12px; */ 
+ Names                                                                                           
+ Offsets                                                                          9 
+ Pattern                                                                   /\*.*\*/ 
+ PatternNum                                                                       0 
+ ReplaceMode                                                                      1 
+ TextOnly                                                                         1 
+~~~
+
+The right argument contains all the pieces of information that you might possibly need.
+
+Now it's time to discuss the function `Change` in detail:
+
+~~~
+     ∇ r←Change arg;v;em;baseFontSize
+[1]    baseFontSize←18        ⍝ What's defined for body; that should be defined in "px".
+[2]    :If 0=arg.PatternNum
+[3]        r←arg.Match
+[4]    :Else
+[5]        v←⊃(//)⎕VFI¯2↓arg.Match
+[6]        :If v∊1 2          ⍝ Those should be left alone.
+[7]            r←arg.Match
+[8]        :Else
+[9]            em←0.01×⌊0.5+100×v÷baseFontSize
+[10]           r←(⍕em),'em'
+[11]       :EndIf
+[12]   :EndIf
+[13]  ⍝Done
+     ∇
+~~~
+
+* `PatternNum` is a running number that starts  with 0.
+
+   In our case we have two patterns. The first one catches comments. We want them to survive unchanged, so we just return `Match` meaning that nothing is changed at all.
+
+* In line `[5]` we drop "px" from the pattern and convert what's left into a numeric value.
+
+* In line `[6]` we check whether the value is just 1 or 2. If that's the case then this is most likely a definition of a border. However, it's best to leave such small values alone in any case, so again we return the match.
+
+* In line `[9]` we calculate the value of the pixels into "em" in proportion to the base font size.
+
+A> ### "em" versus "rem"
+A>
+A> There is not only "em" available, there is also "rem". "em" are calculated in proportion to their parent. That's usually what you want.
+A> 
+A> Imagine a list (<ul> or <ol>). If you want to make the <li>'s font slightly smaller than the parent's font then specifying `0.85em;` seems to be fine, right? Well, only as long as you do not have nested lists!
+A>
+A> With deeply nested lists things get quickly out of hand because with every level the font gets smaller and smaller.
+A>
+A> "rim" to the rescue! In opposite to "em" they refer to the base font size size; that's what was defined in the <body> tag. That way all lists use the same --- slightly smaller --- font size.  
+A>
+
+⍝A> Difficulties to remember "rim"? Try "Reset IM".
 
 Transformation functions give you enormous power: you can do whatever you like.
-
-Note that transformation functions can be specified with `⎕S` as well.
 
 
 ### Document mode
@@ -825,10 +921,10 @@ In Mixed mode as well as Document mode you _can_ search for `\r` because all blo
 Let's do some tests:
 
 ~~~
-      '".*"'⎕R''⍠('Greedy' 0)⊣input
- He said: "Yes, that might  well be right.So be it!" 
-      '".*"'⎕R''⍠('Greedy' 0)('Mode' 'M')('DotAll' 1)⊣input
-He said:  She answered:        
+      '".*"'⎕R'⍈'⍠('Greedy' 0)⊣input
+ He said: "Yes, that might  well be right.⍈So be it!" 
+      '".*"'⎕R'⍈'⍠('Greedy' 0)('Mode' 'M')('DotAll' 1)⊣input
+He said: ⍈ She answered: ⍈       
 ~~~
 
 Note that in order to specify `('DotAll' 1)` it is necessary to set `('Mode' 'M')`. `('Mode' 'D')` would have worked in the same way. However, when it comes to `^` and `$` then it makes a big difference:
@@ -843,8 +939,8 @@ Note that in order to specify `('DotAll' 1)` it is necessary to set `('Mode' 'M'
 Suppose we want to match either the word _cat_ or the word _dog_:
 
 ~~~
-      'cat|dog' ⎕R ''⊣ 'donkey, bird, cat, rat, dog'
-donkey, bird, , rat, 
+      'cat|dog' ⎕R '⍈'⊣ 'donkey, bird, cat, rat, dog'
+donkey, bird, ⍈, rat, ⍈
 ~~~
 
 The `|` has the lowest precedence of all RegEx operators. Therefore it first tries to match `cat` and only then `dog`.
@@ -852,8 +948,8 @@ The `|` has the lowest precedence of all RegEx operators. Therefore it first tri
 However, be careful:
 
 ~~~
-      'cat|catfish' ⎕R ''⊣ 'donkey, bird, cat, rat, dog, catfish'
-donkey, bird, , rat, dog, fish
+      'cat|catfish' ⎕R '⍈'⊣ 'donkey, bird, cat, rat, dog, catfish'
+donkey, bird, ⍈, rat, dog, ⍈fish
 ~~~
 
 This is not what we want. The reason for this is that once the string `cat` has matched the RegEx engine gives up because it was successful, therefore it does not see the need to check later options. It's said the engine is _eager_.
@@ -861,22 +957,22 @@ This is not what we want. The reason for this is that once the string `cat` has 
 Sorting the alternatives by length gets us around this problem:
 
 ~~~
-      'catfish|cat' ⎕R ''⊣ 'donkey, bird, cat, rat, dog, catfish'
-donkey, bird, , rat, dog, 
+      'catfish|cat' ⎕R '⍈'⊣ 'donkey, bird, cat, rat, dog, catfish'
+donkey, bird, ⍈, rat, dog, ⍈
 ~~~
 
 However, in real life we would put word boundaries to good use, avoiding the problem altogether:
 
 ~~~
-      '\bcat\b|\bcatfish\b' ⎕R ''⊣ 'donkey, bird, cat, rat, dog, catfish'
-donkey, bird, , rat, dog, 
+      '\bcat\b|\bcatfish\b' ⎕R '⍈'⊣ 'donkey, bird, cat, rat, dog, catfish'
+donkey, bird, ⍈, rat, dog, ⍈
 ~~~
 
 Or even shorter:
 
 ~~~
-      '\b(cat|catfish)\b' ⎕R ''⊣ 'donkey, bird, cat, rat, dog, catfish'
-donkey, bird, , rat, dog, 
+      '\b(cat|catfish)\b' ⎕R '⍈'⊣ 'donkey, bird, cat, rat, dog, catfish'
+donkey, bird, ⍈, rat, dog, ⍈
 ~~~
 
 Note the parentheses used here for grouping.
@@ -887,15 +983,15 @@ Note the parentheses used here for grouping.
 The `?` makes the preceeding token optional. If you want to find either _November_ or its shortcut _Nov_:
 
 ~~~
-      'Nov(ember)?' ⎕R ''⊣ '...October, November, December; ... Oct, Nov, Dec'
-...October, , December; ... Oct, , Dec
+      'Nov(ember)?' ⎕R '⍈'⊣ '...October, November, December; ... Oct, Nov, Dec'
+...October, ⍈, December; ... Oct, ⍈, Dec
 ~~~
 
 For plurals:
 
 ~~~
-      'cars?' ⎕R ''⊣ 'car, boat, plain, cars, boats, plains'
-, boat, plain, , boats, plains
+      'cars?' ⎕R '⍈'⊣ 'car, boat, plain, cars, boats, plains'
+⍈, boat, plain, ⍈, boats, plains
 ~~~
 
 
@@ -908,8 +1004,8 @@ Now an `<a>` tag has always either an `href="..."` or an `id="..."` because othe
 So it should be safe to say:
 
 ~~~
-      '<a.*>.*<'⎕R''⊣'This <a href="http://aplwiki.com">is a link</a>, really!'
-This , really!
+      '<a.*>.*<'⎕R'⍈'⊣'This <a href="http://aplwiki.com">is a link</a>, really!'
+This ⍈, really!
 ~~~
 
 Works, right? 
@@ -918,8 +1014,8 @@ Well, yes, but it also works on this:
 
 ~~~
       txt←'This <abbr title="FooGoo"><a href="#page">is a link</a></abbr>'
-      '<a.*>.*</a>'⎕R''⊣txt
-This </abbr>	
+      '<a.*>.*</a>'⎕R'⍈'⊣txt
+This ⍈</abbr>	
 ~~~
 
 That might come as a nasty surprise but when you think it through it's obvious why that is: the expression `<a.*>` does indeed catch not only `<a` but also `<abbr>`. Shows how important it is to be precise.
@@ -927,8 +1023,8 @@ That might come as a nasty surprise but when you think it through it's obvious w
 We can work around this quite easily: because any `<a>` tag must have at least one attribute in order to make sense there _must_ be a space after the `a`; therefore we can rewrite the expression as follows:
 
 ~~~
-      '<a .*>.*</a>'⎕R''⊣txt
-This <abbr title="FooGoo"></abbr>
+      '<a .*>.*</a>'⎕R'⍈'⊣txt
+This <abbr title="FooGoo">⍈</abbr>
 ~~~
 
 What a difference a space can make!
@@ -938,8 +1034,8 @@ But somebody _might_ put in an `<a>` tag without any attribute at all, and then 
 Here it is:
 
 ~~~
-      '<a\b[^>]*>(.*?)</a>'⎕R''⊣'This <a>is a link</a>; more: <a id="_2">Foo</a>'
-This ; more: 
+      '<a\b[^>]*>(.*?)</a>'⎕R'⍈'⊣'This <a>is a link</a>; more: <a id="_2">Foo</a>'
+This ⍈; more: ⍈
 ~~~
 
 Notes:
@@ -1012,7 +1108,6 @@ RegexBuddy
 : A web site that explores the details. From the author of RegExBuddy.
 
 : The web site also comes with detailed book reviews: <http://www.regular-expressions.info/hipowls.html>
-
 
 
 *[HTML]: Hyper Text Mark-up language

@@ -377,7 +377,6 @@ Feel confident with the Windows Event Log? Well, a few more wrinkles yet:
 [^restore]: Details about System Restore Point: <https://en.wikipedia.org/wiki/System_Restore>
 
 
-
 *[HTML]: Hyper Text Mark-up language
 *[DYALOG]: File with the extension 'dyalog' holding APL code
 *[TXT]: File with the extension 'txt' containing text
