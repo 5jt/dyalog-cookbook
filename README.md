@@ -5,31 +5,27 @@ The Dyalog Cookbook
 
 A guide to organising, shipping and maintaining an application in [Dyalog APL](http://dyalog.com).
 
-By Kai Jaeger and Stephen Taylor
-
-kai@aplteam.com
-sjt@5jt.com
+Written by Kai Jaeger (<https://aplteam.com>) and Stephen Taylor (<http://lambenttechnology.com/>) and sponsored by Dyalog Ltd (<https://www.dyalog.com>).
 
 This is an open-source project. You are invited to contribute using the [Forked Workflow model](https://www.atlassian.com/git/tutorials/comparing-workflows/forking-workflow): fork this repository to your own account, make changes and lodge a pull request to include your changes. 
 
-Alternatively, write to Kai and Stephen at the above addresses. 
+Alternatively, write to Kai (<mailto:kai@aplteam.com>) or Stephen (<mailto:sjt@5jt.com>). 
 
-The project requires Dyalog APL Unicode 15.0 or later. 
+The project requires Dyalog APL Unicode 16.0 or later. 
 
-The project is also discussed in the [`#cookbook` thread of The APL Room on Slack](https://theaplroom.slack.com/messages/cookbook/). 
+The manuscript is written in Markdown and converted into HTML5 by a program written in Dyalog APL. 
 
-The manuscript is written in Markdown and compiled at [Leanpub](https://leanpub.com/thedyalogcookbook). 
-
-THIS FOLDER contains child folders and files as follows. Much of the content is tracked in a Git repository, and pushed to github.com/5jt/dyalog-cookbook
+The project contains various child folders and files; the principle ones are listed here:
 
 `code/`
 : scripts corresponding to different versions of the MyApp application
 
 `manuscript/`
-: files from which the book is generated on Leanpub. 
-
-`preview/`
-: latest copies of book in multiple formats
+: files from which the chapters (read: HTML5 files) are generated.
+`HTML/`
+: Contains the book as HTML files, each representing a single chapter. There is also one file that comprises all chapters in a single document for searching and printing purposes.
 
 `texts/`
-: sample texts in various alphabets
+: sample texts in various alphabets. This is used as input in some chapters.
+
+The content is tracked in a Git repository, and pushed to <http://github.com/5jt/dyalog-cookbook>.
