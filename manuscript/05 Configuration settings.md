@@ -396,7 +396,7 @@ And finally we create a new standalone EXE as before and run it to make sure tha
 [^semi]: So-called _semi-globals_ are variables to be read or set by functions to which they are not localised. They are _semi-globals_, rather than globals, because they are local to either a function or a namespace. From the point of view of the functions that do read or set them, they are indistinguishable from globals – they are just mysteriously ‘around’. 
 
 
-[^fire]: Fire stands for _Find and Replace_. It is a powerful tool for both search and replace operations in the workspace. It is also a member of the APLTree Open Source Library. For details see <http://aplwiki.com/Fire>. Fire is discussed in the chapter _Useful user commands_.
+[^fire]: Fire stands for _Find and Replace_. It is a powerful tool for both search and replace operations in the workspace. For details see <https://github.com/aplteam.Fire>. Fire is discussed in the chapter _Useful user commands_.
 
 
 *[HTML]: Hyper Text Mark-up language

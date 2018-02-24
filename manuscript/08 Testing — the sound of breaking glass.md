@@ -936,7 +936,7 @@ Pro
 Contra
 : We cannot know whether those test cases cover the same environment/s (different versions of Windows, different versions of Dyalog, domain-managed network or not, network drives or not, multi-threaded versus single-threaded, you name it) our application will run in. 
 
-That suggests we should incorporate the tests the modules come with into our own test suite. <!-- , although we are sure that not too many people/companies using modules from the APLTree library are actually doing this. --> 
+That suggests we should incorporate the tests the modules come with into our own test suite, although we are sure that not too many people/companies using modules from the APLTree library are actually doing this.
 
 It’s not difficult to do: every module has a workspace saved on GitHub that comes with everything needed to run the test cases. 
 

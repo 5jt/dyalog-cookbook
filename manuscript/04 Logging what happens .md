@@ -451,7 +451,7 @@ A>
 A> `MyLogger` is localized in the header of `TxtToCsv`, meaning that when `TxtToCsv` ends, this instance of the `Logger` class is destroyed and the destructor is invoked. Since the Tracer was up and running, the destructor makes an appearance in the Tracer.
 
 
-[^apltree]: You can download all members of the APLTree library from the APL Wiki: <http://download.aplwiki.com/>
+[^apltree]: You can download all members of the APLTree library from the APL Wiki <http://download.aplwiki.com/> or from the project pages on [GitHub](https://github.com): search for "apltree" to get a full list. Note that all apltree projects are owned by "aplteam".
 
 [^bom]: Details regarding the BOM: <https://en.wikipedia.org/wiki/Byte_order_mark>
 
