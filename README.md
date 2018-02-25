@@ -23,7 +23,7 @@ The project contains various child folders and files; the principle ones are lis
 `manuscript/`
 : files from which the chapters (read: HTML5 files) are generated.
 `HTML/`
-: Contains the book as HTML files, each representing a single chapter. There is also one file that comprises all chapters in a single document for searching and printing purposes.
+: Contains the book as HTML files, each representing a single chapter or appendix. There is also one file that comprises all chapters in a single document for searching and printing purposes.
 
 `texts/`
 : sample texts in various alphabets. This is used as input in some chapters.
