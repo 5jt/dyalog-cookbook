@@ -17,15 +17,28 @@ The manuscript is written in Markdown and converted into HTML5 by a program writ
 
 The project contains various child folders and files; the principle ones are listed here:
 
-`code/`
-: scripts corresponding to different versions of the MyApp application
 
-`manuscript/`
-: files from which the chapters (read: HTML5 files) are generated.
-`HTML/`
-: Contains the book as HTML files, each representing a single chapter. There is also one file that comprises all chapters in a single document for searching and printing purposes.
+## Folders
 
-`texts/`
-: sample texts in various alphabets. This is used as input in some chapters.
+* `code/`
 
-The content is tracked in a Git repository, and pushed to <http://github.com/5jt/dyalog-cookbook>.
+  Scripts corresponding to different versions of the MyApp application
+
+* `manuscript/`
+
+   Files from which the chapters (read: HTML5 files) are generated.
+
+* `HTML/`
+
+   Contains the book as HTML files, each representing a single chapter. There is also one file that comprises all chapters in a single document for searching and printing purposes.
+
+* `texts/`
+
+   Sample texts in various alphabets. This is used as input in some chapters.
+
+
+## Misc
+
+The content is tracked by Git and lives on <http://github.com/5jt/dyalog-cookbook>.
+
+There is a Dyalog APL program available that takes the Markdown as input and creates HTML5 pages from it: <https://github.com/aplteam/Cookbook_Make>.
