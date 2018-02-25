@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta charset="utf-8">
+<title>RegEx</title>
+<link href="./CSS/BlackOnWhite_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/Cookbook_Chapter_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/snap.css" rel="stylesheet" media="screen">
+<link href="./CSS/BlackOnWhite_print.css" rel="stylesheet" media="print">
+<link href="./CSS/Cookbook_Chapter_print.css" rel="stylesheet" media="print">
+<script src="./JavaScript/snap.js"></script>
+</head>
+<body>
+<div class="snap-drawers">
+<div class="snap-drawer snap-drawer-left">
+<div class="h_tag">
+<h3>Chapters</h3>
+</div>
+<ol>
+<li><a href="./01%20Introduction.html" class="external_link">Introduction</a></li>
+<li><a href="./02%20Structure.html" class="external_link">Structure</a></li>
+<li><a href="./03%20Package%20MyApp%20as%20an%20executable.html" class="external_link">Package MyApp as an executable</a></li>
+<li><a href="./04%20Logging%20what%20happens%20.html" class="external_link">Logging what happens </a></li>
+<li><a href="./05%20Configuration%20settings.html" class="external_link">Configuration settings</a></li>
+<li><a href="./06%20Debugging%20a%20stand-alone%20EXE.html" class="external_link">Debugging a stand-alone EXE</a></li>
+<li><a href="./07%20Handling%20errors.html" class="external_link">Handling errors</a></li>
+<li><a href="./08%20Testing%20—%20the%20sound%20of%20breaking%20glass.html" class="external_link">Testing<br>The sound of breaking glass</a></li>
+<li><a href="./09%20Documentation%20—%20the%20Doc%20is%20in.html" class="external_link">Documentation<br>The Doc is in</a></li>
+<li><a href="./10%20Make%20me.html" class="external_link">Make me</a></li>
+<li><a href="./11%20Providing%20help.html" class="external_link">Providing help</a></li>
+<li><a href="./12%20Scheduled%20Tasks.html" class="external_link">Scheduled Tasks</a></li>
+<li><a href="./13%20Windows%20Services.html" class="external_link">Windows Services</a></li>
+<li><a href="./14%20The%20Windows%20Event%20Log.html" class="external_link">The Windows Event Log</a></li>
+<li><a href="./15%20The%20Windows%20Registry.html" class="external_link">The Windows Registry</a></li>
+<li><a href="./16%20Creating%20SetUp.exe%20with%20Inno.html" class="external_link">Creating SetUp.exe with Inno</a></li>
+<li><a href="./17%20RegularExpressions.html" class="external_link">RegularExpressions</a></li>
+<li><a href="./18%20GUI.html" class="external_link">GUI</a></li>
+</ol>
+<div class="h_tag">
+<h3>Appendices</h3>
+</div>
+<ol>
+<li><a href="./50%20Appendix%201%20—%20Windows%20environment%20variables.html" class="external_link">Windows environment variables</a></li>
+<li><a href="./51%20Appendix%202%20—%20User%20commands.html" class="external_link">User commands</a></li>
+<li><a href="./52%20Appendix%203%20—%20aplcores%20and%20WS%20integrity.html" class="external_link">aplcores and WS integrity</a></li>
+<li><a href="./53%20Appendix%204%20—%20The%20development%20environment.html" class="external_link">The development environment</a></li>
+<li><a href="./54%20Appendix%205%20—%20Special%20characters.html" class="external_link">Special characters</a></li>
+</ol>
+<div class="h_tag">
+<h3>Misc</h3>
+</div>
+<ul>
+<li><a href="16%20Creating%20SetUp.exe%20with%20Inno.html">Previous chapter</a></li>
+<li><a href="18%20GUI.html">Next chapter;</a></li>
+<li><a href="./Dyalog_Cookbook.html" class="external_link">Single document<br>(All chapters, for printing)</a></li>
+</ul>
+</div>
+</div>
+<div id="mainmenu">
+<a href=#><p><span id="mainmenu_match">≡</span></p></a>
+<p><span id="mainmenu_title">The Dyalog Cookbook</span></p>
+<nav id="main_nav">
+<input type="checkbox" id="hide_toc">
+<label id="hide_toc_label" for="hide_toc"></label>
+<div class="toc-container">
+<ul>
+<li><a href="#Start-here">Start here</a></li>
+<li><a href="#What-you-can-expect">What you can expect</a></li>
+<li><a href="#What-exactly-are-regular-expressions">What exactly are regular expressions?</a></li>
+<li><a href="#Background">Background</a></li>
+<li><a href="#RegEx-in-a-nutshell">RegEx in a nutshell</a>
+<ul>
+<li><a href="#Search-a-string-in-a-string">Search a string in a string</a></li>
+<li><a href="#Whats-between-the-double-quotes">What's between the double quotes</a></li>
+<li><a href="#Repeating-a-search-pattern">Repeating a search pattern (quantifiers)</a></li>
+<li><a href="#Greedy-and-lazy">Greedy and lazy</a></li>
+<li><a href="#Lazy-quantifiers">Lazy quantifiers</a></li>
+<li><a href="#The--can-be-dangerous">The + can be dangerous!</a></li>
+<li><a href="#Negate">Negate</a></li>
+<li><a href="#Garbage-in-garbage-out">Garbage in, garbage out</a></li>
+<li><a href="#Meta-chracters-the-full-list">Meta chracters: the full list</a></li>
+<li><a href="#Search-digits-in-a-string">Search digits in a string</a></li>
+<li><a href="#The-escape-character">The escape character: \</a></li>
+<li><a href="#Negate-with-digits-and-dots">Negate with digits and dots</a></li>
+<li><a href="#Meta-characters-within-a-character-class">Meta characters within a character class</a></li>
+<li><a href="#Searching-for-whitespace-characters">Searching for whitespace characters</a></li>
+<li><a href="#The-options-DotAll-and-Mode">The options DotAll and Mode</a></li>
+<li><a href="#The-meta-character-N">The meta character <code>\N</code></a></li>
+<li><a href="#Analyzing-APL-code-Replace">Analyzing APL code: Replace</a></li>
+<li><a href="#Regular-expressions-and-scalar-extension">Regular expressions and scalar extension</a></li>
+<li><a href="#Analysing-APL-code-Search">Analysing APL code: Search</a></li>
+<li><a href="#Word-boundaries">Word boundaries</a></li>
+<li><a href="#Backreferences">Backreferences</a></li>
+<li><a href="#Look-ahead-and-look-behind">Look-ahead and look-behind (look-arounds)</a></li>
+<li><a href="#Transformation-functions">Transformation functions</a></li>
+<li><a href="#Document-mode">Document mode</a></li>
+<li><a href="#Alternations">Alternations</a></li>
+<li><a href="#Optional-items">Optional items</a></li>
+<li><a href="#Extract-whats-between-HTML-tags">Extract what's between HTML tags</a></li>
+</ul></li>
+<li><a href="#Attention-empty-vectors">Attention: empty vectors</a></li>
+<li><a href="#Miscellaneous">Miscellaneous</a>
+<ul>
+<li><a href="#Tests">Tests</a></li>
+<li><a href="#Performance">Performance</a></li>
+<li><a href="#Helpful-stuff">Helpful stuff</a>
+</li></ul></li>
+</ul>
+</div>
+</nav>
+</div>
+<div id="content" class="snap-content">
+<div id="cookbook_content">
+<div class="h_tag">
+<a href="#17-Regular-expressions-with-Dyalog" id="17-Regular-expressions-with-Dyalog" class="autoheader_anchor">
+<h1>17. Regular expressions with Dyalog</h1>
+</a>
+</div>
+<div class="h_tag">
+<a href="#Start-here" id="Start-here" class="autoheader_anchor">
+<h2>Start here</h2>
+</a>
+</div>
+<p>You should be able to read and understand this chapter without any previous knowledge of regular expressions.</p>
+<p>If you are fluent in regular expressions but unfamiliar with Dyalog's implementation, read this chapter. Dyalog's implementation has some unique and extremely powerful features not offered by any other we have seen.</p>
+<p>If you are heavily involved in number crunching and never search strings for certain patterns you probably don’t need regular expressions.</p>
+<p>Regular expressions are an extremely powerful tool, but the level of abstraction is high. They are hard to master without regular use. If you need to find a pattern in a string twice a year, you are probably better off finding a friend you can ask for advice.</p>
+<p>Having said this, it is amazing how few APLers realize how often they actually <em>do</em> search for patterns in strings.</p>
+<div class="h_tag">
+<a href="#What-you-can-expect" id="What-you-can-expect" class="autoheader_anchor">
+<h2>What you can expect</h2>
+</a>
+</div>
+<p>In this chapter we explain regular expressions mostly by example. The examples start off simple and grow complex. Along the way we introduce more features of regular expressions in general and Dyalog's implementation in particular.</p>
+<p>Mastering even the very basic features of regular expressions might improve your APL applications.</p>
+<p>Your best strategy is to read the following from start to end, not necessarily in one sitting. It will introduce you to the basic concepts and provide you with the necessary knowledge to become a keen amateur.</p>
+<p>From there frequent usage of regular expressions — and some research on the Web – will render you an expert. This time and effort is well invested.</p>
+<p>This chapter is by no means a comprehensive introduction to regular expressions. It should get you to a point where you can take advantage of examples, documents and books that are not specific to Dyalog's implementation.</p>
+<div class="h_tag">
+<a href="#What-exactly-are-regular-expressions" id="What-exactly-are-regular-expressions" class="autoheader_anchor">
+<h2>What exactly are regular expressions?</h2>
+</a>
+</div>
+<p>Regular expressions allow you to find the position of a string in another string. They also allow you to replace a string by another one.</p>
+<div class="h_tag">
+<a href="#Background" id="Background" class="autoheader_anchor">
+<h2>Background</h2>
+</a>
+</div>
+<p>Dyalog uses the PCRE implementation of regular expressions. There are other other implementations available, and they differ in their use and performance characteristics. So you need to know what kind of engine you are using to find the right advice, examples and solutions on the Web.</p>
+<p>Dyalog 16.0 uses PCRE version 8. PCRE is considered one the most complete and powerful implementations of regular expressions.</p>
+<div class="h_tag">
+<a href="#RegEx-in-a-nutshell" id="RegEx-in-a-nutshell" class="autoheader_anchor">
+<h2>RegEx in a nutshell</h2>
+</a>
+</div>
+<div class="h_tag">
+<a href="#Search-a-string-in-a-string" id="Search-a-string-in-a-string" class="autoheader_anchor">
+<h3>Search a string in a string</h3>
+</a>
+</div>
+<pre><code>      ⍴'notfound' ⎕s 0⊣ 'the cat sat on the medallion'
+0
+      'cat' ⎕s 0⊣ 'the cat sat on the medallion'
+ 4</code></pre>
+
+<div class="leanpub_A">
+<h3>Operators, operands, derived functions and arguments</h3>
+<p><code>⎕S</code> is, like <code>⎕R</code>, an <em>operator</em>. An operator takes either just a left operand (monadic) or a left and right operand (dyadic) and forms a so-called derived function. For example, the operator <code>/</code> when given a left operand <code>+</code> forms the derived function <em>sum</em>.</p>
+<p>In the example, the <code>0</code> is the right operand. With <code>⎕S</code> the right operand can be one or more of 0, 1, 2 and 3 (the <em>transformation codes</em>) or a user-defined function, discussed later.</p>
+<ul>
+<li><code>0</code> stands for: offset from the start of the line to the start of the match.</li>
+<li><code>1</code> stands for: length of the match.</li>
+</ul>
+<p>The transformation codes <code>2</code> and <code>3</code> will be discussed later.</p>
+<p>The right argument to the derived function is the string <code>'the cat sat on the medallion'</code>. The operand and the string are separated by the <code>⊣</code> function. Instead we could have used parentheses, with the same result</p>
+<pre><code>      ('notfound' ⎕s 0) 'the cat sat on the medallion'`.</code></pre>
+</div>
+
+<p>In the first expression the result is empty because the string <code>notfound</code> was not found. In the second expression <code>cat</code> was actually found. So we could say:</p>
+<pre><code>      'cat' {⍵↓⍨⍺ ⎕s 0 ⊣ ⍵}'the cat sat on the medallion'
+cat sat on the medallion</code></pre>
+<p>That was easy, wasn't it! Regular expressions are nothing to be afraid of.</p>
+<div class="h_tag">
+<a href="#Whats-between-the-double-quotes" id="Whats-between-the-double-quotes" class="autoheader_anchor">
+<h3>What's between the double quotes</h3>
+</a>
+</div>
+<p>Let's look at another example: find out what's between double quotes. First attempt:</p>
+<pre><code>      '"' ⎕S 0 ⊣ 'He said "Yes"'
+ 8 12</code></pre>
+<p>That gives us the offset of the two double quotes, but what if we want to have the offset and the length of any string found <em>between</em> — and including — the double quotes?</p>
+<p>For that we need to introduce the <em>meta character</em> dot (<code>.</code>), which has a special meaning in a regular expression: it represents <em>any</em> character. (Not quite: we will soon discuss the one and only exception, the NewLine character).</p>
+
+<div class="leanpub_A">
+<h3>Meta Characters</h3>
+<p>Meta characters, sometimes called special characters, are characters with a special meaning in a regular expression.</p>
+<p>To specify a character that serves as a meta character, we <em>escape</em> it with a backslash. So, yes, backslash is another meta character. To represent a dot followed by a backslash we would write <code>\.\\</code></p>
+<p>We’ll encounter more meta characters as we go.</p>
+</div>
+
+<p>So we try:</p>
+<pre><code>      '"."' ⎕S 0 1 ⊣ 'He said "Yes"'
+</code></pre>
+<p>Oops - no hit. To understand this we have to know <em>exactly</em> what the regular expression engine did:</p>
+<ol start="1">
+<li>It starts at the beginning of the string; that is actually one to the left of the “H”! That position can only be matched by the meta character <code>^</code> which represents the <em>start of a line</em>.</li>
+<li>Since we did not specify a leading <code>^</code> the RegEx engine moves to the first character.</li>
+<li>It then tries to match <code>"</code> to <code>H</code>. Since there is no match…</li>
+<li>It carries on until it arrives at the <code>"</code>; this is called “consuming a character”. Now there is a match!</li>
+<li>The engine now tries to match the <code>.</code> against the <code>Y</code>. Since the<code>.</code> matches <em>any</em> character this is a match, too.</li>
+<li>It then moves forward one more character and tries to match the <code>"</code> with <code>e</code> - that's <em>not</em> a match.</li>
+<li>The engine forgets what it has done, goes back to where it started from (that was the <code>"</code>) and moves one character forward.</li>
+<li>It now tries to  match the <code>"</code> with the <code>Y</code> …</li>
+</ol>
+<p>You can now see why it does not report any hit - it would only work on any single character that is embraced by two double quotes, for example on <code>'He said "Y"'</code>.</p>
+<div class="h_tag">
+<a href="#Repeating-a-search-pattern" id="Repeating-a-search-pattern" class="autoheader_anchor">
+<h3>Repeating a search pattern (quantifiers)</h3>
+</a>
+</div>
+<p>What we need is a way to tell the engine that it should try to match the <code>.</code> more than once. There is a general way of doing this and three abbreviations that cover most cases. First, the general way.</p>
+<p>For example, in order to match a minimum of one to a maximum of three underscore characters:</p>
+<pre><code>      '_{1,3}' ⎕S 0 ⊢'_one__two___three____four'
+0 4 9 17 20</code></pre>
+<p>It is actually easier to check the result by <em>replacing</em> the hits with something that stands out:</p>
+<pre><code>      '_{1,3}' ⎕R '⍈' ⊢'_one__two___three____four'
+⍈one⍈two⍈three⍈⍈four
+      '_{2,3}' ⎕R '⍈' ⊢'_one__two___three____four'
+_one⍈two⍈three⍈_four</code></pre>
+
+<div class="leanpub_A">
+<h3>The right operand of ⎕R</h3>
+<p><code>⎕R</code> takes one or more replace strings as the right operand – <em>or</em> a user defined function, discussed later. You cannot mix replace strings with user defined functions.</p>
+</div>
+
+<p>What's between the curly braces (<code>{}</code>) – those are meta characters as well – defines how many instances are required: minimum and maximum. This is called a quantifier.</p>
+<ul>
+<li><code>{x,y}</code> means at least <code>x</code> and no more than <code>y</code>.</li>
+<li><code>{,y}</code> is the same as <code>{0,y}</code>.</li>
+<li><code>{x,}</code> means at least <code>x</code>.</li>
+<li><code>{x}</code> means exactly <code>x</code>.</li>
+</ul>
+<p>Then there are the abbreviations that make life a bit easier:</p>
+<ul>
+<li><code>*</code> is an abbreviation for <code>{0,y}</code> and <code>{,y}</code>.</li>
+<li><code>+</code> is an abbreviationfor <code>{1,}</code>.</li>
+<li><code>?</code> is an abbreviation for <code>{0,1}</code>. For that reason you can call it <em>optional</em>.</li>
+</ul>
+<p>So:</p>
+<pre><code>      '".*"' ⎕R '⍈' ⊣ 'He said "Yes"!'
+He said ⍈!</code></pre>
+<pre><code>      '".*"' ⎕R '⍈' ⊣ 'He said "Yes" and "No"!'
+He said ⍈!</code></pre>
+<p>Just one hit, and that hit spans <code>"Yes" and "No"</code>?!</p>
+<div class="h_tag">
+<a href="#Greedy-and-lazy" id="Greedy-and-lazy" class="autoheader_anchor">
+<h3>Greedy and lazy</h3>
+</a>
+</div>
+<p>By default the engine is <em>greedy</em> as opposed to <em>lazy</em>:</p>
+<ol start="1">
+<li>First it tries to match the <code>.</code> against as many characters as it can.
+<p>That means it will stop only at the end of the line, because the dot will match everything but the end-of-line. as the asterisk repeats it over and and over again.</p></li>
+<li>Then the RegEx engine will <em>backtrack</em> and try to find a double quote, coming from the right; once it finds one it's done the job.</li>
+</ol>
+<p>The same is true for the <code>{x,y}</code> quantifiers: by default they are all <em>greedy</em> rather than <em>lazy</em>, so repeating <code>y</code> times is done first before reducing the repetition to <code>x</code> times.</p>
+<p>What we need instead is a <em>lazy</em> search:</p>
+<ol start="1">
+<li>First it tries to match the <code>.</code> against the current character which is the “Y”. That's a match.</li>
+<li>It then tries to match the double quote against the next character. That fails, therefore the engine backtracks and tries again to match the dot against the “e”.</li>
+<li>That's a match, so it again tries to match the double-quote with the “s”…</li>
+</ol>
+<p>You can see how we end up at the <em>first</em> double quote rather than the last one.</p>
+<p>We can achieve that by specifying the “Greedy” option with a zero (default is one):</p>
+<pre><code>      '".*"' ⎕R '⍈' ⍠('Greedy' 0) ⊣ 'He said "Yes" and "No"!'
+He said ⍈ and ⍈!</code></pre>
+
+<div class="leanpub_A">
+<h3>Specifying options</h3>
+<p>Various options are available to control aspects of Search and Replace; these are selected using the <em>variant</em> operator <code>⍠</code>.</p>
+<p>Note that if you use Classic Dyalog, or just want to ensure your code runs in a classic interpreter, <code>⎕OPT</code> is a synonym for <code>⍠</code>.</p>
+<p>Between the right operand and the right argument you may specify options. They are marked by the <code>⍠</code> operator. These are the options available:</p>
+<p>IC, Mode, DotAll, EOL, ML, Greedy, OM, InEnc, OutEnc, Enc, ResultText, UCP</p>
+<p>IC – ignore case – is the principle option. That means that if no other option needs to be specified you can omit the <code>'IC'</code>.</p>
+<p>So this would do: <code>⎕S 0 ⍠ 1 ⊢ 'whatever'</code>. A 1 would make a search pattern case insensitive. The default is 0.</p>
+<p>In this chapter we’ll discuss Mode, DotAll, Greedy and UCP: these are the most important options. For the others refer to <code>⎕R</code>'s help page.</p>
+</div>
+
+<p>Let's repeat our findings because this is so important:</p>
+<ul>
+<li>Greedy means match <em>longest</em> possible string.</li>
+<li>Lazy means match <em>shortest</em> possible string.</li>
+</ul>
+<div class="h_tag">
+<a href="#Lazy-quantifiers" id="Lazy-quantifiers" class="autoheader_anchor">
+<h3>Lazy quantifiers</h3>
+</a>
+</div>
+<p>The quantifiers we discussed earlier are all greedy, but you can make them lazy by adding a <code>?</code> as shown here:</p>
+<pre><code>      .{0,}?
+      .*?
+      .+?
+      .??</code></pre>
+<div class="h_tag">
+<a href="#The--can-be-dangerous" id="The--can-be-dangerous" class="autoheader_anchor">
+<h3>The + can be dangerous!</h3>
+</a>
+</div>
+<p>But wouldn't it be better to use <code>+</code> rather than <code>*</code> here? After all we are not interested in <code>""</code> because there is nothing between the two double quotes? Good point except that it does not work:</p>
+<pre><code>      '".+"' ⎕R '⍈' ⍠('Greedy' 0) ⊣ 'He said "" and ""'
+He said ⍈"</code></pre>
+<p>That's because the engine would perform the following steps:</p>
+<ol start="1">
+<li>Investigate until we find a <code>"</code>.</li>
+<li>Investigate the character right after the first double quote. That is the second double quote so <em>that is consumed</em> because the regular expression required <em>at least one</em>. Since all other characters are a match as well the <code>.+</code> consumes all characters to the very end of the input string.</li>
+<li>Because it is lazy it then goes back the current position which by then is the space to the <em>right of the second double-quote</em>!
+<p>From there it carries on until it finds a <code>"</code>. That is the <em>first</em> <code>"</code> <em>after</em> the word «and». All that is then replaced by the <code>⍈</code> character.</p></li>
+<li>The engine then carries on but because there is only a single <code>"</code> left there is no other match.</li>
+</ol>
+<p>If we want to ignore any <code>""</code> pairs then we need to use a look-ahead, something we will discuss soon.</p>
+<div class="h_tag">
+<a href="#Negate" id="Negate" class="autoheader_anchor">
+<h3>Negate</h3>
+</a>
+</div>
+<p>Hhere is another — and better — way to solve our problem:</p>
+<pre><code>      '"[^"]*"'⎕R'⍈'⊣'He said "" and ""'</code></pre>
+<ul>
+<li>The engine carries on until it finds a <code>"</code>.</li>
+<li>It then carries on until it finds a character that is not a <code>"</code> because the expression <code>[^"]</code> means “not a double-quote”. It then repeats the expression until it either find a <code>"</code> or reaches the end of the line or document.</li>
+<li>Then is performs the last step, matching the <code>"</code>.</li>
+</ul>
+<p>Note that this expression has two advantages:</p>
+<ol start="1">
+<li>It is faster than our first attempt although in our example the difference is miniscule.</li>
+<li>It's <em>independent</em> of the setting of Greedy.</li>
+</ol>
+<div class="h_tag">
+<a href="#Garbage-in-garbage-out" id="Garbage-in-garbage-out" class="autoheader_anchor">
+<h3>Garbage in, garbage out</h3>
+</a>
+</div>
+<p>Let's modify the input string:</p>
+<pre><code>      is←'He said "Yes"" and "No"'  ⍝ define "input string"</code></pre>
+<p>There are <em>two</em> double quotes after the word “Yes”; that seems to be a typo. Watch what our RegEx is making of this:</p>
+<pre><code>      '".*"' ⎕R '⍈' ⍠('Greedy' 0) ⊣ is
+ He said ⍈⍈No"</code></pre>
+<p>This example highlights a potential problem with input strings: many regular expressions work perfectly well as long as the input string is syntactically correct (or matches your expectations).</p>
+<p>That's the reason (among others) why regular expressions are not recommended for processing <abbr title="Hyper Text Mark-up language">HTML</abbr> because <abbr title="Hyper Text Mark-up language">HTML</abbr> is very often full of syntactical errors.</p>
+<p>However, if you can be certain that the <abbr title="Hyper Text Mark-up language">HTML</abbr> you have to deal with <em>is</em> syntactically correct <em>and</em> the piece of <abbr title="Hyper Text Mark-up language">HTML</abbr> is short and not nested then you can use regular expressions to process <abbr title="Hyper Text Mark-up language">HTML</abbr>.</p>
+
+<div class="leanpub_A">
+<h3>Regular expressions and <abbr title="Hyper Text Mark-up language">HTML</abbr></h3>
+<p>There are claims that you <em>cannot</em> parse <abbr title="Hyper Text Mark-up language">HTML</abbr> with regular expressions because a regular expression engine is a Finite Automata while <abbr title="Hyper Text Mark-up language">HTML</abbr> can be nested indefinitely. This is partly wrong and partly misleading.</p>
+<ul>
+<li>It is wrong because today's regular expression engines come with features (back referencing) that are clearly beyond the feature set of Finite Automata.</li>
+<li>It is misleading because it ignores that regular expression engines are perfectly capable of processing small pieces of <abbr title="Hyper Text Mark-up language">HTML</abbr> that are known to be syntactically correct.</li>
+</ul>
+</div>
+
+<div class="h_tag">
+<a href="#Meta-chracters-the-full-list" id="Meta-chracters-the-full-list" class="autoheader_anchor">
+<h3>Meta chracters: the full list</h3>
+</a>
+</div>
+<p>By now we've met quite a number of meta characters; how many do we have to deal with? Well, quite a lot:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">   </th>
+<th style="text-align: left;"> Meta character               </th>
+<th style="text-align: left;"> Symbol </th>
+<th style="text-align: left;"> </th>
+<th style="text-align: left;">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">1.</td>
+<td>Backslash</td>
+<td><code>\</code></td>
+<td>✔</td>
+<td>Escape character</td>
+</tr>
+<tr>
+<td style="text-align: right;">2.</td>
+<td>Caret</td>
+<td><code>^</code></td>
+<td>✔</td>
+<td>Start of line</td>
+</tr>
+<tr>
+<td style="text-align: right;">3.</td>
+<td>Dollar sign</td>
+<td><code>$</code></td>
+<td></td>
+<td>End of line</td>
+</tr>
+<tr>
+<td style="text-align: right;">4.</td>
+<td>Period or dot</td>
+<td><code>.</code></td>
+<td>✔</td>
+<td>Any character but NewLine</td>
+</tr>
+<tr>
+<td style="text-align: right;">5.</td>
+<td>Pipe symbol</td>
+<td><code>|</code></td>
+<td></td>
+<td>Logical “OR”</td>
+</tr>
+<tr>
+<td style="text-align: right;">6.</td>
+<td>Question mark</td>
+<td><code>?</code></td>
+<td></td>
+<td>Extends meaning of <code>(</code>; 0 or 1 quantifier (=optional); make it lazy</td>
+</tr>
+<tr>
+<td style="text-align: right;">7.</td>
+<td>Asterisk or star</td>
+<td><code>*</code></td>
+<td>✔</td>
+<td>Repeat 0 to many times</td>
+</tr>
+<tr>
+<td style="text-align: right;">8.</td>
+<td>Plus sign</td>
+<td><code>+</code></td>
+<td>✔</td>
+<td>Repeat 1 to many times</td>
+</tr>
+<tr>
+<td style="text-align: right;">9.</td>
+<td>Opening parenthesis</td>
+<td><code>(</code></td>
+<td></td>
+<td>Start sub pattern</td>
+</tr>
+<tr>
+<td style="text-align: right;">10.</td>
+<td>Closing parenthesis</td>
+<td><code>)</code></td>
+<td></td>
+<td>End sub pattern</td>
+</tr>
+<tr>
+<td style="text-align: right;">11.</td>
+<td>Opening square bracket</td>
+<td><code>[</code></td>
+<td></td>
+<td>Start character class (or set)</td>
+</tr>
+<tr>
+<td style="text-align: right;">12.</td>
+<td>Opening curly brace</td>
+<td><code>{</code></td>
+<td>✔</td>
+<td>Start min/max quantifier</td>
+</tr>
+</tbody>
+</table>
+<p>By now we have already discussed six of them; they carry a check mark.</p>
+<p>Note that both <code>}</code> and <code>]</code> are considered meta characters only after an opening <code>{</code> or <code>[</code>. Without the opening counterpart they are taken literally; that's why they did not make it onto the list of meta characters.</p>
+<div class="h_tag">
+<a href="#Search-digits-in-a-string" id="Search-digits-in-a-string" class="autoheader_anchor">
+<h3>Search digits in a string</h3>
+</a>
+</div>
+<p>Let's suppose we want to match all digits in a string:</p>
+<pre><code>      '[0123456789]'⎕R '⍈' ⊣ 'It''s 23.45 plus 99.12.'
+It's ⍈⍈.⍈⍈ plus ⍈⍈.⍈⍈.</code></pre>
+<p>Everything between the <code>[</code> and the <code>]</code> is treated as a simple character - with a few exceptions we'll soon discuss. That makes both <code>[</code> and <code>]</code> meta characters.</p>
+<p>The same but shorter:</p>
+<pre><code>      '[0-9]'⎕R '⍈' ⊣ 'It''s 23.45 plus 99.12.'
+It's ⍈⍈.⍈⍈ plus ⍈⍈.⍈⍈.</code></pre>
+<p>The minus is treated as a meta character here: it means “all digits from 0 to 9”.</p>
+<div class="h_tag">
+<a href="#The-escape-character" id="The-escape-character" class="autoheader_anchor">
+<h3>The escape character: \</h3>
+</a>
+</div>
+<p>Even shorter:</p>
+<pre><code>      '\d'⎕R '⍈' ⊣ 'It''s 23.45 plus 99.12.'
+It's ⍈⍈.⍈⍈ plus ⍈⍈.⍈⍈.</code></pre>
+<p>Note that the meta character backslash (<code>\</code> ) is used for two different purposes:</p>
+<ul>
+<li>To escape any of the RegEx meta characters so that they are stripped of their special meaning and taken literally.</li>
+<li>To give the next character a special meaning if it is an ordinary ASCII letter.</li>
+</ul>
+<p>So <code>\*</code> takes away the special meaning from the <code>*</code> while <code>\d</code> gives the <code>d</code> the special meaning: all digits.</p>
+<p>We take the opportunity to add the dot (<code>.</code>) and the minus (<code>-</code>) to the character class.</p>
+<p>Note that the minus is not escaped; from the context the regular expression engine can work out that here the minus cannot mean from-to, so it is taken literally.</p>
+<p>Note also that the <code>.</code> is not escaped either: inside the pair of <code>[]</code> the <code>.</code> is <em>not</em> a meta character.</p>
+
+<div class="leanpub_A">
+<h3>Escaping several characters</h3>
+<p>Say you need to escape all the meta characters because you want to search them. Escaping every single one of them with a backslash is laborious and decreases readability, but there is a better way:</p>
+<pre><code>      '\Q\^$.|?*+()[{\E'</code></pre>
+<p>This escapes all characters between the <code>\Q</code> and the <code>\E</code>.</p>
+</div>
+
+<pre><code>      '[\d.-]'⎕R '⍈' ⊣ 'It''s 23.45 plus -99.12.'
+It's ⍈⍈⍈⍈⍈ plus ⍈⍈⍈⍈⍈⍈⍈</code></pre>
+<p>Here we have another problem: we want the dot only to be a match when there is a digit to both the left and the right of the dot. Our search pattern does not deal with this, so the trailing <code>.</code> is a match. We will tackle this problem soon.</p>
+<p>Character classes work for letters as well:</p>
+<pre><code>      '[a-zA-Z]'⎕R '⍈' ⊣'It''s 23.45 plus 99.12.'
+⍈⍈'⍈ 23.45 ⍈⍈⍈⍈ 99.12.</code></pre>
+<p>We can negate with <code>^</code> right after the opening <code>[</code>:</p>
+<pre><code>    '[^a-zA-Z]'⎕R '⍈' ⊣'It''s 23.45 plus 99.12.'
+It⍈s⍈⍈⍈⍈⍈⍈⍈plus⍈⍈⍈⍈⍈⍈⍈</code></pre>
+<p>Notes:</p>
+<ul>
+<li>Only at the beginning of a character class definition has the caret the meaning “negate”. Therefore you could also say that <code>[^</code> means “negate” while, say, <code>[1^2]</code> means “Match for one of these three characters: <code>1^2</code>”.</li>
+<li>For APLers the caret is a bit tricky because it is confused with the logical AND (<code>∧</code>) primitive. Only next to each other does it become apparent which is which: <code>^∧</code>: the caret is a bit higher than the logical AND.
+<pre><code>    ⎕UCS '^'     ⍝ The caret
+ 94
+       ⎕UCS '∧'  ⍝ Logical OR
+ 8743</code></pre></li>
+</ul>
+<div class="h_tag">
+<a href="#Negate-with-digits-and-dots" id="Negate-with-digits-and-dots" class="autoheader_anchor">
+<h3>Negate with digits and dots</h3>
+</a>
+</div>
+<pre><code>      '[^.0-9]'⎕R '⍈' ⊣'It''s 23.45 plus 99.12.'
+⍈⍈⍈⍈⍈23.45⍈⍈⍈⍈⍈⍈99.12.</code></pre>
+<p>Want to search for <em>gray</em> and <em>grey</em> in a document?</p>
+<pre><code>      'gr[ae]y'⎕S 0⊣'Americans spell it "gray" and Brits "grey".'
+20 37
+      'gr[ae]y'⎕R '⍈' ⊣'Americans spell it "gray" and Brits "grey".'
+Americans spell it "⍈" and Brits "⍈".</code></pre>
+<div class="h_tag">
+<a href="#Meta-characters-within-a-character-class" id="Meta-characters-within-a-character-class" class="autoheader_anchor">
+<h3>Meta characters within a character class</h3>
+</a>
+</div>
+<p>Note that there are only a few meta characters inside character classes:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"> Meta character    </th>
+<th style="text-align: left;"> Symbol </th>
+<th style="text-align: left;"> Meaning                    </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Closing bracket</td>
+<td><code>]</code></td>
+<td></td>
+</tr>
+<tr>
+<td>Backslash</td>
+<td><code>\</code></td>
+<td>Escape next character</td>
+</tr>
+<tr>
+<td>Caret</td>
+<td><code>^</code></td>
+<td>Negate the character class but only after the opening <code>[</code></td>
+</tr>
+<tr>
+<td>Minus</td>
+<td><code>-</code></td>
+<td>From-to if there is something to both the left &amp; right.</td>
+</tr>
+</tbody>
+</table>
+<p>We already worked out the engine is smart enough to take a minus literally when it makes an appearance somewhere where it cannot mean from-to: the beginning and the end of a character class.</p>
+<p>Similarly the caret (<code>^</code>) character can only negate a character class as a whole, when it follows the opening square bracket (<code>[^</code>). If the caret is specified elsewhere it is taken literally.</p>
+<p>Therefore the expression <code>[0-9^1]</code> does <em>not</em> mean “all digits but 1”, it means “all digits and the caret character and a 1”.</p>
+<div class="h_tag">
+<a href="#Searching-for-whitespace-characters" id="Searching-for-whitespace-characters" class="autoheader_anchor">
+<h3>Searching for whitespace characters</h3>
+</a>
+</div>
+<p>Finding 0 to 3 whitespace characters followed by an ASCII letter at the beginning of a line:</p>
+<pre><code>      {'^\s{0,3}[a-zA-Z]' ⎕R '⍈' ⊣ ⍵}¨'Zero' ' One' '  Two' '   Three' '    four'
+⍈ero  ⍈ne  ⍈wo  ⍈hree      four</code></pre>
+<p><code>\s</code> escapes the ASCII letter <code>s</code>, meaning that the <code>s</code> takes on a special meaning: <code>\s</code> stands for any whitespace character. That is at the very least the space character (<code>⎕UCS 32</code>) and the tab character (<code>⎕UCS 9</code>).</p>
+<p>There are two options (set with the <code>⍠</code> operator) that control which other characters qualify as white space:</p>
+<ul>
+<li>“Mode”</li>
+<li>“UCP”</li>
+</ul>
+<p>Both will be discussed soon.</p>
+<div class="h_tag">
+<a href="#The-options-DotAll-and-Mode" id="The-options-DotAll-and-Mode" class="autoheader_anchor">
+<h3>The options DotAll and Mode</h3>
+</a>
+</div>
+<p>We've learned that the <code>.</code> matched any character but not end of line.</p>
+<pre><code>      '".*"'⎕R'⍈'⊣ '"Foo' 'Goo"'
+ "Foo  Goo"</code></pre>
+
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
+<div>
+<p>A vector of text vectors is internally processed like a file with multiple records.</p>
+</div>
+</div>
+
+<p>Because the <code>.</code> does not match end-of-line it finds <code>"Foo</code> but then stops rather than carrying on trying to match the pattern with <code>Goo"</code>, so no hit is found.</p>
+<p>With the DotAll option — which defaults to 0 — we can tell the RegEx engine to let <code>.</code> even match the end of a line:</p>
+<pre><code>      '".*"'⎕R'⍈'⍠('DotAll' 1)('Mode' 'D')⊣'"Foo' 'Goo "'
+ ⍈</code></pre>
+<p>Note that we had to specify the Mode option as well because <code>DotAll←1</code> is invalid with <code>Mode←L</code>, which is the default.</p>
+<p>It is important to understand the different modes and their influence on <code>^</code> (start of document or line), <code>$</code> (end of document or line) and <code>DotAll</code> see <a href="#Document-mode" class="bookmark_link">Document mode</a> for details.</p>
+<p>It's not difficult to imagine a situation where you have a single search pattern but in one part you want the <code>.</code> to match end-of-line and in others you won't.</p>
+<div class="h_tag">
+<a href="#The-meta-character-N" id="The-meta-character-N" class="autoheader_anchor">
+<h3>The meta character <code>\N</code></h3>
+</a>
+</div>
+<p><code>\N</code> has almost the same meaning as the <code>.</code> except that it never matches the end of a line. That means it's independent from the setting of DotAll:</p>
+<pre><code>      '"\N*"'⎕R'⍈'⍠('DotAll' 1)('Mode' 'D')⊣'"Foo' 'Goo "'
+ "Foo  Goo "</code></pre>
+<p>Note that <code>\N</code> and <code>\n</code> are different: <code>\n</code> stands for a newline character.</p>
+<div class="h_tag">
+<a href="#Analyzing-APL-code-Replace" id="Analyzing-APL-code-Replace" class="autoheader_anchor">
+<h3>Analyzing APL code: Replace</h3>
+</a>
+</div>
+<p>Let's suppose you want to investigate APL code for a variable name <code>foo</code> but you want text and comments ignored. This is our input string:</p>
+<pre><code>      is←'a←1 ⋄ foo←1 2 ⋄ txt←''The ⍝ marks a comment; foo'' ⍝ set up vars a, foo, txt'</code></pre>
+<p>We want <code>foo←1 2</code> to be found or changed while the text and the comment remain ignored or unchanged. The problem is aggravated by the fact that the text contains a <code>⍝</code> symbol.</p>
+<p>A naïve approach does not work:</p>
+<pre><code>      'foo' ⎕R '⍈' ⊣ is
+a←1 ⋄ ⍈←1 2 ⋄ txt←'The ⍝ marks a comment; ⍈' ⍝ set up vars a, ⍈, txt</code></pre>
+<p>Dyalog's implementation of regular expressions offers an elegant solution to the problem:</p>
+<pre><code>      '''\N*''' '⍝\N*$' 'foo'⎕R(,¨'&amp;&amp;⍈')⍠('Greedy' 0)⊣is
+a←1 ⋄ ⍈←1 2 ⋄ txt←'The ⍝ marks a comment; foo' ⍝ set up vars a, foo, txt</code></pre>
+<p>This needs some explanation:</p>
+<ol start="1">
+<li><code>\N</code> is the same as a <code>.</code>: it matches all characters but the end-of-line character.
+<p>Setting <code>('DotAll' 1)</code> might make sense for the third search pattern (<code>foo</code>) but it would under certain circumstances prevent the first two search patterns from working, therefore we <em>must</em> use the <code>\N</code> syntax for those patterns.</p></li>
+<li><code>'''\N*'''</code> catches all text — that is everything between quotes — and for that text <code>&amp;</code> is specified as replacement.
+<p>Now <code>&amp;</code> stands for the matching text, therefore nothing will change at all but the matching text <em>won't participate in any further actions!</em> In other words: everything between quotes is left alone.</p></li>
+<li><code>'⍝\N*$'</code> catches everything from a lamp (<code>⍝</code>) to the end of the line (<code>$</code>) and replaces it by itself (<code>&amp;</code>). Again nothing changes but the comment will not be affected by anything that follows.
+<p>Since the first expression has already masked everything within (and including) quotes the first <code>⍝</code> does not cause problems; it is ignored at this stage anyway.</p></li>
+<li>Finally <code>foo</code> catches the string <code>foo</code> in the remaining part, and that is what we are interested in.</li>
+</ol>
+<p>As a result <code>foo</code> is found within the code but neither between the double quotes nor as part of the comment.</p>
+<p>As far as we know, this powerful feature is specific to Dyalog, but we have only limited experience with other regular expression engines.</p>
+<div class="h_tag">
+<a href="#Regular-expressions-and-scalar-extension" id="Regular-expressions-and-scalar-extension" class="autoheader_anchor">
+<h3>Regular expressions and scalar extension</h3>
+</a>
+</div>
+<p>Note that the <code>,¨</code> in <code>,¨'&amp;&amp;⍈'</code> is essential: without it the RegEx engine would use the pattern <code>'&amp;&amp;⍈'</code> thrice.</p>
+<p>The reason is that <code>⎕R</code> actually does not accept scalars, it only accepts vectors. So if you specify three search patterns on the left, then you need to specify not four and not two but three replace patterns as well.</p>
+<p>If only a single vector is specified then this vector is taken thrice: a version of scalar extension.</p>
+<div class="h_tag">
+<a href="#Analysing-APL-code-Search" id="Analysing-APL-code-Search" class="autoheader_anchor">
+<h3>Analysing APL code: Search</h3>
+</a>
+</div>
+<p>The extremely powerful syntax discussed above is also available with <code>⎕S</code>:</p>
+<pre><code>      '''\N*''' '⍝\N*$' 'foo'⎕S 0 1 2⍠('Greedy' 0)⊣is
+ 6 3 2  20 28 0  49 25 1</code></pre>
+<p>We have already discussed the transformation codes 0 (offset) and 1 (length) but not 3: this returns the pattern number which matched the input document, origin zero.</p>
+<p>In our case it is the third pattern (<code>foo</code>) we are interested in, so we can ignore those that are 0 and 1.</p>
+
+<div class="leanpub_A">
+<h3>Greedy and lazy</h3>
+<p>Using the option <code>⍠('Greedy' 0)</code> has a disadvantage: it makes <em>all</em> search patterns lazy.</p>
+<p>There will be cases when you want only a part of your search pattern to be lazy and other parts greedy.</p>
+<p>Luckily this can be achieved with the meta character question mark (<code>?</code>):</p>
+<pre><code>      '"\N*?"'⎕R '⍈' ⊣ is
+He said ⍈ and ⍈</code></pre>
+<p>Since the engine is greedy by default, you need specify the <code>?</code> only for those parts of your search pattern you want to be lazy.</p>
+</div>
+
+<div class="h_tag">
+<a href="#Word-boundaries" id="Word-boundaries" class="autoheader_anchor">
+<h3>Word boundaries</h3>
+</a>
+</div>
+<p>Our search pattern is still not perfect since it would work on <code>boofoogoo</code> as well:</p>
+<pre><code>      '''\N*''' '⍝\N*$' 'foo'⎕R(,¨'&amp;&amp;⍈')⍠('Greedy' 0)⊣'This boofoogoo is found as well'
+This boo⍈goo is found as well</code></pre>
+<p>We can solve this problem with <code>\b</code> (word boundaries). <code>\b</code> does not attempt to match a particular character on a particular position. Instead it checks whether there is a word boundary either before are after the current position – but not both.</p>
+<p>That means no matter whether they are successful or not they won't change the position the engine is currently investigating. They are also called anchors.</p>
+<p>To put it simply, <code>\b</code> allows you to perform a ‘whole word only’ search as in <code>\bword\b</code>.</p>
+<p>Prior to version 8 of PCRE (and 16.0 of Dyalog) this was true only for ASCII characters. So it worked only for the English language.</p>
+<pre><code>       ⍴'\bger\b'⎕S 0 ⊣'Kai Jägerßabc'
+1</code></pre>
+<p>That's because both ä and ß are non-ANSI characters.</p>
+<p>Now you can set the UCP option to 1 if you want Unicode characters to be taken into account as well:</p>
+<pre><code>      ⍴'\bger\b'⎕S 0 ⍠('UCP' 1)⊣'Kai Jägerßabc'
+0</code></pre>
+<p>Now <code>ä</code> and <code>ß</code> no longer qualify as word boundaries.</p>
+<div class="h_tag">
+<a href="#Backreferences" id="Backreferences" class="autoheader_anchor">
+<h3>Backreferences</h3>
+</a>
+</div>
+<p>Suppose you want to search for three digits:</p>
+<pre><code>      '[0-9]{3,}' ⎕R '⍈' ⊣ ' 3 digits: 123;'
+ 3 digits: ⍈;</code></pre>
+<p>But what if you want to ensure it's always the <em>same</em> digits?</p>
+<p>For that you need back references:</p>
+<pre><code>      '([0-9])\1{2,}' ⎕R '⍈' ⊣ ' 3 digits: 333; 444; 123;'
+ 3 digits: ⍈; ⍈; 123;</code></pre>
+<p>The first two groups of digits are found while the last one is ignored — exactly what we want.</p>
+<p>Notes:</p>
+<ul>
+<li>We place parentheses around <code>[0-9]</code> to be able to refer to it; that's called <em>backreferencing</em>.</li>
+<li>With <code>\1</code> we refer to the group.</li>
+<li>The group is repeated once with <code>{2,}</code>, so we end up checking for three digits in total.</li>
+</ul>
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
+<div>
+<p>You can define and use up to 99 groups.</p>
+</div>
+</div>
+
+<p>If you want to find only numbers that consist of exactly three digits which have to be the same then this would work:</p>
+<pre><code>      '([0-9])\1{2,}' ⎕R '⍈' ⊣ '333; 444; 123;'
+⍈; ⍈; 123;</code></pre>
+<p>But be aware:</p>
+<pre><code>      '([0-9])\1{2,}' ⎕R '⍈' ⊣ '3333; 4444; 1234;'
+⍈; ⍈; 1234;</code></pre>
+<p>To solve this problem you need to master look-arounds.</p>
+<div class="h_tag">
+<a href="#Look-ahead-and-look-behind" id="Look-ahead-and-look-behind" class="autoheader_anchor">
+<h3>Look-ahead and look-behind (look-arounds)</h3>
+</a>
+</div>
+<p>We can use look-ahead and look-behind to solve a problem we ran into earlier with numbers. This did not really work because <em>all</em> dots got replaced when we wanted only those with digits to the right and the left being a match:</p>
+<pre><code>      '[\d.¯-]'⎕R'⍈'⊣'It''s 23.45 plus 99.12.'
+It's ⍈⍈⍈⍈⍈ plus ⍈⍈⍈⍈⍈⍈</code></pre>
+<p>We don't want the last dot to be a match. Obviously we need to check the characters to the left and to the right of each dot.</p>
+<p>Both look-ahead and look behind start with <code>(?</code>. A look-behind then needs a <code>&lt;</code> while the look-ahead doesn't.</p>
+<p>Both then need either a <code>=</code> for <em>equal</em> or a <code>!</code> for <em>not equal</em> followed by the search token and finally a closing <code>)</code>. Hence <code>(?&lt;=\d)</code> for the look-behind and <code>(?=\d)</code> for the look-ahead:</p>
+<pre><code>      '\d' '(?&lt;=\d).(?=\d)'⎕R'⍈'⊣'It''s 23.45 plus 99.12.'
+It's ⍈⍈⍈⍈⍈ plus ⍈⍈⍈⍈⍈.</code></pre>
+<p>That works! We use two expressions here: first we look for all digits and then we look for dots that have a digit to their right and their left.</p>
+
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
+<div>
+<p>It’s important to realise that the current position does not change when a look-behind or a look-ahead is performed; that's why they are called <em>zero-length assertions</em>.</p>
+</div>
+</div>
+
+<p>However, if you need <code>⎕S</code> to return the start and the length of any matches then the result is unlikely to be what you are after:</p>
+<pre><code>      '\d' '(?&lt;=\d).(?=\d)'⎕S 0 1 ⊣'It''s 23.45 plus 99.12.'
+ 5 1  6 1  7 1  8 1  9 1  16 1  17 1  18 1  19 1  20 1</code></pre>
+<p>We need an expression that identifies any vector of digits as one unit, no matter whether there is a dot between the digits or not:</p>
+<pre><code>      '\d+(?&lt;=\d).(?=\d)\d+' ⎕R '⍈' ⊣ 'It''s 23.45 plus 99.12.'
+It's ⍈ plus ⍈.
+      '\d+(?&lt;=\d).(?=\d)\d+' ⎕S 0 1 ⊣ 'It''s 23.45 plus 99.12.'
+ 5 5  16 5</code></pre>
+<p>That's better.</p>
+<p>As mentioned earlier a look-ahead as well as a look-behind can be negated by using a <code>!</code> rather than a <code>=</code></p>
+<p>Lets' try this. Assuming we look for <code>x</code> and <code>y</code>:</p>
+<pre><code>      'x(?&lt;=y)' ⎕R'⍈' ⊣ 'abxycxd' ⍝ Exchange all "x" when followed by a "y"
+ab⍈ycxd
+      'x(?!y)' ⎕R'⍈' ⊣ 'abxycxd' ⍝ Exchange all "x" when NOT followed by a "y"
+abxyc⍈d
+      '(?&lt;=x)y' ⎕R'⍈' ⊣ 'abxycyd' ⍝ Exchange all "y" when preceeded by an "x"
+abx⍈cyd
+      '(?&lt;!x)y' ⎕R'⍈' ⊣ 'abxycyd' ⍝ Exchange all "y" when NOT preceeded by an "x"
+abxyc⍈d</code></pre>
+<div class="h_tag">
+<a href="#Transformation-functions" id="Transformation-functions" class="autoheader_anchor">
+<h3>Transformation functions</h3>
+</a>
+</div>
+<p>Instead of providing a replace string one can also pass a function as operand to <code>⎕R</code> (and <code>⎕S</code> as well). This feature is particularly useful when not only pattern matching is required but also calculations based on the findings.</p>
+<p>Look at this piece of <abbr title="File that contains layout definitions (Cascading Style Sheet)">CSS</abbr> code:</p>
+<pre><code>p {
+    /* font-size: 12px; */
+    font-size: 12px;
+    border: 1px solid black;
+}</code></pre>
+<p>Though using “px” always was and still is quite common, these days you are advised to used “em” (and sometimes “rem”) instead. The reason is that “em” refers to the parent of the current object.</p>
+<p>For example, this:</p>
+<pre><code>p {
+    font-size: 0.9em;
+}</code></pre>
+<p>means that the size is 90% oif the font size defined for &lt;p&gt;'s parent.</p>
+<p>But there has to be at least one absolute definition, and that's usually to be found in the &lt;body&gt; tag:</p>
+<pre><code>body {
+    font-size: 18px;
+}</code></pre>
+
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
+<div>
+<p>If such a definition is missing then it falls back to the browser's default which these days usually is 16px.</p>
+</div>
+</div>
+
+<p>The advantage is that in order to change the size of the fonts used you have to change one single value.</p>
+<p>Now lets assume that we want to convert “px” into “em”. Just replacing “px” against “em” doesn't do the job, we also need to calculate the correct value (we ignore the inheritance problem here).</p>
+<p>This is where a transformation functions come in handy:</p>
+<pre><code>     ∇ r←Change arg;v;em;baseFontSize
+[1]    baseFontSize←18        ⍝ What's defined for body; that should be defined in "px".
+[2]    :If 0=arg.PatternNum
+[3]        r←arg.Match
+[4]    :Else
+[5]        v←⊃(//)⎕VFI¯2↓arg.Match
+[6]        :If v∊1 2          ⍝ Those should be left alone.
+[7]            r←arg.Match
+[8]        :Else
+[9]            em←0.01×⌊0.5+100×v÷baseFontSize
+[10]           r←(⍕em),'em'
+[11]       :EndIf
+[12]   :EndIf
+[13]  ⍝Done
+     ∇</code></pre>
+<p>We assign the <abbr title="File that contains layout definitions (Cascading Style Sheet)">CSS</abbr> code we've discussed earlier on a variable <code>∆</code>:</p>
+<pre><code>∆←''
+∆,←⊂'p {'
+∆,←⊂'    /* font-size: 12px; */'
+∆,←⊂'    font-size: 12px;'
+∆,←⊂'    border: 1px solid black;'
+∆,←⊂'}'
+∆←,¨∆</code></pre>
+<p>Note that the last statement is essential, otherwise you'll get a <code>RANK ERROR: Invalid input source</code>: the input vector <em>must not</em> contain scalars.</p>
+<p>We want to investigate the right argument <code>Change</code> is going to get, therefore we set a stop vector on line 1 of <code>Change</code>:</p>
+<pre><code>      1 ⎕STOP 'Change'</code></pre>
+<p>Now we run this expression:</p>
+<pre><code>      ∆2←'/\*.*\*/' '\b[0-9]{1,3}px'⎕R Change⍠('DotAll' 1)('Mode' 'M')('Greedy' 0)⊣∆</code></pre>
+<p>The left operand of <code>⎕R</code> is a two-element vector:</p>
+<ul>
+<li>The first item matches comments; remember that we need to escape any <code>*</code> character we want to be taken literally.</li>
+<li>The second item matches a word boundary followed by one, two or three digits followed by “px”.</li>
+</ul>
+<p>Because of the stop vector execution stops on line 1 of <code>Change</code>. That allows us to investigate the right argument:</p>
+<pre><code>      arg.(⊃{⍵ (⍎⍵)}¨↓⎕nl 2 9)
+ Block       p {
+                /* font-size: 12px; */
+                font-size: 12px;
+                border: 1px solid black;
+             }
+ BlockNum                                                                         0
+ Lengths                                                                         22
+ Match                                                       /* font-size: 12px; */
+ Names
+ Offsets                                                                          9
+ Pattern                                                                   /\*.*\*/
+ PatternNum                                                                       0
+ ReplaceMode                                                                      1
+ TextOnly                                                                         1</code></pre>
+<p>The right argument contains all the pieces of information that you might possibly need.</p>
+<p>Now it's time to discuss the function <code>Change</code> in detail:</p>
+<pre><code>     ∇ r←Change arg;v;em;baseFontSize
+[1]    baseFontSize←18        ⍝ What's defined for body; that should be defined in "px".
+[2]    :If 0=arg.PatternNum
+[3]        r←arg.Match
+[4]    :Else
+[5]        v←⊃(//)⎕VFI¯2↓arg.Match
+[6]        :If v∊1 2          ⍝ Those should be left alone.
+[7]            r←arg.Match
+[8]        :Else
+[9]            em←0.01×⌊0.5+100×v÷baseFontSize
+[10]           r←(⍕em),'em'
+[11]       :EndIf
+[12]   :EndIf
+[13]  ⍝Done
+     ∇</code></pre>
+<ul>
+<li><code>PatternNum</code> is a running number that starts  with 0.
+<p>In our case we have two patterns. The first one catches comments. We want them to survive unchanged, so we just return <code>Match</code> meaning that nothing is changed at all.</p></li>
+<li>In line <code>[5]</code> we drop “px” from the pattern and convert what's left into a numeric value.</li>
+<li>In line <code>[6]</code> we check whether the value is just 1 or 2. If that's the case then this is most likely a definition of a border. However, it's best to leave such small values alone in any case, so again we return the match.</li>
+<li>In line <code>[9]</code> we calculate the value of the pixels into “em” in proportion to the base font size.</li>
+</ul>
+<div class="leanpub_A">
+<h3>“em” versus “rem”</h3>
+<p>There is not only “em” available, there is also “rem”. “em” are calculated in proportion to their parent. That's usually what you want.</p>
+<p>Imagine a list (&lt;ul&gt; or &lt;ol&gt;). If you want to make the &lt;li&gt;'s font slightly smaller than the parent's font then specifying <code>0.85em;</code> seems to be fine, right? Well, only as long as you do not have nested lists!</p>
+<p>With deeply nested lists things get quickly out of hand because with every level the font gets smaller and smaller.</p>
+<p>“rim” to the rescue! In opposite to “em” they refer to the base font size size; that's what was defined in the &lt;body&gt; tag. That way all lists use the same — slightly smaller — font size.</p>
+</div>
+
+<p>Transformation functions give you enormous power: you can do whatever you like.</p>
+<div class="h_tag">
+<a href="#Document-mode" id="Document-mode" class="autoheader_anchor">
+<h3>Document mode</h3>
+</a>
+</div>
+<p>So far we have specified just a simple string as input. We can however pass a vector of strings as well. Look at this example:</p>
+<pre><code>      input←'He said: "Yes, that might' 'well be right." She answered: "So be it!"'</code></pre>
+<p>It's not a bad idea to think of the two elements of the input vector as ‘blocks’. Note that the first reported speech straddles the blocks.</p>
+<p>By default the search engine operates in Line mode. That means each block is processed independently by the engine. You cannot search for <code>\r</code> (carriage return) in Line mode: the search engine will never see them.</p>
+<p>In Mixed mode as well as Document mode you <em>can</em> search for <code>\r</code> because all blocks are passed at once. Naturally this also requires more memory than Line mode.</p>
+<p>Let's do some tests:</p>
+<pre><code>      '".*"'⎕R'⍈'⍠('Greedy' 0)⊣input
+ He said: "Yes, that might  well be right.⍈So be it!"
+      '".*"'⎕R'⍈'⍠('Greedy' 0)('Mode' 'M')('DotAll' 1)⊣input
+He said: ⍈ She answered: ⍈</code></pre>
+<p>Note that in order to specify <code>('DotAll' 1)</code> it is necessary to set <code>('Mode' 'M')</code>. <code>('Mode' 'D')</code> would have worked in the same way. However, when it comes to <code>^</code> and <code>$</code> then it makes a big difference:</p>
+<ul>
+<li>In Line mode (<code>('Mode' 'L')</code>) <code>^</code> finds the start of the line and <code>$</code> finds the end of the line.</li>
+<li>In Mixed mode (<code>('Mode' 'M')</code>) <code>^</code> finds the start of each block and <code>$</code> finds the end of each block.</li>
+<li>In Document mode (<code>('Mode' 'D')</code>) <code>^</code> finds the start of the document and <code>$</code> finds the end of the document.</li>
+</ul>
+<div class="h_tag">
+<a href="#Alternations" id="Alternations" class="autoheader_anchor">
+<h3>Alternations</h3>
+</a>
+</div>
+<p>Suppose we want to match either the word <em>cat</em> or the word <em>dog</em>:</p>
+<pre><code>      'cat|dog' ⎕R '⍈'⊣ 'donkey, bird, cat, rat, dog'
+donkey, bird, ⍈, rat, ⍈</code></pre>
+<p>The <code>|</code> has the lowest precedence of all RegEx operators. Therefore it first tries to match <code>cat</code> and only then <code>dog</code>.</p>
+<p>However, be careful:</p>
+<pre><code>      'cat|catfish' ⎕R '⍈'⊣ 'donkey, bird, cat, rat, dog, catfish'
+donkey, bird, ⍈, rat, dog, ⍈fish</code></pre>
+<p>This is not what we want. The reason for this is that once the string <code>cat</code> has matched the RegEx engine gives up because it was successful, therefore it does not see the need to check later options. It's said the engine is <em>eager</em>.</p>
+<p>Sorting the alternatives by length gets us around this problem:</p>
+<pre><code>      'catfish|cat' ⎕R '⍈'⊣ 'donkey, bird, cat, rat, dog, catfish'
+donkey, bird, ⍈, rat, dog, ⍈</code></pre>
+<p>However, in real life we would put word boundaries to good use, avoiding the problem altogether:</p>
+<pre><code>      '\bcat\b|\bcatfish\b' ⎕R '⍈'⊣ 'donkey, bird, cat, rat, dog, catfish'
+donkey, bird, ⍈, rat, dog, ⍈</code></pre>
+<p>Or even shorter:</p>
+<pre><code>      '\b(cat|catfish)\b' ⎕R '⍈'⊣ 'donkey, bird, cat, rat, dog, catfish'
+donkey, bird, ⍈, rat, dog, ⍈</code></pre>
+<p>Note the parentheses used here for grouping.</p>
+<div class="h_tag">
+<a href="#Optional-items" id="Optional-items" class="autoheader_anchor">
+<h3>Optional items</h3>
+</a>
+</div>
+<p>The <code>?</code> makes the preceeding token optional. If you want to find either <em>November</em> or its shortcut <em>Nov</em>:</p>
+<pre><code>      'Nov(ember)?' ⎕R '⍈'⊣ '...October, November, December; ... Oct, Nov, Dec'
+...October, ⍈, December; ... Oct, ⍈, Dec</code></pre>
+<p>For plurals:</p>
+<pre><code>      'cars?' ⎕R '⍈'⊣ 'car, boat, plain, cars, boats, plains'
+⍈, boat, plain, ⍈, boats, plains</code></pre>
+<div class="h_tag">
+<a href="#Extract-whats-between-HTML-tags" id="Extract-whats-between-HTML-tags" class="autoheader_anchor">
+<h3>Extract what's between HTML tags</h3>
+</a>
+</div>
+<p>Suppose we have a piece of <abbr title="Hyper Text Mark-up language">HTML</abbr> code, and are interested in any text between anchor tags (<code>&lt;a&gt;</code>). Suppose also we know there is no other tag inside the <code>&lt;a&gt;</code>, just simple text.</p>
+<p>Now an <code>&lt;a&gt;</code> tag has always either an <code>href="..."</code> or an <code>id="..."</code> because otherwise it has no purpose. &lt;!– FIXME or <code>name=</code> –&gt;</p>
+<p>So it should be safe to say:</p>
+<pre><code>      '&lt;a.*&gt;.*&lt;'⎕R'⍈'⊣'This &lt;a href="http://aplwiki.com"&gt;is a link&lt;/a&gt;, really!'
+This ⍈, really!</code></pre>
+<p>Works, right?</p>
+<p>Well, yes, but it also works on this:</p>
+<pre><code>      txt←'This &lt;abbr title="FooGoo"&gt;&lt;a href="#page"&gt;is a link&lt;/a&gt;&lt;/abbr&gt;'
+      '&lt;a.*&gt;.*&lt;/a&gt;'⎕R'⍈'⊣txt
+This ⍈&lt;/abbr&gt;</code></pre>
+<p>That might come as a nasty surprise but when you think it through it's obvious why that is: the expression <code>&lt;a.*&gt;</code> does indeed catch not only <code>&lt;a</code> but also <code>&lt;abbr&gt;</code>. Shows how important it is to be precise.</p>
+<p>We can work around this quite easily: because any <code>&lt;a&gt;</code> tag must have at least one attribute in order to make sense there <em>must</em> be a space after the <code>a</code>; therefore we can rewrite the expression as follows:</p>
+<pre><code>      '&lt;a .*&gt;.*&lt;/a&gt;'⎕R'⍈'⊣txt
+This &lt;abbr title="FooGoo"&gt;⍈&lt;/abbr&gt;</code></pre>
+<p>What a difference a space can make!</p>
+<p>But somebody <em>might</em> put in an <code>&lt;a&gt;</code> tag without any attribute at all, and then this would not work. So we are still in need not for a better but a perfect solution.</p>
+<p>Here it is:</p>
+<pre><code>      '&lt;a\b[^&gt;]*&gt;(.*?)&lt;/a&gt;'⎕R'⍈'⊣'This &lt;a&gt;is a link&lt;/a&gt;; more: &lt;a id="_2"&gt;Foo&lt;/a&gt;'
+This ⍈; more: ⍈</code></pre>
+<p>Notes:</p>
+<ul>
+<li>The <code>\b</code> makes sure we catch nothing but <code>&lt;a&gt;</code> tags.</li>
+<li>The <code>[^&gt;]*</code> consumes zero or more characters that are <em>not</em> a closing <code>&gt;</code>. In other words, it consumes everything after the <code>a&gt;</code> and before the closing <code>&gt;</code>.</li>
+<li>The <code>&gt;</code> then consumes itself.</li>
+<li>The <code>.*</code>consumes everything until the RegEx engine arrives at the <code>&lt;</code> (as part of <code>&lt;/a&gt;</code>) because the <code>?</code> makes the quantifier lazy.</li>
+</ul>
+<div class="h_tag">
+<a href="#Attention-empty-vectors" id="Attention-empty-vectors" class="autoheader_anchor">
+<h2>Attention: empty vectors</h2>
+</a>
+</div>
+<p>Given this variable:</p>
+<pre><code>      v←''  'A paragraph.'  ''</code></pre>
+<p>This should not change anything because it just attempts to replace any &lt;TAB&gt; character by four spaces yet the trailing empty vector disappears:</p>
+<pre><code>      Display '\t'⎕R(4⍴' ')⍠('Mode' 'M')⊣v
+┌→─────────────────────────┐
+│ ┌⊖┐ ┌→─────────────────┐ │
+│ │ │ │A paragraph.      │ │
+│ └─┘ └──────────────────┘ │
+└∊─────────────────────────┘</code></pre>
+<p>This is because the three-element vector is transformed into a single document <code>&lt;CRLF&gt;A paragraph.&lt;CRLF&gt;</code> which is then passed in its entirety to PCRE, the underlying RegEx engine. PCRE has only generated two lines of output from this so the result is a two element vector.</p>
+<p>If you want a stricter correspondence between input and output you need to process the elements separately, e.g.:</p>
+<pre><code>      ]display '\t'⎕R(4⍴' ')⍠('Mode' 'M')¨v
+┌→─────────────────────────────┐
+│ ┌⊖┐ ┌→─────────────────┐ ┌⊖┐ │
+│ │ │ │A paragraph.      │ │ │ │
+│ └─┘ └──────────────────┘ └─┘ │
+└∊─────────────────────────────┘</code></pre>
+<p>This is so in version 16.0, but might change in a future version of Dyalog.</p>
+<div class="h_tag">
+<a href="#Miscellaneous" id="Miscellaneous" class="autoheader_anchor">
+<h2>Miscellaneous</h2>
+</a>
+</div>
+<div class="h_tag">
+<a href="#Tests" id="Tests" class="autoheader_anchor">
+<h3>Tests</h3>
+</a>
+</div>
+<p>Complex regular expressions are hard to read and maintain. Document them intensively, with exhaustive test cases.</p>
+<div class="h_tag">
+<a href="#Performance" id="Performance" class="autoheader_anchor">
+<h3>Performance</h3>
+</a>
+</div>
+<p>Don't expect regular expressions to be faster than a tailored APL solution; expect them to be slightly slower.</p>
+<p>However, many regular expressions, like finding a simple string in another simple string or uppercasing or lowercasing characters are converted by the interpreter into a native (faster) APL expression (<code>⍷</code> and <code>⌶ 819</code> respectively).</p>
+<div class="h_tag">
+<a href="#Helpful-stuff" id="Helpful-stuff" class="autoheader_anchor">
+<h3>Helpful stuff</h3>
+</a>
+</div>
+<dl>
+<dt>RegexBuddy</dt>
+<dd>Software that helps interpret or build  regular expressions</dd>
+<dt><a href="http://www.regular-expressions.info/tutorial.html" class="external_link">http://www.regular-expressions.info/tutorial.html</a></dt>
+<dd><p class="first_dd">A web site that explores the details. From the author of RegExBuddy.</p></dd>
+<dd><p>The web site also comes with detailed book reviews: <a href="http://www.regular-expressions.info/hipowls.html" class="external_link">http://www.regular-expressions.info/hipowls.html</a></p></dd>
+</dl>
+</div>
+</div>
+<script>
+var snapper = new Snap({
+element: document.getElementById('content')
+});
+document.getElementById('mainmenu_match').onclick = function(){
+snapper.state().state==='closed'?snapper.open('left'):snapper.close();
+}
+</script>
+</body>
+</html>

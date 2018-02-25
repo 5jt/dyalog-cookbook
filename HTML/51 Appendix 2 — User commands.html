@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta charset="utf-8">
+<title>User CMDs</title>
+<link href="./CSS/BlackOnWhite_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/Cookbook_Chapter_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/snap.css" rel="stylesheet" media="screen">
+<link href="./CSS/BlackOnWhite_print.css" rel="stylesheet" media="print">
+<link href="./CSS/Cookbook_Chapter_print.css" rel="stylesheet" media="print">
+<script src="./JavaScript/snap.js"></script>
+</head>
+<body>
+<div class="snap-drawers">
+<div class="snap-drawer snap-drawer-left">
+<div class="h_tag">
+<h3>Chapters</h3>
+</div>
+<ol>
+<li><a href="./01%20Introduction.html" class="external_link">Introduction</a></li>
+<li><a href="./02%20Structure.html" class="external_link">Structure</a></li>
+<li><a href="./03%20Package%20MyApp%20as%20an%20executable.html" class="external_link">Package MyApp as an executable</a></li>
+<li><a href="./04%20Logging%20what%20happens%20.html" class="external_link">Logging what happens </a></li>
+<li><a href="./05%20Configuration%20settings.html" class="external_link">Configuration settings</a></li>
+<li><a href="./06%20Debugging%20a%20stand-alone%20EXE.html" class="external_link">Debugging a stand-alone EXE</a></li>
+<li><a href="./07%20Handling%20errors.html" class="external_link">Handling errors</a></li>
+<li><a href="./08%20Testing%20—%20the%20sound%20of%20breaking%20glass.html" class="external_link">Testing<br>The sound of breaking glass</a></li>
+<li><a href="./09%20Documentation%20—%20the%20Doc%20is%20in.html" class="external_link">Documentation<br>The Doc is in</a></li>
+<li><a href="./10%20Make%20me.html" class="external_link">Make me</a></li>
+<li><a href="./11%20Providing%20help.html" class="external_link">Providing help</a></li>
+<li><a href="./12%20Scheduled%20Tasks.html" class="external_link">Scheduled Tasks</a></li>
+<li><a href="./13%20Windows%20Services.html" class="external_link">Windows Services</a></li>
+<li><a href="./14%20The%20Windows%20Event%20Log.html" class="external_link">The Windows Event Log</a></li>
+<li><a href="./15%20The%20Windows%20Registry.html" class="external_link">The Windows Registry</a></li>
+<li><a href="./16%20Creating%20SetUp.exe%20with%20Inno.html" class="external_link">Creating SetUp.exe with Inno</a></li>
+<li><a href="./17%20RegularExpressions.html" class="external_link">RegularExpressions</a></li>
+<li><a href="./18%20GUI.html" class="external_link">GUI</a></li>
+</ol>
+<div class="h_tag">
+<h3>Appendices</h3>
+</div>
+<ol>
+<li><a href="./50%20Appendix%201%20—%20Windows%20environment%20variables.html" class="external_link">Windows environment variables</a></li>
+<li><a href="./51%20Appendix%202%20—%20User%20commands.html" class="external_link">User commands</a></li>
+<li><a href="./52%20Appendix%203%20—%20aplcores%20and%20WS%20integrity.html" class="external_link">aplcores and WS integrity</a></li>
+<li><a href="./53%20Appendix%204%20—%20The%20development%20environment.html" class="external_link">The development environment</a></li>
+<li><a href="./54%20Appendix%205%20—%20Special%20characters.html" class="external_link">Special characters</a></li>
+</ol>
+<div class="h_tag">
+<h3>Misc</h3>
+</div>
+<ul>
+<li><a href="50%20Appendix%201%20—%20Windows%20environment%20variables.html">Previous chapter</a></li>
+<li><a href="52%20Appendix%203%20—%20aplcores%20and%20WS%20integrity.html">Next chapter;</a></li>
+<li><a href="./Dyalog_Cookbook.html" class="external_link">Single document<br>(All chapters, for printing)</a></li>
+</ul>
+</div>
+</div>
+<div id="mainmenu">
+<a href=#><p><span id="mainmenu_match">≡</span></p></a>
+<p><span id="mainmenu_title">The Dyalog Cookbook</span></p>
+<nav id="main_nav">
+<input type="checkbox" id="hide_toc">
+<label id="hide_toc_label" for="hide_toc"></label>
+<div class="toc-container">
+<ul>
+<li><a href="#Overview">Overview</a></li>
+<li><a href="#Using-the-default-folder">Using the default folder</a></li>
+<li><a href="#Use-your-own-dedicated-folder">Use your own dedicated folder</a></li>
+<li><a href="#Name-clashes">Name clashes</a></li>
+<li><a href="#Group-name">Group name</a>
+<ul>
+<li><a href="#Pros">Pros</a></li>
+<li><a href="#Cons">Cons</a></li>
+</ul></li>
+<li><a href="#Updates">Updates</a></li>
+<li><a href="#Writing-your-own-user-commands">Writing your own user commands</a>
+</ul>
+</div>
+</nav>
+</div>
+<div id="content" class="snap-content">
+<div id="cookbook_content">
+<div class="h_tag">
+<a href="#20-Appendix-2-----User-commands" id="20-Appendix-2-----User-commands" class="autoheader_anchor">
+<h1>20. Appendix 2 — User commands</h1>
+</a>
+</div>
+<div class="h_tag">
+<a href="#Overview" id="Overview" class="autoheader_anchor">
+<h2>Overview</h2>
+</a>
+</div>
+<p>User commands are a great way to make utilities available to the developer without cluttering the workspace. They also allow you to have one code base for several Dyalog installations. Since its introduction they have proven to be be indispensable.</p>
+<p>Whether you want to write your own user commands or to make use of any third-party user commands like those available from the APL wiki for download [<a href="#fnref1" class="footnote_link"><sup>1</sup></a>], you need to consider your options for how to integrate non-Dyalog user commands into your development environment.</p>
+<p>The default folder depends on your version of Dyalog of course, but you can always find out from a running instance of Dyalog APL:</p>
+<pre><code>      '"',(2⎕NQ # 'GetEnvironment' 'Dyalog'),'\SALT\spice\"'
+"C:\Program Files\Dyalog\Dyalog APL-64 16.0 Unicode\SALT\spice\"</code></pre>
+<p>The above is the default folder for the 64-bit Unicode version of Dyalog 16.0 for all Dyalog user commands available within that version.</p>
+<div class="h_tag">
+<a href="#Using-the-default-folder" id="Using-the-default-folder" class="autoheader_anchor">
+<h2>Using the default folder</h2>
+</a>
+</div>
+<p>If you want to keep life simple the obvious choice seems to be this folder: you just copy your user command into this folder and it becomes available straight away.</p>
+<p>Simple may it be, but this is <em>not</em> recommended:</p>
+<ul>
+<li>When a new version of Dyalog comes along you need to copy your own stuff over.</li>
+<li>When you use more than one version of Dyalog in parallel you have to maintain several copies of your user commands.</li>
+<li>Because of Microsoft's security measures, writing to that folder requires admin rights.</li>
+</ul>
+<p>For these reasons you are advised to use a different folder.</p>
+<div class="h_tag">
+<a href="#Use-your-own-dedicated-folder" id="Use-your-own-dedicated-folder" class="autoheader_anchor">
+<h2>Use your own dedicated folder</h2>
+</a>
+</div>
+<p>Let's assume that you have a folder <code>C:\MyUserCommands</code> that's supposed to hold all non-Dyalog user commands.</p>
+<p>Via the <em>Options &gt; Configure</em> command you can select the User Commands dialog and add that folder to the search path; remember to press the <em>Add</em> button once you have browsed to the right directory.</p>
+<p>If you use several versions of Dyalog in parallel then you are advised <em>not</em> to add that folder via the configuration dialog box in each of those versions.</p>
+<p>Instead we recommend writing an APL function that adds the folder to all versions of Dyalog currently installed. See the chapter <a href="./15 The Windows Registry" class="external_link">The Windows Registry</a> where this scenario is used as an example.</p>
+<div class="h_tag">
+<a href="#Name-clashes" id="Name-clashes" class="autoheader_anchor">
+<h2>Name clashes</h2>
+</a>
+</div>
+<p>Where two user commands share the same name, the last definition wins. You can achieve this just by having a user command Foo in two different scripts in different folders <em>with the same group name, or no group name at all!</em></p>
+<p>In other words, the full name of a user command is compiled by the group name (say <code>foo</code>) and the user-command name (say <code>goo</code>): <code>]foo.goo</code>. However, as long as there is only one user command <code>goo</code> this will do nicely:</p>
+<pre><code>      ]goo</code></pre>
+<div class="h_tag">
+<a href="#Group-name" id="Group-name" class="autoheader_anchor">
+<h2>Group name</h2>
+</a>
+</div>
+<p>Group names are not only useful to avoid name clashes, they also allow user commands to be, well, grouped in a sensible way. Whether you should add your own user commands to any of the groups Dyalog comes with is a diffult question to answer. There are pros and cons:</p>
+<div class="h_tag">
+<a href="#Pros" id="Pros" class="autoheader_anchor">
+<h3>Pros</h3>
+</a>
+</div>
+<ul>
+<li>Keeping the number of groups small is a good idea.</li>
+<li>When a user command clearly belongs to such a group, where else should it go anyway?</li>
+</ul>
+<div class="h_tag">
+<a href="#Cons" id="Cons" class="autoheader_anchor">
+<h3>Cons</h3>
+</a>
+</div>
+<ul>
+<li>You might miss on a new Dyalog user command because of a <em>real</em> name clash.</li>
+<li>Your own stuff and the Dyalog stuff are mixed up.</li>
+</ul>
+<div class="h_tag">
+<a href="#Updates" id="Updates" class="autoheader_anchor">
+<h2>Updates</h2>
+</a>
+</div>
+<p>Note that once you've copied a new user command into that folder it is available straight away, even in instances of Dyalog that are already running.</p>
+<p>However, auto-complete does not know about the new user command until it was called for the first time in an already running instance. You can at any time execute <code>]ureset</code> to make sure that even auto-complete knows about it.</p>
+<p>In case you change an existing user command, for example by modifying the parsing rules, you must execute <code>]ureset</code> in order to get access to the changes from any instance of Dyalog that has already been running by then.</p>
+<div class="h_tag">
+<a href="#Writing-your-own-user-commands" id="Writing-your-own-user-commands" class="autoheader_anchor">
+<h2>Writing your own user commands</h2>
+</a>
+</div>
+<p>It's not difficult to write your own user commands, and there is an example script available that makes that easy and straightforward. However, if your user command is not too simple consider developing it as an independent application, living in a particular namespace (let's assume <code>Foo</code>) in a particular workspace (let's assume <code>Goo</code>).</p>
+<p>Then write a user command that creates a namespace local to the function in the user command script, copy the namespace <code>Foo</code> from the workspace <code>Goo</code> into that local namespace and finally run the required function. Make sure the workspace is a sibling of the user command script.</p>
+<p>This approach has the advantage that you can develop and test your user commands independently from the user command framework.</p>
+<p>This is particularly important because changing a user command script from the Tracer is a bit dangerous; you will see more aplcores than under normal circumstances. On the other hand it is difficult to execute the user command without the user command framework calling it: you need those arguments and sometimes even variables that live in the parent (<code>##</code>).</p>
+<p>We therefore recommend you ensure no function in <code>Foo</code> relies on anything provided by the user-command framework. Instead, the calling function (<code>Run</code> in your user command) must pass such values as arguments to any functions in <code>Foo</code> called by <code>Run</code>.</p>
+<p>That makes it easy to test all the public functions in <code>Foo</code>. Of course you should have proper test cases for them.</p>
+<p>The following code is a simple example that assumes the following conditions:</p>
+<ul>
+<li>It requires a single argument.</li>
+<li>It offers an optional switch <code>-verbose</code>.</li>
+<li>It copies <code>Foo</code> from <code>Goo</code> and then runs <code>Foo.Run</code>.</li>
+</ul>
+<pre><code>:Namespace  Foo
+      ⎕IO←1 ⋄ ⎕ML←1
+
+    ∇ r←List
+      r←⎕NS''
+      r.Name←'Foo'
+      r.Desc←'Does this and that'
+      r.Group←'Cookbook'
+      r.Parse←'1 -verbose'
+    ∇
+
+    ∇ r←Run(Cmd Args);verbose;ref;path;arg
+      ref←⎕NS''
+      verbose←Args.Switch'verbose'
+      path←⊃1 ⎕NPARTS ##.SourceFile
+      arg←⊃Args.Arguments
+      :Trap 11
+          'Foo'ref.⎕CY path,'\Goo'
+      :Else
+          'Copy operation for "Foo" in "Goo" failed' ⎕Signal 11
+      :EndTrap
+      r←ref.Foo.Run arg verbose
+    ∇
+
+    ∇ r←Help Cmd
+      r←⊂'Help for "Foo".'
+      r,←⊂'This user command ...'
+      r←,[0.5]r
+    ∇
+
+:EndNamespace</code></pre>
+<p>Notes:</p>
+<ul>
+<li>The user command refers to <code>##.SourceFile</code>; this is a variable created by SALT with the full path of the currently-executed user command. By taking just the directory part we know where to find the workspace.</li>
+<li>We create an anonymnous namespace and assign it to a variable <code>ref</code>. We make sure <code>Foo</code> is copied <em>into</em> <code>ref</code> by executing <code>ref.⎕CY</code>.</li>
+<li>The user command's <code>Run</code> function extracts the argument and the optional flag and passes both of them as arguments to the function <code>Foo.Run</code>. That way <code>Foo</code> does not rely on anything but the arguments passed to its functions.</li>
+<li>We have implemented the user command as a namespace. It could have been a class instead but in this case that offers no benefits, since all functions are public anyway.</li>
+</ul>
+<p>The workspace <code>Goo</code> can be tested independently from the user command framework, and the workspace <code>Goo</code> might well hold test cases for the functions in <code> Foo</code>.</p>
+<div id="footnotes_div">
+<hr>
+<p><strong>Footnotes</strong></p>
+<ol>
+<li id="fnref1"><p>Dyalog user commands from the APL wiki <a href="http://aplwiki.com//CategoryDyalogUserCommands" class="external_link">http://aplwiki.com//CategoryDyalogUserCommands</a></p><a href="#fnref1" class="footnote_anchor"></a>
+</ol>
+</div>
+</div>
+</div>
+<script>
+var snapper = new Snap({
+element: document.getElementById('content')
+});
+document.getElementById('mainmenu_match').onclick = function(){
+snapper.state().state==='closed'?snapper.open('left'):snapper.close();
+}
+</script>
+</body>
+</html>

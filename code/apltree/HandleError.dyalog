@@ -1,4 +1,4 @@
-﻿:Class HandleError
+:Class HandleError
 ⍝ This class offers the method `Process` which is useful to handle application
 ⍝ errors on a general level. `Process` in turn is triggered via `⎕TRAP`; use
 ⍝ the method `SetTrap` in order to set `⎕TRAP` properly.
@@ -55,7 +55,7 @@
 ⍝ they live in an instance of a class. For such case use `logFunctionParent`
 ⍝ and `customFnsParent` respectively in order to define the parent of the functions.
 ⍝
-⍝ ## Windows Event Log
+⍝ ## Windows Event Log 
 ⍝ `HandleError` will attempt to write to the Windows Event Log when `windowsEventSource`
 ⍝ is not empty. For that to work .NET is needed (that shouldn't be a problem these days)
 ⍝ and the Dyalog bridge DLLs are requiered. That means you need to take action, it would
@@ -74,8 +74,8 @@
 ⍝
 ⍝ ## Notes
 ⍝ * The attempt to save an error WS will fail if there are any open acre projects. acre is
-⍝   designed to make any saved workspace superfluous anyway but if you do not share this
-⍝   opinion then use your own function (see the `customFns` parameter) to close all open
+⍝   designed to make any saved workspace superfluous anyway but if you do not share this 
+⍝   opinion then use your own function (see the `customFns` parameter) to close all open 
 ⍝   acre projects.
 ⍝ * Prior to version 2.2.0 `HandleError` saved crash files in a folder `Errors`
 ⍝   that was created as a sibling of either the workspace or the stabnd-alone
@@ -89,15 +89,17 @@
 ⍝
 ⍝ Homepage: <http://aplwiki.com/HandleError>
 
-    :Include APLTreeUtils
+    :Include ##.APLTreeUtils
 
     ∇ r←Version
       :Access Public Shared
-      r←(Last⍕⎕THIS)'2.3.1' '2017-12-31'
+      r←(Last⍕⎕THIS)'2.4.0' '2018-02-18'
     ∇
 
     ∇ History
       :Access Public Shared
+      ⍝ * 2.4.0
+      ⍝   * First release after the conversion from the APL wiki to GitHub.
       ⍝ * 2.3.1
       ⍝   * Documention now points out prerequisites needed for writing to the Windows Event Log.
       ⍝ * 2.3.0
@@ -111,21 +113,6 @@
       ⍝     it a workspace or a stand-alone exe. Under Windows now `HandleError` saves the crash
       ⍝     files in %LOCALAPPDATA/{name}% with either the name being `⎕WSID` or the name of the
       ⍝     EXE file. Under Linux and Mac OS no change takes place.
-      ⍝ * 2.1.3
-      ⍝   * Test cases improved.
-      ⍝ * 2.1.2
-      ⍝   For a relative `⎕WSID` without a path `⎕WSID` was reported wrongly in the HTML report.
-      ⍝ * 2.1.1
-      ⍝   * Writing to the Windows Event Log did not work.
-      ⍝   * `⎕LX` got mutilated.
-      ⍝ * 2.1.0
-      ⍝   * The command line added to the crash report and the component file.
-      ⍝   * `HandleError` does not require `FilesAndDirs` any more.
-      ⍝   * Bug fixes
-      ⍝     * Current directory was not reported under Linux/Mac OS.
-      ⍝ * 2.0.0
-      ⍝   * Supports Windows, Linux, Mac OS.
-      ⍝   * Needs at least Dyalog 15.0 Unicode
     ∇
 
     ∇ {filename}←{signal}Process parms;crash;TRAP;⎕IO;⎕ML;⎕TRAP

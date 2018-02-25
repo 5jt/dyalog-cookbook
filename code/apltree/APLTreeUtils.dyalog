@@ -1,5 +1,5 @@
-﻿:Namespace APLTreeUtils
-⍝ *** Version 4.1.1 ⋄ 2017-11-20 ***
+:Namespace APLTreeUtils
+⍝ *** Version 4.2.0 ⋄ 2018-02-14 ***
 ⍝
 ⍝ ## Overview
 ⍝ Version 4.0.0 is a major change in two respects:
@@ -30,6 +30,8 @@
 ⍝ * `WriteBytesAs8BitSignedIntegersToFile`
 ⍝
 ⍝ ## Version History
+⍝ * 4.2.?
+⍝   `GoToWebPage` was not clear about "file://" versus "file:///"
 ⍝ * 4.1.1
 ⍝   * Very serious performance issue fixed in `WriteUtf8File` with "append".
 ⍝   Bug fixes:
@@ -288,8 +290,8 @@
     ⍝ Instead of using the default browser you can specify an EXE (Windows) or command
     ⍝ as the left argument. That will then be used to show "Url". Note that the left
     ⍝ argument is ignored in case the current session is connected to Ride.\\
-    ⍝ For displaying a file rather then a url add "file://".\\
-    ⍝ However, note that "file://" does not work on some systems / with some browsers.\\
+    ⍝ For displaying a local file rather then a url add "file:///".\\
+    ⍝ However, note that "file:///" does not work on some systems / with some browsers.\\
     ⍝ Examples:
     ⍝ ~~~
     ⍝ GoToWebPage 'file:///c:/my.html'

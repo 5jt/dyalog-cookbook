@@ -1,4 +1,4 @@
-﻿:Class EventCodes
+:Class EventCodes
 ⍝ This class carries all trappable event codes in Dyalog APL up to -- and including -- version 15.0.\\
 ⍝ For transforming a number to the symbolic name see function `GetName`.
 
@@ -60,16 +60,18 @@
 
     ∇ r←Version
       :Access Public Shared
-      r←({⍵}⍕⎕THIS)'1.1.0' '2017-05-18'
+      r←({⍵}⍕⎕THIS)'1.2.0' '2018-02-19'
     ∇
 
     ∇ History
       :Access Public Shared
-      ⍝ * 1.1.0 ⋄ 2017-04-25
+      ⍝ * 1.2.0
+      ⍝   * First release after the conversion from the APL wiki to GitHub.
+      ⍝ * 1.1.0
       ⍝   * `GetName` can now process vectors as well.
       ⍝   * Method `History` added
       ⍝   * Now managed by acre 3
-      ⍝ * 1.0.0 ⋄ 2017-04-07
+      ⍝ * 1.0.0
     ∇
 
     ∇ __name←GetName __eventCode;__allNumbers;__ind

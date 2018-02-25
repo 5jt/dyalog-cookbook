@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta charset="utf-8">
+<title>Logging</title>
+<link href="./CSS/BlackOnWhite_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/Cookbook_Chapter_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/snap.css" rel="stylesheet" media="screen">
+<link href="./CSS/BlackOnWhite_print.css" rel="stylesheet" media="print">
+<link href="./CSS/Cookbook_Chapter_print.css" rel="stylesheet" media="print">
+<script src="./JavaScript/snap.js"></script>
+</head>
+<body>
+<div class="snap-drawers">
+<div class="snap-drawer snap-drawer-left">
+<div class="h_tag">
+<h3>Chapters</h3>
+</div>
+<ol>
+<li><a href="./01%20Introduction.html" class="external_link">Introduction</a></li>
+<li><a href="./02%20Structure.html" class="external_link">Structure</a></li>
+<li><a href="./03%20Package%20MyApp%20as%20an%20executable.html" class="external_link">Package MyApp as an executable</a></li>
+<li><a href="./04%20Logging%20what%20happens%20.html" class="external_link">Logging what happens </a></li>
+<li><a href="./05%20Configuration%20settings.html" class="external_link">Configuration settings</a></li>
+<li><a href="./06%20Debugging%20a%20stand-alone%20EXE.html" class="external_link">Debugging a stand-alone EXE</a></li>
+<li><a href="./07%20Handling%20errors.html" class="external_link">Handling errors</a></li>
+<li><a href="./08%20Testing%20—%20the%20sound%20of%20breaking%20glass.html" class="external_link">Testing<br>The sound of breaking glass</a></li>
+<li><a href="./09%20Documentation%20—%20the%20Doc%20is%20in.html" class="external_link">Documentation<br>The Doc is in</a></li>
+<li><a href="./10%20Make%20me.html" class="external_link">Make me</a></li>
+<li><a href="./11%20Providing%20help.html" class="external_link">Providing help</a></li>
+<li><a href="./12%20Scheduled%20Tasks.html" class="external_link">Scheduled Tasks</a></li>
+<li><a href="./13%20Windows%20Services.html" class="external_link">Windows Services</a></li>
+<li><a href="./14%20The%20Windows%20Event%20Log.html" class="external_link">The Windows Event Log</a></li>
+<li><a href="./15%20The%20Windows%20Registry.html" class="external_link">The Windows Registry</a></li>
+<li><a href="./16%20Creating%20SetUp.exe%20with%20Inno.html" class="external_link">Creating SetUp.exe with Inno</a></li>
+<li><a href="./17%20RegularExpressions.html" class="external_link">RegularExpressions</a></li>
+<li><a href="./18%20GUI.html" class="external_link">GUI</a></li>
+</ol>
+<div class="h_tag">
+<h3>Appendices</h3>
+</div>
+<ol>
+<li><a href="./50%20Appendix%201%20—%20Windows%20environment%20variables.html" class="external_link">Windows environment variables</a></li>
+<li><a href="./51%20Appendix%202%20—%20User%20commands.html" class="external_link">User commands</a></li>
+<li><a href="./52%20Appendix%203%20—%20aplcores%20and%20WS%20integrity.html" class="external_link">aplcores and WS integrity</a></li>
+<li><a href="./53%20Appendix%204%20—%20The%20development%20environment.html" class="external_link">The development environment</a></li>
+<li><a href="./54%20Appendix%205%20—%20Special%20characters.html" class="external_link">Special characters</a></li>
+</ol>
+<div class="h_tag">
+<h3>Misc</h3>
+</div>
+<ul>
+<li><a href="03%20Package%20MyApp%20as%20an%20executable.html">Previous chapter</a></li>
+<li><a href="05%20Configuration%20settings.html">Next chapter;</a></li>
+<li><a href="./Dyalog_Cookbook.html" class="external_link">Single document<br>(All chapters, for printing)</a></li>
+</ul>
+</div>
+</div>
+<div id="mainmenu">
+<a href=#><p><span id="mainmenu_match">≡</span></p></a>
+<p><span id="mainmenu_title">The Dyalog Cookbook</span></p>
+<nav id="main_nav">
+<input type="checkbox" id="hide_toc">
+<label id="hide_toc_label" for="hide_toc"></label>
+<div class="toc-container">
+<ul>
+<li><a href="#Include-the-Logger-class">Include the “Logger” class</a></li>
+<li><a href="#Where-to-keep-the-logfiles">Where to keep the logfiles?</a></li>
+<li><a href="#Setting-up-parameters-for-Logger">Setting up parameters for Logger</a></li>
+<li><a href="#Implementing-the-logging-function">Implementing the logging function</a></li>
+<li><a href="#Initializing-Logger">Initializing “Logger”</a></li>
+<li><a href="#Get-it-to-work">Get it to work</a></li>
+<li><a href="#Improvements-to-our-code">Improvements to our code</a></li>
+<li><a href="#Watching-the-log-file-with-LogDog">Watching the log file with LogDog</a></li>
+<li><a href="#Where-are-we">Where are we</a>
+</ul>
+</div>
+</nav>
+</div>
+<div id="content" class="snap-content">
+<div id="cookbook_content">
+<div class="h_tag">
+<a href="#4-Logging-what-happens" id="4-Logging-what-happens" class="autoheader_anchor">
+<h1>4. Logging what happens</h1>
+</a>
+</div>
+<p>MyApp 1.0 is now working, but handles errors poorly. See what happens when we try to work on a non-existent file/folder:</p>
+<pre><code>Z:\code\v03\MyApp.exe Z:\texts\Does_not_exist</code></pre>
+<p>We see an alert message: <em>This Dyalog APL runtime application has attempted to use the APL session and will therefore be closed.</em></p>
+<p><code>MyApp</code> failed because there is no file or folder <code>Z:\texts\Does_not_exist</code>. That triggered an error in the APL code. The interpreter tried to display an error message and looked for input from a developer from the session. But a runtime task has no session, so at that point the interpreter popped the alert message and <code>MyApp</code> died.</p>
+
+<div class="leanpub_A">
+<h3>CONTINUE workspaces</h3>
+<p>Prior to version 16.0, as soon as you close the message box a CONTINUE workspace was created in the current directory. Such a CONTINUE <abbr title="Short for Workspaces">WS</abbr> can be loaded and investigated, making it easy to figure out what the problem is. (However, this is true only if it is a single-threaded application, since workspaces cannot be saved when more than one thread is running.)</p>
+<p>With version 16.0 you can still force the interpreter to drop a CONTINUE workspace by enabling the old behaviour with <code>2704⌶ 1</code>, while <code>2704⌶ 0</code> would disable it again.</p>
+<p>For analysis, load a CONTINUE workspace in an already running Dyalog session – don’t double-click a CONTINUE! The reason is that <code>⎕DM</code> and <code>⎕DMX</code> are overwritten in the process of booting SALT, meaning that you lose the error message.</p>
+<p>You <em>might</em> recreate them by re-executing the failing line – but that has other dangers, or might fail in a new way.</p>
+<p>Note also that the CONTINUE is always saved in the current directory; in version 16.0 there is no way to tell the interpreter to save the CONTINUE workspace elsewhere.</p>
+<p>That is limiting, as it will fail for your own stand-alone <abbr title="Executable file with the extension 'exe'">EXE</abbr>s if they are installed in the standard folders for executables under Windows, <code>C:\Program Files</code> (64-bit programs) and <code>C:\Program Files (x86)</code> (32-bit programs): even as an admin you cannot write to those folders or subfolders.</p>
+<p>But Windows saves it anyway! If a program attempts to write to a banned location Windows tells them “Sure, no problem” but saves them in a e.g. <code>"C:\Users\kai\AppData\Local\VirtualStore\Program Files\Dyalog\Dyalog APL-64 16.0 Unicode\CONTINUE.dws"</code> where you are running Dyalog APL 64-bit Unicode version 16.0.</p>
+</div>
+
+<p>The next version of <code>MyApp</code> will improve by logging what happens when it runs.</p>
+<p>Save a copy of <code>Z:\code\v03</code> as <code>Z:\code\v04</code> or copy <code>v04</code> from the Cookbook website.</p>
+<div class="h_tag">
+<a href="#Include-the-Logger-class" id="Include-the-Logger-class" class="autoheader_anchor">
+<h2>Include the “Logger” class</h2>
+</a>
+</div>
+<p>We’ll use the APLTree <code>Logger</code> class, which we’ll now install in the workspace root. If you’ve not already done so, copy the APLTree library folder into <code>Z:\code\apltree</code>.[<a href="#fnref1" class="footnote_link"><sup>1</sup></a>] Now edit <code>Z:\code\v04\MyApp.dyapp</code> to include some library code:</p>
+<pre><code>Target #
+Load ..\AplTree\APLTreeUtils
+Load ..\AplTree\FilesAndDirs
+Load ..\AplTree\OS
+Load ..\AplTree\Logger
+Load Constants
+Load Utilities
+Load MyApp
+Run #.MyApp.SetLX ⍬</code></pre>
+<p>and run the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> to recreate the <code>MyApp</code> workspace.</p>
+
+<div class="leanpub_A">
+<h3>Help for the APLTree namespaces</h3>
+<p>You can get detailed documentation on an APLTree class or namespace by executing e.g.:</p>
+<pre><code>]ADoc APLTreeUtils</code></pre>
+<p>You’ll find more about <code>ADoc</code> in the chapter <em>Documentation – the Doc is in</em>.</p>
+</div>
+
+<p>The <code>Logger</code> class and its dependencies will now be included when we build <code>MyApp</code>:</p>
+<ul>
+<li><code>APLTreeUtils</code> is a namespace of functions needed by most applications. All members of the APLTree library depend on it.</li>
+<li><code>FilesAndDirs</code> is a class that offers methods for handling files and directories.</li>
+<li><code>OS</code> contains a couple of OS-independent methods for common tasks. <code>KillProcess</code> is just an example. <code>FilesAndDirs</code> needs <code>OS</code> under some circumstances.</li>
+</ul>
+<p>Let’s get the program to log what it’s doing. Within <code>MyApp</code>, some changes. First we introduce aliases for the new modules:</p>
+<pre><code>⍝ === Aliases (referents must be defined previously)
+
+    F←##.FilesAndDirs ⋄ A←##.APLTreeUtils   ⍝ from the APLTree lib</code></pre>
+<p>Note that <code>APLTreeUtils</code> comes with the functions <code>Uppercase</code> and <code>Lowercase</code>. We have those already in the <code>Utilities</code> namespace. This violates the DRY principle. We should get rid of one version and use the other everywhere. But how to choose?</p>
+<p>First of all, almost all APLTree projects rely on <code>APLTreeUtils</code>. If you want to use this library then we cannot get rid of <code>APLTreeUtils</code>.</p>
+<p>The two different versions both use the Dyalog <code>⌶</code> function, so functionality and speed are the same.</p>
+<p>However, <code>APLTreeUtils</code> is in use for more than 10 years now, it comes with a comprehensive set of test cases and it is documented in detail. That makes the choice rather easy.</p>
+<p>Therefore we remove the two functions from <code>Utilities</code> and change <code>CountLetters</code>:</p>
+<pre><code>      CountLetters←{
+          {⍺(≢⍵)}⌸⎕A{⍵⌿⍨⍵∊⍺}Accents U.map A.Uppercase ⍵
+      }</code></pre>
+<p>That works because the alias <code>A</code> we've just introduced points to <code>APLTreeUtils</code>.</p>
+<div class="h_tag">
+<a href="#Where-to-keep-the-logfiles" id="Where-to-keep-the-logfiles" class="autoheader_anchor">
+<h2>Where to keep the logfiles?</h2>
+</a>
+</div>
+<p>Where is <code>MyApp</code> to write the logfile? We need a folder we know exists. That rules out <code>fullfilepath</code>. We need a logfile even if <code>fullfilepath</code> isn’t a valid path.</p>
+<p>We'll write logfiles into a subfolder of the current directory, which we can be sure exists. Where will that be? When the <abbr title="Executable file with the extension 'exe'">EXE</abbr> launches, the current directory is set:</p>
+<pre><code>Z:\code\v04\MyApp.exe Z:\texts\en</code></pre>
+<p>Current directory is <code>Z:\</code> and that’s where the logfiles will appear.</p>
+<p>If this version of <code>MyApp</code> were for shipping that would be a problem. An application installed in <code>C:\Program Files</code> cannot rely on being able to write logfiles there. That is a problem to be solved by an installer. We’ll come to that later.</p>
+<p>But for this version of <code>MyApp</code> the logfiles are for your eyes only. It’s fine to have the logfiles appear wherever you launch the <abbr title="Executable file with the extension 'exe'">EXE</abbr>. You just have to know where they are. We will put them into a subfolder <code>Logs</code> within the current directory.</p>
+<p>In developing and testing <code>MyApp</code>, we create the active workspace by running <code>MyApp.dyapp</code>. The interpreter sets the current directory of the active workspace as the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>’s parent folder. That, too, is sure to exist.</p>
+<pre><code>      #.FilesAndDirs.PWD
+Z:\code\v04</code></pre>
+<div class="h_tag">
+<a href="#Setting-up-parameters-for-Logger" id="Setting-up-parameters-for-Logger" class="autoheader_anchor">
+<h2>Setting up parameters for Logger</h2>
+</a>
+</div>
+<p>Now we set up the parameters needed to instantiate the Logger class. First we use the Logger class’ shared <code>CreateParms</code> method to get a parameter space with an initial set of default parameters. You can use the built-in method <code>∆List</code> to display its properties and their defaults:</p>
+<pre><code>      #.Logger.CreateParms.∆List''
+  active                   1
+  autoReOpen               1
+  debug                    0
+  encoding              ANSI
+  errorPrefix      *** ERROR
+  extension              log
+  fileFlag                 1
+  filename
+  filenamePostfix
+  filenamePrefix
+  filenameType          DATE
+  path
+  printToSession           0
+  timestamp</code></pre>
+<p>We shall modify them to match our needs and use the parameter namespace to create the Logger object.</p>
+<div class="h_tag">
+<a href="#Implementing-the-logging-function" id="Implementing-the-logging-function" class="autoheader_anchor">
+<h2>Implementing the logging function</h2>
+</a>
+</div>
+<p>For this we create a function <code>OpenLogFile</code>:</p>
+<pre><code>∇ instance←OpenLogFile path;logParms
+  ⍝ Creates an instance of the "Logger" class.
+  ⍝ Provides methods `Log` and `LogError`.
+  ⍝ Make sure that `path` (that is where log files will end up) does exist.
+  ⍝ Returns the instance.
+  logParms←##.Logger.CreateParms
+  logParms.path←path
+  logParms.encoding←'UTF8'
+  logParms.filenamePrefix←'MyApp'
+  'CREATE!'F.CheckPath path
+  instance←⎕NEW ##.Logger(,⊂logParms)
+∇</code></pre>
+<p>Notes:</p>
+<ul>
+<li>We need to ensure the current folder contains a subfolder <code>Logs</code>. That’s what the method <code>FilesAndDirs.CheckPath</code> does when the left argument is the string <code>'Create!'</code>.</li>
+<li>We change the default encoding (ANSI) to UTF-8. Note that this has pros and cons: it allows us to write APL characters to the log file but it will also cause potential problems with any third-party tools dealing with log files, because many support only ANSI characters.
+<p>Although we’ve changed it here to get started, we recommend sticking with ANSI unless you have a <em>very</em> good reason not to. When we introduce proper error handling in chapter 6, we will do away with APL characters in the log file.</p></li>
+<li>We have not changed either <code>autoReOpen</code> (<code>1</code>) or <code>filenameType</code> (<code>'DATE'</code>). They tell the <code>Logger</code> class to close a log file and re-open a new one each day at 23:59:59. It also defines (together with <code>filenamePrefix</code>) the name of the log file.</li>
+<li>If we ran <code>OpenLogFile</code> and allowed it to return its result to the session window then something similar to this would appear:
+<pre><code>[Logger:Logs\MyApp_20170211.log(¯87200436)]</code></pre>
+<ul>
+<li>“Logger” is the name of the class the object was instantiated from.</li>
+<li>The path between <code>:</code> and <code>(</code> tells us the actual name of the log file. Because the <code>filenameType</code> is <code>'DATE'</code> the name carries the year, month and day the log file was opened.
+<ul>
+<li>The negative number is the tie number of the log file.</li>
+</ul></li>
+</ul></li>
+</ul>
+<div class="h_tag">
+<a href="#Initializing-Logger" id="Initializing-Logger" class="autoheader_anchor">
+<h2>Initializing “Logger”</h2>
+</a>
+</div>
+<p>We create a function <code>Initial</code> (short for “Initialize”) which calls <code>OpenLogFile</code> and returns the <code>Logger</code> instance:</p>
+<pre><code>∇ {MyLogger}←Initial dummy
+⍝ Prepares the application.
+⍝</code></pre>
+<p>At this point <code>Initial</code> does nothing; that will change soon.</p>
+<div class="h_tag">
+<a href="#Get-it-to-work" id="Get-it-to-work" class="autoheader_anchor">
+<h2>Get it to work</h2>
+</a>
+</div>
+<p>We also need to change <code>ProcessFile</code>:</p>
+<pre><code>∇ data←(fns ProcessFiles)files;txt;file
+⍝ was: (data enc nl)←(fns ProcessFiles)files;txt;file
+⍝ Reads all files and executes `fns` on the contents.
+   data←⍬
+   :For file :In files
+       txt←'flat' A.ReadUtf8File file
+       ⍝ was: (txt enc nl)←⎕NGET file
+       data,←⊂fns txt
+   :EndFor
+∇</code></pre>
+<p>We use <code>APLTreeUtils.ReadUtf8File</code> rather than <code>⎕NGET</code> because it optionally returns a flat string without a performance penalty, although that is only an issue with really large files. This is achieved by passing <code>'flat'</code> as the left argument to <code>ReadUtf8File</code>.</p>
+<p>We ignore encoding and the newline character and allow it to default to the current operating system.</p>
+<p>As a side effect <code>ProcessFiles</code> won’t crash anymore when <code>files</code> is empty because <code>enc</code> and <code>nl</code> have disappeared from the function.</p>
+<p>Now we have to make sure that <code>Initial</code> is called from <code>StartFromCmdLine</code>:</p>
+<pre><code>∇ {r}←StartFromCmdLine arg;MyLogger
+⍝ Needs command line parameters, runs the application.
+   r←⍬
+   MyLogger←Initial ⍬
+   MyLogger.Log'Started MyApp in ',F.PWD
+   MyLogger.Log #.GetCommandLine
+   r←TxtToCsv arg~''''
+   MyLogger.Log'Shutting down MyApp'
+∇</code></pre>
+<p>Note that we now log the full command line. In an application that receives its parameters from the command line this is important to do.</p>
+<div class="h_tag">
+<a href="#Improvements-to-our-code" id="Improvements-to-our-code" class="autoheader_anchor">
+<h2>Improvements to our code</h2>
+</a>
+</div>
+<p>We take the opportunity to move code from <code>TxtToCsv</code> to a new function <code>GetFiles</code>. This new function will take the command-line argument and return a list of files which may contain zero, one or many filenames:</p>
+<pre><code> ∇ (target files)←GetFiles fullfilepath;csv;target;path;stem
+ ⍝ Investigates `fullfilepath` and returns a list with files
+ ⍝ May return zero, one or many filenames.
+   fullfilepath~←'"'
+   csv←'.csv'
+   :If F.Exists fullfilepath
+       :Select C.NINFO.TYPE ⎕NINFO fullfilepath
+       :Case C.TYPES.DIRECTORY
+           target←F.NormalizePath fullfilepath,'\total',csv
+           files←⊃F.Dir fullfilepath,'\*.txt'
+       :Case C.TYPES.FILE
+           (path stem)←2↑⎕NPARTS fullfilepath
+           target←path,stem,csv
+           files←,⊂fullfilepath
+       :EndSelect
+       target←(~0∊⍴files)/target
+   :Else
+       files←target←''
+   :EndIf
+ ∇</code></pre>
+<p>We have to ensure <code>GetFiles</code> is called from <code>TxtToCsv</code>. Note that moving code from <code>TxtToCsv</code> to <code>GetFiles</code> allows us to keep <code>TxtToCsv</code> nice and tidy and the list of local variables short. In addition we have added calls to <code>MyLogger.Log</code> in appropriate places:</p>
+<pre><code>∇ rc←TxtToCsv fullfilepath;files;tbl;lines;target
+⍝ Write a sibling CSV of the TXT located at fullfilepath,
+⍝ containing a frequency count of the letters in the file text
+   (target files)←GetFiles fullfilepath
+   :If 0∊⍴files
+       MyLogger.Log'No files found to process'
+       rc←1
+   :Else
+       tbl←⊃⍪/(CountLetters ProcessFiles)files
+       lines←{⍺,',',⍕⍵}/{⍵[⍒⍵[;2];]}⊃{⍺(+/⍵)}⌸/↓[1]tbl
+       A.WriteUtf8File target lines
+       MyLogger.Log(⍕⍴files),' file',((1&lt;⍴files)/'s'),' processed:'
+       MyLogger.Log' ',↑files
+       rc←0
+   :EndIf
+∇</code></pre>
+<p>Notes:</p>
+<ul>
+<li>We are now using <code>FilesAndDirs.Dir</code> rather than the Dyalog primitive <code>⎕NINFO</code>.
+<p>Apart from offering recursive searches (a feature we don’t need here) the <code>Dir</code> function also normalizes the separator character. Under Windows it will always be a backslash while under Linux it is always a slash character.</p>
+<p>Although Windows itself is quite relaxed about the separator and accepts a slash as well as a backslash, as soon as you call something else in one way or another you will find that slashes are not accepted. For example: any setting of <code>⎕USING</code>.</p></li>
+<li>We use <code>APLTreeUtils.WriteUtf8File</code> rather than <code>⎕NPUT</code>:
+<ol start="1">
+<li>It will either overwrite an existing file or create a new one, with no questions asked.</li>
+<li>It will try several times in case something goes wrong. This is often helpful when a slippery network is involved.</li>
+</ol></li>
+<li>We could have written <code>A.WriteUtf8File target ({⍺,',',⍕⍵}/⊃{⍺(+/⍵)}⌸/↓[1]tbl)</code>, avoiding the local variable <code>lines</code>. We didn’t, because this variable might be helpful if something should go wrong and we need to trace through the <code>TxtToCsv</code> function.</li>
+<li>Note that <code>MyLogger</code> is a global variable rather than being passed as an argument to <code>TxtToCsv</code>. We will discuss this issue in detail in the <em>Configuration settings</em> chapter.</li>
+</ul>
+<p>Finally we change <code>Version</code>:</p>
+<pre><code>∇r←Version
+⍝ * 1.1.0:
+⍝   * Can now deal with non-existent files.
+⍝   * Logging implemented.
+⍝ * 1.0.0
+⍝   * Runs as a stand-alone EXE and takes parameters from the command line.
+  r←(⍕⎕THIS) '1.1.0' '2017-02-26'
+∇</code></pre>
+<p>The foreseeable error that aborted the runtime task – an invalid filepath – has now been replaced by a message saying no files were found.</p>
+<p>We have also changed the explicit result. So far it has returned the number of bytes written. In case something goes wrong (file not found, etc.) it will now return <code>¯1</code>.</p>
+<p>We can now test <code>TxtToCsv</code>:</p>
+<pre><code>      #.MyApp.TxtToCsv 'Z:\texts\en'
+      ⊃(⎕NINFO⍠1) 'Logs\*.LOG'
+ MyApp_20160406.log
+      ↑⎕NGET 'Logs\MyApp_20160406.log'
+2016-04-06 13:42:43 *** Log File opened
+2016-04-06 13:42:43 (0) Started MyApp in Z:\
+2016-04-06 13:42:43 (0) Source: Z:\texts\en
+2016-04-06 13:42:43 (0) Target: Z:\texts\en.csv
+2016-04-06 13:42:43 (0) 244 bytes written to Z:\texts\en.csv
+2016-04-06 13:42:43 (0) All done</code></pre>
+
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
+<div>
+<p>Alternatively you could set the parameter <code>printToSession</code> – which defaults to 0 – to 1. That would let the <code>Logger</code> class write all the messages not only to the log file but also to the session. That can be quite useful for test cases or during development. (You can even stop the <code>Logger</code> class writing to the disk at all by setting <code>fileFlag</code> to 0.)</p>
+</div>
+</div>
+
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
+<div>
+<p>The <code>Logger</code> class is designed never to break your application – for obvious reasons. The drawback of this is that if something goes wrong, such as the path becoming invalid because the drive got removed, you would notice only by trying to examine the log files.</p>
+<p>You can tell the <code>Logger</code> class that it should <strong>not</strong> trap all errors by setting the parameter <code>debug</code> to 1. Then <code>Logger</code> will crash if something goes wrong.</p>
+</div>
+</div>
+
+<p>Let’s see if logging works also for the exported <abbr title="Executable file with the extension 'exe'">EXE</abbr>. Run the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> to rebuild the workspace. Export as before and then run the new <code>MyApp.exe</code> in a Windows console.</p>
+<pre><code>Z:\code\v04\MyApp.exe Z:\texts\en</code></pre>
+<p>Yes! The output <abbr title="File with the extension 'txt' containing text">TXT</abbr> gets produced as before, and the work gets logged in <code>Z:\Logs</code>.</p>
+<p>Let’s see what happens now when the filepath is invalid.</p>
+<pre><code>Z:\code\v04\MyApp.exe Z:\texts\de</code></pre>
+<p>No warning message – the program made an orderly finish. And the log?</p>
+<pre><code>      ↑⎕NGET 'Logs\MyApp_20160406.log'
+2017-02-26 10:54:01 *** Log File opened
+2017-02-26 10:54:01 (0) Started MyApp in Z:\code\v04
+2017-02-26 10:54:01 (0) Source: G:\Does_not_exist
+2017-02-26 10:54:01 (0) No files found to process
+2017-02-26 10:54:26 *** Log File opened
+2017-02-26 10:54:26 (0) Source: "Z:\texts\en\ageofinnocence.txt"
+2017-02-26 10:54:26 (0) Started MyApp in Z:\code\v04
+2017-02-26 10:54:26 (0) 1 file processed.
+2017-02-26 10:58:07 (0) Z:/texts/en/ageofinnocence.txt
+2017-02-26 10:54:35 *** Log File opened
+2017-02-26 10:54:35 (0) Started MyApp in Z:\code\v04
+2017-02-26 10:54:35 (0) Source: "Z:\texts\en\"
+2017-02-26 10:54:35 (0) 9 files processed.
+2017-02-26 10:58:07 (0) Z:/texts/en/ageofinnocence.txt
+...</code></pre>
+
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
+<div>
+<p>In case you wonder what the <code>(0)</code> in the log file stands for: this reports the thread number that has written to the log file. Since we do not use threads, this is always <code>(0)</code> = the main thread the interpreter is running in.</p>
+</div>
+</div>
+
+<p>One more improvement in <code>MyApp</code>: we change the setting of the system variables from</p>
+<pre><code>:Namespace MyApp
+
+    (⎕IO ⎕ML ⎕WX ⎕PP ⎕DIV)←1 1 3 15 1
+    ....</code></pre>
+<p>to the more readable:</p>
+<pre><code>:Namespace MyApp
+
+    ⎕IO←1 ⋄ ⎕ML←1 ⋄ ⎕WX←3 ⋄ ⎕PP←15 ⋄ ⎕DIV←1
+    ....</code></pre>
+<div class="h_tag">
+<a href="#Watching-the-log-file-with-LogDog" id="Watching-the-log-file-with-LogDog" class="autoheader_anchor">
+<h2>Watching the log file with LogDog</h2>
+</a>
+</div>
+<p>So far we have used modules from the APLTree project: class and namespace scripts that might be useful when implementing an application.</p>
+<p>APLTree also offers applications that support the programmer during her work without becoming part of the application. One of those applications is the LogDog.</p>
+<p>Its purpose is simply to watch a log file and reflect any changes immediately in the GUI. This is useful for us, as the log file is now our best view of how the application is doing.</p>
+<p>In order to use LogDog you first need to download it from <a href="http://download.aplwiki.com" class="external_link">http://download.aplwiki.com</a>. Download it into the default download location. For a user JohnDoe that would be <code>C:\Users\JohnDoe\Downloads</code>.</p>
+<p>LogDog does not come with an installer. All you have to do is to copy it into a folder where you have the right to add, delete and change files. That means <code>C:\Program Files</code> and <code>C:\Program Files (x86)</code> are not options.</p>
+<p>If you want to install the application just for your own user ID then this is the right place:</p>
+<pre><code>"C:\Users\JohnDoe\AppData\Local\Programs\LogDog</code></pre>
+<p>If you want to install it for all users on your PC then we suggest that you create this folder:</p>
+<pre><code>"C:\Users\All users\Local\Programs\LogDog</code></pre>
+<p>Of course <code>C:\MyPrograms\LogDog</code> might be okay as well.</p>
+<p>You start LogDog by double-clicking the <abbr title="Executable file with the extension 'exe'">EXE</abbr>. You can then consult LogDog’s help for how to open a log file.</p>
+<p>We recommend the <em>Investigate folder</em> option. The reason is: every night at 24:00 a new log file with a new name is created. To display any new(er) log file, issue the <em>Investigate folder</em> menu command again.</p>
+<p>Once you have started LogDog on the <code>MyApp</code> log file you will see something like this:</p>
+<p><img src="./Images/LogDog.png" alt="LogDog GUI" title="LogDog GUI"></p>
+<p>Note that LogDog comes with an auto-scroll feature, meaning that the latest entries at the bottom of the file are always visible. If you don't want this for any reason just tick the <code>Freeze</code> checkbox.</p>
+<p>From now on we will assume you have LogDog always up and running, so that you will get immediate feedback on what is going on when <code>MyApp.exe</code> runs.</p>
+<div class="h_tag">
+<a href="#Where-are-we" id="Where-are-we" class="autoheader_anchor">
+<h2>Where are we</h2>
+</a>
+</div>
+<p>We now have <code>MyApp</code> logging its work in a subfolder of the application folder and reporting any problems it has anticipated.</p>
+<p>Next we need to consider how to handle and report errors we have <em>not</em> anticipated. We should also return some kind of error code to Windows. If <code>MyApp</code> encounters an error, any process calling it needs to know. But before we are doing this we will disuss how to configure <code>MyApp</code>.</p>
+
+<div class="leanpub_A">
+<h3>Destructors versus the Tracer</h3>
+<p>When you trace through <code>TxtToCsv</code>, the moment you leave the function the Tracer shows the function <code>Cleanup</code> of the <code>Logger</code> class. The function is declared as a destructor.</p>
+<p>Why that is: a destructor (if any) is called when the instance of a class is destroyed (or shortly thereafter).</p>
+<p><code>MyLogger</code> is localized in the header of <code>TxtToCsv</code>, meaning that when <code>TxtToCsv</code> ends, this instance of the <code>Logger</code> class is destroyed and the destructor is invoked. Since the Tracer was up and running, the destructor makes an appearance in the Tracer.</p>
+</div>
+<div id="footnotes_div">
+<hr>
+<p><strong>Footnotes</strong></p>
+<ol>
+<li id="fnref1"><p>You can download all members of the APLTree library from the APL Wiki <a href="http://download.aplwiki.com/" class="external_link">http://download.aplwiki.com/</a> or from the project pages on <a href="https://github.com" class="external_link">GitHub</a>:<br>search for “apltree” to get a full list. Note that all apltree projects are owned by “aplteam”.</p><a href="#fnref1" class="footnote_anchor"></a>
+<li id="fnref2"><p>Details regarding the BOM:<br><a href="https://en.wikipedia.org/wiki/Byte_order_mark" class="external_link">https://en.wikipedia.org/wiki/Byte_order_mark</a></p><a href="#fnref2" class="footnote_anchor"></a>
+</ol>
+</div>
+</div>
+</div>
+<script>
+var snapper = new Snap({
+element: document.getElementById('content')
+});
+document.getElementById('mainmenu_match').onclick = function(){
+snapper.state().state==='closed'?snapper.open('left'):snapper.close();
+}
+</script>
+</body>
+</html>

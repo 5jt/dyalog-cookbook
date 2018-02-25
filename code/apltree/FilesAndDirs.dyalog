@@ -1,4 +1,4 @@
-﻿:Class FilesAndDirs
+:Class FilesAndDirs
 ⍝ ## Overview
 ⍝ This class offers methods useful for dealing with files and directories. The class aims
 ⍝ to be platform-independent and work under Windows, Linux and Mac OS.
@@ -51,30 +51,23 @@
 
     ∇ r←Version
       :Access Public shared
-      r←(Last⍕⎕THIS)'1.7.1' '2017-06-03'
+      r←(Last⍕⎕THIS)'1.8.1' '2018-02-19'
     ∇
 
     ∇ History
       :Access Public shared
-      ⍝ * 1.7.1
-      ⍝   1.7.0 introduced a bug: if a folder contained directories that match a wildcard expression
-      ⍝   those folder were ignored anyway.
+      ⍝ * 1.8.1
+      ⍝   * Bug fix: a pattern `*.extension` (without path name) never found anything.
+      ⍝ * 1.8.0
+      ⍝   * First release on GitHub after the conversion from the APL wiki.
+      ⍝ * 1.7.1\\
+      ⍝   Bug fix that was introduced with 1.7.0: if a folder contained directories that match a 
+      ⍝   wildcard expression those folders were ignored anyway.
       ⍝ * 1.7.0
       ⍝   * Bug fixes:
       ⍝     * `Dir` when given a path without a trailing separator should return information
       ⍝       just for the given directory but **not** its contents. That's now the case but
       ⍝       it may break your code.
-      ⍝ * 1.6.2
-      ⍝   * Performance improved: `ListDirs`.
-      ⍝   * Bug fixes:
-      ⍝     * Internally `NormalizePath` was called with ¨ - that's redundant.
-      ⍝     * `(recursive 1) Dir folder` had a problem.
-      ⍝     * File pattern with wildcard and an extension (like `*.log`) had a problem in both
-      ⍝       `Dir` and `ListDir`.
-      ⍝ * 1.6.1
-      ⍝   * Bug fix: `'expand'∘NormalizePath¨fileList` did not expand. The `¨` is however redundant.
-      ⍝ * 1.6.0
-      ⍝   * Now managed by acre 3.
     ∇
 
     ∇ r←{parms_}Dir path;buff;list;more;parms;rc;extension;filename;folder;subFolders;pattern;isSelfCall
@@ -173,7 +166,7 @@
               :AndIf 0=⎕NEXISTS buff
                   'path does not exist'⎕SIGNAL 6
               :EndIf
-              pattern←folder,(filename{0∊⍴⍺,⍵:'' ⋄ '/',⍺,⍵}extension)
+              pattern←(folder,(~0∊⍴folder)/'/'),(filename{0∊⍴⍺,⍵:'' ⋄ ⍺,⍵}extension)
               buff←(0 1,parms.type~0 1)⎕NINFO⍠('Follow'parms.follow)('Wildcard' 1)⊣pattern
               buff←((1⊃buff)∊1 2 4)∘/¨buff   ⍝ Ordinary files, folders and links
               (0⊃buff)←NormalizePath 0⊃buff
@@ -549,10 +542,10 @@
     ∇ path←{expandFlag}NormalizePath path;UNCflag;sep;ExpandEnvironmentStrings;isScalar
       :Access Public Shared
       ⍝ `path` might be either a simple text vector or scalar representing a single filename or a
-      ⍝ vector of text vectors with each item representing a text vector.
+      ⍝ vector of text vectors with each item representing a single filename.
       ⍝ Enforces either `\` or `/` as separator in `path` depending on the current operating system.\\
-      ⍝ If you **must** enforce a particular separator then use either `EnforceBackslash` or
-      ⍝ `Enforceslash`.\\
+      ⍝ If you need a particular separator then use either `EnforceBackslash` or
+      ⍝ `EnforceSlash`.\\
       ⍝ Note that by default a relative path remains relative and any `../` (or `..\`) is not touched.
       ⍝ You can change this by specifying "expand" as the (optional) left argument; then `path` is
       ⍝ expanded to an absolute path. As a side effect any `../` is transformed appropriately as well.\\

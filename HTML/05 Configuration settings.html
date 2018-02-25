@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta charset="utf-8">
+<title>Configuration</title>
+<link href="./CSS/BlackOnWhite_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/Cookbook_Chapter_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/snap.css" rel="stylesheet" media="screen">
+<link href="./CSS/BlackOnWhite_print.css" rel="stylesheet" media="print">
+<link href="./CSS/Cookbook_Chapter_print.css" rel="stylesheet" media="print">
+<script src="./JavaScript/snap.js"></script>
+</head>
+<body>
+<div class="snap-drawers">
+<div class="snap-drawer snap-drawer-left">
+<div class="h_tag">
+<h3>Chapters</h3>
+</div>
+<ol>
+<li><a href="./01%20Introduction.html" class="external_link">Introduction</a></li>
+<li><a href="./02%20Structure.html" class="external_link">Structure</a></li>
+<li><a href="./03%20Package%20MyApp%20as%20an%20executable.html" class="external_link">Package MyApp as an executable</a></li>
+<li><a href="./04%20Logging%20what%20happens%20.html" class="external_link">Logging what happens </a></li>
+<li><a href="./05%20Configuration%20settings.html" class="external_link">Configuration settings</a></li>
+<li><a href="./06%20Debugging%20a%20stand-alone%20EXE.html" class="external_link">Debugging a stand-alone EXE</a></li>
+<li><a href="./07%20Handling%20errors.html" class="external_link">Handling errors</a></li>
+<li><a href="./08%20Testing%20—%20the%20sound%20of%20breaking%20glass.html" class="external_link">Testing<br>The sound of breaking glass</a></li>
+<li><a href="./09%20Documentation%20—%20the%20Doc%20is%20in.html" class="external_link">Documentation<br>The Doc is in</a></li>
+<li><a href="./10%20Make%20me.html" class="external_link">Make me</a></li>
+<li><a href="./11%20Providing%20help.html" class="external_link">Providing help</a></li>
+<li><a href="./12%20Scheduled%20Tasks.html" class="external_link">Scheduled Tasks</a></li>
+<li><a href="./13%20Windows%20Services.html" class="external_link">Windows Services</a></li>
+<li><a href="./14%20The%20Windows%20Event%20Log.html" class="external_link">The Windows Event Log</a></li>
+<li><a href="./15%20The%20Windows%20Registry.html" class="external_link">The Windows Registry</a></li>
+<li><a href="./16%20Creating%20SetUp.exe%20with%20Inno.html" class="external_link">Creating SetUp.exe with Inno</a></li>
+<li><a href="./17%20RegularExpressions.html" class="external_link">RegularExpressions</a></li>
+<li><a href="./18%20GUI.html" class="external_link">GUI</a></li>
+</ol>
+<div class="h_tag">
+<h3>Appendices</h3>
+</div>
+<ol>
+<li><a href="./50%20Appendix%201%20—%20Windows%20environment%20variables.html" class="external_link">Windows environment variables</a></li>
+<li><a href="./51%20Appendix%202%20—%20User%20commands.html" class="external_link">User commands</a></li>
+<li><a href="./52%20Appendix%203%20—%20aplcores%20and%20WS%20integrity.html" class="external_link">aplcores and WS integrity</a></li>
+<li><a href="./53%20Appendix%204%20—%20The%20development%20environment.html" class="external_link">The development environment</a></li>
+<li><a href="./54%20Appendix%205%20—%20Special%20characters.html" class="external_link">Special characters</a></li>
+</ol>
+<div class="h_tag">
+<h3>Misc</h3>
+</div>
+<ul>
+<li><a href="04%20Logging%20what%20happens%20.html">Previous chapter</a></li>
+<li><a href="06%20Debugging%20a%20stand-alone%20EXE.html">Next chapter;</a></li>
+<li><a href="./Dyalog_Cookbook.html" class="external_link">Single document<br>(All chapters, for printing)</a></li>
+</ul>
+</div>
+</div>
+<div id="mainmenu">
+<a href=#><p><span id="mainmenu_match">≡</span></p></a>
+<p><span id="mainmenu_title">The Dyalog Cookbook</span></p>
+<nav id="main_nav">
+<input type="checkbox" id="hide_toc">
+<label id="hide_toc_label" for="hide_toc"></label>
+<div class="toc-container">
+<ul>
+<li><a href="#The-Windows-Registry">The Windows Registry</a></li>
+<li><a href="#INI-JSON-or-XML-configuration-files">INI, JSON, or XML configuration files?</a></li>
+<li><a href="#INI-files-it-is">INI files it is!</a>
+<ul>
+<li><a href="#Where-to-save-an-INI-file">Where to save an INI file</a></li>
+<li><a href="#Lets-start">Let’s start</a></li>
+<li><a href="#Our-INI-file">Our INI file</a></li>
+<li><a href="#Initialising-the-workspace">Initialising the workspace</a></li>
+<li><a href="#What-we-think-about-when-we-think-about-encapsulating-state">What we think about when we think about encapsulating state</a></li>
+<li><a href="#The-IniFiles-class">The IniFiles class</a></li>
+<li><a href="#Final-steps">Final steps</a>
+</li></ul></li>
+</ul>
+</div>
+</nav>
+</div>
+<div id="content" class="snap-content">
+<div id="cookbook_content">
+<div class="h_tag">
+<a href="#5-Configuration-settings" id="5-Configuration-settings" class="autoheader_anchor">
+<h1>5. Configuration settings</h1>
+</a>
+</div>
+<p>We want our logging and error handling to be configurable. In fact, we will soon have lots of state settings. Thinking more widely, an application’s configuration includes all kinds of state: e.g. folders for log files and crashes, a debug flag, a flag for switching off error trapping, an email address to report to – you name it.</p>
+<p>Several mechanisms are available for storing configuration settings. Microsoft Windows has the Windows Registry. There are also cross-platform file formats to consider: XML, JSON – and good old <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> files.</p>
+<div class="h_tag">
+<a href="#The-Windows-Registry" id="The-Windows-Registry" class="autoheader_anchor">
+<h2>The Windows Registry</h2>
+</a>
+</div>
+<p>The Windows Registry is held in memory, so it is fast to read. It has been widely used to store configuration settings. Some would say, abused. However, for quite some time it was considered bad practice to have application-specific config files.</p>
+<p>Everything was expected to go into the Windows Registry. The pendulum started to swing back the other way now for several years, and application-specific config files become ever more common. We follow a consensus opinion that it is best to minimise use of the Registry.</p>
+<p>Settings needed by Windows itself <em>have</em> to be stored in the Registry. For example, associating a file extension with your application, so that double clicking on its icon launches your application.</p>
+<p>The APLTree classes <a href="http://aplwiki.com/WinReg" class="external_link">WinRegSimple</a> and <a href="http://aplwiki.com/WinReg" class="external_link">WinReg</a> provide methods for handling the Windows Registry. We will discuss them in their own chapter.</p>
+<p>MyApp doesn’t need the Windows Registry at this point. We’ll store its configurations in configuration files.</p>
+
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
+<div>
+<p>The Windows Registry is still an excellent choice for saving user-specific stuff like preferences, themes, recent files etc. However, you have to make sure that your user has permission to write to the Windows Registry – that's by no means a certainty.</p>
+</div>
+</div>
+
+<div class="h_tag">
+<a href="#INI-JSON-or-XML-configuration-files" id="INI-JSON-or-XML-configuration-files" class="autoheader_anchor">
+<h2>INI, JSON, or XML configuration files?</h2>
+</a>
+</div>
+<p>Three formats are popular for configuration files: <abbr title="File with the extension 'ini' containing configuration data">INI</abbr>, JSON and XML. <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> is the oldest, simplest, and most crude. The other formats offer advantages: XML can represent nested data structures, and JSON can do so with less verbosity.</p>
+<p>Both XML and JSON depend upon unforgiving syntax: a single typo in an XML document can render it impossible to parse.</p>
+<p>We want configuration files to be suitable for humans to read and write, so you might consider the robustness of the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> format an advantage. Or a disadvantage: a badly-formed XML document is easy to detect, and a clear indication of an error.</p>
+<p>Generally, we prefer simplicity and recommend the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> format where it will serve.</p>
+<p>By using the APLTree class <code>IniFiles</code> we get as a bonus additional features:</p>
+<ul>
+<li>Data types: a key can carry either a text vector or a number.</li>
+<li>Nested vectors: a key can carry a vector of text vectors.</li>
+<li>Merge <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> files: specify more than one <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file.</li>
+<li>Local variables (place holders).</li>
+</ul>
+<p>We will discuss these features as we go along.</p>
+<div class="h_tag">
+<a href="#INI-files-it-is" id="INI-files-it-is" class="autoheader_anchor">
+<h2>INI files it is!</h2>
+</a>
+</div>
+<div class="h_tag">
+<a href="#Where-to-save-an-INI-file" id="Where-to-save-an-INI-file" class="autoheader_anchor">
+<h3>Where to save an INI file</h3>
+</a>
+</div>
+<p>In the chapter on Logging, we considered the question of where to keep application logs. The answer depends in part on what kind of application you are writing. Will there be single or multiple instances?</p>
+<p>For example, while a web browser might have several windows open simultaneously, it is nonetheless a single instance of the application. Its user wants to run just one version of it, and for it to remember her latest preferences and browsing history.</p>
+<p>But a machine may have many users, and each user needs her own preferences and history remembered.</p>
+<p>Our MyApp program might well form part of other software processes, perhaps running as a service. There might be multiple instances of MyApp running at any time, quite independently of each other, each with quite different configuration settings.</p>
+<p>Where does that leave us? We want configuration settings:</p>
+<dl>
+<dt>As defaults for the application in the absence of any other configuration settings, for all users</dt>
+<dd><p class="first_dd">These must be coded into the application (‘Convention over configuration’), so it will run in the absence of any configuration files.</p></dd>
+<dd><p>But an administrator should be able to revise these settings for a site. So they should be saved somewhere for all users. This filepath is represented in Windows by the <code>ALLUSERSPROFILE</code> environment variable. So we might look there for a <code>MyApp\MyApp.ini</code> file.</p></dd>
+<dt>For invocation when the application is launched</dt>
+<dd>We could look in the command-line arguments for an <abbr title="File with the extension 'ini' containing configuration data">INI</abbr>.</dd>
+<dt>As part of the user’s profile</dt>
+<dd><p class="first_dd">The Windows environment variable <code>APPDATA</code> points to the individual user’s roaming profile, so we might look there for a <code>MyApp\MyApp.ini</code> file. <em>Roaming</em> means that no matter which computer a user logs on to in a Windows Domain [<a href="#fnref1" class="footnote_link"><sup>1</sup></a>], her personal settings, preferences, desktop etc. roam with her.</p></dd>
+<dd><p>The Windows environment variable <code>LOCALAPPDATA</code> on the other hand defines a folder that is saved just locally. Typically <code>APPDAATA</code> points to something like <code>C:\Users\{username}\AppData\Roaming</code> and <code>LOCALAPPDATA</code> to <code>C:\Users\{username}\AppData\Local</code>.</p></dd>
+</dl>
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
+<div>
+<p>Note that when a user logs on to another computer all the files in <code>APPDATA</code> are synchronised first. Therefore it is not smart to save in <code>APPDATA</code> a logfile that will eventually grow large – put it into <code>LOCALAPPDATA</code>.</p>
+</div>
+</div>
+
+<p>From the above we get a general pattern for configuration settings:</p>
+<ol start="1">
+<li>Defaults in the program code</li>
+<li>Overwrite from ALLUSERSPROFILE if any</li>
+<li>Overwrite from USERPROFILE</li>
+<li>Overwrite from an <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> specified in command line, if any</li>
+<li>Overwrite with the command line</li>
+</ol>
+<p>However, for the Cookbook we keep things simple: we look for an <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file that is a sibling of the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> or the <abbr title="Executable file with the extension 'exe'">EXE</abbr> for now but will allow this to be overwritten via the command line with something like <code>INI='C:\MyAppService\MyApp.ini</code>.</p>
+<p>We need this when we make MyApp a Windows Scheduled Task, or run it as a Windows Service.</p>
+<div class="h_tag">
+<a href="#Lets-start" id="Lets-start" class="autoheader_anchor">
+<h3>Let’s start</h3>
+</a>
+</div>
+<p>Save a copy of <code>Z:\code\v04</code> as <code>Z:\code\v05</code> or copy <code>v05</code> from the Cookbook website. We add one line to <code>MyApp.dyapp</code>:</p>
+<pre><code>...
+Load ..\AplTree\FilesAndDirs
+leanpub-insert-start
+Load ..\AplTree\IniFiles
+leanpub-insert-end
+Load ..\AplTree\OS
+...</code></pre>
+<p>and run the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> to recreate the <code>MyApp</code> workspace.</p>
+<p>You can read the <code>IniFiles</code> documentation in a browser with <code>]ADoc #.IniFiles</code>.</p>
+<div class="h_tag">
+<a href="#Our-INI-file" id="Our-INI-file" class="autoheader_anchor">
+<h3>Our INI file</h3>
+</a>
+</div>
+<p>This is the content of the newly introduced <code>code\v05\MyApp.ini</code>:</p>
+<pre><code>localhome = '%LOCALAPPDATA%\MyApp'
+
+[Config]
+Debug       = ¯1    ; 0=enfore error trapping; 1=prevent error trapping;
+Trap        = 1     ; 0 disables any :Trap statements (local traps)
+
+Accents     = ''
+Accents     ,='ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝ'
+Accents     ,='AAAAAACDEEEEIIIINOOOOOOUUUUY'
+
+[Folders]
+Logs        = '{localhome}\Log'
+Errors      = '{localhome}\Errors'</code></pre>
+<p>If you have not copied <code>v05</code> from the website make sure you create an <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file with this content as a sibling of the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>.</p>
+<p>Notes:</p>
+<ul>
+<li>The <code>IniFiles</code> class offers some unique features. Those are discussed below. This is not a violation of the standard for <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> files: there is none.</li>
+<li>Assignments above the first section – which is <code>[Config]</code> – are variables local to the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file. We can refer to them by putting curly brackets (<code>{}</code>) around their names as with <code>{localhome}</code>. They have no other purpose.
+<p>You can see that <code>localhome</code> is referred to twice in the <code>[Folders]</code> section, and why that is useful.</p></li>
+<li><code>IniFiles</code> supports two data types: character and number. Everything between two quotes is character, everything else is assumed to be a number.</li>
+<li><code>Debug</code> is set to ¯1 – it is indeed going to be a numeric value because there are no quotes involved. <code>debug</code> defines whether the application runs in debug mode or not.
+<p>Most importantly <code>debug←1</code> will switch off global error trapping, something we will soon introduce. <code>¯1</code> means that the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file does not set the flag.</p>
+<p>Therefore it will later in the application default to 1 in a development environment and to 0 in a runtime evenvironment. By setting this to either 1 or 0 in the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file you can force it to be a particular value.</p></li>
+<li><code>Trap</code> can be used to switch off error trapping globally. It will be used in statements like <code>:Trap Config.Traps/0</code>. We will discuss in a minute what <code>Config</code> is.</li>
+<li><code>Accents</code> is initialized as an empty vector but then values are added with <code>,=</code>. That means that <code>Accents</code> will be a vtv: a vector of text vectors. Since we define the default to be the same as what the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file contains anyway it makes not too much sense but it illustrates a second and better way of defining it.</li>
+<li><code>Logs</code> specifies the folder in which MyApp will write log files.</li>
+<li><code>Errors</code> specifies the folder in which MyApp will write crash information. See later on, when we establish global error handling.</li>
+</ul>
+<div class="h_tag">
+<a href="#Initialising-the-workspace" id="Initialising-the-workspace" class="autoheader_anchor">
+<h3>Initialising the workspace</h3>
+</a>
+</div>
+<p>We create a new function <code>CreateConfig</code> for that:</p>
+<pre><code>∇ Config←CreateConfig dummy;myIni;iniFilename
+⍝ Instantiate the INI file and copy values over to a namespace `Config`.
+  Config←⎕NS''
+  Config.⎕FX'r←∆List' 'r←{0∊⍴⍵:0 2⍴'''' ⋄ ⍵,[1.5]⍎¨⍵}'' ''~¨⍨↓⎕NL 2'
+  Config.Debug←A.IsDevelopment
+  Config.Trap←1
+  Config.Accents←'ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝ' 'AAAAAACDEEEEIIIINOOOOOOUUUUY'
+  Config.LogFolder←'./Logs'
+  Config.DumpFolder←'./Errors'
+  iniFilename←'expand'F.NormalizePath'MyApp.ini'
+  :If F.Exists iniFilename
+      myIni←⎕NEW ##.IniFiles(,⊂iniFilename)
+      Config.Debug{¯1≡⍵:⍺ ⋄ ⍵}←myIni.Get'Config:debug'
+      Config.Trap←⊃Config.Trap myIni.Get'Config:trap'
+      Config.Accents←⊃Config.Accents myIni.Get'Config:Accents'
+      Config.LogFolder←'expand'F.NormalizePath⊃Config.LogFolder myIni.Get'Folders:Logs'
+      Config.DumpFolder←'expand'F.NormalizePath⊃Config.DumpFolder myIni.Get'Folders:Errors'
+  :EndIf
+  Config.LogFolder←'expand'F.NormalizePath Config.LogFolder
+  Config.DumpFolder←'expand'F.NormalizePath Config.DumpFolder
+∇</code></pre>
+<p>What the function does:</p>
+<ul>
+<li>It creates an unnamed namespace and assigns it to <code>Config</code>.</li>
+<li>It fixes a function <code>∆List</code> inside <code>Config</code>.</li>
+<li>It populates <code>Config</code> with the defaults for all the settings we are going to use. (Remember, we might not find an <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file.)</li>
+<li>It creates a name for the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file and checks whether it exists. If so, it instatiates the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file and copies all the values it finds in the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file to <code>Config</code>, overwriting the defaults.</li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li>The <code>Get</code> function requires a section and a key as right argument. They can be provided either as a two-item vector as in <code>'Config' 'debug'</code> or as a text vector with section and key separated by a colon as in <code>'Config:debug'</code>.</li>
+<li><code>Get</code> requires a given section to exist, otherwise it will throw an error.
+<p>An optional left argument specifies a default value to be returned if the required key is not found.</p>
+<p>If the key is not found <em>and</em> no left argument was specified an error is thrown.</p></li>
+<li>If you cannot be sure whether a section/key combination exists (a typical problem when after an update a newer version of an application hits an old <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file) you can check with the <code>Exist</code> method.</li>
+</ul>
+<p>The built-in function <code>∆List</code> is handy for checking the contents of <code>Config</code>:</p>
+<pre><code>      Config.∆List
+ Accents      ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝ  AAAAAACDEEEEIIIINOOOOOOUUUUY
+ Debug                                                                  0
+ DumpFolder                          C:\Users\kai\AppData\Local\MyApp\Log
+ LogFolder                           C:\Users\kai\AppData\Local\MyApp\Log
+ Trap                                                                   1</code></pre>
+<p>Now that we have moved <code>Accents</code> to the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file we can lose these lines in the <code>MyApp</code> script:</p>
+<pre><code>⍝ === VARIABLES ===
+    Accents←'ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝ' 'AAAAAACDEEEEIIIINOOOOOOUUUUY'
+⍝ === End of variables definition ===</code></pre>
+<p>Where should we call <code>CreateConfig</code> from? Surely that has to be <code>Initial</code>:</p>
+<pre><code>leanpub-start-insert
+∇ (Config MyLogger)←Initial dummy
+</span>⍝ Prepares the application.
+<span class="leanpub_code">  Config←CreateConfig ⍬
+</span>  MyLogger←OpenLogFile Config.LogFolder
+  MyLogger.Log'Started MyApp in ',F.PWD
+<span class="leanpub_code">  MyLogger.Log #.GetCommandLine
+</span>  MyLogger.Log↓⎕FMT Config.∆List
+∇</code></pre>
+<p>Note that we also changed what <code>Initial</code> returns: a vector of length two, the namespace <code>Config</code> but also an instance of the <code>MyLogger</code> class.</p>
+<p><code>Initial</code> was called within <code>StartFromCmdLine</code>, and we are not going to change this but we must change the call as such because now it returns something useful:</p>
+<pre><code>leanpub-start-insert
+∇ {r}←StartFromCmdLine arg;MyLogger;Config
+</span>⍝ Needs command line parameters, runs the application.
+  r←⍬
+<span class="leanpub_code">  (Config MyLogger)←Initial ⍬
+</span>  r←TxtToCsv arg~''''
+∇</code></pre>
+<p>Although both <code>MyLogger</code> and <code>Config</code> are global and not passed as arguments, it’s good practice to assign them this way rather then bury their creation somewhere down the stack. This way it’s easy to see where they are set.</p>
+
+<div class="leanpub_A">
+<h3>Specifying an <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file on the command line</h3>
+<p>We could pass the command line parameters as arguments to <code>Initial</code> and investigate whether it carries any <code>INI=</code> statement. If so the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file specified this way should take precedence over any other <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file. However, we keep it simple here.</p>
+</div>
+
+<p>We now need to think about how to access <code>Config</code> from within <code>TxtToCsv</code>.</p>
+<div class="h_tag">
+<a href="#What-we-think-about-when-we-think-about-encapsulating-state" id="What-we-think-about-when-we-think-about-encapsulating-state" class="autoheader_anchor">
+<h3>What we think about when we think about encapsulating state</h3>
+</a>
+</div>
+<p>The configuration parameters, including <code>Accents</code>, are now collected in the namespace <code>Config</code>. That namespace is not passed explicitly to <code>TxtToCsv</code> but is needed by <code>CountLetters</code> which is called by <code>TxtToCsv</code>.</p>
+<p>We have two options here: we can pass a reference to <code>Config</code> to <code>TxtToCsv</code>, for example as left argument, and <code>TxtToCsv</code> in turn can pass it to <code>CountLetters</code>. The other option is that <code>CountLetters</code> just assumes the <code>Config</code> is around and has a variable <code>Accents</code> in it:</p>
+<pre><code>CountLetters←{
+    {⍺(≢⍵)}⌸⎕A{⍵⌿⍨⍵∊⍺}Config.Accents U.map A.Uppercase ⍵
+}</code></pre>
+<p>Yes, that’s it. Bit of a compromise here. Let’s pause to look at some other ways to write this.</p>
+<p>Passing everything through function arguments does not come with a performance penalty. The interpreter doesn’t make ‘deep copies’ of the arguments unless and until they are modified in the called function (which we hardly ever do) – instead the interpreter just passes around references to the original variables.</p>
+<p>So we could pass <code>G</code> as a left argument of <code>TxtToCsv</code>, which then simply gets passed to <code>CountLetters</code>.</p>
+<p>No performance penalty for this, as just explained, but now we’ve loaded the syntax of <code>TxtToCsv</code> with a namespace it makes no direct use of, an unnecessary complication of the writing. And we’ve set a left argument we (mostly) don't want to specify when working in session mode.</p>
+<p>The matter of <em>encapsulating state</em> – which functions have access to state information, and how it is shared between them – is very important. Poor choices lead to tangled and obscure code.</p>
+<p>From time to time you will be offered (not by us) rules that attempt to make the choices simple. For example: <em>never communicate through global or semi-global variables</em>. [<a href="#fnref2" class="footnote_link"><sup>2</sup></a>].</p>
+<p>There is some wisdom in these rules, but they masquerade as satisfactory substitutes for thought, which they are not.</p>
+<p>Just as in a natural language, any rule about writing style meets occasions when it can and should be broken.</p>
+<p>Following style ‘rules’ without considering the alternatives will from time to time have horrible results, such as functions that accept complex arguments only to pass them on unexamined to other functions.</p>
+<p>Think about the value of style ‘rules’ and learn when to follow them.</p>
+<p>One of the main reasons why globals should be used with great care is that they can easily be confused with local variables with similar or – worse – the same name.</p>
+<p>If you need to have global variables then we suggest encapsulating them in a dedicated namespace <code>Globals</code>. With a proper search tool like Fire [<a href="#fnref3" class="footnote_link"><sup>3</sup></a>] it is easy to get a report on all lines referring to anything in <code>Globals</code>.</p>
+<p>Sometimes it’s only after writing many lines of code that it becomes apparent that a different choice would have been better.</p>
+<p>And sometimes it becomes apparent that the other choice would be so much better that it’s worth unwinding and rewriting a good deal of what you’ve done. (Then rejoice that you’re writing in a terse language.)</p>
+<p>We share these musings here so you can see what we think about when we think about encapsulating state; and also that there is often no clear right answer.</p>
+<p>Think hard, make your best choices, and be ready to unwind and remake them later if necessary.</p>
+<div class="h_tag">
+<a href="#The-IniFiles-class" id="The-IniFiles-class" class="autoheader_anchor">
+<h3>The IniFiles class</h3>
+</a>
+</div>
+<p>We have used the most important features of the <code>IniFiles</code> class, but it has more to offer. We just want to mention some major topics here.</p>
+<ul>
+<li>The <code>Get</code> method can be used to list sections or even all sections with all key-value pairs. The following can be done when you trace into the <code>Initial</code> function to the point where the instance of the <code>Logger</code> class got instantiated:
+<pre><code>        myIni.Get 'Config' ⍬
+   Debug                                                               0
+   Trap                                                                1
+   Accents   ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝ  AAAAAACDEEEEIIIINOOOOOOUUUUY
+        Display myIni.Get_ ⍬ ⍬
+ CONFIG
+          Debug                                                              ¯1
+          Trap                                                                1
+          Accents   ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝ  AAAAAACDEEEEIIIINOOOOOOUUUUY
+ FOLDERS
+          Logs                                         %LOCALAPPDATA%\MyApp\Log
+          Errors                                       %LOCALAPPDATA%\MyApp\Log</code></pre>
+<p><code>Get</code> returns a matrix with three columns:</p>
+<ol start="1">
+<li>Contains per row a section name or an empty vector</li>
+<li>Contains a key or an empty vector</li>
+<li>Contains either a value or an empty vector.</li>
+</ol></li>
+<li>Instead of using the <code>Get</code> method you can also use indexing:
+<pre><code>      myIni[⊂'Config:debug']
+0
+      myIni['Config:debug' 'Folders:']
+ 0   %LOCALAPPDATA%\MyApp\Log  %LOCALAPPDATA%\MyApp\Log</code></pre></li>
+<li>You can actually assign a value to a key with the index syntax and save the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file by calling the <code>Save</code> method. However, you should <em>only</em> use this to write default values to an <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file, typically in order to create one. An <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file is not a database and should not be abused as such.</li>
+<li>We instantiated the <code>IniFiles</code> class with the statement <code>myIni←⎕NEW ##.IniFiles(,⊂iniFilename)</code> but you can actually specify more than just one <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file. Let’s suppose your computer’s name is “Foo” then this:
+<pre><code>myIni←⎕NEW ##.IniFiles('MyApp.ini' 'Foo.ini')</code></pre>
+<p>would create a new instance which contains all the definitions of <em>both</em> <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> files. In case of a name conflict the last one wins. Here this would mean that machine-specific definitions would overwrite more general ones.</p></li>
+<li>Sometimes it is more appropriate to have a namespace representing the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file as such, with subnamespaces representing the sections and variables within them representing the keys and values. This can be achieved by using the instance method <code>Convert</code>. See <code>]ADoc #.IniFiles</code> for details.
+<p>Here we give a simple example:</p>
+<pre><code>      q←myIni.Convert ⎕ns''
+      q.List ''
+CONFIG   Accents   ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝ  AAAAAACDEEEEIIIINOOOOOOUUUUY
+CONFIG   Debug                                                              ¯1
+CONFIG   Trap                                                                1
+FOLDERS  Errors                                       %LOCALAPPDATA%\MyApp\Log
+FOLDERS  Logs                                         %LOCALAPPDATA%\MyApp\Log
+       q.RIDE.Debug
+¯1</code></pre></li>
+</ul>
+<div class="h_tag">
+<a href="#Final-steps" id="Final-steps" class="autoheader_anchor">
+<h3>Final steps</h3>
+</a>
+</div>
+<p>We need to change the <code>Version</code> function:</p>
+<pre><code>∇ r←Version
+   ⍝ * 1.2.0:
+   ⍝   * The application now honours INI files.
+   ⍝ * 1.1.0:
+   ⍝   * Can now deal with non-existent files.
+   ⍝   * Logging implemented.
+   ⍝ * 1.0.0
+   ⍝   * Runs as a stand-alone EXE and takes parameters from the command line.
+      r←(⍕⎕THIS)'1.2.0' '2017-02-26'
+∇</code></pre>
+<p>And finally we create a new standalone <abbr title="Executable file with the extension 'exe'">EXE</abbr> as before and run it to make sure that everything keeps working. (Yes, we need test cases)</p>
+<div id="footnotes_div">
+<hr>
+<p><strong>Footnotes</strong></p>
+<ol>
+<li id="fnref1"><p><a href="https://en.wikipedia.org/wiki/Windows_domain" class="external_link">https://en.wikipedia.org/wiki/Windows_domain</a></p><a href="#fnref1" class="footnote_anchor"></a>
+<li id="fnref2"><p>So-called <em>semi-globals</em> are variables to be read or set by functions to which they are not localised. They are <em>semi-globals</em>, rather than globals, because they are local to either a function or a namespace. From the point of view of the functions that do read or set them, they are indistinguishable from globals – they are just mysteriously ‘around’.</p><a href="#fnref2" class="footnote_anchor"></a>
+<li id="fnref3"><p>Fire stands for <em>Find and Replace</em>. It is a powerful tool for both search and replace operations in the workspace. For details see <a href="https://github.com/aplteam.Fire" class="external_link">https://github.com/aplteam.Fire</a>. Fire is discussed in the chapter <em>Useful user commands</em>.</p><a href="#fnref3" class="footnote_anchor"></a>
+</ol>
+</div>
+</div>
+</div>
+<script>
+var snapper = new Snap({
+element: document.getElementById('content')
+});
+document.getElementById('mainmenu_match').onclick = function(){
+snapper.state().state==='closed'?snapper.open('left'):snapper.close();
+}
+</script>
+</body>
+</html>

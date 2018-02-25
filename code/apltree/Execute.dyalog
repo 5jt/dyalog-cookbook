@@ -1,4 +1,4 @@
-﻿:Class Execute
+:Class Execute
 ⍝ This class allows you two different things:
 ⍝ * Start a process and catch its return code.
 ⍝ * Start an application and catch its standard output.
@@ -38,17 +38,19 @@
 ⍝
 ⍝ Home page: <http://aplwiki.com/Execute>
 
-    :Include APLTreeUtils
+    :Include ##.APLTreeUtils
 
     okay←false←null←0 ⋄ true←1
 
     ∇ r←Version
       :Access Public shared
-      r←(Last⍕⎕THIS)'1.8.1' '2017-08-23'
+      r←(Last⍕⎕THIS)'1.9.0' '2018-02-19'
     ∇
 
     ∇ History
       :Access Public Shared
+    ⍝ * 1.9.0
+    ⍝   * First version after conversion from the APL wiki to GitHub.
     ⍝ * 1.8.1
     ⍝   * Glitches in the documentation fixed.
     ⍝ * 1.8.0
@@ -59,11 +61,6 @@
     ⍝ * 1.7.0
     ⍝   * Now requires at least Dyalog 15.0 Unicode
     ⍝   * Uses `FilesAndDirs` rather than `WinFile`.
-    ⍝ * 1.6.0
-    ⍝   * Doc converted to Markdown (requires at least ADOC 5.0).
-    ⍝ * 1.5.0
-    ⍝   * `Version` is now returning just the name (no path).
-    ⍝   * For marking up inline APL code now ticks (`) are used.
     ∇
 
     ∇ {(rc processInfo result more)}←{cs}Application program;⎕IO;⎕ML;NORMAL_PRIORITY_CLASS;nl;bool;startupInfo;processHandle;threadHandle;StillActive;Ctrl_C_Is;ProcessAborted;i;∆CreateProcess;∆GetCurrentDirectory;∆GetExitCodeProcess;∆GetExitCodeThread;∆WaitForSingleObject;∆TerminateProcess;∆TerminateThread

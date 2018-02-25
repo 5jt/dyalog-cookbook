@@ -1,4 +1,4 @@
-﻿:Class SevenZip
+:Class SevenZip
 ⍝ Use this class to zip/unzip files and directories with the Open Source software 7zip.\\
 ⍝ This class relies on an installed version of 7zip. The EXE must be on the PATH environment variable.\\
 ⍝ This class is supported under Linux and Windows but not Mac OS because 7zip is not available on the Mac.\\
@@ -31,7 +31,7 @@
 ⍝
 ⍝ Author: Kai Jaeger ⋄ APL Team Ltd
 
-    :Include APLTreeUtils
+    :Include ##.APLTreeUtils
 
     ⎕IO←0
     ⎕ML←3
@@ -40,11 +40,13 @@
 
     ∇ r←Version
       :Access Public Shared
-      r←(Last⍕⎕THIS)'2.1.2' '2017-10-30'
+      r←(Last⍕⎕THIS)'2.2.0' '2018-02-19'
     ∇
 
     ∇ History
       :Access Public Shared
+    ⍝ * 2.2.0:
+    ⍝   * Converted to GitHub from the APL wiki
     ⍝ * 2.1.2:
     ⍝   * Documentation improved.
     ⍝   * Better performance in case a file does not exist.

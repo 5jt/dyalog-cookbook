@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta charset="utf-8">
+<title>Tasks</title>
+<link href="./CSS/BlackOnWhite_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/Cookbook_Chapter_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/snap.css" rel="stylesheet" media="screen">
+<link href="./CSS/BlackOnWhite_print.css" rel="stylesheet" media="print">
+<link href="./CSS/Cookbook_Chapter_print.css" rel="stylesheet" media="print">
+<script src="./JavaScript/snap.js"></script>
+</head>
+<body>
+<div class="snap-drawers">
+<div class="snap-drawer snap-drawer-left">
+<div class="h_tag">
+<h3>Chapters</h3>
+</div>
+<ol>
+<li><a href="./01%20Introduction.html" class="external_link">Introduction</a></li>
+<li><a href="./02%20Structure.html" class="external_link">Structure</a></li>
+<li><a href="./03%20Package%20MyApp%20as%20an%20executable.html" class="external_link">Package MyApp as an executable</a></li>
+<li><a href="./04%20Logging%20what%20happens%20.html" class="external_link">Logging what happens </a></li>
+<li><a href="./05%20Configuration%20settings.html" class="external_link">Configuration settings</a></li>
+<li><a href="./06%20Debugging%20a%20stand-alone%20EXE.html" class="external_link">Debugging a stand-alone EXE</a></li>
+<li><a href="./07%20Handling%20errors.html" class="external_link">Handling errors</a></li>
+<li><a href="./08%20Testing%20—%20the%20sound%20of%20breaking%20glass.html" class="external_link">Testing<br>The sound of breaking glass</a></li>
+<li><a href="./09%20Documentation%20—%20the%20Doc%20is%20in.html" class="external_link">Documentation<br>The Doc is in</a></li>
+<li><a href="./10%20Make%20me.html" class="external_link">Make me</a></li>
+<li><a href="./11%20Providing%20help.html" class="external_link">Providing help</a></li>
+<li><a href="./12%20Scheduled%20Tasks.html" class="external_link">Scheduled Tasks</a></li>
+<li><a href="./13%20Windows%20Services.html" class="external_link">Windows Services</a></li>
+<li><a href="./14%20The%20Windows%20Event%20Log.html" class="external_link">The Windows Event Log</a></li>
+<li><a href="./15%20The%20Windows%20Registry.html" class="external_link">The Windows Registry</a></li>
+<li><a href="./16%20Creating%20SetUp.exe%20with%20Inno.html" class="external_link">Creating SetUp.exe with Inno</a></li>
+<li><a href="./17%20RegularExpressions.html" class="external_link">RegularExpressions</a></li>
+<li><a href="./18%20GUI.html" class="external_link">GUI</a></li>
+</ol>
+<div class="h_tag">
+<h3>Appendices</h3>
+</div>
+<ol>
+<li><a href="./50%20Appendix%201%20—%20Windows%20environment%20variables.html" class="external_link">Windows environment variables</a></li>
+<li><a href="./51%20Appendix%202%20—%20User%20commands.html" class="external_link">User commands</a></li>
+<li><a href="./52%20Appendix%203%20—%20aplcores%20and%20WS%20integrity.html" class="external_link">aplcores and WS integrity</a></li>
+<li><a href="./53%20Appendix%204%20—%20The%20development%20environment.html" class="external_link">The development environment</a></li>
+<li><a href="./54%20Appendix%205%20—%20Special%20characters.html" class="external_link">Special characters</a></li>
+</ol>
+<div class="h_tag">
+<h3>Misc</h3>
+</div>
+<ul>
+<li><a href="11%20Providing%20help.html">Previous chapter</a></li>
+<li><a href="13%20Windows%20Services.html">Next chapter;</a></li>
+<li><a href="./Dyalog_Cookbook.html" class="external_link">Single document<br>(All chapters, for printing)</a></li>
+</ul>
+</div>
+</div>
+<div id="mainmenu">
+<a href=#><p><span id="mainmenu_match">≡</span></p></a>
+<p><span id="mainmenu_title">The Dyalog Cookbook</span></p>
+<nav id="main_nav">
+<input type="checkbox" id="hide_toc">
+<label id="hide_toc_label" for="hide_toc"></label>
+<div class="toc-container">
+<ul>
+<li><a href="#What-is-a-Scheduled-Task">What is a Scheduled Task?</a></li>
+<li><a href="#What-can-and-cannot-be-achieved-by-Scheduled-Tasks">What can and cannot be achieved by Scheduled Tasks</a></li>
+<li><a href="#Scheduled-Tasks-versus-Services">Scheduled Tasks versus Services</a></li>
+<li><a href="#Preconditions-for-a-Scheduled-Task">Preconditions for a Scheduled Task</a></li>
+<li><a href="#Precautions-ensure-one-instance-only">Precautions: ensure one instance only</a></li>
+<li><a href="#Create-a-Scheduled-Task">Create a Scheduled Task</a>
+<ul>
+<li><a href="#Start-the-Scheduler">Start the Scheduler</a>
+<ul>
+<li><a href="#The-General-tab">The General tab</a></li>
+<li><a href="#The-Trigger-tab">The Trigger tab</a></li>
+<li><a href="#The-Action-tab">The Action tab</a></li>
+<li><a href="#The-Conditions-tab">The Conditions tab</a></li>
+<li><a href="#The-Settings-tab">The Settings tab</a></li>
+</ul></li>
+<li><a href="#Running-a-Scheduled-Task">Running a Scheduled Task</a></li>
+</ul></li>
+<li><a href="#Tips-tricks-pratfalls">Tips, tricks, pratfalls</a>
+<ul>
+<li><a href="#Riding-into-a-Scheduled-Task">Riding into a Scheduled Task</a></li>
+<li><a href="#The-Task-Scheduler-GUI">The Task Scheduler GUI</a></li>
+<li><a href="#Re-make-MyApp">Re-make MyApp</a></li>
+<li><a href="#MyApp-crashes-with-return-code-32">MyApp crashes with return code 32</a></li>
+<li><a href="#Binding-MyAPP-with-the-Dyalog-development-EXE">Binding MyAPP with the Dyalog development EXE</a></li>
+<li><a href="#Your-application-doesnt-do-what-its-supposed-to-do">Your application doesn’t do what it’s supposed to do</a></li>
+<li><a href="#Task-Scheduler-error-codes">Task Scheduler error codes</a></li>
+</ul></li>
+<li><a href="#Creating-tasks-programmatically">Creating tasks programmatically</a>
+</ul>
+</div>
+</nav>
+</div>
+<div id="content" class="snap-content">
+<div id="cookbook_content">
+<div class="h_tag">
+<a href="#12-Scheduled-Tasks" id="12-Scheduled-Tasks" class="autoheader_anchor">
+<h1>12. Scheduled Tasks</h1>
+</a>
+</div>
+<div class="h_tag">
+<a href="#What-is-a-Scheduled-Task" id="What-is-a-Scheduled-Task" class="autoheader_anchor">
+<h2>What is a Scheduled Task?</h2>
+</a>
+</div>
+<p>Windows offers a task scheduler in order to run applications at specific times. Like Services, Scheduled Tasks are designed for background jobs, meaning that such applications have no GUI, in fact, <em>cannot</em> have a GUI.</p>
+<p>The Scheduler allows you to start the application on a specific date and time once, or every day, every week or every month. The user does not have to be logged on (that’s different in older versions of Windows) and it let you run an application in elevated mode (see below).</p>
+<div class="h_tag">
+<a href="#What-can-and-cannot-be-achieved-by-Scheduled-Tasks" id="What-can-and-cannot-be-achieved-by-Scheduled-Tasks" class="autoheader_anchor">
+<h2>What can and cannot be achieved by Scheduled Tasks</h2>
+</a>
+</div>
+<p>Scheduled Tasks – like Services – are perfect for background tasks. Examples are:</p>
+<ul>
+<li>Take a backup once a week</li>
+<li>Check the availability of your website once every hour</li>
+<li>Send a test email to all your email addresses once a week</li>
+</ul>
+<p>Scheduled Tasks cannot interact with the user: when you try to put up a GUI and ask a question nothing appears on the screen: you just can’t do it.</p>
+<div class="h_tag">
+<a href="#Scheduled-Tasks-versus-Services" id="Scheduled-Tasks-versus-Services" class="autoheader_anchor">
+<h2>Scheduled Tasks versus Services</h2>
+</a>
+</div>
+<p>If your application needs to run all the time, even with delays between actions, then running as a Service would be more appropriate. Services are typically started automatically when the machine is booted, and they typically keep running until the next boot.</p>
+<p>To make this point clear, imagine these two scenarios:</p>
+<ul>
+<li>You need an application to start once a week and take a backup of a specific folder.</li>
+<li>You need an application to constantly monitor a specific folder for certain file types (say Markdown) and convert them (say into <abbr title="Hyper Text Mark-up language">HTML</abbr> files).</li>
+</ul>
+<p>The former is clearly a candidate for a Scheduled Task while the latter is a candidate for a Service.</p>
+<div class="h_tag">
+<a href="#Preconditions-for-a-Scheduled-Task" id="Preconditions-for-a-Scheduled-Task" class="autoheader_anchor">
+<h2>Preconditions for a Scheduled Task</h2>
+</a>
+</div>
+<p>You need either a saved workspace with <code>⎕LX</code> set or an <abbr title="Executable file with the extension 'exe'">EXE</abbr> created from a workspace. An <abbr title="Executable file with the extension 'exe'">EXE</abbr> has two advantages compared with an ordinary workspace:</p>
+<ol start="1">
+<li>The user cannot investigate the code.</li>
+<li>Dyalog is not required on the target system, not even the Runtime <abbr title="Executable file with the extension 'exe'">EXE</abbr>.</li>
+</ol>
+<p>If neither of these concerns you, an <abbr title="Executable file with the extension 'exe'">EXE</abbr> has no advantages over a simple saved workspace; it just adds complexity and should be avoided if there aren’t any advantages. However, if you cannot be sure the required version of Dyalog is installed on the target machine then it must be a stand-alone <abbr title="Executable file with the extension 'exe'">EXE</abbr>.</p>
+<p>We have already taken care of handling errors and writing to log files, which are the only sources of information in general, and in particular for analysing any problems that pop up when a Scheduled Task runs, or crashes. In other words, we are ready to go.</p>
+<p>Our application is an obvious candidate for running as a Service, but we can still run it as a Scheduled Task, so let’s explore that way.</p>
+<div class="h_tag">
+<a href="#Precautions-ensure-one-instance-only" id="Precautions-ensure-one-instance-only" class="autoheader_anchor">
+<h2>Precautions: ensure one instance only</h2>
+</a>
+</div>
+<p>Dealing with Scheduled Tasks you usually don’t want more than one instance of the application running at the same time. One of the most common sources of difficulty investigating Scheduled Tasks turns out to be running a second instance.</p>
+<p>For example, you try to ride into it but the port used by Ride is already occupied by an instance started earlier without you knowing of it. We are going to prevent this happening.</p>
+
+<div class="leanpub_A">
+<p>In the rare circumstances when you want application instances managed by the Task Scheduler to run in parallel, establish a mechanism that allows you to enforce having just one instance running, if only for debugging purposes. Make it an <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> entry (like <code>AllowMultipleInstances</code>) and document it appropriately.</p>
+</div>
+
+<p>We resume, as usual, by saving a copy of <code>Z:\code\v11</code> as <code>Z:\code\v12</code>.</p>
+<p>In order to force the application to run only once at any given time we add a function <code>CheckForOtherInstances</code> to <code>MyApp.dyalog</code>:</p>
+<pre><code>∇ {tno}←CheckForOtherInstances dummy;filename;listOfTiedFiles;ind
+ ⍝ Attempts to tie the file "MyAppCtrl.dcf" exclusively and returns the tie number.
+ ⍝ If that is not possible then an error is thrown because we can assume that the
+ ⍝ application is already running.\\
+ ⍝ Notes:
+ ⍝ * In case the file is already tied it is untied first.
+ ⍝ * If the file does not exist it is created.
+   filename←'MyAppCtrl.dcf'
+   :If 0=F.IsFile filename
+       tno←filename ⎕FCREATE 0
+   :Else
+       :If ~0∊⍴⎕FNUMS
+           listOfTiedFiles←A.dtb↓⎕FNAMES
+           ind←listOfTiedFiles⍳⊂filename
+       :AndIf ind≤⍴⎕FNUMS
+           ⎕FUNTIE ind⊃⎕FNUMS
+       :EndIf
+       :Trap 24
+           tno←filename ⎕FTIE 0
+       :Else
+           'Application is already running'⎕SIGNAL C.APP_STATUS.ALREADY_RUNNING
+       :EndTrap
+   :EndIf
+∇</code></pre>
+<p>Notes:</p>
+<ul>
+<li>First we check whether the file <code>MyAppCtrl.dcf</code> exists. If not, we create it and the job is done: creating a file implies an exclusive tie.</li>
+<li>If it does exist we check whether it is tied by itself, in case we are developing and have restarted the application without having closed it down properly. We then untie the file.</li>
+<li>Finally we attempt to tie the file exclusively but trap error 24 – that’s FILE TIED. In that case we signal an error <code>Constants.APP_STATUS.ALREADY_RUNNING</code>.</li>
+<li>The file is expected (or will be created) in the current directory.</li>
+</ul>
+<p>Since this function will signal an error <code>Constants.APP_STATUS.ALREADY_RUNNING</code> we need to add this to the <code>EXIT</code> namespace in <code>MyApp</code>:</p>
+<pre><code>:Namespace EXIT
+...
+        UNABLE_TO_WRITE_TARGET←114
+<span class="leanpub_code">        ALREADY_RUNNING←115
+</span>          GetName←{
+        ....
+:EndNamespace</code></pre>
+<p>We change <code>Initial</code> so that it calls this new function:</p>
+<pre><code>∇ (Config MyLogger)←Initial dummy
+...
+   Config←CreateConfig ⍬
+<span class="leanpub_code">   Config.ControlFileTieNo←CheckForOtherInstances ⍬
+</span>   CheckForRide Config.(Ride WaitForRide)
+...
+∇</code></pre>
+<p>We want to untie the file as well. So far we have not paid any attention to how to close the application down properly; now we take this opportunity to introduce a function <code>Cleanup</code> which does that:</p>
+<pre><code>∇ {r}←Cleanup
+   r←⍬
+   ⎕FUNTIE Config.ControlFileTieNo
+   Config.ControlFileTieNo←⍬
+∇
+
+:EndNamespace</code></pre>
+<p>Of course we have to call <code>Cleanup</code> from somewhere:</p>
+<pre><code>∇ {r}←StartFromCmdLine arg;MyLogger;Config;rc;⎕TRAP
+ ...
+   rc←TxtToCsv arg~''''
+<span class="leanpub_code">   Cleanup
+</span>   Off rc
+∇</code></pre>
+<p>After all these changes it’s time to execute our test cases. Execute <code>#.Tests.Run</code>.</p>
+<p>Turns out that two of them fail! The reason: when we run <code>Test_exe_01</code> and <code>Test_exe_02</code> the control file is already tied. That’s because <code>Test_TxtToCsv</code> runs first, and it calls <code>Initial</code> – which ties the control file – but not <code>Cleanup</code>, which would untie it. The fix is simple: we need to call <code>Cleanup</code> in the test. However, we can’t just do this at the end of <code>Test_TxtToCsv_01</code>:</p>
+<pre><code>∇ R←Test_TxtToCsv_01(stopFlag batchFlag);⎕TRAP;rc
+...
+   →FailsIf rc≢##.MyApp.EXIT.SOURCE_NOT_FOUND
+   #.MyApp.Cleanup ⍬
+   R←∆OK
+∇</code></pre>
+<p>If we do this then <code>Cleanup</code> would not be called if the check fails. Let’s do it properly instead:</p>
+<pre><code>∇ R←Test_TxtToCsv_01(stopFlag batchFlag);⎕TRAP;rc
+...
+   →GoToTidyUp rc≢##.MyApp.EXIT.SOURCE_NOT_FOUND
+   R←∆OK
+  ∆TidyUp:
+   ##.MyApp.Cleanup ⍬</code></pre>
+
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
+<div>
+<p>Note that we must call <code>MyApp.Cleanup</code> rather than just <code>Cleanup</code> because we are at that moment in <code>Tests</code> – and we don’t want to execute <code>Tests.Cleanup</code>!</p>
+</div>
+</div>
+
+<p>We can learn some lessons from the failure of those two test cases:</p>
+<ol start="1">
+<li>The sequence in which the tests are executed can have an impact on whether tests fail or not. If <code>Test_TxtToCsv</code> had been the last test case, the problem would have slipped through undetected.</li>
+<li>That a test suite runs through OK does not necessarily mean it will keep doing so when you execute it again. If <code>Test_TxtToCsv</code> had been the very last test case the test suite would have passed without a problem but an attempt to run it again would fail because now the control file would have been tied, and <code>Test_exe_01</code> would have failed.</li>
+</ol>
+<p>In our specific case it was actually a problem in the test cases, <em>not</em> in <code>MyApp</code>, but the conclusion stands anyway.</p>
+
+<div class="leanpub_A">
+<h3>Shuffle test cases</h3>
+<p>At the time of writing (2017-07) the sequence of the test cases relies on alphabetical order and is therefore predictable. On the to-do list for the <code>Tester</code> class is a topic: Add option that makes the test framework shuffle the test cases so that the order of execution is not predictable anymore.</p>
+</div>
+
+<div class="h_tag">
+<a href="#Create-a-Scheduled-Task" id="Create-a-Scheduled-Task" class="autoheader_anchor">
+<h2>Create a Scheduled Task</h2>
+</a>
+</div>
+<div class="h_tag">
+<a href="#Start-the-Scheduler" id="Start-the-Scheduler" class="autoheader_anchor">
+<h3>Start the Scheduler</h3>
+</a>
+</div>
+<p>Press the Win key and type Scheduler. Select <em>Task Scheduler</em> from the list. You will see:</p>
+<p><img src="Images/scheduler_01.png" alt="The Windows Task Scheduler" title="The Windows Task Scheduler"></p>
+<p>First check whether the fifth point in the <em>Actions</em> pane on the right reads <em>Disable All Tasks History</em>. If it does not you won’t get any details about a Scheduled Task.</p>
+<p>The arrow points to the <em>Create Task</em> command – click it.</p>
+<p><img src="Images/scheduler_02.png" alt="Create Task" title="Create Task"></p>
+<div class="h_tag">
+<a href="#The-General-tab" id="The-General-tab" class="autoheader_anchor">
+<h4>The General tab</h4>
+</a>
+</div>
+<dl>
+<dt><em>Name</em></dt>
+<dd>Used in the list presented by the Task Scheduler.</dd>
+<dt><em>Description</em></dt>
+<dd>Shown in the list presented by the Task Scheduler. Keep it concise.</dd>
+<dt><em>Run only when user is logged on</em></dt>
+<dd>You will almost certainly change this to <em>Run whether user is logged on or not</em>.</dd>
+<dt><em>Do not store password</em></dt>
+<dd>The password is stored safely, so there is no reason not to provide it.</dd>
+<dt><em>Running with highest privileges</em></dt>
+<dd><p class="first_dd">Unfortunately this check box is offered whether your user account has admin rights or not. If it does not, then ticking the box won’t have any effect.</p></dd>
+<dd><p>If your user account has no admin rights but your Scheduled Task needs to run with highest privileges then you need to specify a different user id / password after clicking the <em>Change user or group</em> button.</p></dd>
+<dd><p>Whether your application needs to run with highest privileges or not is impossible to say. Experience shows that sometimes a process that fails when – and only when – the application runs as a Scheduled Task will work fine if run as a Schedule Task with highest privileges, although it is by no means clear what those rights are required for.</p></dd>
+<dt><em>Configure for</em></dt>
+<dd>Generally you should select the OS the task is running on.</dd>
+</dl>
+<div class="leanpub_A">
+<h3>UAC, admin rights and all the rest</h3>
+<p>With UAC (User Account Control), users of the admin group have 2 tokens. The filtered token represents standard user rights.</p>
+<p>This token is used by default, for example when you create a shell (a console). Therefore you have just standard user rights by default even when using a user account with admin rights. However, when you have admin rights and you click an <abbr title="Executable file with the extension 'exe'">EXE</abbr> and select <em>Run as administrator</em>, the full token is used, which contains admin rights.</p>
+<p>Notes:</p>
+<ul>
+<li>Some applications ask for admin rights even when you do not right-click on the <abbr title="Executable file with the extension 'exe'">EXE</abbr> and select <em>Run as administrator</em>; the Registry Editor and the Task Manager are examples.</li>
+<li>Even if you run an application with admin rights (sometimes called <em>in elevated mode</em>) it does not mean that the application can do whatever it likes, but as an admin you can always grab any missing rights.</li>
+<li>Remote filesystems are unlikely to be visible; you need to mount them again.</li>
+</ul>
+</div>
+
+<div class="h_tag">
+<a href="#The-Trigger-tab" id="The-Trigger-tab" class="autoheader_anchor">
+<h4>The Trigger tab</h4>
+</a>
+</div>
+<p>The tab holds no mysteries.</p>
+<div class="h_tag">
+<a href="#The-Action-tab" id="The-Action-tab" class="autoheader_anchor">
+<h4>The Action tab</h4>
+</a>
+</div>
+<p>After clicking <em>New</em> this is what you get:</p>
+<p><img src="Images/scheduler_03.png" alt="New Action" title="New Action"></p>
+<p>Make sure you use the <em>Browse</em> button to navigate to the <abbr title="Executable file with the extension 'exe'">EXE</abbr>/<abbr title="Executeabe file that contains batch commands">BAT</abbr>/whatever you want to run as a Scheduled Task. This avoids typos.</p>
+<dl>
+<dt><em>Add arguments</em></dt>
+<dd>allows you specify something like <code>MAXWS=345M</code> or the name of a workspace in case <em>Program</em> is not an <abbr title="Executable file with the extension 'exe'">EXE</abbr> but a Dyalog interpreter. In particular, you should add <code>DYALOG_NOPOPUPS=1</code>. This prevents any dialogs from popping up (aplcore, <abbr title="Short for Workspaces">WS</abbr> FULL, etc.). You don’t want them when Dyalog is running in the background because there's nobody around to click the <em>OK</em> button…</dd>
+<dt><em>Start in</em></dt>
+<dd><p class="first_dd">is useful for specifying what will become the current (or working) directory for the running program. We recommend setting the current directory in your code as early as possible, so you don’t really need to set this here except that when you don’t you might well get an error code 2147942512.</p></dd>
+<dd><p>We will discuss later how such error codes can be interpreted, but for the time being, trust us that it actually means <em>Not enough space available on the disk</em>! When you do specify the <em>Start in</em> parameter it runs just fine.</p></dd>
+<dd><p>However, you <em>must not delimit</em> the path with double-quotes. It’s understandable that Microsoft does not require them in this context because by definition any blanks are part of the path, but why they do not just ignore them when specified is less understandable.</p></dd>
+</dl>
+<div class="h_tag">
+<a href="#The-Conditions-tab" id="The-Conditions-tab" class="autoheader_anchor">
+<h4>The Conditions tab</h4>
+</a>
+</div>
+<p>The tab holds no mysteries.</p>
+<div class="h_tag">
+<a href="#The-Settings-tab" id="The-Settings-tab" class="autoheader_anchor">
+<h4>The Settings tab</h4>
+</a>
+</div>
+<p>Unless you have a very good reason not to, <em>Allow task to be run on demand</em>, which means you have the <em>Run</em> command available on the context menu.</p>
+<p>Note you may specify restart parameters in case the task fails. Whether that makes any sense depends on the application.</p>
+<p>The combo box at the bottom allows you to select <em>Stop the existing instance</em>, which can be quite useful when debugging the application.</p>
+<div class="h_tag">
+<a href="#Running-a-Scheduled-Task" id="Running-a-Scheduled-Task" class="autoheader_anchor">
+<h3>Running a Scheduled Task</h3>
+</a>
+</div>
+<p>To start the task, right-click on it in the Task Scheduler and select <em>Run</em> from the context menu. Then check the log file. We have tested the application well, we know it works, so you should see a log file that contains something like this:</p>
+<pre><code>2017-03-31 10:03:35 *** Log File opened
+2017-03-31 10:03:35 (0) Started MyApp in ...\code\v12\MyApp
+2017-03-31 10:03:35 (0)  ...\code\v12\MyApp\MyApp.exe MAXWS=370M
+2017-03-31 10:03:35 (0)  Accents            ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝ  AAAAAA...
+2017-03-31 10:03:35 (0)  ControlFileTieNo   1
+2017-03-31 10:03:35 (0)  Debug              0
+2017-03-31 10:03:35 (0)  DumpFolder         C:\Users\kai\AppData\Local\MyApp\Errors
+2017-03-31 10:03:35 (0)  ForceError         0
+2017-03-31 10:03:35 (0)  LogFolder          C:\Users\kai\AppData\Local\MyApp\Log
+2017-03-31 10:03:35 (0)  Ride               0
+2017-03-31 10:03:35 (0)  Trap               1
+2017-03-31 10:03:35 (0) Source: MAXWS=370M
+2017-03-31 10:03:35 (0) *** ERROR RC=112; MyApp is unexpectedly shutting down: SOURCE_NOT_FOUND</code></pre>
+<p>Since we have not provided a filename, <code>MyApp</code> assumed that <code>MAXWS=370M</code> would be the filename. Since that does not exist the application quits with a return code <code>SOURCE_NOT_FOUND</code>, which is exactly proper.</p>
+<p>However, from experience we know the likelihood of the task <em>not</em> running as intended is high. We have already discussed some of the issues that might pop up, and we will now discuss some more we have enjoyed over the years.</p>
+<div class="h_tag">
+<a href="#Tips-tricks-pratfalls" id="Tips-tricks-pratfalls" class="autoheader_anchor">
+<h2>Tips, tricks, pratfalls</h2>
+</a>
+</div>
+<div class="h_tag">
+<a href="#Riding-into-a-Scheduled-Task" id="Riding-into-a-Scheduled-Task" class="autoheader_anchor">
+<h3>Riding into a Scheduled Task</h3>
+</a>
+</div>
+<p>Suppose you want to Ride into a Scheduled Task. So in the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> you set the <code>[Ride]Active</code> flag to <code>1</code>. While the Windows Firewall has still no rules for both this port and this application you <em>won’t</em> see the usual message when you run the application for the very first time, assuming that you use a user ID with admin rights:</p>
+<p><img src="Images/Firewall_01.jpg" alt="Windows Firewall" title="Windows Firewall"></p>
+<p>The application would start, seemingly run for a short period of time and then stop again without leaving any traces: no error codes, no log files, no crash files, nothing.</p>
+<p>It is different when you simply double-click the <code>MyApp.exe</code>: in that case the <em>Security Alert</em> dialog box pops up, giving you an easy way to create a rule that allows the application to communicate via the given port.</p>
+<p>By the way, when you click <em>Cancel</em> in the <em>Security Alert</em> dialog box, you might expect the Windows Firewall to deny access to the port but not create a rule either. You would be mistaken. The two buttons <em>Allow access</em> and <em>Cancel</em> shouldn’t be buttons at all! Instead there should be a group <em>Create rule</em> with two radio buttons: <em>Allow access</em> and <em>Deny access</em>.</p>
+<p>If the user clicks the “Cancel” button a message <em>should</em> pop up saying that although no rule will be created, access to the port in question is denied. That would imply that when the application is started again the <em>Security Alert</em> dialog box will reappear. Instead, when <em>Cancel</em> is clicked a blocking rule for that combination of application and port number is created, and you will not see that dialog box again for this combination.</p>
+<!-- FIXME What to do? Edit the Windows Firewall, no? -->
+<div class="h_tag">
+<a href="#The-Task-Scheduler-GUI" id="The-Task-Scheduler-GUI" class="autoheader_anchor">
+<h3>The Task Scheduler GUI</h3>
+</a>
+</div>
+<p>Once you have executed the <em>Run</em> command from the context menu the GUI changes the status from <em>Ready</em> to <em>Running</em>. That’s fine. Unfortunately it doesn’t change automatically back to <em>Ready</em> once the job has finished, at least not at the time of writing (2017-03) under Windows 10. For that you have to refresh with F5.</p>
+<div class="h_tag">
+<a href="#Re-make-MyApp" id="Re-make-MyApp" class="autoheader_anchor">
+<h3>Re-make MyApp</h3>
+</a>
+</div>
+<p>When you’ve found a bug and run <code>MyApp</code>’s <code>Make.bat</code> again, remember that this will overwrite the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr>. So if you’ve changed, say, Ride’s <code>Active</code> flag in the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> from <code>0</code> to <code>1</code>, it will be <code>0</code> again after the call to <code>Make.bat</code>, and any attempt to Ride into the <abbr title="Executable file with the extension 'exe'">EXE</abbr> will fail. Easy to overlook!</p>
+<div class="h_tag">
+<a href="#MyApp-crashes-with-return-code-32" id="MyApp-crashes-with-return-code-32" class="autoheader_anchor">
+<h3>MyApp crashes with return code 32</h3>
+</a>
+</div>
+<p>If you see this you most probably forgot to copy over the DLLs needed by Ride [<a href="#fnref1" class="footnote_link"><sup>1</sup></a>] itself. That’s what triggers the return code 32 which means <em>File not found</em>.</p>
+
+<div class="leanpub_A">
+<h3>Windows return codes</h3>
+<p>To translate a Windows return code like 32 into a more meaningful piece of information, download and install the user command <code>GetMsg</code> from the APL wiki. Then you can do this:</p>
+<pre><code>      ]GetMsgFrom 32
+The process cannot access the file because it is being used by another process.</code></pre>
+<p>Sadly, the error messages are not always that helpful. The above message appears if you try to switch on Ride in an application, and the interpreter cannot find the DLLs that Ride needs.</p>
+</div>
+
+<div class="h_tag">
+<a href="#Binding-MyAPP-with-the-Dyalog-development-EXE" id="Binding-MyAPP-with-the-Dyalog-development-EXE" class="autoheader_anchor">
+<h3>Binding MyAPP with the Dyalog development EXE</h3>
+</a>
+</div>
+<p>If for some reason you’ve created <code>MyApp.exe</code> by binding the application to the development version of Dyalog rather than the runtime (you can do this by providing a 0 as left argument to the <code>MakeExport</code> function) then you might run into a problem. Our code notices whether it is running under a development <abbr title="Executable file with the extension 'exe'">EXE</abbr> or a runtime <abbr title="Executable file with the extension 'exe'">EXE</abbr>. Error trapping will be inactive (unless it is enforced via the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr>) and <code>⎕OFF</code> won’t be executed; instead it would execute <code>→</code> and hang around but without you being able to see the session.</p>
+<p>So don’t do this. Because you have Ride, the development version has no advantages over the runtime <abbr title="Executable file with the extension 'exe'">EXE</abbr> anyway.</p>
+<div class="h_tag">
+<a href="#Your-application-doesnt-do-what-its-supposed-to-do" id="Your-application-doesnt-do-what-its-supposed-to-do" class="autoheader_anchor">
+<h3>Your application doesn’t do what it’s supposed to do</h3>
+</a>
+</div>
+<p>… but only when running as a task. Start the Task Scheduler and go to the <em>History</em> tab; if this is empty then you have not clicked <em>Enable all tasks history</em> as suggested earlier.</p>
+<p>Don’t get fooled by <em>Action completed</em> and <em>Task completed</em> – they don’t tell you whether a task failed or not. Click <em>Action completed</em>: at the bottom you get information regarding that run. You might read something like:</p>
+<pre><code>Task Scheduler successfully completed task "\MyApp" , instance "{c7cb733a-be97-4988-afca-a551a7907918}" , action "...\code\v12\MyApp\MyApp.exe" with return code 2147942512.</code></pre>
+<p>That tells you task did not run at all. You won’t find either a log file or a crash file, and you cannot Ride into the application.</p>
+<!-- FIXME What to do?  -->
+<div class="h_tag">
+<a href="#Task-Scheduler-error-codes" id="Task-Scheduler-error-codes" class="autoheader_anchor">
+<h3>Task Scheduler error codes</h3>
+</a>
+</div>
+<p>If the Task Scheduler itself throws an error you will find the error codes of little value – at first sight.</p>
+<p>You can provoke such an error quite easily: edit the task we’ve created and change the contents of the <em>Program/script</em> field in the <em>Edit action</em> dialog to something that does not exist, so the Task Scheduler won’t find such a program to run. Then issue the <em>Run</em> command from the context menu.</p>
+<p>Update the GUI by pressing F5 and you will see that errors are reported. The row that reads <code>Task Start Failed</code> in the <em>Task Category</em> columns and <code>Launch Failure</code> in the <em>Operational Code</em> columns is the one we are interested in. When you click at this row you will find that it reports an <code>Error Value 2147942402</code>. What exactly does this mean?</p>
+<p>One way to find out is to google for 2147942402. For this particular error this will certainly do, but sometimes you will have to go through plenty of pages when people managed to produce the same error code in very different circumstances, and it can be quite time-consuming to find a page that carries useful information for <em>your</em> circumstances.</p>
+<p>Instead we use the user command [<a href="#fnref3" class="footnote_link"><sup>3</sup></a>] <code>Int2Hex</code>, based on code written and contributed by Phil Last [<a href="#fnref2" class="footnote_link"><sup>2</sup></a>]. With this user command we can convert the value 2147942402 into a hex value:</p>
+<pre><code>      ]Int2Hex 2147942402
+80070002</code></pre>
+
+<div class="leanpub_A">
+<h3>Third-party user commands</h3>
+<p>There are many useful third-party user commands available. For details how to install them see “<a href="./51 Appendix 2 — User commands.html" class="external_link">Appendix 2 — User commands</a>”.</p>
+</div>
+
+<p>The first four digits, 8007, mean that what follows is a Win32 status code. The last 4 are the status code. This is a number that needs to be converted into decimal:</p>
+<pre><code>      ]Hex2Int 0002</code></pre>
+<p>but in our case that is of course not necessary because the number is so small that there is no difference between hex and integer anyway, so we can convert it into an error message straight away.</p>
+<p>Again we use a user command that is not part of a standard Dyalog installation but because it is so useful we strongly recommend install it [<a href="#fnref4" class="footnote_link"><sup>4</sup></a>]. It translates a Windows error code into meaningful text.</p>
+<pre><code>      ]GetMsgFrom
+The system cannot find the file specified.</code></pre>
+<p>And that’s why it failed.</p>
+<div class="h_tag">
+<a href="#Creating-tasks-programmatically" id="Creating-tasks-programmatically" class="autoheader_anchor">
+<h2>Creating tasks programmatically</h2>
+</a>
+</div>
+<p>It is possible to create Scheduled Tasks by a program, although this is beyond the scope of this book. See</p>
+<p><a href="https://msdn.microsoft.com/en-us/library/windows/desktop/bb736357(v=vs.85).aspx" class="external_link">https://msdn.microsoft.com/en-us/library/windows/desktop/bb736357(v=vs.85).aspx</a></p>
+<p>for details.</p>
+<div id="footnotes_div">
+<hr>
+<p><strong>Footnotes</strong></p>
+<ol>
+<li id="fnref1"><p>This topic was discussed in the chapter “Debugging a stand-alone <abbr title="Executable file with the extension 'exe'">EXE</abbr>”</p><a href="#fnref1" class="footnote_anchor"></a>
+<li id="fnref2"><p><a href="http://aplwiki.com/PhilLast" class="external_link">http://aplwiki.com/PhilLast</a></p><a href="#fnref2" class="footnote_anchor"></a>
+<li id="fnref3"><p>For details and download regarding the user commands <code>Hex2Int</code> and <code>Int2Hex</code> see <a href="http://aplwiki.com/UserCommands/Hex" class="external_link">http://aplwiki.com/UserCommands/Hex</a></p><a href="#fnref3" class="footnote_anchor"></a>
+<li id="fnref4"><p>For details and download regarding the user command <code>GetMsgFrom</code> see <a href="http://aplwiki.com/UserCommands/GetMsgFrom" class="external_link">http://aplwiki.com/UserCommands/GetMsgFrom</a></p><a href="#fnref4" class="footnote_anchor"></a>
+</ol>
+</div>
+</div>
+</div>
+<script>
+var snapper = new Snap({
+element: document.getElementById('content')
+});
+document.getElementById('mainmenu_match').onclick = function(){
+snapper.state().state==='closed'?snapper.open('left'):snapper.close();
+}
+</script>
+</body>
+</html>

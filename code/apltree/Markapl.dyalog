@@ -57,21 +57,33 @@
 
     ⎕IO←1 ⋄ ⎕ML←1
 
-    :Include APLTreeUtils
+    :Include ##.APLTreeUtils
 
     ∇ r←Version
       :Access Public Shared
       ⍝ See `History`
-      r←(Last⍕⎕THIS)'4.2.0' '2018-01-23'
+      r←(Last⍕⎕THIS)'4.4.0' '2018-02-19'
     ∇
 
     ∇ History
       :Access Public Shared
+      ⍝ * 4.4.0
+      ⍝   * Converted from the APL wiki to GitHub.
+      ⍝ * 4.3.0
+      ⍝   * A <p> that is child of the first <dd> in a <dl> now always has the class "first_dd" assigned. Reason is that
+      ⍝     CSS does not provide a selection that would allow selecting the first one only.
+      ⍝   * The `showHide` parameter is now ignored. Instead triangles are used like the ones in combo boxes. Note that
+      ⍝     this change affects the CSS files as well.
+      ⍝   * Bug fixes:
+      ⍝     * Although the list items of any Markdown lists cam with an (optional) closing </li> tag, those injected
+      ⍝       as part of a menu did not.
+      ⍝     * Some browsers insist on the cssUrl starting with "file:///" in case it is a local file.
+      ⍝     * HTML blocks were not always recognized correctly.
       ⍝ * 4.2.0
-      ⍝   * Style sheeys massively improved. They carry only one px definition of the font size now (body), everything
+      ⍝   * Style sheets massively improved. They carry only one px definition of the font size now (body), everything
       ⍝     else is relative to that defininition (mostly em, very few rem).
-      ⍝   * Bug fix: the print style sheet "MarkAPL_print.css" printed way too big.
-      ⍝ Note that the code in the MarkAPL script has not changed at all.
+      ⍝   * Bug fix: the print style sheet "MarkAPL_print.css" printed way too big.\\
+      ⍝   Note that the code in the MarkAPL script has not changed at all.
       ⍝ * 4.1.1
       ⍝   * Bug fixes:
       ⍝     * HTML blocks where not recognized correctly unless they were <div>s.
@@ -206,6 +218,7 @@
     ∇ html←type InjectCssIntoHtml parms;css;cssFiles;cssFile;blockNo;cssFile_
     ⍝ Inject zero, one or many CSS files and embrace them with a <style> tag.
     ⍝ The CSS is converted into a single line if `compressCSS` is 1.
+    ⍝ The parameter `tocCaption` is honoured.
       'Invalid CSS media type'⎕SIGNAL 11/⍨0=+/(⊂type)∊'screen' 'print'
       cssFiles←','Split parms.⍎type,'CSS'
       html←''
@@ -242,16 +255,15 @@
     ∇
 
       InsertTocCaption←{
-      ⍝ Replace the two occurences of "<<tocCaption>><<showHide>>" in the css against parms.tocCaption and parms.showHide
+      ⍝ Replace the two occurences of "<<tocCaption>><<showHide>>" in the css against parms.tocCaption
       ⍝ ⍺ is 1 for print CSS and 2 for screen CSS.
           (parms css)←⍵
-          lines←Where∨/¨bool←'<<tocCaption>><<showHide>>'∘⍷¨css
+          lines←Where∨/¨bool←'<<tocCaption>>'∘⍷¨css
           0∊⍴lines:css
           bool←bool[lines]
-          sh←';'Split parms.showHide
-          css[lines[1]]←⊂'content: ''',(parms.tocCaption,' (',(1⊃sh),')'''),';'
+          (tpd tpu)←⎕UCS 9660 9650   ⍝ Triangle Point Down, Triangle Pointing Up
           (1=⍺)∨1=⍴,lines:css
-          css[lines[2]]←⊂'content: ''',(parms.tocCaption,' (',(2⊃sh),')'''),';'
+          css[lines[2]]←⊂'content: ''',(parms.tocCaption,' ',tpu,''''),';'
           css
       }
 
@@ -309,7 +321,6 @@
       'footnotesCaption'SetTo'Footnotes'
       'head'SetTo''
       'homeFolder'SetTo ⎕NULL
-      'showHide'SetTo'Show;Hide'
       'ignoreEmbeddedParms'SetTo 0
       'imageURL'SetTo''
       'inputFilename'SetTo''
@@ -362,9 +373,11 @@
       ns←Create_NS ⍬
       ns.markdown←dtb(Nest markdown),⊂''
       ns.lineNumbers←⍳⍴ns.markdown                  ⍝ Useful for reporting problems
-      ns←parms ProcessLeanPubExtensions ns
-      (⊃ns.markdown)←'^ *{:: encoding=".*$'⎕R'⍝&'⊣⊃ns.markdown
       ns←RemoveAllComments ns
+      ns←parms ProcessLeanPubExtensions ns
+      :If 0<⍴'^ *{:: encoding=".*$'⎕S 0⊣⊃ns.markdown
+          ns.markdown←1↓ns.markdown
+      :EndIf
       ns.markdownLC←Lowercase ns.markdown           ⍝ We need this often, so we do this ONCE
       buffer←dlb ns.markdown
       ns.emptyLines←GetEmptyLines buffer
@@ -384,7 +397,7 @@
       :EndIf
       parms←EstablishDefaultHomeFolder parms
       :If ⎕NULL≡parms.cssURL
-          parms.cssURL←parms.homeFolder
+          parms.cssURL←'file:///',parms.homeFolder
       :EndIf
       ((parms.cssURL='\')/parms.cssURL)←'/'
       ((parms.leanpubIconsUrl='\')/parms.leanpubIconsUrl)←'/'
@@ -462,9 +475,9 @@
       :If ¯1≠×recompileFlag  ⍝ This syntax is used only by the `Make` workspace and test cases, therefore it is not documented.
       :AndIf parms.viewInBrowser
           :If ⍬≢ns
-              GoToWebPage'file://',ns.parms.outputFilename
+              GoToWebPage'file:///',ns.parms.outputFilename
           :Else
-              GoToWebPage'file://',parms.outputFilename
+              GoToWebPage'file:///',parms.outputFilename
           :EndIf
       :EndIf
     ∇
@@ -482,9 +495,9 @@
       :If ¯1≠×recompileFlag  ⍝ This syntax is used only by the `Make` workspace and test cases, therefore it is not documented.
       :AndIf parms.viewInBrowser
           :If ⍬≢ns
-              GoToWebPage'file://',ns.parms.outputFilename
+              GoToWebPage'file:///',ns.parms.outputFilename
           :Else
-              GoToWebPage'file://',parms.outputFilename
+              GoToWebPage'file:///',parms.outputFilename
           :EndIf
       :EndIf
     ∇
@@ -656,7 +669,9 @@
                   :AndIf 1=⍴bl2
                       bl2←⊂'dd'Tag⊃bl2
                   :Else
-                      bl2←'dd'∘Tag¨Tag¨bl2
+                      :If 1<⍴bl2←'dd'∘Tag¨Tag¨bl2
+                          (1⊃bl2)←'<p>'⎕R'<p class="first_dd">'⊣1⊃bl2
+                      :EndIf
                   :EndIf
                   html,←buff,bl2
                   total+←not+nop
@@ -1668,7 +1683,7 @@
                       :OrIf '>'=¯1↑buff
                       :OrIf '/>'≡2⍴buff
                       :OrIf (1⍴buff)∊AllWhiteSpaceChars
-                          ns.noOf←CalcNumberOfLinesOfHtmlBlock (⊃tag) ns.markdown
+                          ns.noOf←CalcNumberOfLinesOfHtmlBlock(⊃tag)ns.markdown
                           ∆LastLineWasEmpty←1
                           ns.html,←ns.noOf↑ns.markdown
                           ns←Drop ns
@@ -1699,11 +1714,13 @@
       :EndIf
     ∇
 
-    ∇ noOf←CalcNumberOfLinesOfHtmlBlock(tag markdown)
+    ∇ noOf←CalcNumberOfLinesOfHtmlBlock(tag markdown);open;close
       :If 0∊⍴⊃2↓markdown
           noOf←3            ⍝ The tag stands on its own (=is followed by an empty line)
       :Else
-          noOf←{+/∧\0<⍵}(+\{⊃⍴('<',tag,'>')( '<',tag,'.*>')⎕S 0⍠('Greedy' 0)('Mode' 'L')('IC' 1)⊣⍵}¨1↓ns.markdown)-+\({⊃⍴('</',tag,'>')⎕S 0⍠('Greedy' 0)('Mode' 'L')('IC' 1)⊣⍵}¨1↓markdown)
+          open←1↓+\{⊃⍴('<',tag,'[^>]*>')⎕S 0⍠('Greedy' 0)('Mode' 'L')('IC' 1)⊣⍵}¨markdown
+          close←{⊃⍴('</',tag,'>')⎕S 0⍠('Greedy' 0)('Mode' 'L')('IC' 1)⊣⍵}¨1↓markdown
+          noOf←1+{+/∧\0<⍵}open-+\close
           noOf+←2                               ⍝ One for the empty line and 1 for ⎕IO (⎕S is ⎕IO←0!)
       :EndIf
     ∇
@@ -2811,11 +2828,12 @@
       ⍝ but for stuff that potentially points elsewhere (like `cssUrl`) we don't want that:
       ⍝ We don't necessarily know the OS over there!
       ⍝ Default is normalization.
-      ⍝ Leave only kind of protocol alone like "http://" etc. but also stuff like "foo://".
+      ⍝ Leave any kind of protocol alone like "http://" etc. but also stuff like "foo://"
+      ⍝ while "file://" and "file:///" is removed.
           ⍺←1
           ss←'://' ⍝ Search string
           0=+/bool←ss⍷⍵:##.FilesAndDirs.NormalizePath⍣(⊃⍺)⊣⍵
-          length←¯1+(⍴ss)+bool⍳1
+          length←(¯1+⍴ss)+bool⍳1
           (length↑⍵),##.FilesAndDirs.NormalizePath⍣(⊃⍺)⊣length↓⍵
       }
 
@@ -3266,9 +3284,7 @@
     ∇
 
       MassageFilename←{
-          fn←CorrectSlash ⍵
-          'file://'{⍺≢Lowercase(⍴⍺)↑⍵}fn:fn
-          (⍴'file://')↓fn
+          CorrectSlash'file:/{2,3}'⎕R''⊣⍵
       }
 
       AddAlignStyle←{

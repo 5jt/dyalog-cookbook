@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta charset="utf-8">
+<title>Structure</title>
+<link href="./CSS/BlackOnWhite_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/Cookbook_Chapter_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/snap.css" rel="stylesheet" media="screen">
+<link href="./CSS/BlackOnWhite_print.css" rel="stylesheet" media="print">
+<link href="./CSS/Cookbook_Chapter_print.css" rel="stylesheet" media="print">
+<script src="./JavaScript/snap.js"></script>
+</head>
+<body>
+<div class="snap-drawers">
+<div class="snap-drawer snap-drawer-left">
+<div class="h_tag">
+<h3>Chapters</h3>
+</div>
+<ol>
+<li><a href="./01%20Introduction.html" class="external_link">Introduction</a></li>
+<li><a href="./02%20Structure.html" class="external_link">Structure</a></li>
+<li><a href="./03%20Package%20MyApp%20as%20an%20executable.html" class="external_link">Package MyApp as an executable</a></li>
+<li><a href="./04%20Logging%20what%20happens%20.html" class="external_link">Logging what happens </a></li>
+<li><a href="./05%20Configuration%20settings.html" class="external_link">Configuration settings</a></li>
+<li><a href="./06%20Debugging%20a%20stand-alone%20EXE.html" class="external_link">Debugging a stand-alone EXE</a></li>
+<li><a href="./07%20Handling%20errors.html" class="external_link">Handling errors</a></li>
+<li><a href="./08%20Testing%20—%20the%20sound%20of%20breaking%20glass.html" class="external_link">Testing<br>The sound of breaking glass</a></li>
+<li><a href="./09%20Documentation%20—%20the%20Doc%20is%20in.html" class="external_link">Documentation<br>The Doc is in</a></li>
+<li><a href="./10%20Make%20me.html" class="external_link">Make me</a></li>
+<li><a href="./11%20Providing%20help.html" class="external_link">Providing help</a></li>
+<li><a href="./12%20Scheduled%20Tasks.html" class="external_link">Scheduled Tasks</a></li>
+<li><a href="./13%20Windows%20Services.html" class="external_link">Windows Services</a></li>
+<li><a href="./14%20The%20Windows%20Event%20Log.html" class="external_link">The Windows Event Log</a></li>
+<li><a href="./15%20The%20Windows%20Registry.html" class="external_link">The Windows Registry</a></li>
+<li><a href="./16%20Creating%20SetUp.exe%20with%20Inno.html" class="external_link">Creating SetUp.exe with Inno</a></li>
+<li><a href="./17%20RegularExpressions.html" class="external_link">RegularExpressions</a></li>
+<li><a href="./18%20GUI.html" class="external_link">GUI</a></li>
+</ol>
+<div class="h_tag">
+<h3>Appendices</h3>
+</div>
+<ol>
+<li><a href="./50%20Appendix%201%20—%20Windows%20environment%20variables.html" class="external_link">Windows environment variables</a></li>
+<li><a href="./51%20Appendix%202%20—%20User%20commands.html" class="external_link">User commands</a></li>
+<li><a href="./52%20Appendix%203%20—%20aplcores%20and%20WS%20integrity.html" class="external_link">aplcores and WS integrity</a></li>
+<li><a href="./53%20Appendix%204%20—%20The%20development%20environment.html" class="external_link">The development environment</a></li>
+<li><a href="./54%20Appendix%205%20—%20Special%20characters.html" class="external_link">Special characters</a></li>
+</ol>
+<div class="h_tag">
+<h3>Misc</h3>
+</div>
+<ul>
+<li><a href="01%20Introduction.html">Previous chapter</a></li>
+<li><a href="03%20Package%20MyApp%20as%20an%20executable.html">Next chapter;</a></li>
+<li><a href="./Dyalog_Cookbook.html" class="external_link">Single document<br>(All chapters, for printing)</a></li>
+</ul>
+</div>
+</div>
+<div id="mainmenu">
+<a href=#><p><span id="mainmenu_match">≡</span></p></a>
+<p><span id="mainmenu_title">The Dyalog Cookbook</span></p>
+<nav id="main_nav">
+<input type="checkbox" id="hide_toc">
+<label id="hide_toc_label" for="hide_toc"></label>
+<div class="toc-container">
+<ul>
+<li><a href="#How-can-you-distribute-your-program">How can you distribute your program?</a>
+<ul>
+<li><a href="#Send-a-workspace-file">Send a workspace file (DWS)</a></li>
+<li><a href="#Send-an-executable-file">Send an executable file (EXE)</a></li>
+</ul></li>
+<li><a href="#Where-should-you-keep-the-code">Where should you keep the code?</a></li>
+<li><a href="#The-LetterCount-workspace">The LetterCount workspace</a></li>
+<li><a href="#Versions">Versions</a>
+<ul>
+<li><a href="#Investigating-the-workspace-LetterCount">Investigating the workspace LetterCount</a></li>
+<li><a href="#How-to-organise-the-code">How to organise the code</a>
+<ul>
+<li><a href="#Execution-time">Execution time</a></li>
+<li><a href="#Keep-the-end-user-in-mind">Keep the end user in mind</a></li>
+<li><a href="#Be-careful-with-diamonds">Be careful with diamonds</a></li>
+<li><a href="#Why-not-use-PATH">Why not use <code>⎕PATH</code>?</a></li>
+</ul></li>
+<li><a href="#Convert-the-WS-LetterCount-into-a-single-scripted-namespace">Convert the WS LetterCount into a single scripted namespace.</a></li>
+</ul></li>
+<li><a href="#Project-Gutenberg">Project Gutenberg</a></li>
+<li><a href="#MyApp-reloaded">MyApp reloaded</a></li>
+<li><a href="#Building-from-a-DYAPP">Building from a DYAPP</a>
+</ul>
+</div>
+</nav>
+</div>
+<div id="content" class="snap-content">
+<div id="cookbook_content">
+<div class="h_tag">
+<a href="#2-Structure" id="2-Structure" class="autoheader_anchor">
+<h1>2. Structure</h1>
+</a>
+</div>
+<p>In this chapter we consider your choices for making your program available to others, and for taking care of the source code, including tracking the changes through successive versions.</p>
+<p>To follow this, we’ll make a very simple program. It counts the frequency of letters used in one or multiple text files. (This is simple, but useful in cryptanalysis, at least at hobby level.) We’ll put the source code under version control, and package the program for use.</p>
+<p>Some of the things we are going to add to this application will seem like overkill, but keep in mind that we use this application just as a very simple example for all the techniques we are going to introduce.</p>
+<p>Let’s assume you've done the convenient thing. Your code is in a workspace. Everything it needs to run is defined in the workspace. Maybe you set a latent expression, so the program starts when you load the workspace.</p>
+<p>We shall convert a <abbr title="Dyalog workspace">D<abbr title="Short for Workspaces">WS</abbr></abbr> to some <abbr title="File with the extension 'dyalog' holding APL code">DYALOG</abbr> scripts and introduce a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> script to assemble an active workspace from them.</p>
+<p>Using scripts to store your source code has many advantages: you can use a traditional source code management system rather than having your code and data stored in a binary blob.</p>
+<p>Changes that you make to your source code are saved immediately, rather than relying on you to remember to save the workspace at some suitable point in your work process.</p>
+<p>Finally, you don’t need to worry about crashes in your code or externally called modules and also any corruption of the active workspace which might prevent you from saving it.</p>
+
+<div class="leanpub_A">
+<h3>Corrupted workspaces</h3>
+<p>The <em>workspace</em> (<abbr title="Short for Workspaces">WS</abbr>) is where the APL interpreter manages all code and all data in memory. The Dyalog tracer / debugger has extensive edit-and-continue capabilities; the downside is that these have been known to corrupt the workspace occasionally.</p>
+<p>The interpreter checks <abbr title="Short for Workspaces">WS</abbr> integrity every now and then; how often can be influenced by setting certain debug flags; see the “<a href="./52 Appendix 3 — aplcores and WS integrity.html" class="external_link">Appendix 3 — aplcores and WS integrity</a>” for details. More details regarding aplcores are available in the appendix “Aplcores”.</p>
+</div>
+
+<div class="h_tag">
+<a href="#How-can-you-distribute-your-program" id="How-can-you-distribute-your-program" class="autoheader_anchor">
+<h2>How can you distribute your program?</h2>
+</a>
+</div>
+<div class="h_tag">
+<a href="#Send-a-workspace-file" id="Send-a-workspace-file" class="autoheader_anchor">
+<h3>Send a workspace file (DWS)</h3>
+</a>
+</div>
+<p>Could not be simpler. If your user has a Dyalog interpreter, she can also save and send you the crash workspace if your program hits an execution error. But she will also be able to read your code – which might be more than you wish for.</p>
+
+<div class="leanpub_A">
+<h3>Crash workspaces</h3>
+<p>A crash workspace is a workspace that was saved by a function that was initiated by error trapping, typically by a setting of <code>⎕TRAP</code>. It’s a snapshot of the workspace at the moment an unforeseen problem triggered error trapping to take over. It’s usually very useful to analyse such problems.</p>
+<p>Note that a workspace cannot be saved when more than one thread is running.</p>
+</div>
+
+<p>If she doesn’t have an interpreter, and you are not worried about her someday getting one and reading your code, and you have a Run-Time Agreement with Dyalog, you can send her the Dyalog Run-Time interpreter with the workspace. The Run-Time interpreter will not allow the program to suspend, so when the program breaks the task will vanish, and your user won’t see your code. All right so far. But she will also not have a crash workspace to send you.</p>
+<p>If your application uses multiple threads, the thread states can’t be saved in a crash workspace anyway.</p>
+<p>You need your program to catch and report any errors before it dies, something we will discuss in the chapter <a href="./07 Handling errors.html" class="external_link">Handling errors</a>.</p>
+<div class="h_tag">
+<a href="#Send-an-executable-file" id="Send-an-executable-file" class="autoheader_anchor">
+<h3>Send an executable file (EXE)</h3>
+</a>
+</div>
+<p>This is the simplest form of the program to install, because there is nothing else it needs to run: everything is embedded within the <abbr title="Executable file with the extension 'exe'">EXE</abbr>. You export the workspace as an <abbr title="Executable file with the extension 'exe'">EXE</abbr>, which can have the Dyalog Run-Time interpreter bound into it. The code cannot be read. As with the workspace-based runtime above, your program cannot suspend, so you need it to catch and report any errors before dying.</p>
+<p>We’ll do that!</p>
+<div class="h_tag">
+<a href="#Where-should-you-keep-the-code" id="Where-should-you-keep-the-code" class="autoheader_anchor">
+<h2>Where should you keep the code?</h2>
+</a>
+</div>
+<p>Let’s start by considering the workspace you will export as an <abbr title="Executable file with the extension 'exe'">EXE</abbr>.</p>
+<p>The first point is: PCs have a lot of memory relative to your application code volume. So all your Dyalog code will be in the workspace. That’s probably where you have it right now anyway.</p>
+<p>Your workspace is like your desk top – a great place to get work done, but a poor place to store things. In particular it does nothing to help you track changes and revert to an earlier version.</p>
+<p>Sometimes a code change turns out to be for the worse, and you need to undo it. Perhaps the change you need to undo is not the most recent change.</p>
+<p>We’ll keep the program in manageable pieces – ‘modules’ – and keep those pieces in text files under version control.</p>
+<p>For this there are many <em>source-control management</em> (SCM) systems and repositories available. Subversion, Git and Mercurial are presently popular. These SCMs support multiple programmers working on the same program, and have sophisticated features to help resolve conflicts between them.</p>
+
+<div class="leanpub_A">
+<h3>Source code management with acre Desktop</h3>
+<p>Some members of the APL community prefer to use a source-code management system that is tailored to solve the needs of an APL programmer, or a team of APL programmers: acre Desktop.</p>
+<p>APL code is very compact, teams are typically small, and work on APL applications tends to be oriented towards functions rather than modules such as classes.</p>
+<p>acre Desktop can be used as a source-code management system in its own rights= together with acre Server, but it can use other code management systems like Git or SubVersion as well. Both acre Desktop and acre Server are available as open source software. We will discuss acre in its own appendix.</p>
+</div>
+
+<p>Whichever SCM you use (we used GitHub for writing this book and the code in it) your source code will comprise class and namespace scripts (<abbr title="File with the extension 'dyalog' holding APL code">DYALOG</abbr>s) for the application. The help system will be an ordinary – non-scripted – namespace. We use a <em>build script</em> (<abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>) to assemble the application and the development environment.</p>
+<p>You’ll keep your local working copy in whatever folder you please. We’ll refer to this <em>working folder</em> as <code>Z:\</code> but it will of course be wherever suits you.</p>
+<div class="h_tag">
+<a href="#The-LetterCount-workspace" id="The-LetterCount-workspace" class="autoheader_anchor">
+<h2>The LetterCount workspace</h2>
+</a>
+</div>
+<p>We suppose you already have a workspace in which your program runs. We don’t have your code to hand so we’ll use ours. We’ll use a very small and simple program, so we can focus on packaging the code as an application, not on writing the application itself.</p>
+<p>So we’ll begin with the LetterCount workspace. It’s trivially simple but for now it will stand in for your code. You can download it from the book’s web site: <a href="https://cookbook.dyalog.com" class="external_link">https://cookbook.dyalog.com</a>.</p>
+
+<div class="leanpub_A">
+<h3>On encryption</h3>
+<p>Frequency counting relies on the distribution of letters being more or less constant for any given language. It is the first step in breaking a substitution cypher.</p>
+<p>Substitution cyphers have been superseded by public-private key encryption, and are mainly of historical interest, or for studying cryptanalysis. But they are also fun to play with.</p>
+<p>We recommend <em>The Code Book: The secret history of codes &amp; code-breaking</em> by Simon Singh and <em>In Code</em> by Sarah Flannery as introductions if you find this subject interesting.</p>
+</div>
+
+<div class="h_tag">
+<a href="#Versions" id="Versions" class="autoheader_anchor">
+<h2>Versions</h2>
+</a>
+</div>
+<p>In real life you will produce successive versions of your program, each better than the last. In an ideal world, all your users will have and use the current version. In that ideal world, you have only one version to maintain: the latest.</p>
+<p>In the real world, your users will have and use multiple versions. If you charge for upgrading to a newer version, this will surely happen. And even in your ideal world, you have to maintain at least two versions: the current and the next.</p>
+<p>What does it mean to maintain a version? At the very minimum, you keep the source code for it, so you could recreate its <abbr title="Executable file with the extension 'exe'">EXE</abbr> from scratch, exactly as it was distributed. There will be things you want to improve, and perhaps bugs you must fix. Those will all go into the next version, of course. But some you may need to put into the released version and re-issue it to current users as a patch.</p>
+<p>So in <em>The Dyalog Cookbook</em> we shall develop in successive versions until we manage to create an installer that is capable of installing the application on any machine running Windows 10. What’s needed to achieve that is discussed in the chapters 1-16. Later chapters are independent.</p>
+<p>Our ‘versions’ are not ready to ship, so are probably better considered as milestones on the way to version 1.0. You could think of them as versions 0.1, 0.2 and so on. But we’ll just refer to them as Versions 1, 2, and so on.</p>
+<p>Our first version won’t even be ready to export as an <abbr title="Executable file with the extension 'exe'">EXE</abbr>. It will just create a workspace <code>MyApp.dws</code> from scripts: a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> and some <abbr title="File with the extension 'dyalog' holding APL code">DYALOG</abbr>s. We’ll call it Version 1.</p>
+<p>Load the <code>LetterCount.dws</code> workspace from the <code>code\foo</code> folder on the book website. Again, this is just the stand-in for your own code. Here’s a quick tour.</p>
+<div class="h_tag">
+<a href="#Investigating-the-workspace-LetterCount" id="Investigating-the-workspace-LetterCount" class="autoheader_anchor">
+<h3>Investigating the workspace LetterCount</h3>
+</a>
+</div>
+<p>Let’s load the workspace <code>LetterCount</code> and investigate it a bit.</p>
+<p>Function <code>TxtToCsv</code> takes the filepath of a <abbr title="File with the extension 'txt' containing text">TXT</abbr> and writes a sibling CSV [<a href="#fnref1" class="footnote_link"><sup>1</sup></a>] containing the frequency count for the letters in the file. It uses function <code>CountLetters</code> to produce the table.</p>
+<pre><code>      ∆←'Now is the time for all good men'
+      ∆,←' to come to the aid of the party.'
+      CountLetters ∆
+N 2
+O 8
+W 1
+I 3
+S 1
+T 7
+H 3
+E 6
+M 3
+F 2
+R 2
+A 3
+L 2
+G 1
+D 2
+C 1
+P 1
+Y 1</code></pre>
+
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
+<div>
+<p>Note that we use a variable <code>∆</code> here. Not exactly a memorable or self-explaining name. However, we use <code>∆</code> whenever we collect data for temporary use.</p>
+</div>
+</div>
+
+<p><code>CountLetters</code> returns a table of the letters in <code>⎕A</code> and the number of times each is found in the text. The count is insensitive to case and ignores accents, mapping accented to unaccented characters:</p>
+<pre><code>      Accents
+ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝ
+AAAAAACDEEEEIIIINOOOOOOUUUUY</code></pre>
+<p>That amounts to five functions. Two of them are specific to the application: <code>TxtToCsv</code> and <code>CountLetters</code>. The other three – <code>toUppercase</code>, <code>join</code> and <code>map</code> are utilities, of general use.</p>
+<p>Note that we have some functions that start with lowercase characters while others start with uppercase characters. In a larger application you might want to be able to tell data from calls to functions and operators by introducing consistent naming conventions. Which one you settle for is less important then choosing something consistent. And remmeber to put it into a document any programmer joining the team can read.</p>
+<p><code>toUppercase</code> uses the fast case-folding I-beam introduced in Dyalog 15.0 (also available in 14.0 &amp; 14.1 from revision 27141 onwards).</p>
+<p><code>TxtToCsv</code> uses the file-system primitives <code>⎕NINFO</code>, <code>⎕NGET</code>, and <code>⎕NPUT</code> introduced in Dyalog 15.0.</p>
+<div class="h_tag">
+<a href="#How-to-organise-the-code" id="How-to-organise-the-code" class="autoheader_anchor">
+<h3>How to organise the code</h3>
+</a>
+</div>
+<p>To expand this program into distributable software we’re going to add features, many of them drawn from the APLTree library. To facilitate that we’ll first organise the existing code into script files, and write a <em>build script</em> to assemble a workspace from them.</p>
+
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
+<div>
+<p>The APLTree library is an open-source project hosted on <a href="https://github.com" class="external_link">GitHub</a>. It offers solutions for many every-day problems a Dyalog APL programmer might run into. In the Cookbook we will use many of its members. For details see <a href="https://aplteam.github.io/apltree" class="external_link">https://aplteam.github.io/apltree</a>.</p>
+</div>
+</div>
+
+<p>Start at the root namespace (<code>#</code>). We’re going to be conservative about defining names in <code>#</code>. Why? Right now the program stands by itself and can do what it likes in the workspace. But in the future your program might become part of a larger APL system. In that case it will share <code>#</code> with other objects you don’t know anything about right now.</p>
+<p>So your program will be a self-contained object in <code>#</code>. Give it a distinctive name, not a generic name such as <code>Application</code> or <code>Root</code>. From here on we’ll call it <code>MyApp</code>. (We know – almost as bad.)</p>
+<p>But there <em>are</em> other objects you might define in <code>#</code>. If you’re using classes or namespaces that other systems might also use, define them in <code>#</code>. For example, if <code>MyApp</code> should one day become a module of some larger system, it would make no sense for each module to have its own copy of, say, the APLTree class <code>Logger</code>.</p>
+<p>With this in mind, let’s distinguish some categories of code, and how the code in <code>MyApp</code> will refer to them.</p>
+<dl>
+<dt>General utilities and classes</dt>
+<dd>For example, the <code>APLTreeUtils</code> namespace and the <code>Logger</code> class. (Your program doesn't yet use these utilities.) In the future, other programs, possibly sharing the same workspace, might use them too.</dd>
+<dt>Your program and its modules</dt>
+<dd>Your top-level code will be in <code>#.MyApp</code>. Other modules and <code>MyApp</code>-specific classes may be defined within it.</dd>
+<dt>Tools and utility functions specific to <code>MyApp</code></dt>
+<dd>These might include your own extensions to Dyalog namespaces or classes. Define them inside the app object, e.g. <code>#.MyApp.Utils</code>.</dd>
+<dt>Your own language extensions and syntax sweeteners</dt>
+<dd>For example, you might like to use functions <code>means</code> and <code>else</code> as simple conditionals. These are effectively your local <em>extensions</em> to APL, the functions you expect always to be around. Define your collection of such functions into a namespace in <code>#</code>, eg <code>#.Utilities</code>.</dd>
+</dl>
+<p>The object tree in the workspace might eventually look something like:</p>
+<pre><code>#
+|-⍟Constants
+|-⍟APLTreeUtils
+|-⍟Utilities
+|-○MyApp
+| |-⍟Common
+| |-⍟Engine
+| |-○TaskQueue
+| \-⍟Utils
+\-○Logger
+\-⍟UI</code></pre>
+
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
+<div>
+<p><code>⍟</code> denotes a namespace, <code>○</code> a class. These are the characters (among others) you can use to tell the editor what kind of object you wish to create, so for a class <code>)ed ○ Foo</code>. Press F1 with the cursor on <code>)ed</code> in the session for details.</p>
+</div>
+</div>
+
+<p>Note that we keep the user interface (<code>UI</code>) separate from the business logic. This is considered good practice because whatever you believe right now, you will almost certainly one day consider exchanging a particular type of UI (say .NET Windows forms) for a different one (say <abbr title="Hyper Text Mark-up language">HTML</abbr>+JavaScript). This is difficult enough, but a bit easier when you separate them right from the start. However, our application is so simple that we collect all its code in a namespace script <code>MyApp</code> in order to save one level in the namespace hierarchy.</p>
+<p>If this were to be a serious project then you would not do this even if the amount of code is small: applications change and grow over time, sometimes significantly. Therefore you would be better prepared to have, say, a namespace <code>MyApp</code> that contains, say, a namespace script <code>engine</code> with all the code.</p>
+<p>The objects in <code>#</code> are ‘public’. They comprise <code>MyApp</code> and objects other applications might use; you might add another application that uses <code>#.Utilities</code>. Everything else is encapsulated within <code>MyApp</code>. Here’s how to refer in the <code>MyApp</code> code to these different categories of objects.</p>
+<ol start="1">
+<li><code>log←⎕NEW #.Logger</code></li>
+<li><code>queue←⎕NEW TaskQueue</code></li>
+<li><code>tbl←Engine.CountLetters txt</code></li>
+<li><code>status←(bar&gt;3) #.Utilities.means 'ok' #.Utilities.else 'error'</code></li>
+</ol>
+<p>The last one is pretty horrible. It needs some explanation.</p>
+<p>Many languages offer a short-form syntax for if/else, eg (JavaScript, PHP, C…)</p>
+<pre><code>status = bar&gt;3 ? 'ok' : 'error' ;</code></pre>
+<p>Some equivalents in Dyalog:</p>
+<ul>
+<li>Control structure
+<pre><code>:If bar&gt;3
+    status←'ok'
+:Else
+    status←'error'
+:EndIf</code></pre></li>
+<li>Pick -1-
+<pre><code>status←(⎕IO+bar&gt;3)⊃'error' 'ok'</code></pre></li>
+<li>Pick -2-
+<pre><code>status←⊃(bar&gt;3)⌽'error' 'ok'</code></pre></li>
+<li>Defined functions: <code>means</code> and <code>else</code> here provide a short-form syntax:
+<pre><code>status←(bar&gt;3) means 'ok' else 'error'</code></pre>
+<p>The readability gain is largely lost if we have to qualify the functions with their full paths:</p>
+<pre><code>status←(bar&gt;3) #.Utilities.means 'ok' #.Utilities.else 'error'</code></pre>
+<p>We can improve it by defining aliases within <code>#.MyApp</code>:</p>
+<p>I&gt; We use the term <em>alias</em> here for a reference pointing to a particular script or namespace. In this context it is important to note that after executing <code>C←#.Constants</code> the alias <code>C</code> is <em>identical</em> to <code>#.Constants</code>, therefore  <code> 1 ←→ C≡#.Constants</code>.</p>
+<pre><code>C←#.Constants ⋄ U←#.Utilities</code></pre>
+<p>allowing it to be written as</p>
+<pre><code>status←(bar&gt;3) U.means 'ok' U.else 'error'</code></pre></li>
+</ul>
+<p>What style you prefer is mainly a matter of personal taste, and indeed even the authors do not necessarily agree on this. There are however certain rules you should keep in mind:</p>
+<div class="h_tag">
+<a href="#Execution-time" id="Execution-time" class="autoheader_anchor">
+<h4>Execution time</h4>
+</a>
+</div>
+<pre><code>status←(bar&gt;3) U.means 'ok' U.else 'error'</code></pre>
+<p>In this approach two user defined functions are called. Not much overhead but don’t go for this if the line is, say, executed thousands of times within a loop.</p>
+<div class="h_tag">
+<a href="#Keep-the-end-user-in-mind" id="Keep-the-end-user-in-mind" class="autoheader_anchor">
+<h4>Keep the end user in mind</h4>
+</a>
+</div>
+<p>The authors have done pair programming for years with end users being the second party. For a user a statement like:</p>
+<pre><code>taxfree←(dob&gt;19491231) U.means 35000 U.else 50000</code></pre>
+<p>is easily readable despite it being formed of APL primitives and user defined functions. This can be a big advantage in an agile environment where the end user reviews business logic with the implementors.</p>
+<p>For classes, however, there is another way to do this: include the namespace <code>#.Utilities</code>. In order to illustrate this let’s assume for a moment that <code>MyApp</code> is not a namespace but a class.</p>
+<pre><code>:Class MyApp
+:Include Utilities
+…
+:EndClass</code></pre>
+<p>This requires the namespace <code>#.Utilities</code> to be a sibling of the assumed class <code>MyApp</code>. Now within the class you can do</p>
+<pre><code>status←(bar&gt;3) means 'ok' else 'error'</code></pre>
+<p>yet Shift+Enter in the Tracer or the Editor still works, and any changes made to the utilities would go into <code>#.Utilities</code>.</p>
+
+<div class="leanpub_A">
+<h3>More about :Include</h3>
+<p>When a namespace is included, the interpreter will execute functions from that namespace as if they had been defined in the current class. However, the actual <em>code</em> is shared with the original namespace. For example, this means that if the code of <code>means</code> or <code>else</code> is changed while tracing into it from the <code>MyApp</code> class those changes are reflected in <code>#.Utilities</code> immediately (and any other classes that might have included it).</p>
+<p>Most of the time, this works as you expect it to, but it can lead to confusion, in particular if you were to <code>)COPY #.Utilities</code> from another workspace. This will change the definition of the namespace, but the class has pointers to functions in the old copy of <code>#.Utilities</code>, and will not pick up the new definitions until the class is fixed again.</p>
+<p>If you were to edit these functions while tracing into the <code>MyApp</code> class, the changes will not be visible in the namespace. Likewise, if you were to <code>)ERASE #.Utilities</code>, the class will continue to work until the class itself is edited, at which point it will complain that the namespace does not exist.</p>
+<p>Let’s assume that in a <abbr title="Short for Workspaces">WS</abbr> <code>C:\Test_Include</code> we have just this code:</p>
+<pre><code>:Class Foo
+:Include Goo
+:EndClass
+
+:Namespace Goo
+∇ r←Hello
+    :Access Public Shared
+      r←'World'
+    ∇
+:EndNamespace</code></pre>
+<p>Now we do this:</p>
+<pre><code>Foo.Hello
+world
+      )Save
+Saved...
+      ⎕EX 'Goo'
+      Goo
+VALUE ERROR
+      Foo.Hello
+world
+)copy c:\Test_Include Goo
+copied...</code></pre>
+<p>If at this stage you were to edit <code>Goo</code> and change <code>'world'</code> to <code>'Universe'</code>, and then again call <code>Foo.Hello</code> it would still print <code>world</code> to the session.</p>
+</div>
+
+<p>If you encounter this, re-fix your classes (in this case <code>Foo</code>). Rebuilding the <abbr title="Short for Workspaces">WS</abbr> from the source files would be even better.</p>
+<div class="h_tag">
+<a href="#Be-careful-with-diamonds" id="Be-careful-with-diamonds" class="autoheader_anchor">
+<h4>Be careful with diamonds</h4>
+</a>
+</div>
+<p>The <code>:If - :Then - :else</code> solution could have been written this way:</p>
+<pre><code>:If bar&gt;3 ⋄ status←'ok' ⋄ :Else ⋄ status←'error' ⋄ :EndIf</code></pre>
+<p>There is one major problem with this: when executing the code in the Tracer the line will be executed in one go. If you think you might want to follow the control flow and trace into the individual expressions, you should spread the control structure over 5 lines.</p>
+<p>In general: if you have a choice between a short and a long expression then go for the short one – unless the long one offers an incentive such as improved readability, better debugging or faster execution speed.</p>
+<p>Diamonds can be useful in some situations. In general it’s better to avoid them.</p>
+
+<div class="leanpub_A">
+<h3>Diamonds</h3>
+<p>In some circumstances diamonds are quite useful:</p>
+<ul>
+<li>To ensure no thread switch occurs between two statements. Something like
+<pre><code>tno←filename ⎕nTIE 0 ⋄ l←⍴⎕nread tno 80 (⎕nsize tno) ⋄ ⎕nuntie tno</code></pre>
+<p>is sure to be executed as a unit. In some circumstances this really matters.</p></li>
+<li>Make multiple assignments on a single line as in <code>⎕IO←1 ⋄ ⎕ML←3 ⋄ ⎕PP←20</code>. Not for variable settings, just system stuff.</li>
+<li>Assignments to <code>⎕LX</code> as in <code>⎕LX←#.FileAndDirs.PolishCurrentDir ⋄ ⎕←Info</code>.</li>
+<li>To make dfns more readable as in <code>{w←⍵ ⋄ ((w='¯')/w)←'-' ⋄ ⍵}</code>. There is really no reason to make this a multi-line dfn.
+<p>(Note that from version 16 onwards you can achieve the same result with <code>{'-'@(⍸⍵='¯')⊣⍵}</code>)</p></li>
+<li>You <em>cannot</em> trace into a one-line dfn. This can be quite useful. For example, this function:
+<pre><code>OnConfigure←{(4↑⍵),((⊃⍺){(0∊⍴⍺):⍵ ⋄ ⍺⌈⍵}⍵[4]),((⊃⌽⍺){(0∊⍴⍺):⍵ ⋄ ⍺⌈⍵}⍵[5])}</code></pre>
+<p>ensures a GUI Form (window) does not shrink below a minimum size defined by <code>⍺</code>.</p>
+<p>You don’t want to have a multi-line dfn here: you want be able to trace into any <code>⎕DQ</code> (or <code>Wait</code>) statement; and the number of configuration events is simply overwhelming. Thanks to the <code>⋄</code> we can solve the task on a single line and prevent the Tracer from ever entering the dfn.</p></li>
+</ul>
+</div>
+
+<div class="h_tag">
+<a href="#Why-not-use-PATH" id="Why-not-use-PATH" class="autoheader_anchor">
+<h4>Why not use <code>⎕PATH</code>?</h4>
+</a>
+</div>
+<p><code>⎕PATH</code> tempts us. We could set <code>⎕PATH←'#.Utilities'</code>. The expression above could then take its most readable form:</p>
+<pre><code>status←(bar&gt;3) means 'ok' else 'error'</code></pre>
+<p>Trying to resolve the names <code>means</code> and <code>else</code>, the interpreter would consult <code>⎕PATH</code> and find them in <code>#.Utilities</code>. So far so good: this is what <code>⎕PATH</code> is designed for. It works just fine in simple cases, but quickly leads to confusion about which functions are called or edited, and where new names are created. Avoid <code>⎕PATH</code> if reasonable alternatives are available.</p>
+<div class="h_tag">
+<a href="#Convert-the-WS-LetterCount-into-a-single-scripted-namespace" id="Convert-the-WS-LetterCount-into-a-single-scripted-namespace" class="autoheader_anchor">
+<h3>Convert the WS LetterCount into a single scripted namespace.</h3>
+</a>
+</div>
+<p>If your own application is already using scripted namespaces and/or classes then you can skip this, of course.</p>
+<p>Download the <abbr title="Short for Workspaces">WS</abbr> and save it as <code>Z:\code\v00\LetterCount</code>.</p>
+<p>Everything in that <abbr title="Short for Workspaces">WS</abbr> lives in <code>#</code>. We have to move it into a single namespace <code>MyApp</code>. Execute the following steps:</p>
+<ol start="1">
+<li>Start an instance of Dyalog</li>
+<li>Execute <code>)ns MyApp</code> to create a namespace <code>MyApp</code> in the workspace.</li>
+<li>Execute <code>)cs MyApp</code> to make <code>MyApp</code> the <em>current namespace</em>.</li>
+<li>Execute <code>)copy Z:\code\v00\LetterCount</code> to copy all the functions and the single variable into the current namespace, <code>#.MyApp</code>.</li>
+<li>Execute <code>)copy Z:\code\v00\LetterCount ⎕IO ⎕ML</code>
+<p>This ensures we really use the same values for important system variables as the <abbr title="Short for Workspaces">WS</abbr> does by copying their values into the namespace <code>#.MyApp</code>.</p></li>
+<li>Execute <code>]save #.MyApp Z:\code\v01\MyApp -makedir -noprompt</code></li>
+</ol>
+<p>The last step will save the contents of the namespace <code>#.MyApp</code> into <code>Z:\code\v01\MyApp.dyalog</code>. If the folder <code>v01</code> or any of its parents do not already exist the <code>-makedir</code> option will create them. <code>-noprompt</code> makes sure that <code>]save</code> does not ask any questions.</p>
+<p>This is how the script would look like:</p>
+<pre><code>:Namespace MyApp
+⍝ === VARIABLES ===
+
+Accents←2 28⍴'ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝAAAAAACDEEEEIIIINOOOOOOUUUUY'
+
+
+⍝ === End of variables definition ===
+
+(⎕IO ⎕ML ⎕WX ⎕PP ⎕DIV)←1 1 3 15 1
+
+ CountLetters←{
+     ⍝ Table of letter frequency in txt
+     {⍺(≢⍵)}⌸⎕A{⍵/⍨⍵∊⍺}(↓Accents)map toUppercase ⍵
+ }
+
+∇ noOfBytes←TxtToCsv fullfilepath;NINFO_WILDCARD;NPUT_OVERWRITE;tgt;files;path;stem;txt;enc;nl;lines;csv
+     ⍝ Write a sibling CSV of the TXT located at fullfilepath,
+     ⍝ containing a frequency count of the letters in the file text.
+ NINFO_WILDCARD←NPUT_OVERWRITE←1 ⍝ constants
+ fullfilepath~←'"'
+ csv←'.csv'
+ :Select 1 ⎕NINFO fullfilepath
+ :Case 1 ⍝ folder
+     tgt←fullfilepath,'\total',csv
+     files←⊃(⎕NINFO⍠NINFO_WILDCARD)fullfilepath,'\*.txt'
+ :Case 2 ⍝ file
+     (path stem)←2↑⎕NPARTS fullfilepath
+     tgt←path,stem,csv
+     files←,⊂fullfilepath
+ :EndSelect
+     ⍝ assume txt&lt;&lt;memory
+ (txt enc nl)←{(⊃,/1⊃¨⍵)(1 2⊃⍵)(1 3⊃⍵)}⎕NGET¨files
+ lines←','join¨↓⍕¨CountLetters txt
+     ⍝ use encoding and NL from first source file
+ noOfBytes←(lines enc nl)⎕NPUT tgt NPUT_OVERWRITE
+     ⍝Done
+∇
+
+ join←{
+     ⍺←⎕UCS 13 10
+     (-≢⍺)↓⊃,/⍵,¨⊂⍺
+ }
+
+ map←{
+     (old new)←⍺
+     nw←∪⍵
+     (new,nw)[(old,nw)⍳⍵]
+ }
+
+ toUppercase←{1(819⌶)⍵}
+
+:EndNamespace</code></pre>
+<p>There might be minor differences, depending on the version of the <code>]save</code> user command and the version of SALT you are using.</p>
+<p>This is the easiest way to convert an ordinary workspace into one or more scripted namespaces.</p>
+<p>Now we start improving it.</p>
+<div class="h_tag">
+<a href="#Project-Gutenberg" id="Project-Gutenberg" class="autoheader_anchor">
+<h2>Project Gutenberg</h2>
+</a>
+</div>
+<p>We’ll raid <a href="https://www.gutenberg.org/" class="external_link">Project Gutenberg</a> for some texts to read.</p>
+<p>We’re tempted by the complete works of William Shakespeare but we don’t know that letter distribution stayed constant over four centuries. Interesting to find out, though, so we’ll save a copy as <code>Z:\texts\en\shakespeare.dat</code>. And we’ll download some 20th-century books as <abbr title="File with the extension 'txt' containing text">TXT</abbr>s into the same folder. Here are some texts we can use.</p>
+<pre><code>      ↑⊃(⎕NINFO⍠'Wildcard' 1) 'z:\texts\en\*.txt'
+z:/texts/en/ageofinnocence.txt
+z:/texts/en/dubliners.txt
+z:/texts/en/heartofdarkness.txt
+z:/texts/en/metamorphosis.txt
+z:/texts/en/pygmalion.txt
+z:/texts/en/timemachine.txt
+z:/texts/en/ulysses.txt
+z:/texts/en/withthesehands.txt
+z:/texts/en/wizardoz.txt</code></pre>
+<div class="h_tag">
+<a href="#MyApp-reloaded" id="MyApp-reloaded" class="autoheader_anchor">
+<h2>MyApp reloaded</h2>
+</a>
+</div>
+<p>We’ll first make <code>MyApp</code> a simple 'engine' that does not interact with the user. Many applications have functions like this at their core. Let’s enable the user to call this engine from the command line with appropriate parameters. By the time we give it a user interface, it will already have important capabilities, such as logging errors and recovering from crashes.</p>
+<p>Our engine will be based on the <code>TxtToCsv</code> function. It will take one parameter, a fully qualified filepath for a folder or file. If it is a file it will write a sibling CSV. If it is a folder it will read all the <abbr title="File with the extension 'txt' containing text">TXT</abbr>s in the folder, count the letter frequencies and write them as a CSV sibling to the folder. Simple enough. Here we go.</p>
+<div class="h_tag">
+<a href="#Building-from-a-DYAPP" id="Building-from-a-DYAPP" class="autoheader_anchor">
+<h2>Building from a DYAPP</h2>
+</a>
+</div>
+<p>In your text editor open a new document.</p>
+
+<div class="leanpub_A">
+<p>You need a text editor that handles Unicode. If you’re not already using a Unicode text editor, Windows’ own Notepad will do for occasional use. (Set the default font to APL385 Unicode)</p>
+<p>For a full-strength multifile text editor <a href="https://notepad-plus-plus.org/" class="external_link">Notepad++</a> works well but make sure that the editor converts Tab into space; by default it does not, and Dyalog does not like Tab characters.</p>
+<p>You can even ensure Windows calls Notepad++ when you enter <code>notepad.exe</code> into a console window or double-click a <abbr title="File with the extension 'txt' containing text">TXT</abbr> icon: Google for “notepad replacer”.</p>
+</div>
+
+<p>Here’s how the object tree will look:</p>
+<pre><code>#
+|-⍟Constants
+|-⍟Utilities
+\-⍟MyApp</code></pre>
+<p>We’ve saved the very first version as <code>z:\code\v01\MyApp.dyalog</code>. Now we take a copy of that and save it as <code>z:\code\v02\MyApp.dyalog</code>. Alternatively you can download version 2 from the book’s website.</p>
+<p>Note that compared with version 1 we will improve in several ways:</p>
+<ul>
+<li>We create a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> which will assemble the workspace for us.</li>
+<li>We define all constants we need in a scripted namespace <code>Constants</code> which has a sub-namespace <code>NINFO</code>, which in turn has a sub-namespace <code>TYPES</code>.</li>
+<li>The three utility functions go into their own separate namespace script <code>Utilities</code>.</li>
+</ul>
+<p>The file tree will look like this:</p>
+<pre><code>z:\code\v02\Constants.dyalog
+z:\code\v02\MyApp.dyalog
+z:\code\v02\Utilities.dyalog
+z:\code\v02\MyApp.dyapp</code></pre>
+<p><code>MyApp.dyapp</code> looks like this if we take the simple approach:</p>
+<pre><code>Target #
+Load Constants
+Load Utilities
+Load MyApp</code></pre>
+<p>This is the <code>Constants.dyalog</code> script:</p>
+<pre><code>:Namespace Constants
+    ⍝ Dyalog constants
+    :Namespace NINFO
+        ⍝ left arguments
+        NAME←0
+        TYPE←1
+        SIZE←2
+        MODIFIED←3
+        OWNER_USER_ID←4
+        OWNER_NAME←5
+        HIDDEN←6
+        TARGET←7
+        :Namespace TYPES
+            NOT_KNOWN←0
+            DIRECTORY←1
+            FILE←2
+            CHARACTER_DEVICE←3
+            SYMBOLIC_LINK←4
+            BLOCK_DEVICE←5
+            FIFO←6
+            SOCKET←7
+        :EndNamespace
+    :EndNamespace
+    :Namespace NPUT
+        OVERWRITE←1
+    :EndNamespace
+:EndNamespace</code></pre>
+<p>Note that we use uppercase here for the names of the ‘constants’. (They are of course not really constants but ordinary variables.) It is a common programming convention to use uppercase letters for constants.</p>
+
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
+<div>
+<p>Later on we’ll introduce a more convenient way to represent and maintain the definitions of constants. This will do nicely for now.</p>
+</div>
+</div>
+
+<p>This is the <code>Utilities.dyalog</code> script:</p>
+<pre><code>:Namespace Utilities
+      map←{
+          (old new)←⍺
+          nw←∪⍵
+          (new,nw)[(old,nw)⍳⍵]
+      }
+    toLowercase←0∘(819⌶)
+    toUppercase←1∘(819⌶)
+:EndNamespace</code></pre>
+<p>Finally the <code>MyApp.dyalog</code> script:</p>
+<pre><code>:Namespace MyApp
+
+   (⎕IO ⎕ML ⎕WX ⎕PP ⎕DIV)←1 1 3 15 1
+
+⍝ === Aliases
+
+    U←##.Utilities ⋄ C←##.Constants
+
+⍝ === VARIABLES ===
+
+    Accents←↑'ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝ' 'AAAAAACDEEEEIIIINOOOOOOUUUUY'
+
+⍝ === End of variables definition ===
+
+      CountLetters←{
+          {⍺(≢⍵)}⌸⎕A{⍵⌿⍨⍵∊⍺}(↓Accents)U.map U.toUppercase ⍵
+      }
+
+    ∇ noOfBytes←TxtToCsv fullfilepath;csv;stem;path;files;lines;nl;enc;tgt;tbl
+   ⍝ Write a sibling CSV of the TXT located at fullfilepath,
+   ⍝ containing a frequency count of the letters in the file text.
+      fullfilepath~←'"'
+      csv←'.csv'
+      :Select C.NINFO.TYPE ⎕NINFO fullfilepath
+      :Case C.TYPES.DIRECTORY
+          tgt←fullfilepath,'total',csv
+          files←⊃(⎕NINFO⍠'Wildcard' 1)fullfilepath,'\*.txt'
+      :Case C.TYPES.FILE
+          (path stem)←2↑⎕NPARTS fullfilepath
+          tgt←path,stem,csv
+          files←,⊂fullfilepath
+      :EndSelect
+      (tbl enc nl)←{(⊂⍪⊃⍵)1↓⍵)}(CountLetters ProcessFiles) files
+      lines←{⍺,',',⍕⍵}/⊃{⍺(+/⍵)}⌸/↓[1]tbl
+      noOfBytes←(lines enc nl)⎕NPUT tgt C.NPUT.OVERWRITE
+    ∇
+
+    ∇(data enc nl)←(fns ProcessFiles) files;txt;file
+   ⍝ Reads all files and executes `fns` on the contents. `files` must not be empty.
+      data←⍬
+      :For file :In files
+          (txt enc nl)←⎕NGET file
+          data,←⊂fns txt
+      :EndFor
+    ∇
+
+:EndNamespace</code></pre>
+<p>This version comes with a number of improvements. Let’s discuss them in detail:</p>
+<ul>
+<li>We prefix <code>Utilities</code> as well as <code>Constants</code> with <code>##.</code>: that works as long as they are siblings of <code>MyApp</code>. A prefix of <code>#.</code> would of course work as well but is inferior. For example, one day you might want to convert this application into a user command; then <code>##.</code> will continue to work while <code>#.</code> might or might not work, depending on what happens to be in the workspace at the time of execution. The same would be true if making it a ASP.NET application: those have no concept of a ‘root’ at all.</li>
+<li>We have changed the assignment of the <code>Accents</code> variable so that we don’t need to know the length of it any more.</li>
+<li>It is good programming practice to <em>not</em> use any numeric constants in your code. <code>TxtToCsv</code> tried to avoid this to some extend by assigning descriptive names at the start and using those. That’s not too bad, but if every function did the same, we risk multiple definitions of the same constant, breaching the <a href="https://en.wikipedia.org/wiki/Don't_repeat_yourself" class="external_link">DRY principle</a> – don’t repeat yourself. (And open to errors: <em>A man with two watches never knows what time it is.</em>)
+<p>We can do better by defining all the Dyalog constants we want to use in a single namespace in <code>#</code>. We have also replaced the remaining integers in the <code>:Case</code> statements by references to symbolic variables in <code>Constants.NINFO.Type</code>.</p></li>
+<li>We have replaced the line <code>(txt enc nl)←{(⊃,/1⊃¨⍵)(1 2⊃⍵)(1 3⊃⍵)}⎕NGET¨files</code> by a <code>:For</code> loop and moved the code into <code>ProcessFiles</code>. Why?
+<ul>
+<li>We have two fewer local variables.</li>
+<li>It keeps <code>TxtToCsv</code> nice and short.</li>
+<li>When something goes wrong with a file (corrupted, missing rights, tied by another process…) the original version would obscure which file is causing the problem. This version would show exactly which file is causing a problem.</li>
+<li>Tracing through a function with any kind of loop gets laborious if you are not interested in the loop itself.
+<p>Now it is simply a choice of whether you want to trace <em>into</em> <code>ProcessFiles</code> or not.</p>
+<p>In short: more often than not it is good to move a loops (<code>:For</code>, <code>:Repeat</code>, <code>:While</code>) into its own function or operator.</p></li>
+</ul></li>
+<li><code>ProcessFile</code> is an operator, not a function. Currently it takes the function <code>CountLetters</code> as operand, but it could be any other function that works with the contents of those files. Making <code>ProcessFiles</code> an operator is more general.</li>
+<li>Because of <code>enc</code> and <code>nl</code> we have to have two lines anyway, but if we weren't interested in <code>enc</code> and <code>nl</code> a one-liner would do: <code>tbl⍪←CountLetters ⊃⎕NGET file</code>. Not a good idea?
+<p>No. If you have to inspect what comes from several files because one (or more) of them contains something unexpected, you’ll want to check what you’ve got, file by file. By separating it on two lines you can open an edit window on <code>txt</code>, put a stop vector on line 5, and easily review the content of each file.</p></li>
+<li>The system settings are made in <code>MyApp</code>, but that’s not exactly ideal. These should be set for everything in the <abbr title="Short for Workspaces">WS</abbr>, in particular <code>#</code>.
+<p>This is important for the <code>Utilities</code> script because as soon as we introduce a function into it that depends on either <code>⎕IO</code> or <code>⎕ML</code> we might or might not be in trouble.</p>
+<p>But there is more to it: when we execute a statement like <code>ref←#.⎕NS ''</code> (note the <code>#.</code>!) then the (unnamed) namespace created by this statement would inherit all the system settings from its parent <code>#</code>. While you have configured your session according to your needs, when you start the app with a double-click on the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> on a different machine with different settings you have no idea what you are going to get.</p>
+<p>It is therefore safer – and strongly recommended – to ensure the setting is well-defined. We will come back to this later.</p></li>
+</ul>
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/warning.png" alt="Warning">
+<div>
+<p>If you see any namespaces called <code>SALT_Data</code> ignore them. They are part of how SALT manages meta data for scripted objects.</p>
+</div>
+</div>
+
+<p>We have converted the saved workspace to text files, and made a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> that builds the workspace from the <abbr title="File with the extension 'dyalog' holding APL code">DYALOG</abbr>s. But we have not saved a workspace: we will always build a workspace from scripts.</p>
+<p>Launch the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> by double-clicking on its icon in Windows Explorer. Examine the active session. We see</p>
+<pre><code>- Constants
+  - NINFO
+    - NAME
+    - ...
+    - TYPES
+      - NOT_KNOWN
+      - DIRECTORY
+      - ...
+  - NPUT
+    - OVERWRITE
+- MyApp
+  - Accents
+  - C
+  - CountLetters
+  - TxtToCsv
+  - U
+- Utilities
+  - map
+  - toLowercase
+  - toUppercase</code></pre>
+<p>Note that <code>MyApp</code> contains <code>C</code> and <code>U</code>. That shows the code in the script got executed when the <abbr title="Short for Workspaces">WS</abbr> was built – otherwise they wouldn’t exist. This is nice: when you type <code>#.MyApp.C.</code> then autocomplete pops up and suggests all the names contained in <code>Constants</code>.</p>
+<p>We have reached our goal:</p>
+<ul>
+<li>Everything is now stored in text files</li>
+<li>We can build the <abbr title="Short for Workspaces">WS</abbr> with a double-click on the <code>MyApp.dyapp</code> icon.</li>
+<li>Along the way we have improved the quality of the code, making it more readable and easier to debug.</li>
+</ul>
+<div id="footnotes_div">
+<hr>
+<p><strong>Footnotes</strong></p>
+<ol>
+<li id="fnref1"><p>With version 16.0 Dyalog has introduced a system function <code>⎕CSV</code> for both importing from and exporting to CSV files.</p><a href="#fnref1" class="footnote_anchor"></a>
+</ol>
+</div>
+</div>
+</div>
+<script>
+var snapper = new Snap({
+element: document.getElementById('content')
+});
+document.getElementById('mainmenu_match').onclick = function(){
+snapper.state().state==='closed'?snapper.open('left'):snapper.close();
+}
+</script>
+</body>
+</html>

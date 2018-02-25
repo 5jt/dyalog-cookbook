@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta charset="utf-8">
+<title>EventLog</title>
+<link href="./CSS/BlackOnWhite_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/Cookbook_Chapter_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/snap.css" rel="stylesheet" media="screen">
+<link href="./CSS/BlackOnWhite_print.css" rel="stylesheet" media="print">
+<link href="./CSS/Cookbook_Chapter_print.css" rel="stylesheet" media="print">
+<script src="./JavaScript/snap.js"></script>
+</head>
+<body>
+<div class="snap-drawers">
+<div class="snap-drawer snap-drawer-left">
+<div class="h_tag">
+<h3>Chapters</h3>
+</div>
+<ol>
+<li><a href="./01%20Introduction.html" class="external_link">Introduction</a></li>
+<li><a href="./02%20Structure.html" class="external_link">Structure</a></li>
+<li><a href="./03%20Package%20MyApp%20as%20an%20executable.html" class="external_link">Package MyApp as an executable</a></li>
+<li><a href="./04%20Logging%20what%20happens%20.html" class="external_link">Logging what happens </a></li>
+<li><a href="./05%20Configuration%20settings.html" class="external_link">Configuration settings</a></li>
+<li><a href="./06%20Debugging%20a%20stand-alone%20EXE.html" class="external_link">Debugging a stand-alone EXE</a></li>
+<li><a href="./07%20Handling%20errors.html" class="external_link">Handling errors</a></li>
+<li><a href="./08%20Testing%20—%20the%20sound%20of%20breaking%20glass.html" class="external_link">Testing<br>The sound of breaking glass</a></li>
+<li><a href="./09%20Documentation%20—%20the%20Doc%20is%20in.html" class="external_link">Documentation<br>The Doc is in</a></li>
+<li><a href="./10%20Make%20me.html" class="external_link">Make me</a></li>
+<li><a href="./11%20Providing%20help.html" class="external_link">Providing help</a></li>
+<li><a href="./12%20Scheduled%20Tasks.html" class="external_link">Scheduled Tasks</a></li>
+<li><a href="./13%20Windows%20Services.html" class="external_link">Windows Services</a></li>
+<li><a href="./14%20The%20Windows%20Event%20Log.html" class="external_link">The Windows Event Log</a></li>
+<li><a href="./15%20The%20Windows%20Registry.html" class="external_link">The Windows Registry</a></li>
+<li><a href="./16%20Creating%20SetUp.exe%20with%20Inno.html" class="external_link">Creating SetUp.exe with Inno</a></li>
+<li><a href="./17%20RegularExpressions.html" class="external_link">RegularExpressions</a></li>
+<li><a href="./18%20GUI.html" class="external_link">GUI</a></li>
+</ol>
+<div class="h_tag">
+<h3>Appendices</h3>
+</div>
+<ol>
+<li><a href="./50%20Appendix%201%20—%20Windows%20environment%20variables.html" class="external_link">Windows environment variables</a></li>
+<li><a href="./51%20Appendix%202%20—%20User%20commands.html" class="external_link">User commands</a></li>
+<li><a href="./52%20Appendix%203%20—%20aplcores%20and%20WS%20integrity.html" class="external_link">aplcores and WS integrity</a></li>
+<li><a href="./53%20Appendix%204%20—%20The%20development%20environment.html" class="external_link">The development environment</a></li>
+<li><a href="./54%20Appendix%205%20—%20Special%20characters.html" class="external_link">Special characters</a></li>
+</ol>
+<div class="h_tag">
+<h3>Misc</h3>
+</div>
+<ul>
+<li><a href="13%20Windows%20Services.html">Previous chapter</a></li>
+<li><a href="15%20The%20Windows%20Registry.html">Next chapter;</a></li>
+<li><a href="./Dyalog_Cookbook.html" class="external_link">Single document<br>(All chapters, for printing)</a></li>
+</ul>
+</div>
+</div>
+<div id="mainmenu">
+<a href=#><p><span id="mainmenu_match">≡</span></p></a>
+<p><span id="mainmenu_title">The Dyalog Cookbook</span></p>
+<nav id="main_nav">
+<input type="checkbox" id="hide_toc">
+<label id="hide_toc_label" for="hide_toc"></label>
+<div class="toc-container">
+<ul>
+<li><a href="#What-is-the-Windows-Event-Log">What… is the Windows Event Log?</a></li>
+<li><a href="#Is-the-Windows-Event-Log-important">Is the Windows Event Log important?</a></li>
+<li><a href="#How-to-investigate-the-Windows-Event-Log">How to investigate the Windows Event Log</a></li>
+<li><a href="#Terms-used">Terms used</a></li>
+<li><a href="#Application-log-versus-custom-log">Application log versus custom log</a></li>
+<li><a href="#Lets-do-it">Let's do it</a>
+<ul>
+<li><a href="#Preconditions">Preconditions</a></li>
+<li><a href="#Loading-WindowsEventLog">Loading WindowsEventLog</a></li>
+<li><a href="#Modify-the-INI-file">Modify the INI file</a></li>
+<li><a href="#Get-the-INI-entry-into-the-Config-namespace">Get the INI entry into the “Config” namespace</a></li>
+<li><a href="#Functions-Log-and-LogError">Functions Log and LogError</a></li>
+<li><a href="#Does-it-still-work">Does it still work?</a></li>
+<li><a href="#Adding-a-test-case">Adding a test case</a></li>
+</ul></li>
+<li><a href="#Tips-tricks-and-traps">Tips, tricks and traps</a>
+</ul>
+</div>
+</nav>
+</div>
+<div id="content" class="snap-content">
+<div id="cookbook_content">
+<div class="h_tag">
+<a href="#14-The-Windows-Event-Log" id="14-The-Windows-Event-Log" class="autoheader_anchor">
+<h1>14. The Windows Event Log</h1>
+</a>
+</div>
+<p>Now that we have managed to establish <code>MyApp</code> as a Windows Service we need to ensure it behaves. We shall make it report to the Windows Event Log.</p>
+<div class="h_tag">
+<a href="#What-is-the-Windows-Event-Log" id="What-is-the-Windows-Event-Log" class="autoheader_anchor">
+<h2>What… is the Windows Event Log?</h2>
+</a>
+</div>
+<p>The Windows Event Log is by no means an alternative to application-specific log files. Most ordinary applications do not write to the Windows Event Log at all, some do only when things go wrong, and a very few, always.</p>
+<p>In other words, for ordinary applications you may or may not find useful information in the Windows Event Log.</p>
+<p>In contrast, any application that runs as a Windows Service is <em>expected</em> to write to the Windows Event Log when it starts, when it quits and when it encounters problems, and it might add even more information. There are few exceptions.</p>
+<p>Similarly, Scheduled Tasks are expected to do the same, although some don't, or report only errors.</p>
+<div class="h_tag">
+<a href="#Is-the-Windows-Event-Log-important" id="Is-the-Windows-Event-Log-important" class="autoheader_anchor">
+<h2>Is the Windows Event Log important?</h2>
+</a>
+</div>
+<p>On a server, all applications run either as Windows Services (most likely all of them) or as Windows Scheduled Tasks. Since no human is sitting in front of a server we need a way to detect problems on servers automatically.</p>
+<p>That can be achieved by using software that constantly scans the Windows Event Log. It can email or text admins when an application that's supposed to run doesn't, or when an application goes astray, drawing attention to that server.</p>
+<p>In large companies, which usually manage many servers, it is common to use software that checks the Windows Event Logs of <em>all</em> those servers.</p>
+<p>So yes, the Windows Event Log is indeed important. Really important.</p>
+<div class="h_tag">
+<a href="#How-to-investigate-the-Windows-Event-Log" id="How-to-investigate-the-Windows-Event-Log" class="autoheader_anchor">
+<h2>How to investigate the Windows Event Log</h2>
+</a>
+</div>
+<p>In modern versions of Windows you just press the Win key and type <code>Event</code>. That brings up a list which contains at least <em>Event Viewer</em>.</p>
+<p>By default, the Event Viewer displays all Event Logs on the current (local) machine. However, you can connect to another computer and investigate its Event Log, if you have the right permissions. Here we keep it simple, and focus just on the local Windows Event Log.</p>
+<div class="h_tag">
+<a href="#Terms-used" id="Terms-used" class="autoheader_anchor">
+<h2>Terms used</h2>
+</a>
+</div>
+<p>From the Microsoft documentation:</p>
+<blockquote>
+<p>Each log in the Eventlog key contains subkeys called event sources. The event source is the name of the software that logs the event. It is often the name of the application or the name of a subcomponent of the application if the application is large.</p>
+<p>You can add a maximum of 16,384 event sources to the registry. The Security log is for system use only. Device drivers should add their names to the System log. Applications and services should add their names to the Application log or create a custom log.[<a href="#fnref1" class="footnote_link"><sup>1</sup></a>]</p>
+</blockquote>
+<div class="h_tag">
+<a href="#Application-log-versus-custom-log" id="Application-log-versus-custom-log" class="autoheader_anchor">
+<h2>Application log versus custom log</h2>
+</a>
+</div>
+<p>The great majority of applications that write to the Windows Event Log write into <code>Windows Logs\Application</code>, but if you wish you can create your own log under <code>Applications and services logs</code>.</p>
+<p>For creating a custom log you need admin rights. So creating a custom log is something usually done by the installer for your software, since it needs admin rights by definition anyway.</p>
+<p>We keep it simple here, and write to the <code>Application</code> log.</p>
+<div class="h_tag">
+<a href="#Lets-do-it" id="Lets-do-it" class="autoheader_anchor">
+<h2>Let's do it</h2>
+</a>
+</div>
+<p>Copy <code>Z:\code\v13</code> to <code>Z:\code\v14</code>.</p>
+<div class="h_tag">
+<a href="#Preconditions" id="Preconditions" class="autoheader_anchor">
+<h3>Preconditions</h3>
+</a>
+</div>
+<p>Note that any attempt to write to the Windows Event Log with the <code>WindowsEventLog</code> class requires the Dyalog .NET bridge to be a sibling of the <abbr title="Executable file with the extension 'exe'">EXE</abbr>, be it the Dyalog <abbr title="Executable file with the extension 'exe'">EXE</abbr> or a custom stand-alone <abbr title="Executable file with the extension 'exe'">EXE</abbr>.</p>
+<div class="h_tag">
+<a href="#Loading-WindowsEventLog" id="Loading-WindowsEventLog" class="autoheader_anchor">
+<h3>Loading WindowsEventLog</h3>
+</a>
+</div>
+<p>We are going to make <code>MyApp</code> write to the Windows Event Log only when it runs as a Service. Therefore we need to load the class <code>WindowsEventLog</code> from within <code>MakeService.dyapp</code> (but not <code>MyApp.dyapp</code>):</p>
+<pre><code>...
+Load ..\AplTree\OS
+<span class="leanpub_code">Load ..\AplTree\WindowsEventLog
+</span>Load ..\AplTree\Logger
+...</code></pre>
+<div class="h_tag">
+<a href="#Modify-the-INI-file" id="Modify-the-INI-file" class="autoheader_anchor">
+<h3>Modify the INI file</h3>
+</a>
+</div>
+<p>We need to add to the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> a flag that allows us to toggle writing to the Window Event Log:</p>
+<pre><code>...
+[Ride]
+Active      = 0
+Port        = 4599
+wait        = 1
+
+<span class="leanpub_code">[WindowsEventLog]
+write       = 1 ; Has an affect only when it's running as a Service
+</span></code></pre>
+<p>Why would this be useful? During development, when you run the Service to see what it's doing, you might not want the application to write to your Windows Event Log, for example.</p>
+<div class="h_tag">
+<a href="#Get-the-INI-entry-into-the-Config-namespace" id="Get-the-INI-entry-into-the-Config-namespace" class="autoheader_anchor">
+<h3>Get the INI entry into the “Config” namespace</h3>
+</a>
+</div>
+<p>We modify the <code>MyApp.CreateConfig</code> function so that it creates <code>Config.WriteToWindowsEventLog</code> from that <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> entry:</p>
+<pre><code>∇ Config←CreateConfig isService;myIni;iniFilename
+...
+      :If isService
+          Config.WatchFolders←⊃myIni.Get'Folders:Watch'
+<span class="leanpub_code">          Config.WriteToWindowsEventLog←myIni.Get'WINDOWSEVENTLOG:write'
+</span>      :Else
+          Config.LogFolder←'expand'F.NormalizePath⊃Config.LogFolder myIni.Get'Folders:Logs'
+<span class="leanpub_code">          Config.WriteToWindowsEventLog←0
+</span>      :EndIf
+...
+∇
+</code></pre>
+<div class="h_tag">
+<a href="#Functions-Log-and-LogError" id="Functions-Log-and-LogError" class="autoheader_anchor">
+<h3>Functions Log and LogError</h3>
+</a>
+</div>
+<p>For logging we introduce two new functions, <code>Log</code> and <code>LogError</code>. First <code>Log</code>:</p>
+<pre><code>∇ {r}←{both}Log msg
+ ⍝ Writes to the application's log file only by default.
+ ⍝ By specifying 'both' as left argument one can force the fns to write
+ ⍝ `msg` also to the Windows Event Log if Config.WriteToWindowsEventLog.
+   r←⍬
+   both←(⊂{0&lt;⎕NC ⍵:⍎⍵ ⋄ ''}'both')∊'both' 1
+   :If 0&lt;⎕NC'MyLogger'
+       MyLogger.Log msg
+   :EndIf
+   :If both
+   :AndIf Config.WriteToWindowsEventLog
+       :Trap 0    ⍝ Don't allow logging to break!
+           MyWinEventLog.WriteInfo msg
+       :Else
+           MyLogger.LogError'Writing to the Windows Event Log failed for:'
+           MyLogger.LogError msg
+       :EndTrap
+   :EndIf
+∇</code></pre>
+<p>Note that this function always writes to the application's log file. By specifying <code>'both'</code> as left argument one can get the function to also write to the Windows Event Log, given that <code>Config.WriteToWindowsEventLog</code> is true.</p>
+<p>That allows us to use <code>Log</code> for logging all events but errors, and to specify <code>'both'</code> as left argument when we want the function to record the Service starting, pausing and stopping. In other words, all calls to <code>MyLogger.Log</code> will be replaced by <code>Log</code>, although some calls require <code>'both'</code> to be passed as the left argument.</p>
+<p>We also introduce a function <code>LogError</code>:</p>
+<pre><code>∇ {r}←LogError(rc msg)
+ ⍝ Write to **both** the application's log file and the Windows Event Log.
+   MyLogger.LogError msg
+   :If Config.WriteToWindowsEventLog
+       :Trap 0
+           MyWinEventLog.WriteError msg
+       :Else
+           MyLogger.LogError'Could not write to the Windows Event Log:'
+           MyLogger.LogError msg
+       :EndTrap
+   :EndIf
+∇</code></pre>
+<p>Note that the <code>Logger</code> class traps any errors that occur. The <code>WindowsEventClass</code> does not do this, and the calls to <code>WriteInfo</code> and <code>WriteError</code> might fail for all sorts of reasons: invalid data type, invalid depth, lack of rights – you name it.</p>
+<p>Therefore both <code>Log</code> and <code>LogError</code> trap any errors and write to the log file in case something goes wrong. Note also that in this particular case it's okay to trap all possible errors (0) because we cannot possibly foresee what might go wrong. In a real-world application you still want to be able to switch this kind of error trapping off via an <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> entry etc.</p>
+<p>In the case of an error we now want the function <code>LogError</code> to be called, so we change <code>SetTrap</code> accordingly:</p>
+<pre><code>∇ trap←{force}SetTrap Config
+...
+  #.ErrorParms.returnCode←EXIT.APPLICATION_CRASHED
+<span class="leanpub_code">  #.ErrorParms.(logFunctionParent logFunction)←⎕THIS'LogError'
+</span>  #.ErrorParms.windowsEventSource←'MyApp'
+...
+∇</code></pre>
+<p>Now it's time to replace the call to <code>MyLogger.Log</code> by a call to <code>Log</code> in the <code>MyApp</code> class; use the replace feature of the editor in order to achieve that.</p>
+<p>There are however three functions where we need to add <code>'both'</code> as left argument:</p>
+<pre><code>∇ {r}←MainLoop dummy;S
+  r←⍬
+<span class="leanpub_code">  'both'Log'"MyApp" server started'
+</span>  S←#.ServiceState
+  :Repeat
+      LoopOverFolder ⍬
+<span class="leanpub_code">      :If ('both'∘Log S.CheckServiceMessages)S.IsRunningAsService
+          'both'Log'"MyApp" is about to shut down...'
+</span>          :Leave
+      :EndIf
+      ⎕DL 2
+  :Until 0
+ ⍝Done
+∇</code></pre>
+<p>Note that use the <em>compose</em> (<code>∘</code>) operator here: only by ‘gluing’ the left argument (<code>'both'</code>) to the function name with the compose operator can we ensure everything's passed to the <code>Log</code> function is written not only to the log file but also to the Windows Event Log when <code>ServiceState</code> is managing the communication between the SCM and the application.</p>
+<p>The second function to be changed is <code>Off</code>:</p>
+<pre><code>    ∇ Off exitCode
+      :If exitCode=EXIT.OK
+<span class="leanpub_code">          'both'Log'Shutting down MyApp'
+</span>      :Else</code></pre>
+<p>Now we change <code>Initial</code>: if the application is running as a service we let <code>Initial</code> create an instance of <code>WindowsEventLog</code> and return it as part of the result.</p>
+<pre><code>leanpub-start-insert
+∇ r←Initial isService;parms;Config;MyLogger;MyWinEventLog
+</span>⍝ Prepares the application.
+  Config←CreateConfig isService
+  Config.ControlFileTieNo←CheckForOtherInstances ⍬
+  CheckForRide(0≠Config.Ride)Config.Ride
+  MyLogger←OpenLogFile Config.LogFolder
+<span class="leanpub_code">  Log'Started MyApp in ',F.PWD
+  Log 2 ⎕NQ'#' 'GetCommandLine'
+  Log↓⎕FMT Config.∆List
+</span>  r←Config MyLogger
+  :If isService
+<span class="leanpub_code">      MyWinEventLog←⎕NEW #.WindowsEventLog(,⊂'MyAppService')
+</span>      parms←#.ServiceState.CreateParmSpace
+      parms.logFunction←'Log'
+      parms.logFunctionParent←⎕THIS
+      #.ServiceState.Init parms
+<span class="leanpub_code">      r,←MyWinEventLog
+</span>  :EndIf
+∇</code></pre>
+<p><code>Initial</code> is called by <code>RunAsService</code> and <code>StartFromCmdLine</code>, but because the result of <code>Initial</code> remains unchanged if the application is not running as a Service we need to amend just <code>RunAsService</code>.</p>
+<p>We localise <code>MyWinEventLog</code> (the name of the instance) and change the call to <code>Initial</code> since it now returns a three-item vector:</p>
+<pre><code>leanpub-start-insert
+∇ {r}←RunAsService(earlyRide ridePort);⎕TRAP;MyLogger;Config;∆FileHashes;MyWinEventLog
+</span> ⍝ Main function when app is running as a Windows Service.
+...
+  ⎕TRAP←#.HandleError.SetTrap ⍬
+<span class="leanpub_code">  (Config MyLogger MyWinEventLog)←Initial 1
+</span>  ⎕TRAP←(Config.Debug=0)SetTrap Config
+...
+∇</code></pre>
+<div class="h_tag">
+<a href="#Does-it-still-work" id="Does-it-still-work" class="autoheader_anchor">
+<h3>Does it still work?</h3>
+</a>
+</div>
+<p>Having made all these changes we should check whether the basics still work:</p>
+<ol start="1">
+<li>Double-click <code>Make.bat</code> in order to re-compile the <abbr title="Executable file with the extension 'exe'">EXE</abbr>.</li>
+<li>Double-click <code>MyApp.dyapp</code>. This assembles the workspace, including the test cases.</li>
+<li>Answer with <code>y</code> the question whether all test cases shall be executed.</li>
+</ol>
+<p>Ideally the test cases should pass.</p>
+<p>Now it's time to run the test cases for the Service:</p>
+<ol start="1">
+<li>Open a console window with admin rights.</li>
+<li>Navigate to the <code>v13\</code> folder.</li>
+<li>Call <code>MakeService.dyapp</code>.</li>
+<li>Execute <code>TestsForServices.GetHelpers</code>.</li>
+<li>Call <code>TestsForServices.RunDebug 0</code>.</li>
+</ol>
+<p>Now start the Event Viewer; you should see something like this:</p>
+<p><img src="Images/WindowsEventLog.png" alt="The Windows Event Log" title="The Windows Event Log"></p>
+<p>You might need to scroll down a bit.</p>
+<div class="h_tag">
+<a href="#Adding-a-test-case" id="Adding-a-test-case" class="autoheader_anchor">
+<h3>Adding a test case</h3>
+</a>
+</div>
+<p>We shall add a test case that checks whether the new logging feature works. For that we introduce <code>Test_03</code>:</p>
+<pre><code>∇ R←Test_03(stopFlag batchFlag);⎕TRAP;MyWinLog;noOfRecords;more;rc;records;buff
+  ⍝ Start &amp; stop the service, then check the Windows Event Log.
+  ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+  R←∆Failed
+
+  MyWinLog←⎕NEW #.WindowsEventLog(,⊂'MyAppService')
+  noOfRecords←MyWinLog.NumberOfLogEntries
+
+  (rc more)←∆Execute_SC_Cmd'start'
+  →FailsIf 0≠rc
+  ∆Pause 1
+  (rc more)←∆Execute_SC_Cmd'query'
+  →FailsIf 0=∨/'STATE : 4 RUNNING'⍷#.APLTreeUtils.dmb more
+  ∆Pause 2
+
+  (rc more)←∆Execute_SC_Cmd'stop'
+  →FailsIf 0≠rc
+  ∆Pause 2
+
+  records←(noOfRecords-10)+⍳(MyWinLog.NumberOfLogEntries+10)-noOfRecords
+  buff←↑MyWinLog.ReadThese records
+  →PassesIf∨/,'"MyApp" server started '⍷buff
+  →PassesIf∨/,'Shutting down MyApp'⍷buff
+
+  R←∆OK
+∇</code></pre>
+<p>Notes:</p>
+<ol start="1">
+<li>First we save the number of records currently saved in the Windows Event Log “Application”.</li>
+<li>We then start and stop the server to make sure we get some fresh records written.</li>
+<li>We then read the number of records plus 10 (others write to the Windows Event Log as well) and investigate them.</li>
+</ol>
+<div class="h_tag">
+<a href="#Tips-tricks-and-traps" id="Tips-tricks-and-traps" class="autoheader_anchor">
+<h2>Tips, tricks and traps</h2>
+</a>
+</div>
+<p>Feel confident with the Windows Event Log? Well, a few more wrinkles yet:</p>
+<ul>
+<li>When you create a new source in a (new) custom log then in the Registry the new log is listed as expected but it has <em>two</em> keys. One has the name of the source you intended to create; the second has the same name as the log itself. In the Event Viewer however only the former is listed.</li>
+<li>Names of sources must be <em>unique</em> across <em>all</em> logs.</li>
+<li>Only the first 8 characters of the name of a source are really taken into account; everything else is ignored. If you have a source <code>S1234567_1</code> and try to register <code>S1234567_2</code> you get an error <em>Source already exists</em>.</li>
+<li>The Event Viewer is up and running. You either create or delete a log or a source and press F5. The Event Viewer GUI flickers. You might suppose the GUI just updated itself.
+<p>That's not the case, at the time of writing (2017-03). You have to close the Event Viewer and re-open it to actually see your changes.</p></li>
+<li>Even when your user ID has admin rights and you've started Dyalog in elevated mode (<em>Run as administrator</em> in the context menu) you <em>cannot</em> delete a custom log with calls to <code>WinReg</code> or <code>WinRegSimple</code>, the APLTree classes that deal with the Windows Registry. The only way to delete custom logs is with the Registry Editor: go to the key
+<p><code>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\EventLog\</code></p>
+<p>and delete the key/s (i.e. children) you want to get rid of. (Probably wise to create a system restore point [<a href="#fnref2" class="footnote_link"><sup>2</sup></a>] before you do that.)</p>
+<p>Worth folllowing that link and reviewing System Restore Points. Under Windows 10, System Restore Points are no longer generated by default; they need to be switched on explicitly. And they should be.</p></li>
+<li>Once you have written events to a source and deleted the log the source apears to belong to, the events remain saved anyway. They are just not visible anymore. That can be shown by re-creating the log: all the events appear as they were before.
+<p>If you want really to get rid of a log, select the <em>Clear log</em> command from the context menu in the Event Viewer (tree only!) before you delete the log.</p></li>
+<li>To analyse the content of a log in APL, the instance methods <code>Read</code> (which reads the whole log) and <code>ReadThese</code> (which takes line numbers and reads just those specified) are useful.</li>
+</ul>
+<div id="footnotes_div">
+<hr>
+<p><strong>Footnotes</strong></p>
+<ol>
+<li id="fnref1"><p>Microsoft on the Windows Event Log:<br><a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa363648(v=vs.85).aspx" class="external_link">https://msdn.microsoft.com/en-us/library/windows/desktop/aa363648(v=vs.85).aspx</a></p><a href="#fnref1" class="footnote_anchor"></a>
+<li id="fnref2"><p>Details about System Restore Point:<br><a href="https://en.wikipedia.org/wiki/System_Restore" class="external_link">https://en.wikipedia.org/wiki/System_Restore</a></p><a href="#fnref2" class="footnote_anchor"></a>
+</ol>
+</div>
+</div>
+</div>
+<script>
+var snapper = new Snap({
+element: document.getElementById('content')
+});
+document.getElementById('mainmenu_match').onclick = function(){
+snapper.state().state==='closed'?snapper.open('left'):snapper.close();
+}
+</script>
+</body>
+</html>

@@ -2,7 +2,7 @@
 /* This CSS file is part of the Markdown2Help project */
 /* Author: Kai Jaeger * APL Team Ltd                  */
 /* Project page: http://aplwiki.com/Markdown2Help     */
-/* Version 1.1 * 2016-11-13                           */
+/* Version 1.2 * 2018-01-14                           */
 /*                                                    */
 /* If you know what you are doing you may take a      */
 /* copy of this file, change it and use it with your  */
@@ -43,6 +43,10 @@ margin: 1em 0 0 10px;
 h5 {
 font-size: 110%;
 margin: 1em 0 0 10px;
+}
+h6 {
+font-size: 100%;
+margin: 0.6em 0 0 10px;
 }
 p {
 margin: 0.5em 10px;

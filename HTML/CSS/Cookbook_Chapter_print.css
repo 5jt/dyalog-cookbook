@@ -1,0 +1,10 @@
+/* Cookbook's CSS file; to be used for the chapters */
+
+div#mainmenu, div#cookbook_footer, div.snap-drawers {
+     display: none;
+}
+
+div.toc-container h1 {
+    font-size: 1em;
+    margin: 2pt 0 3pt 8pt;
+}

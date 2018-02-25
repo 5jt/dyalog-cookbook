@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta charset="utf-8">
+<title>GUI</title>
+<link href="./CSS/BlackOnWhite_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/Cookbook_Chapter_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/snap.css" rel="stylesheet" media="screen">
+<link href="./CSS/BlackOnWhite_print.css" rel="stylesheet" media="print">
+<link href="./CSS/Cookbook_Chapter_print.css" rel="stylesheet" media="print">
+<script src="./JavaScript/snap.js"></script>
+</head>
+<body>
+<div class="snap-drawers">
+<div class="snap-drawer snap-drawer-left">
+<div class="h_tag">
+<h3>Chapters</h3>
+</div>
+<ol>
+<li><a href="./01%20Introduction.html" class="external_link">Introduction</a></li>
+<li><a href="./02%20Structure.html" class="external_link">Structure</a></li>
+<li><a href="./03%20Package%20MyApp%20as%20an%20executable.html" class="external_link">Package MyApp as an executable</a></li>
+<li><a href="./04%20Logging%20what%20happens%20.html" class="external_link">Logging what happens </a></li>
+<li><a href="./05%20Configuration%20settings.html" class="external_link">Configuration settings</a></li>
+<li><a href="./06%20Debugging%20a%20stand-alone%20EXE.html" class="external_link">Debugging a stand-alone EXE</a></li>
+<li><a href="./07%20Handling%20errors.html" class="external_link">Handling errors</a></li>
+<li><a href="./08%20Testing%20—%20the%20sound%20of%20breaking%20glass.html" class="external_link">Testing<br>The sound of breaking glass</a></li>
+<li><a href="./09%20Documentation%20—%20the%20Doc%20is%20in.html" class="external_link">Documentation<br>The Doc is in</a></li>
+<li><a href="./10%20Make%20me.html" class="external_link">Make me</a></li>
+<li><a href="./11%20Providing%20help.html" class="external_link">Providing help</a></li>
+<li><a href="./12%20Scheduled%20Tasks.html" class="external_link">Scheduled Tasks</a></li>
+<li><a href="./13%20Windows%20Services.html" class="external_link">Windows Services</a></li>
+<li><a href="./14%20The%20Windows%20Event%20Log.html" class="external_link">The Windows Event Log</a></li>
+<li><a href="./15%20The%20Windows%20Registry.html" class="external_link">The Windows Registry</a></li>
+<li><a href="./16%20Creating%20SetUp.exe%20with%20Inno.html" class="external_link">Creating SetUp.exe with Inno</a></li>
+<li><a href="./17%20RegularExpressions.html" class="external_link">RegularExpressions</a></li>
+<li><a href="./18%20GUI.html" class="external_link">GUI</a></li>
+</ol>
+<div class="h_tag">
+<h3>Appendices</h3>
+</div>
+<ol>
+<li><a href="./50%20Appendix%201%20—%20Windows%20environment%20variables.html" class="external_link">Windows environment variables</a></li>
+<li><a href="./51%20Appendix%202%20—%20User%20commands.html" class="external_link">User commands</a></li>
+<li><a href="./52%20Appendix%203%20—%20aplcores%20and%20WS%20integrity.html" class="external_link">aplcores and WS integrity</a></li>
+<li><a href="./53%20Appendix%204%20—%20The%20development%20environment.html" class="external_link">The development environment</a></li>
+<li><a href="./54%20Appendix%205%20—%20Special%20characters.html" class="external_link">Special characters</a></li>
+</ol>
+<div class="h_tag">
+<h3>Misc</h3>
+</div>
+<ul>
+<li><a href="17%20RegularExpressions.html">Previous chapter</a></li>
+<li><a href="50%20Appendix%201%20—%20Windows%20environment%20variables.html">Next chapter;</a></li>
+<li><a href="./Dyalog_Cookbook.html" class="external_link">Single document<br>(All chapters, for printing)</a></li>
+</ul>
+</div>
+</div>
+<div id="mainmenu">
+<a href=#><p><span id="mainmenu_match">≡</span></p></a>
+<p><span id="mainmenu_title">The Dyalog Cookbook</span></p>
+<nav id="main_nav">
+<input type="checkbox" id="hide_toc">
+<label id="hide_toc_label" for="hide_toc"></label>
+<div class="toc-container">
+<ul>
+<li><a href="#Introduction">Introduction</a>
+<ul>
+<li><a href="#WC-versus-NEW"><code>⎕WC</code> versus <code>⎕NEW</code></a></li>
+<li><a href="#A-simple-example">A simple example</a></li>
+<li><a href="#A-simple-GUI-with-native-Dyalog-forms">A simple GUI with native Dyalog forms</a></li>
+<li><a href="#The-goal">The goal</a></li>
+</ul></li>
+<li><a href="#The-implementation">The implementation</a>
+<ul>
+<li><a href="#Prerequisites">Prerequisites</a></li>
+<li><a href="#The-function-GUIRun">The function <code>GUI.Run</code></a></li>
+<li><a href="#The-function-GUIInit">The function <code>GUI.Init</code></a></li>
+<li><a href="#The-function-GuiUtilsCreateNamespace">The function <code>GuiUtils.CreateNamespace</code></a></li>
+<li><a href="#The-function-GUICreateGUI">The function <code>GUI.CreateGUI</code></a></li>
+<li><a href="#The-function-GUIOnConfigure">The function <code>GUI.OnConfigure'</code></a></li>
+<li><a href="#All-the-GUICreate-functions">All the <code>GUI.Create*</code> functions</a>
+<ul>
+<li><a href="#The-function-CreateMainForm">The function <code>CreateMainForm</code></a>
+<ul>
+<li><a href="#Collecting-properties">Collecting properties</a></li>
+<li><a href="#Collecting-controls">Collecting controls</a></li>
+</ul></li>
+<li><a href="#The-function-GUICreateMenubar">The function <code>GUI.CreateMenubar</code></a></li>
+<li><a href="#The-function-GUICreateStatusbar">The function <code>GUI.CreateStatusbar</code></a></li>
+<li><a href="#The-function-GUICreateSearch">The function <code>GUI.CreateSearch</code></a></li>
+<li><a href="#The-function-GuiUtilsAddPosnAndSize">The function <code>GuiUtils.AddPosnAndSize</code></a></li>
+<li><a href="#The-function-GUICreateStartLookingHere">The function <code>GUI.CreateStartLookingHere</code></a></li>
+<li><a href="#The-function-GUICreateOptionsGroup">The function <code>GUI.CreateOptionsGroup</code></a></li>
+<li><a href="#The-function-GUIAdjustGroupSize">The function <code>GUI.AdjustGroupSize</code></a></li>
+<li><a href="#The-function-GUICreateObjectTypesGroup">The function <code>GUI.CreateObjectTypesGroup</code></a></li>
+<li><a href="#The-function-GUICreateScanGroup">The function <code>GUI.CreateScanGroup</code></a></li>
+<li><a href="#The-function-GUICreateRegExGroup">The function <code>GUI.CreateRegExGroup</code></a></li>
+<li><a href="#The-function-GUICreateList">The function <code>GUI.CreateList</code></a></li>
+<li><a href="#The-function-GUICreatePushButtons">The function <code>GUI.CreatePushButtons</code></a></li>
+<li><a href="#The-function-GUICreateHiddenButtons">The function <code>GUI.CreateHiddenButtons</code></a></li>
+</ul></li>
+<li><a href="#The-function-GuiUtilsGetRef2n">The function <code>GuiUtils.GetRef2n</code></a></li>
+<li><a href="#The-callback-functions">The callback functions</a>
+<ul>
+<li><a href="#The-function-GUIOnKeyPress">The function <code>GUI.OnKeyPress</code></a></li>
+<li><a href="#The-function-GUIOnToggleIsRegEx">The function <code>GUI.OnToggleIsRegEx</code></a></li>
+<li><a href="#The-function-GUIOnResize">The function <code>GUI.OnResize</code></a></li>
+<li><a href="#The-function-GUIOnFind">The function <code>GUI.OnFind</code></a></li>
+</ul></li>
+<li><a href="#The-function-GUIFind">The function <code>GUI.Find</code></a></li>
+<li><a href="#The-function-GUICollectData">The function <code>GUI.CollectData</code></a></li>
+<li><a href="#The-function-BusinessLogicFind">The function <code>##.BusinessLogic.Find</code></a></li>
+<li><a href="#The-function-GUICalculateMinWidth">The function <code>GUI.CalculateMinWidth</code></a></li>
+<li><a href="#The-function-GUICollectControls">The function <code>GUI.CollectControls</code></a></li>
+<li><a href="#The-function-GUIDQ">The function <code>GUI.DQ</code></a></li>
+<li><a href="#The-function-GUIShutdown">The function <code>GUI.Shutdown</code></a></li>
+</ul></li>
+<li><a href="#Changing-the-GUI">Changing the GUI</a></li>
+<li><a href="#Testing">Testing</a>
+<ul>
+<li><a href="#2">Prerequisites</a></li>
+<li><a href="#Testing-Find">Testing “Find”</a></li>
+<li><a href="#Testing-the-business-logic">Testing the business logic</a></li>
+<li><a href="#Test-missing-Search-For">Test missing “Search For”</a></li>
+<li><a href="#Final-steps">Final steps</a></li>
+<li><a href="#Pros-and-cons-of-GUI-testing">Pros and cons of GUI testing</a></li>
+</ul></li>
+<li><a href="#Conclusion">Conclusion</a>
+</ul>
+</div>
+</nav>
+</div>
+<div id="content" class="snap-content">
+<div id="cookbook_content">
+<div class="h_tag">
+<a href="#18-Graphical-user-interface" id="18-Graphical-user-interface" class="autoheader_anchor">
+<h1>18. Graphical user interface</h1>
+</a>
+</div>
+<div class="h_tag">
+<a href="#Introduction" id="Introduction" class="autoheader_anchor">
+<h2>Introduction</h2>
+</a>
+</div>
+<p>Modern graphical user interfaces (GUI) are a wonder. GUI conventions are so widely known it is now unremarkable for people to start using applications without prior training, expecting the software to make clear what they need to do.</p>
+<p>This is a high standard to meet, and writing UIs is a deep art. The primary platforms for professional writers of UIs are currently a combination of <abbr title="Hyper Text Mark-up language">HTML</abbr> 5 and JavaScript (<abbr title="Hyper Text Mark-up language">HTML</abbr>/JS) and Windows Presentation Foundation (WPF). These are rich platforms, which enable effective and attractive UIs to be written.</p>
+<p>The high quality of these UIs is particularly important for mass-market software, where users are unskilled and unsupported.</p>
+<p><abbr title="Hyper Text Mark-up language">HTML</abbr>/JS and WPF have a high learning threshold. There is much to be mastered before you can write good UIs on these platforms.</p>
+<p>You have an alternative. The GUI tools native to Dyalog support perfectly workmanlike GUIs. They exploit and extend your existing knowledge of Dyalog. If you are producing high-value software for a few users, rather than software for casual use by millions, a native Dyalog GUI might be your best platform.</p>
+<p>You can still run your application from within a browser if you wish to: Amazon offers the “AppStream” [<a href="#fnref1" class="footnote_link"><sup>1</sup></a>] service allowing exactly that.</p>
+<div class="h_tag">
+<a href="#WC-versus-NEW" id="WC-versus-NEW" class="autoheader_anchor">
+<h3><code>⎕WC</code> versus <code>⎕NEW</code></h3>
+</a>
+</div>
+<p><code>⎕NEW</code> came much later than <code>⎕WC</code>. Is <code>⎕NEW</code> replacing <code>⎕WC</code>? Certainly not. It's just an alternative. Both have pros and cons, but after having tried them both in real-world projects we settle for <code>⎕WC</code>. Here's why:</p>
+<p><strong>Pro <code>⎕NEW</code>:</strong></p>
+<ul>
+<li>Syntax checks are stricter. Yes, that is actually an advantage: problems are detected early.</li>
+<li>It does not need a name.
+<p>This point has implications that are not obvious: when you create a GUI control within a class and then try to use it later as parent in another GUI control in a different class you cannot create a reference from the <code>⎕WC</code> statement with something like:</p>
+<pre><code>ref←⍎'MyControlName'parent.⎕wc'Button ('Caption' 'OK')</code></pre>
+<p>because a name used by <code>⎕WC</code> is local to the class the <code>⎕WC</code> was executed in. <code>⎕NEW</code> gets us around this problem.</p></li>
+</ul>
+<p><strong>Pro <code>⎕WC</code>:</strong></p>
+<ul>
+<li>Every control has its own name, and that name shows in the Event Viewer when debugging a GUI. With <code>⎕NEW</code> you see something like <code>[Form].[SubForm].[Group].[Button]</code> which is not exactly helpful.</li>
+<li>Can host Microsoft's WebBrowser control, an <abbr title="Hyper Text Mark-up language">HTML</abbr> renderer that can be integrated into your GUI.</li>
+</ul>
+<p>We hope that Dyalog will eventually use <code>⎕DF</code> for the Event Viewer for GUI controls created by <code>⎕NEW</code>. However, for the time being the disadvantages on <code>⎕NEW</code> are severe, therefore we settle on <code>⎕WC</code>.</p>
+<div class="h_tag">
+<a href="#A-simple-example" id="A-simple-example" class="autoheader_anchor">
+<h3>A simple example</h3>
+</a>
+</div>
+<p>Creating a GUI form in Dyalog could hardly be simpler:</p>
+<pre><code>      ∆Form←⍎'MyForm'⎕WC 'Form'
+      ∆Form.Caption←'Hello world'</code></pre>
+<p><img src="Images/form_01.png" alt="Hello world form" title="Hello world form"></p>
+<p>To the form we add controls, set callback functions to run when certain events occur, and invoke the form's <code>Wait</code> method or <code>⎕DQ</code> to hand control over to the user. See the <em>Dyalog for Microsoft Windows Interface Guide</em> for details and tutorials.</p>
+<p>Experience has shown that it is a good idea to keep references to all controls, as well as any variables that belong logically to those controls, within a namespace. Since this is a temporary namespace — it will exist only as long as the application is running — we use an unnamed namespace for this.</p>
+<p>We create the controls with names but generate references for them which we assign to the very same names within that unnamed namespace. The concept will become clear when we create an example.</p>
+<div class="h_tag">
+<a href="#A-simple-GUI-with-native-Dyalog-forms" id="A-simple-GUI-with-native-Dyalog-forms" class="autoheader_anchor">
+<h3>A simple GUI with native Dyalog forms</h3>
+</a>
+</div>
+<p>We are going to implement a sample form that looks like this:</p>
+<p><img src="Images/gui_example.png" alt="Find and replace" title="Find and replace"></p>
+<p>Obviously this is a GUI that allows a programmer to search the current workspace.</p>
+<p>We would like to emphasise that it is a very good idea to keep the GUI and its code separate from the application. Even if you think that you are absolutely sure that you will never go for a different — or additional — GUI, you should still keep it separate.</p>
+<p>Over and over again in real life assumptions such as <em>This app will be used only for a year or two</em> or <em>This app will never use a different type of GUI</em> have proven to be wrong.</p>
+<p>Besides, testing the business logic of an application is ar easier when it is separated from the GUI.</p>
+<p>Better prepare for it from the start, in particular because it takes little effort to do this early, but becomes a major effort if you need to change or add a GUI later.</p>
+<p>In this chapter we will construct the GUI shown above as an example, and we will keep everything unrelated to the GUI in a namespace <code>BusinessLogic</code>.</p>
+<div class="h_tag">
+<a href="#The-goal" id="The-goal" class="autoheader_anchor">
+<h3>The goal</h3>
+</a>
+</div>
+<p>Our aim is simple: code that is easy to understand and easy to change.</p>
+<p>For that we do the following:</p>
+<ul>
+<li>We keep all controls and all data in a single namespace <code>N</code>; we've already discussed that, now we need to put this into practice.</li>
+<li>Define no more than one property at the time when creating a GUI control.
+<p>This is not only easier to understand and maintain, it also allows us to skip over certain properties in the Tracer; an obvious example is a line <code>props,←⊂'Visible' 0</code>; it's easy to imagine why you don't want that to be executed when debugging a GUI application.</p></li>
+<li>We keep short the functions that create the GUI so that each function accomplishes just one task.</li>
+</ul>
+<p>While reading this you might think something along the lines of: I've never heard a programmer say she strives for unmaintainable code yet, most GUI code is ugly spaghetti. Stay with us!</p>
+<div class="h_tag">
+<a href="#The-implementation" id="The-implementation" class="autoheader_anchor">
+<h2>The implementation</h2>
+</a>
+</div>
+<div class="h_tag">
+<a href="#Prerequisites" id="Prerequisites" class="autoheader_anchor">
+<h3>Prerequisites</h3>
+</a>
+</div>
+<p>We create a top-level namespace that will host our application:</p>
+<pre><code>      'MyApp' ⎕NS ''</code></pre>
+<p>We need three subspaces within <code>MyApp</code>:</p>
+<pre><code>      'GUI'#.MyApp.⎕ns''
+      'BusinessLogic'#.MyApp.⎕ns''
+      'GuiUtils'#.MyApp.⎕ns''</code></pre>
+<ul>
+<li><code>GUI</code> will host everything related to the user interface</li>
+<li><code>BusinessLogic</code> will host the functions that do the hard work.</li>
+<li><code>GuiUtils</code> hosts functions useful for other forms than the main form.</li>
+</ul>
+<div class="h_tag">
+<a href="#The-function-GUIRun" id="The-function-GUIRun" class="autoheader_anchor">
+<h3>The function <code>GUI.Run</code></h3>
+</a>
+</div>
+<p>We start with the function <code>Run</code>:</p>
+<pre><code>     ∇ {N}←Run testFlag
+[1]    ⎕IO←1 ⋄ ⎕ML←1
+[2]    'Invalid right argument'⎕SIGNAL 11/⍨~(⊂testFlag)∊0 1
+[3]    N←Init ⍬
+[4]    N.∆TestFlag←testFlag
+[5]    N←CreateGUI N
+[6]    :If 0=testFlag
+[7]        N.SearchFor U.DQ N.∆Form
+[8]        Shutdown N
+[9]    :EndIf
+[10]  ⍝Done
+     ∇</code></pre>
+<p>What this function does:</p>
+<ul>
+<li>Sets system variables.</li>
+<li>Prepares (initialises) the application by calling <code>Init</code>.</li>
+<li>It assigns <code>testFlag</code> to <code>N.∆TestFlag</code> so that all GUI callbacks will have access to this; we'll discuss soon how this magic works — it's <em>not</em> because <code>N</code> is global.</li>
+<li>Creates the GUI by calling <code>CreateGUI</code>.
+<ul>
+<li><code>N.SearchFor</code> points to the “Search for:” field in the GUI we are about to create. That is going to get the focus.</li>
+<li><code>N.∆form</code> points to the main form.</li>
+</ul></li>
+<li>Hands control over to the user by calling <code>DQ</code>.</li>
+<li>Cleans up by calling <code>Shutdown</code> when the user quits.</li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li>The function returns a shy result, the namespace <code>N</code>; this is only needed for test cases.</li>
+<li>Neither <code>U.DQ</code> nor <code>Shutdown</code> is executed if the right argument is <code>1</code>. We will discuss this later.</li>
+</ul>
+<div class="h_tag">
+<a href="#The-function-GUIInit" id="The-function-GUIInit" class="autoheader_anchor">
+<h3>The function <code>GUI.Init</code></h3>
+</a>
+</div>
+<p>Next we introduce the <code>Init</code> function:</p>
+<pre><code>     ∇ N←Init dummy
+[1]    U←GuiUtils
+[2]    N←U.CreateNamespace
+[3]    N.∆Buttons←''
+[4]    N.∆Labels←N.⎕NS''
+[5]    N.(∆V_Gap ∆H_Gap)←5 10
+[6]    N.∆Posn←80 30
+[7]    N.∆Size←600 800
+[8]    N.InputFont←'InputFont'⎕WC'Font'('PName' 'APL385 Unicode')('Size' 17)
+[9]   ⍝Done
+     ∇</code></pre>
+<ul>
+<li>It creates a reference <code>U</code> which points to the namespace <code>GuiUtils</code>. Note  <code>U</code> is <em>not</em> local to <code>Run</code>; otherwise the test cases — which we will eventually introduce — would have a problem.</li>
+<li>It calls a method <code>CreateNamespace</code> in <code>GuiUtils</code> which returns a namespace which is assigned to <code>N</code>.
+<p><strong>Watch out:</strong> it is this namespace that represents the GUI in the workspace. It will keep references to all controls and variables related to the GUI.</p></li>
+<li>It creates an empty global variable <code>∆Buttons</code> in <code>N</code> which we will use to collect references to all push buttons on the GUI when we create them.</li>
+<li>It creates an anonymous namespace in <code>N</code> which is assigned to <code>∆Labels</code>. We will use this to collect references to all labels on the GUI when we create them.
+<p>The reason: normally we don't handle the labels after creating them, but occasionally we have to. So we separate them from the more important ones. That way they are not in our way but are still available if needed.</p></li>
+<li>It creates two global variables <code>∆V_Gap</code> and <code>∆H_Gap</code> in <code>N</code>. These are used for the vertical (<code>∆V_Gap</code>) and horizontal (<code>∆H_Gap</code>) distances between controls on our form.</li>
+<li>It defines two globals <code>∆Posn</code> and <code>∆Size</code> inside <code>N</code>; they will define the position and the size of the main form.</li>
+<li>It creates an instance of the font APL385 Unicode with an appropriate size.</li>
+<li>It has — like most functions in this chapter  — a comment line at the end that reads <code>⍝Done</code>. The simple purpose of this line is to prevent the Tracer from jumping to line 0 after having executed the very last line.</li>
+</ul>
+<p><code>GuiUtils</code> is an ordinary namespace that contains some functions. We will discuss them when we need them.</p>
+<div class="h_tag">
+<a href="#The-function-GuiUtilsCreateNamespace" id="The-function-GuiUtilsCreateNamespace" class="autoheader_anchor">
+<h3>The function <code>GuiUtils.CreateNamespace</code></h3>
+</a>
+</div>
+<p><code>CreateNamespace</code> is used to create the namespace <code>N</code>:</p>
+<pre><code>     ∇ r←CreateNamespace
+[1]    r←⎕NS''
+[2]    r.⎕FX'r←∆List' 'r←{⍵,[1.5]⍎¨⍵}'' ''~¨⍨↓⎕NL 2 9'
+[3]   ⍝Done
+     ∇</code></pre>
+<p>This function creates an unnamed namespace and populates it with a function <code>∆List</code> which returns a matrix with two columns:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"> Column </th>
+<th style="text-align: left;"> Contains </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[;1]</td>
+<td>Name of a variable or reference</td>
+</tr>
+<tr>
+<td>[;2]</td>
+<td>The value of that name</td>
+</tr>
+</tbody>
+</table>
+<p>After <code>Init</code> runs the <code>N</code> namespace does not yet contain any GUI controls but it does contains some variables that will define certain properties of the GUI:</p>
+<pre><code>      N.∆List
+ InputFont                         #._MyApp.MyApp.GUI.InputFont
+ ∆Buttons
+ ∆H_Gap                                                      10
+ ∆Labels    #._MyApp.MyApp.GUI.GuiUtils.[Namespace].[Namespace]
+ ∆Posn                                                    80 30
+ ∆Size                                                  600 800
+ ∆V_Gap                                                       5</code></pre>
+<div class="h_tag">
+<a href="#The-function-GUICreateGUI" id="The-function-GUICreateGUI" class="autoheader_anchor">
+<h3>The function <code>GUI.CreateGUI</code></h3>
+</a>
+</div>
+<p>This function calls all the functions that create controls. They all start their names with <code>Create</code>.</p>
+<pre><code>     ∇ N←CreateGUI N
+[1]    N←CreateMainForm N
+[2]    N←CreateSearch N
+[3]    N←CreateStartLookingHere N
+[4]    N.∆Groups←⎕NS''
+[5]    N←CreateOptionsGroup N
+[6]    N←CreateObjectTypesGroup N
+[7]    N←CreateScanGroup N
+[8]    N←CreateRegExGroup N
+[9]    {⍵.Size←(⌈/1⊃¨⍵.Size),¨1+2⊃¨⍵.Size}'Group'⎕WN N.∆Form
+[10]   N←CreateList N
+[11]   N←CreatePushButtons N
+[12]   N←CreateHiddenButtons N
+[13]   N.HitList.Size[1]-←(2×N.∆V_Gap)+N.∆Form.Size[1]-N.Find.Posn[1]
+[14]   N.(⍎¨↓⎕NL 9).onKeyPress←⊂'OnKeyPress'
+[15]   N.∆WriteToStatusbar←N∘{⍺.Statusbar.StatusField1.Text←⍵ ⋄ 1:r←⍬}
+[16]   N.∆Form.onConfigure←'OnConfigure'(335,CalculateMinWidth N)
+[17]  ⍝Done
+     ∇</code></pre>
+<p>Notes:</p>
+<ul>
+<li>An anonymous namespace is created and assigned to <code>∆Groups</code> within <code>N</code>. We will create all groups within this subspace.</li>
+<li>The height of all groups is calculated dynamically in line [9]: it's defined by the size of the tallest group plus 1 pixel.</li>
+<li>The height of the hit list is calculated dynamically in line [13] so that it fits onto the form.</li>
+<li>Line [14] assigns the callback <code>OnKeyPress</code> to all controls on the form.</li>
+<li>Line [15] defines dynamically a function <code>∆WriteToStatusbar</code> inside <code>N</code> with <code>N</code> glued to the function as left argument.
+<p>With this construct we <em>always</em> have <code>N</code> as left argument at our disposal inside <code>∆WriteToStatusbar</code>.</p></li>
+<li>Line [16] assigns a callback <code>OnConfigure</code> to the Configure event. The callback gets a left argument which is a two-item vector with the constant 335 and a dynamically calculated value for the width.
+<p>The value is calculated only once, for the assignment. This is necessary: the number of Configure events can be overwhelming.</p></li>
+</ul>
+<p>That callback is very important: without it any Configure event would cause a VALUE ERROR, which in turn would make you lose your workspace because there are just too many of them. So we introduce it straight away; we cannot forget it.</p>
+<div class="h_tag">
+<a href="#The-function-GUIOnConfigure" id="The-function-GUIOnConfigure" class="autoheader_anchor">
+<h3>The function <code>GUI.OnConfigure'</code></h3>
+</a>
+</div>
+<pre><code>∇ OnConfigure←{⍵[1 2 3 4],(⍺[1]⌈⍵[5]),(⍺[2]⌈⍵[6])}
+∇</code></pre>
+<p>Since the Tracer cannot (currently) step into one line dfns, defining the <code>OnConfigure</code> callback as a one liner is exceedingly useful as it allows you to avoid stepping into the callback, which is itself likely to result in even more configure events being generated. As already mentioned it is absolutely essential that this function is a one-liner because that makes the Tracer ignore this function.</p>
+<div class="h_tag">
+<a href="#All-the-GUICreate-functions" id="All-the-GUICreate-functions" class="autoheader_anchor">
+<h3>All the <code>GUI.Create*</code> functions</h3>
+</a>
+</div>
+<p>Although we list all functions here you might not necessarily follow us on each of them in detail, but you should at least keep reading until you reach <code>GUI.AdjustGroupSize</code>.</p>
+<p>However, we suggest to scan through them rather than skipping them and carrying on with <a href="#The-callback-functions" class="bookmark_link">the callback functions</a>.</p>
+<div class="h_tag">
+<a href="#The-function-CreateMainForm" id="The-function-CreateMainForm" class="autoheader_anchor">
+<h4>The function <code>CreateMainForm</code></h4>
+</a>
+</div>
+<pre><code>     ∇ N←CreateMainForm N;∆
+[1]    ∆←⊂'Form'
+[2]    ∆,←⊂'Coord' 'Pixel'
+[3]    ∆,←⊂'Caption' 'MyApp'
+[4]    ∆,←⊂'Posn'N.∆Posn
+[5]    ∆,←⊂'Size'N.∆Size
+[6]    N.∆Form←⍎'Form'⎕WC ∆
+[7]    N.∆Form.N←N
+[8]    N←CreateMenubar N
+[9]    N←CreateStatusbar N
+[10]  ⍝Done
+     ∇</code></pre>
+<p>One statement needs discussion: line [7] assigns <code>N</code> to <code>N.∆Form.N</code> – what for?</p>
+<p>This allows us to find <code>N</code> with ease: we know that there is always a reference to <code>N</code> available inside the main form. When we introduce the callback functions we will need <code>N</code> is almost all of them, and this will make is easy for them to find it.</p>
+<div class="h_tag">
+<a href="#Collecting-properties" id="Collecting-properties" class="autoheader_anchor">
+<h5>Collecting properties</h5>
+</a>
+</div>
+<p>Note that the function collects properties which are assigned to a local variable <code>∆</code>; we don't attempt to give it a proper name because we use it just for collecting stuff.</p>
+<p>Why are we not assigning the properties in one go? Something like this:</p>
+<pre><code>N.∆Form←⍎'Form'⎕WC 'Form'('Coord' 'Pixel')('Caption' 'MyApp')('Posn'∆Posn)('Size'∆Size)</code></pre>
+<p>Are shorter programs not better? They are, but there are exceptions.</p>
+<p>Besides being more readable, having just one property on a line has the big advantage of allowing us to skip the line in the Tracer if we wish to. That is particularly pleasant when we don't want something to be executed like <code>('Visible' 0)</code> or <code>('Active' 0)</code>. If they are part of a lengthy line, well, you get the idea.</p>
+<div class="h_tag">
+<a href="#Collecting-controls" id="Collecting-controls" class="autoheader_anchor">
+<h5>Collecting controls</h5>
+</a>
+</div>
+<p>We are not using a visual designer to create the GUI; we use APL code. Wherever possible, we calculate position and size dynamically, or assign constants.</p>
+<p>The name we use as left argument of <code>⎕WC</code> is also used within <code>N</code> when we assign the reference that is created with the <code>⍎</code> primitive on the (shy) result of <code>⎕WC</code>. That's what a statement like this does:</p>
+<pre><code>      N.∆Form←⍎'Form'⎕WC ∆</code></pre>
+<p><code>CreateMainForm</code> calls two functions which we introduce next.</p>
+<div class="h_tag">
+<a href="#The-function-GUICreateMenubar" id="The-function-GUICreateMenubar" class="autoheader_anchor">
+<h4>The function <code>GUI.CreateMenubar</code></h4>
+</a>
+</div>
+<pre><code>     ∇ N←CreateMenubar N;TAB;∆
+[1]    TAB←⎕UCS 9
+[2]    N.∆Menubar←⍎'∆Menubar'N.∆Form.⎕WC⊂'Menubar'
+[3]    N.∆Menubar.FileMenu←⍎'FileMenu'N.∆Menubar.⎕WC'Menu'('Caption' '&amp;File')
+[4]    ∆←⊂'MenuItem'
+[5]    ∆,←⊂'Caption'('Quit',TAB,'Escape')
+[6]    ∆,←⊂'Accelerator'(27 0)
+[7]    N.∆Menubar.Quit←⍎'Quit'N.∆Menubar.FileMenu.⎕WC ∆
+[8]    N.∆Menubar.Quit.onSelect←1
+[9]   ⍝Done
+     ∇</code></pre>
+<p>Note that we assign the result of <code>⍎'∆Menubar'N.∆Form.⎕WC⊂'Menubar'</code> (which is actually <em>the</em> menubar on our form) to <code>∆Menubar</code> rather than <code>Menubar</code> as you might have expected.</p>
+<p>The reason is that we do not assign the “Menu” and “MenuItem” and “Separator” objects to <code>N</code> but to the menubar itself; because it's a static menu we don't want matters to be blurred, so we keep them separate, similar to the labels.</p>
+<div class="h_tag">
+<a href="#The-function-GUICreateStatusbar" id="The-function-GUICreateStatusbar" class="autoheader_anchor">
+<h4>The function <code>GUI.CreateStatusbar</code></h4>
+</a>
+</div>
+<pre><code>     ∇ N←CreateStatusbar N;∆
+[1]    N.Statusbar←⍎'Statusbar'N.∆Form.⎕WC⊂'Statusbar'
+[2]    ∆←⊂'StatusField'
+[3]    ∆,←⊂'Coord' 'Prop'
+[4]    ∆,←⊂'Posn'(0 0)
+[5]    ∆,←⊂'Size'(⍬ 100)
+[6]    ∆,←⊂'Attach'('Bottom' 'Left' 'Bottom' 'Right')
+[7]    N.StatusField1←⍎'StatusField1'N.Statusbar.⎕WC ∆
+[8]   ⍝Done
+     ∇</code></pre>
+<div class="h_tag">
+<a href="#The-function-GUICreateSearch" id="The-function-GUICreateSearch" class="autoheader_anchor">
+<h4>The function <code>GUI.CreateSearch</code></h4>
+</a>
+</div>
+<pre><code>     ∇ N←CreateSearch N;∆
+[1]    ∆←⊂'Label'
+[2]    ∆,←⊂'Posn'N.(∆V_Gap ∆H_Gap)
+[3]    ∆,←⊂'Caption' '&amp;Search for:'
+[4]    ∆,←⊂'Attach'('Top' 'Left' 'Top' 'Left')
+[5]    N.∆Labels.SearchFor←⍎'SearchFor'N.∆Form.⎕WC ∆
+[6]
+[7]    ∆←⊂'Edit'
+[8]    ∆,←⊂'Posn'((⊃U.AddPosnAndSize N.∆Labels.SearchFor)N.∆H_Gap)
+[9]    ∆,←⊂'Size'(⍬(N.∆Form.Size[2]-2×N.∆H_Gap))
+[10]   ∆,←⊂'FontObj'N.InputFont
+[11]   ∆,←⊂'Attach'('Top' 'Left' 'Top' 'Right')
+[12]   N.SearchFor←⍎'SearchFor'N.∆Form.⎕WC ∆
+[13]  ⍝Done
+     ∇</code></pre>
+<p>This function creates the label <em>Search for</em> and the associated edit field.</p>
+<p>Notes:</p>
+<ul>
+<li>The position of the label on the form is defined by the global variables <code>N.∆V_Gap</code> and <code>N.∆H_Gap</code>.</li>
+<li>Note that the reference for the label is assigned to the subspace <code>∆Labels</code> within <code>N</code> as discussed earlier.</li>
+<li>The position of the Edit control is calculated dynamically from the position and size of the label by the function <code>GuiUtils.AddPosnAndSize</code> which we therefore need to introduce.</li>
+</ul>
+<div class="h_tag">
+<a href="#The-function-GuiUtilsAddPosnAndSize" id="The-function-GuiUtilsAddPosnAndSize" class="autoheader_anchor">
+<h4>The function <code>GuiUtils.AddPosnAndSize</code></h4>
+</a>
+</div>
+<pre><code>     ∇ AddPosnAndSize←{
+[1]        +⌿↑⍵.(Posn Size)
+[2]    }
+     ∇</code></pre>
+<p>Not much code, but very helpful and used over and over again, so it makes sense to make it a function.</p>
+<p>It just makes position and size a matrix and sums up the rows. That is exactly what we need for positioning the Edit control vertically. Its horizontal position is of course defined by <code>N.∆H_Gap</code>.</p>
+<div class="h_tag">
+<a href="#The-function-GUICreateStartLookingHere" id="The-function-GUICreateStartLookingHere" class="autoheader_anchor">
+<h4>The function <code>GUI.CreateStartLookingHere</code></h4>
+</a>
+</div>
+<pre><code> N←CreateStartLookingHere N;∆
+ ∆←⊂'Label'
+ ∆,←⊂'Posn'((N.∆V_Gap+⊃U.AddPosnAndSize N.SearchFor)N.∆H_Gap)
+ ∆,←⊂'Caption' 'Start &amp;looking here:'
+ ∆,←⊂'Attach'('Top' 'Left' 'Top' 'Left')
+ N.∆Labels.StartLookingHere←⍎'StartLookingHere'N.∆Form.⎕WC ∆
+
+ ∆←⊂'Edit'
+ ∆,←⊂'Posn'((⊃U.AddPosnAndSize N.∆Labels.StartLookingHere)N.∆H_Gap)
+ ∆,←⊂'Size'(⍬(N.∆Form.Size[2]-2×N.∆H_Gap))
+ ∆,←⊂'FontObj'N.InputFont
+ ∆,←⊂'Attach'('Top' 'Left' 'Top' 'Right')
+ N.StartLookingHere←⍎'StartLookingHere'N.∆Form.⎕WC ∆
+⍝Done</code></pre>
+<p>Note that this time the vertical position of the label is defined by the total of the <code>Posn</code> and <code>Size</code> of the <em>Search for</em> edit control plus <code>N.∆V_Gap</code>.</p>
+<div class="h_tag">
+<a href="#The-function-GUICreateOptionsGroup" id="The-function-GUICreateOptionsGroup" class="autoheader_anchor">
+<h4>The function <code>GUI.CreateOptionsGroup</code></h4>
+</a>
+</div>
+<pre><code>     ∇ N←CreateOptionsGroup N;∆
+[1]    ∆←⊂'Group'
+[2]    ∆,←⊂'Caption' 'Options'
+[3]    ∆,←⊂'Posn'((N.∆V_Gap+⊃U.AddPosnAndSize N.StartLookingHere),N.∆H_Gap)
+[4]    ∆,←⊂'Size'(300 400)
+[5]    ∆,←⊂'Attach'('Top' 'Left' 'Top' 'Left')
+[6]    N.∆Groups.OptionsGroup←⍎'OptionsGroup'N.∆Form.⎕WC ∆
+[7]
+[8]    ∆←⊂'Button'
+[9]    ∆,←⊂'Style' 'Check'
+[10]   ∆,←⊂'Posn'(3 1×N.(∆V_Gap ∆H_Gap))
+[11]   ∆,←⊂'Caption' '&amp;Match case'
+[12]   N.MatchCase←⍎'MatchCase'N.∆Groups.OptionsGroup.⎕WC ∆
+[13]
+[14]   ∆←⊂'Button'
+[15]   ∆,←⊂'Style' 'Check'
+[16]   ∆,←⊂'Posn'((⊃U.AddPosnAndSize N.MatchCase),N.∆H_Gap)
+[17]   ∆,←⊂'Caption' 'Match &amp;APL name'
+[18]   N.MatchAPLname←⍎'MatchAPLname'N.∆Groups.OptionsGroup.⎕WC ∆
+[19]
+[20]   AdjustGroupSize N.∆Groups.OptionsGroup
+[21]  ⍝Done
+     ∇</code></pre>
+<p>The group as such is assigned to <code>OptionsGroup</code> inside <code>N.∆Groups</code> as discussed earlier.</p>
+<p>The function calls <code>AdjustGroupSize</code> which we therefore need to introduce.</p>
+<div class="h_tag">
+<a href="#The-function-GUIAdjustGroupSize" id="The-function-GUIAdjustGroupSize" class="autoheader_anchor">
+<h4>The function <code>GUI.AdjustGroupSize</code></h4>
+</a>
+</div>
+<pre><code>     ∇ AdjustGroupSize←{
+[1]    ⍝ Ensures that the group is just big enough to host all its children
+[2]        ⍵.Size←N.(∆H_Gap ∆V_Gap)+⊃⌈/{+⌿↑⍵.(Posn Size)}¨⎕WN ⍵
+[3]        1:r←⍬
+[4]    }
+     ∇</code></pre>
+<p>The comment in line [1] tells it all.</p>
+<p>Note that the system function <code>⎕WN</code> gets a reference as right argument rather than a name; that's important because in that case <code>⎕WN</code> returns references as well.</p>
+<div class="h_tag">
+<a href="#The-function-GUICreateObjectTypesGroup" id="The-function-GUICreateObjectTypesGroup" class="autoheader_anchor">
+<h4>The function <code>GUI.CreateObjectTypesGroup</code></h4>
+</a>
+</div>
+<pre><code>     ∇ N←CreateObjectTypesGroup N;∆
+[1]    ∆←⊂'Group'
+[2]    ∆,←⊂'Caption' 'Object &amp;types'
+[3]    ∆,←⊂'Posn'({⍵.Posn[1],(2×N.∆V_Gap)+2⊃U.AddPosnAndSize ⍵}N.∆Groups.OptionsGroup)
+[4]    ∆,←⊂'Size'(300 400)
+[5]    ∆,←⊂'Attach'('Top' 'Left' 'Top' 'Left')
+[6]    N.∆Groups.ObjectTypes←⍎'ObjectTypes'N.∆Form.⎕WC ∆
+[7]
+[8]    ∆←⊂'Button'
+[9]    ∆,←⊂'Style' 'Check'
+[10]   ∆,←⊂'Posn'(3 1×N.(∆V_Gap ∆H_Gap))
+[11]   ∆,←⊂'Caption' 'Fns, opr and scripts'
+[12]   N.FnsOprScripts←⍎'FnsOprScripts'N.∆Groups.ObjectTypes.⎕WC ∆
+[13]
+[14]   ∆←⊂'Button'
+[15]   ∆,←⊂'Style' 'Check'
+[16]   ∆,←⊂'Posn'((⊃U.AddPosnAndSize N.FnsOprScripts),N.∆H_Gap)
+[17]   ∆,←⊂'Caption' 'Variables'
+[18]   N.Variables←⍎'Variables'N.∆Groups.ObjectTypes.⎕WC ∆
+[19]
+[20]   ∆←⊂'Button'
+[21]   ∆,←⊂'Style' 'Check'
+[22]   ∆,←⊂'Posn'((⊃U.AddPosnAndSize N.Variables),N.∆H_Gap)
+[23]   ∆,←⊂'Caption' 'Name list &amp;only (⎕NL)'
+[24]   N.NameList←⍎'NameList'N.∆Groups.ObjectTypes.⎕WC ∆
+[25]
+[26]   AdjustGroupSize N.∆Groups.ObjectTypes
+[27]  ⍝Done
+     ∇</code></pre>
+<div class="h_tag">
+<a href="#The-function-GUICreateScanGroup" id="The-function-GUICreateScanGroup" class="autoheader_anchor">
+<h4>The function <code>GUI.CreateScanGroup</code></h4>
+</a>
+</div>
+<pre><code>      ∇ N←CreateScanGroup N;∆
+[1]    ∆←⊂'Group'
+[2]    ∆,←⊂'Caption' 'Scan... '
+[3]    ∆,←⊂'Posn'({⍵.Posn[1],(2×N.∆V_Gap)+2⊃U.AddPosnAndSize ⍵}N.∆Groups.ObjectTypes)
+[4]    ∆,←⊂'Size'(300 400)
+[5]    ∆,←⊂'Attach'('Top' 'Left' 'Top' 'Left')
+[6]    N.∆Groups.ScanGroup←⍎'ScanGroup'N.∆Form.⎕WC ∆
+[7]
+[8]    ∆←⊂'Button'
+[9]    ∆,←⊂'Style' 'Check'
+[10]   ∆,←⊂'Posn'(3 1×N.(∆V_Gap ∆H_Gap))
+[11]   ∆,←⊂'Caption' 'APL'
+[12]   N.APL←⍎'APL'N.∆Groups.ScanGroup.⎕WC ∆
+[13]
+[14]   ∆←⊂'Button'
+[15]   ∆,←⊂'Style' 'Check'
+[16]   ∆,←⊂'Posn'((⊃U.AddPosnAndSize N.APL),N.∆H_Gap)
+[17]   ∆,←⊂'Caption' 'Comments'
+[18]   N.Comments←⍎'Comments'N.∆Groups.ScanGroup.⎕WC ∆
+[19]
+[20]   ∆←⊂'Button'
+[21]   ∆,←⊂'Style' 'Check'
+[22]   ∆,←⊂'Posn'((⊃U.AddPosnAndSize N.Comments),N.∆H_Gap)
+[23]   ∆,←⊂'Caption' 'Text'
+[24]   N.Text←⍎'Text'N.∆Groups.ScanGroup.⎕WC ∆
+[25]
+[26]   AdjustGroupSize N.∆Groups.ScanGroup
+[27]  ⍝Done
+     ∇</code></pre>
+<div class="h_tag">
+<a href="#The-function-GUICreateRegExGroup" id="The-function-GUICreateRegExGroup" class="autoheader_anchor">
+<h4>The function <code>GUI.CreateRegExGroup</code></h4>
+</a>
+</div>
+<pre><code>     ∇ N←CreateRegExGroup N;∆
+[1]    ∆←⊂'Group'
+[2]    ∆,←⊂'Caption' 'RegEx'
+[3]    ∆,←⊂'Posn'({⍵.Posn[1],N.∆V_Gap+2⊃U.AddPosnAndSize ⍵}N.∆Groups.ScanGroup)
+[4]    ∆,←⊂'Size'(300 400)
+[5]    ∆,←⊂'Attach'('Top' 'Left' 'Top' 'Left')
+[6]    N.∆RegEx←⍎'ObjectTypes'N.∆Form.⎕WC ∆
+[7]
+[8]    ∆←⊂'Button'
+[9]    ∆,←⊂'Style' 'Check'
+[10]   ∆,←⊂'Posn'(2 1×N.(∆V_Gap ∆H_Gap))
+[11]   ∆,←⊂'Caption' 'Is RegE&amp;x'
+[12]   N.IsRegEx←⍎'IsRegEx'N.∆RegEx.⎕WC ∆
+[13]   N.IsRegEx.onSelect←'OnToggleIsRegEx'
+[14]
+[15]   ∆←⊂'Button'
+[16]   ∆,←⊂'Style' 'Check'
+[17]   ∆,←⊂'Posn'((⊃U.AddPosnAndSize N.IsRegEx),4×N.∆H_Gap)
+[18]   ∆,←⊂'Caption' 'Dot&amp;All'
+[19]   N.DotAll←⍎'DotAll'N.∆RegEx.⎕WC ∆
+[20]
+[21]   ∆←⊂'Button'
+[22]   ∆,←⊂'Style' 'Check'
+[23]   ∆,←⊂'Posn'((⊃U.AddPosnAndSize N.DotAll),4×N.∆H_Gap)
+[24]   ∆,←⊂'Caption' '&amp;Greedy'
+[25]   N.Greedy←⍎'Greedy'N.∆RegEx.⎕WC ∆
+[26]
+[27]   AdjustGroupSize N.∆RegEx
+[28]  ⍝Done
+     ∇</code></pre>
+<p>This function ensures both <em>DotAll</em> and <em>Greedy</em> are indented, to emphasise they are available only when the <em>Is RegEx</em> check box is ticked.</p>
+<p>The callback <code>OnToggleRegEx</code> will toggle the <code>Active</code> property of these two check boxes accordingly.</p>
+<div class="h_tag">
+<a href="#The-function-GUICreateList" id="The-function-GUICreateList" class="autoheader_anchor">
+<h4>The function <code>GUI.CreateList</code></h4>
+</a>
+</div>
+<pre><code>     ∇ N←CreateList N;∆;h
+[1]    ∆←⊂'ListView'
+[2]    h←⊃N.∆V_Gap+U.AddPosnAndSize N.MatchCase.##
+[3]    ∆,←⊂'Posn'(h,N.∆H_Gap)
+[4]    ∆,←⊂'Size'((N.∆Form.Size[1]-h),N.∆Form.Size[2]-N.∆H_Gap×2)
+[5]    ∆,←⊂'ColTitles'('Name' 'Location' 'Type' '⎕NS' 'Hits')
+[6]    ∆,←⊂'Attach'('Top' 'Left' 'Bottom' 'Right')
+[7]    N.HitList←⍎'HitList'N.∆Form.⎕WC ∆
+[8]   ⍝Done
+     ∇</code></pre>
+<div class="h_tag">
+<a href="#The-function-GUICreatePushButtons" id="The-function-GUICreatePushButtons" class="autoheader_anchor">
+<h4>The function <code>GUI.CreatePushButtons</code></h4>
+</a>
+</div>
+<pre><code>     ∇ N←CreatePushButtons N;∆
+[1]    N.∆Buttons←''
+[2]    ∆←⊂'Button'
+[3]    ∆,←⊂'Caption' 'Find'
+[4]    ∆,←⊂'Size'(⍬ 120)
+[5]    ∆,←⊂'Default' 1
+[6]    ∆,←⊂'Attach'(4⍴'Bottom' 'Left')
+[7]    N.∆Buttons,←N.Find←⍎'Find'N.∆Form.⎕WC ∆
+[8]    N.Find.Posn←(N.∆Form.Size[1]-N.Find.Size[1]+N.Statusbar.Size[1]+N.∆V_Gap),N.∆V_Gap
+[9]    N.Find.onSelect←'OnFind'
+[10]
+[11]   ∆←⊂'Button'
+[12]   ∆,←⊂'Caption' 'Replace'
+[13]   ∆,←⊂'Size'(⍬ 120)
+[14]   ∆,←⊂'Active' 0
+[15]   ∆,←⊂'Attach'(4⍴'Bottom' 'Left')
+[16]   N.∆Buttons,←N.Replace←⍎'Replace'N.∆Form.⎕WC ∆
+[17]   N.Replace.Posn←(N.Find.Posn[1]),N.∆V_Gap+2⊃U.AddPosnAndSize N.Find
+[18]  ⍝Done
+     ∇</code></pre>
+<p>Note that the <em>Find</em> button gets a callback <code>OnFind</code> assigned to the Select event. That's the real work horse.</p>
+
+<div class="leanpub_A">
+<h3>On callbacks</h3>
+<p>Rather than doing all the hard work in the callback we could have assigned a 1 to <code>N.Find.onSelect</code> (so that clicking the button quits <code>⎕DQ</code> or <code>Wait</code>) and doing the hard work after that. At first glance there seems to be little difference between the two approaches.</p>
+<p>However, if you want to test your GUI automatically then you <em>must</em> execute the 'business logic' in a callback and avoid calling <code>⎕DQ</code> or <code>Wait</code> altogether.</p>
+<p>That's the reason why our <code>Run</code> function expects a Boolean right argument, and that it's named <code>testFlag</code>. If it's a <code>1</code> then MyApp is running in test mode, and neither <code>U.DQ</code> nor <code>Shutdown</code> — which would close down the GUI — are executed.</p>
+<p>That allows us in test mode to…</p>
+<ol start="1">
+<li>call <code>Run</code></li>
+<li>populate the <em>Search for</em> and <em>Start looking here</em> fields</li>
+<li>“click” the <em>Find</em> button programmatically</li>
+<li>populate the “Search for” and “Start looking here” fields</li>
+<li>“click” the “Find” button programmatically</li>
+<li>check the contents of <code>N.HitList</code></li>
+</ol>
+</div>
+
+<div class="h_tag">
+<a href="#The-function-GUICreateHiddenButtons" id="The-function-GUICreateHiddenButtons" class="autoheader_anchor">
+<h4>The function <code>GUI.CreateHiddenButtons</code></h4>
+</a>
+</div>
+<pre><code>     ∇ N←CreateHiddenButtons N;∆
+[1]    ∆←⊂'Button'
+[2]    ∆,←⊂'Caption' 'Resize (F12)'
+[3]    ∆,←⊂'Size'(0 0)
+[4]    ∆,←⊂'Posn'(¯5 ¯5)
+[5]    ∆,←⊂'Attach'(4⍴'Top' 'Left')
+[6]    ∆,←⊂'Accelerator'(123 0)
+[7]    N.Resize←⍎'Resize'N.∆Form.⎕WC ∆
+[8]    N.Resize.onSelect←'OnResize'
+[9]   ⍝Done
+     ∇</code></pre>
+<p>Note that this button has no size (<code>(0 0)</code>) and is positioned <em>outside</em> the GUI. That means it is invisible to the user, and she cannot click it as a result of that. What's the purpose of such a button?</p>
+<p>Well, it has an accelerator key attached to it which, according to the caption, is F12. This is an easy and straightforward way to implement a <abbr title="Programmable function key">PF-key</abbr> without overloading any “onKeyPress” callback.</p>
+<p>It also makes it easy to disable F12: just execute <code>N.Resize.Active←0</code>.</p>
+<div class="h_tag">
+<a href="#The-function-GuiUtilsGetRef2n" id="The-function-GuiUtilsGetRef2n" class="autoheader_anchor">
+<h3>The function <code>GuiUtils.GetRef2n</code></h3>
+</a>
+</div>
+<p>We introduce this function here because almost all callbacks — which we will introduce next — will call <code>GetRef2n</code>.</p>
+<p>Earlier on we saw that a reference to <code>N</code> was assigned to <code>N.∆form.N</code>. Now all callbacks, by definition, get a reference pointing to the control the callback is associated with as the first element of its right argument.</p>
+<p>We also know that the control is owned by the main form, either directly, like <em>Search for</em>, or indirectly like the <em>DotAll</em> checkbox which is owned by the <em>RegEx</em> group, which in turn is owned by the main form.</p>
+<p>That means that in order to find <code>N</code> we just need to check whether it exists at the current level. If not we go up one level (with <code>.##</code>) and try again.</p>
+<p><code>GetRef2n</code> is doing just that with a recursive call to itself until it finds <code>N</code>:</p>
+<pre><code>     ∇ GetRef2n←{
+[1]        9=⍵.⎕NC'N':⍵.N
+[2]        ⍵≡⍵.##:''           ⍝ Can happen in context menus, for example
+[3]        ∇ ⍵.##
+[4]    }
+     ∇</code></pre>
+<p>Of course this means that you should not use the name <code>N</code> — or whatever name <em>you</em> prefer instead for this namespace — anywhere in the hierarchy.</p>
+<p>Note that line [2] is an insurance against <code>GetRef2n</code> being called inside a callback that is associated with a control that is <em>not</em> owned by the main form. Of course that should not happen – because it makes no sense – but if you do it by accident then without that line the function would call itself recursively forever.</p>
+<div class="h_tag">
+<a href="#The-callback-functions" id="The-callback-functions" class="autoheader_anchor">
+<h3>The callback functions</h3>
+</a>
+</div>
+<div class="h_tag">
+<a href="#The-function-GUIOnKeyPress" id="The-function-GUIOnKeyPress" class="autoheader_anchor">
+<h4>The function <code>GUI.OnKeyPress</code></h4>
+</a>
+</div>
+<pre><code>      ∇ OnKeyPress←{
+[1]        (obj key)←⍵[1 3]
+[2]        N←U.GetRef2n obj
+[3]        _←N.∆WriteToStatusbar''
+[4]        'EP'≢key:1                ⍝ Not Escape? Done!
+[5]        _←2 ⎕NQ N.∆Form'Close'    ⍝ Close the main form...
+[6]        0                         ⍝ ... and suppress the &lt;esacape&gt; key.
+[7]    }
+     ∇</code></pre>
+<p>This function just handles the Esc key.</p>
+<div class="h_tag">
+<a href="#The-function-GUIOnToggleIsRegEx" id="The-function-GUIOnToggleIsRegEx" class="autoheader_anchor">
+<h4>The function <code>GUI.OnToggleIsRegEx</code></h4>
+</a>
+</div>
+<pre><code>     ∇ OnToggleIsRegEx←{
+[1]        N←U.GetRef2n⊃⍵
+[2]        N.(DotAll Greedy).Active←~N.IsRegEx.State
+[3]        ⍬
+[4]    }
+     ∇</code></pre>
+<p>This callback toggles the <code>Active</code> property of both <code>DotAll</code> and <code>Greedy</code> so that they are active only when the content of <em>Search for</em> is to be interpreted as a regular expression.</p>
+<div class="h_tag">
+<a href="#The-function-GUIOnResize" id="The-function-GUIOnResize" class="autoheader_anchor">
+<h4>The function <code>GUI.OnResize</code></h4>
+</a>
+</div>
+<pre><code>      ∇ OnResize←{
+[1]        N←⎕NS''
+[2]        list←CollectControls(⊃⍵).##
+[3]        N.∆Form←(⊃⍵).##
+[4]        width←CalculateMinWidth N.∆Form.N
+[5]        ⎕NQ N.∆Form,(⊂'Configure'),N.∆Form.Posn,(N.∆Form.Size[1]),width
+[6]    }
+     ∇</code></pre>
+<p>This function makes sure that the width of the GUI is reduced to the minimum required to display all groups properly.</p>
+<div class="h_tag">
+<a href="#The-function-GUIOnFind" id="The-function-GUIOnFind" class="autoheader_anchor">
+<h4>The function <code>GUI.OnFind</code></h4>
+</a>
+</div>
+<pre><code>     ∇ r←OnFind msg;N
+[1]    r←0
+[2]    N←U.GetRef2n⊃msg
+[3]    N.∆WriteToStatusbar''
+[4]    :If 0∊⍴N.SearchFor.Text
+[5]        Dialogs.ShowMsg N'"Search for" is empty - nothing to look for...'
+[6]    :ElseIf 0∊⍴N.StartLookingHere.Text
+[7]        Dialogs.ShowMsg N'"Start looking here" is empty?!'
+[8]    :ElseIf 9≠⎕NC N.StartLookingHere.Text
+[9]    :AndIf (,'#')≢,N.StartLookingHere.Text
+[10]       Dialogs.ShowMsg N'Contents of "Start looking here" is not a namespace'
+[11]   :Else
+[12]       Find N
+[13]   :EndIf
+[14]  ⍝Done
+     ∇</code></pre>
+<p>The callback performs some checks and either puts an error message on display by calling a function <code>Dialogs.ShowMsg</code> or executes the <code>Find</code> function, providing <code>N</code> as the right argument.</p>
+<p>Note that <code>Dialog.ShowMsg</code> follows exactly the same principles we have outlines in this chapter, so we do not discuss it in detail, but you can download the code and look at it if you want to.</p>
+<p>One thing should be pointed out however: the form created by <code>Dialog.ShowMsg</code> is actually a child of our main form.</p>
+<p>That gets us around a nasty problem: when it's not a child of the main form and you give the focus to another application which then hides completely the form created by <code>Dialog.ShowMsg</code> but not all of the main form, then a click on the main form should bring the application to the front, with the focus on <code>Dialogs.ShowMsg</code>, but that doesn’t happen by default.</p>
+<p>By making it a child of the main form we enforce this behaviour. We don't want the user to believe the application has stopped working just because the form is hidden by another application window.</p>
+<div class="h_tag">
+<a href="#The-function-GUIFind" id="The-function-GUIFind" class="autoheader_anchor">
+<h3>The function <code>GUI.Find</code></h3>
+</a>
+</div>
+<p>This is the real work horse:</p>
+<pre><code>     ∇ Find←{
+[1]        N←⍵
+[2]        G←CollectData N
+[3]        was←N.∆Buttons.Active
+[4]        N.∆Buttons.Active←0
+[5]        _←N.∆WriteToStatusbar'Searching...'
+[6]        N.∆Result←(noOfHits noOfObjects cpuTime)←##.BusinessLogic.Find G
+[7]        N.∆Buttons.Active←was
+[8]        txt←(⍕noOfHits),' hits in ',(⍕noOfObjects),' objects. Search time ',(⍕cpuTime),' seconds.'
+[9]        _←N.∆WriteToStatusbar txt
+[10]       1:r←⍬
+[11]   }
+     ∇</code></pre>
+<p>An important thing to discuss is the function <code>CollectData</code>. We want our 'business logic' to be independent from the GUI. So we don't want anything in <code>##.BusinessLogic</code> to access the <code>N</code> namespace.</p>
+<p>But it needs access to the data entered and decisions made by the user on the GUI. So we collect all the data and assign them to variables inside a newly created anonymous namespace, which we assign to <code>G</code>.</p>
+<div class="h_tag">
+<a href="#The-function-GUICollectData" id="The-function-GUICollectData" class="autoheader_anchor">
+<h3>The function <code>GUI.CollectData</code></h3>
+</a>
+</div>
+<pre><code>     ∇ CollectData←{
+[1]        N←⍵
+[2]        G←⎕NS''
+[3]        _←G.⎕FX'r←∆List' 'r←{⍵,[1.5]⍎¨⍵}'' ''~¨⍨↓⎕NL 2'
+[4]        G.APL←N.APL.State
+[5]        G.Comments←N.Comments.State
+[6]        G.DotAll←N.DotAll.State
+[7]        G.FnsOprScripts←N.FnsOprScripts.State
+[8]        G.Greedy←N.Greedy.State
+[9]        G.IsRegEx←N.Greedy.State
+[10]       G.MatchAPLname←N.MatchAPLname.State
+[11]       G.MatchCase←N.MatchCase.State
+[12]       G.NameList←N.NameList.State
+[13]       G.SearchFor←N.SearchFor.Text
+[14]       G.StartLookingHere←N.StartLookingHere.Text
+[15]       G.Text←N.Text.State
+[16]       G.Variables←N.Variables.State
+[17]       G
+[18]   }
+     ∇</code></pre>
+<p>This namespace (<code>G</code>) is passed as the only argument to the <code>Find</code> function.</p>
+<p>Suppose you replaces the Windows native GUI by an <abbr title="Hyper Text Mark-up language">HTML</abbr>5/JavaScript GUI. All you have to do here is ensure the <code>G</code> namespace is fed with all the data needed. <code>##.BusinessLogic</code> will not be affected in any way.</p>
+<div class="h_tag">
+<a href="#The-function-BusinessLogicFind" id="The-function-BusinessLogicFind" class="autoheader_anchor">
+<h3>The function <code>##.BusinessLogic.Find</code></h3>
+</a>
+</div>
+<p>Of course nothing is really happening in <code>##.BusinessLogic.Find</code>, we just mock something up:</p>
+<pre><code>     ∇ (noOfHits noOfObjects cpuTime)←Find G;was
+[1]   ⍝ Here's where all the searching takes place.
+[2]   ⍝ `G` is a namespace that contains all the relevant GUI control settings (check boxes
+[3]   ⍝ and text fields) as ordinary field. It's the interface between GUI and application.
+[4]    ⎕DL 3
+[5]    noOfHits←123
+[6]    noOfObjects←645
+[7]    cpuTime←2.3
+     ∇</code></pre>
+<div class="h_tag">
+<a href="#The-function-GUICalculateMinWidth" id="The-function-GUICalculateMinWidth" class="autoheader_anchor">
+<h3>The function <code>GUI.CalculateMinWidth</code></h3>
+</a>
+</div>
+<pre><code>     ∇ CalculateMinWidth←{
+[1]        N←⍵
+[2]        ignore←'HitList' 'SearchFor' 'StartLookingHere' 'Statusbar' 'StatusField1' '∆Form'
+[3]        list2←N.{⍎¨(' '~¨⍨↓⎕NL 9)~⍵}ignore
+[4]        (2×N.∆V_Gap)+⌈/{0::0 0 ⋄ 2⊃+⌿↑⍵.(Posn Size)}¨list2
+[5]    }
+     ∇</code></pre>
+<p>The function calculates the minimum width needed by the form to be presentable. It takes all controls owned by the form into account except those listed on <code>ignore</code>.</p>
+<div class="h_tag">
+<a href="#The-function-GUICollectControls" id="The-function-GUICollectControls" class="autoheader_anchor">
+<h3>The function <code>GUI.CollectControls</code></h3>
+</a>
+</div>
+<pre><code>     ∇ CollectControls←{
+[1]        0∊⍴l←⎕WN ⍵:⍬
+[2]        l,(⊃,/∇¨l)~⍬
+[3]    }
+     ∇</code></pre>
+<p>It collects all controls found in <code>⍵</code> and then calls itself on them until nothing is found anymore.</p>
+<div class="h_tag">
+<a href="#The-function-GUIDQ" id="The-function-GUIDQ" class="autoheader_anchor">
+<h3>The function <code>GUI.DQ</code></h3>
+</a>
+</div>
+<pre><code>     ∇ {r}←{focus}DQ ref
+[1]    focus←{0&lt;⎕NC ⍵:⍎⍵ ⋄ ref}'focus'
+[2]    ⎕NQ focus'GotFocus' ⋄ r←⎕DQ ref
+[3]   ⍝Done
+     ∇</code></pre>
+<p>The function accepts an optional left argument which, when specified, must be a reference pointing to a control. The function then forces the focus onto that control before executing <code>⎕DQ</code> on the right argument, usually the main form.</p>
+<p>We put this into a separate function so that we can at any time interrupt the function, investigate variables or change functions and then carry on by executing <code>→1</code>.</p>
+<div class="h_tag">
+<a href="#The-function-GUIShutdown" id="The-function-GUIShutdown" class="autoheader_anchor">
+<h3>The function <code>GUI.Shutdown</code></h3>
+</a>
+</div>
+<pre><code>     ∇ {r}←Shutdown N
+[1]    r←⍬
+[2]    :Trap 6 ⋄ 2 ⎕NQ N.∆Form'Close' ⋄ :EndTrap
+     ∇</code></pre>
+<p>This function ensures the main form is closed in case it still exists.</p>
+<p>Note that we need the trap. Even checking the main form with <code>⎕NS</code> might fail if the user clicks the Close box right after the check has been performed but before the next line is executed.</p>
+<p>This would produce one of these nasty crashes that occur only every odd year and are not reproducible. This is one of the rare cases where a trap is better than any check.</p>
+<div class="h_tag">
+<a href="#Changing-the-GUI" id="Changing-the-GUI" class="autoheader_anchor">
+<h2>Changing the GUI</h2>
+</a>
+</div>
+<p>To demonstrate the power of the above approach we have to show it is easy to change.</p>
+<p>Let's suppose the following:</p>
+<ol start="1">
+<li>We have a user who is unhappy with the arrangement of the controls on the GUI. On her huge 5k monitor it looks a bit clumsy.</li>
+<li>She also wants the groups arranged in two rows, with <em>Options</em> and <em>RegEx</em> in the first row and <em>Object types</em> and <em>Scan…</em> in the second row.</li>
+</ol>
+<p>How much work is required to make these changes?</p>
+<p>First we double the vertical and horizontal distance between the controls on the main form:</p>
+<pre><code>     ∇ N←Init dummy
+...
+[4]    N.∆Labels←N.⎕NS''
+<span class="leanpub_code">[5]    N.(∆V_Gap ∆H_Gap)←10 20
+</span>[6]    N.∆Posn←80 30
+...
+     ∇</code></pre>
+<p>Then we change the sequence in which the groups are created:</p>
+<pre><code>leanpub-start-insert
+     ∇ N←CreateGUI N;groups
+</span>[1]    N←CreateMainForm N
+[2]    N←CreateSearch N
+[3]    N←CreateStartLookingHere N
+[4]    N.∆Groups←⎕NS''
+<span class="leanpub_code">[5]    N←CreateOptionsGroup N
+[6]    N←CreateRegExGroup N
+[7]    groups←'Group'⎕WN N.∆Form
+[8]    {⍵.Size←(⌈/1⊃¨⍵.Size),¨1+2⊃¨⍵.Size}groups
+[9]    N←CreateObjectTypesGroup N
+[10]   N←CreateScanGroup N
+[11]   {⍵.Size←(⌈/1⊃¨⍵.Size),¨1+2⊃¨⍵.Size}('Group'⎕WN N.∆Form)~groups
+</span>[12]   N←CreateList N
+[13]   N←CreatePushButtons N
+[14]   N←CreateHiddenButtons N
+[15]   N.HitList.Size[1]-←(2×N.∆V_Gap)+N.∆Form.Size[1]-N.Find.Posn[1]
+[16]   N.(⍎¨↓⎕NL 9).onKeyPress←⊂'OnKeyPress'
+[17]   N.∆WriteToStatusbar←N∘{⍺.Statusbar.StatusField1.Text←⍵ ⋄ 1:r←⍬}
+[18]   N.∆Form.onConfigure←'OnConfigure'(335,CalculateMinWidth N)
+[19]  ⍝Done
+     ∇</code></pre>
+<p>We need to calculate the height of the groups here twice: once in line [8], after having created the first two groups and then again in line [11] on all groups but the first two. For that we save the references of the first two on <code>groups</code> and exclude them in line 11.</p>
+<p>We then tell the <em>RegEx</em> group where it should go, and we adjust the positions of the <em>DotAll</em> and the <em>Greedy</em> check boxes:</p>
+<pre><code>     ∇ N←CreateRegExGroup N;∆
+[1]    ∆←⊂'Group'
+[2]    ∆,←⊂'Caption' 'RegEx'
+<span class="leanpub_code">[3]   ⍝∆,←⊂'Posn'({⍵.Posn[1],(2×N.∆V_Gap)+2⊃U.AddPosnAndSize ⍵}N.∆Groups.ScanGroup)
+[4]    ∆,←⊂'Posn'({⍵.Posn[1],(2×N.∆V_Gap)+2⊃U.AddPosnAndSize ⍵}N.∆Groups.OptionsGroup)
+</span>[5]    ∆,←⊂'Size'(300 400)
+...
+[16]   ∆←⊂'Button'
+[17]   ∆,←⊂'Style' 'Check'
+<span class="leanpub_code">[18]  ⍝∆,←⊂'Posn'((⊃U.AddPosnAndSize N.IsRegEx),4×N.∆H_Gap)
+[19]   ∆,←⊂'Posn'((⊃U.AddPosnAndSize N.IsRegEx),2×N.∆H_Gap)
+</span>[20]   ∆,←⊂'Caption' 'Dot&amp;All'
+...
+[24]   ∆,←⊂'Style' 'Check'
+<span class="leanpub_code">[25]  ⍝∆,←⊂'Posn'((⊃U.AddPosnAndSize N.DotAll),4×N.∆H_Gap)
+[26]   ∆,←⊂'Posn'((⊃U.AddPosnAndSize N.DotAll),2×N.∆H_Gap)
+</span>[27]   ∆,←⊂'Caption' '&amp;Greedy'
+...
+     ∇</code></pre>
+<p>We keep the old version to make a comparison easy.</p>
+
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/warning.png" alt="Warning">
+<div>
+<h3>Keeping old versions of lines</h3>
+<p>We <em>do not</em> generally advocate the technique used here. We do this only for demonstration.</p>
+<p>In a real-world scenario, rather than cluttering the code, it should be left to a source-code management system and proper comparison tools to handle such issues.</p>
+</div>
+</div>
+
+<p>For <code>CreateObjectTypesGroup</code> we just need to change the <code>Posn</code> property:</p>
+<pre><code>     ∇ N←CreateObjectTypesGroup N;∆
+[1]    ∆←⊂'Group'
+[2]    ∆,←⊂'Caption' 'Object &amp;types'
+<span class="leanpub_code">[3]   ⍝∆,←⊂'Posn'({⍵.Posn[1],(2×N.∆V_Gap)+2⊃U.AddPosnAndSize ⍵}N.∆Groups.OptionsGroup)
+[4]    ∆,←⊂'Posn'((N.∆V_Gap+1⊃U.AddPosnAndSize N.∆Groups.OptionsGroup),N.∆H_Gap)
+</span>[5]    ∆,←⊂'Size'(300 400)
+...
+     ∇</code></pre>
+<p>The last group-related function, <code>CreateScanGroup</code>, does not change at all because it still makes itself a neighbour of <code>CreateObjectTypesGroup</code>.</p>
+<p>Since we now have significantly less space available for the <code>HitList</code> we need to change <code>CreateList</code> as well:</p>
+<pre><code>     ∇ N←CreateList N;∆;h
+[1]    ∆←⊂'ListView'
+<span class="leanpub_code">[2]   ⍝h←⊃N.∆V_Gap+U.AddPosnAndSize N.MatchCase.##
+[3]    h←⊃N.∆V_Gap+U.AddPosnAndSize N.FnsOprScripts.##
+</span>[4]    ∆,←⊂'Posn'(h,N.∆H_Gap)
+...
+     ∇</code></pre>
+<p>And that was it.</p>
+<div class="h_tag">
+<a href="#Testing" id="Testing" class="autoheader_anchor">
+<h2>Testing</h2>
+</a>
+</div>
+<div class="h_tag">
+<a href="#2" id="2" class="autoheader_anchor">
+<h3>Prerequisites</h3>
+</a>
+</div>
+<p>For implementing tests execute the following steps:</p>
+<ol start="1">
+<li>Create a namespace with
+<pre><code>'TestCases'#._Meddy.⎕ns''</code></pre></li>
+<li>Load the script <code>APLTreeUtils</code> and the class <code>Testers</code> into <code>#</code> as discusses in the chapter regarding <a href="./08 Testing — the sound of breaking glass.html" class="external_link">tests</a> chapter.</li>
+<li>Execute these statements:
+<pre><code>)cs #._MyApp.TestCases
+#.Tester.EstablishHelpersIn ⍬</code></pre></li>
+</ol>
+<div class="h_tag">
+<a href="#Testing-Find" id="Testing-Find" class="autoheader_anchor">
+<h3>Testing “Find”</h3>
+</a>
+</div>
+<p>Edit <code>#._MyApp.TestCases.Test_000</code> and make it look like this:</p>
+<pre><code>     ∇ R←Test_01(stopFlag batchFlag);⎕TRAP;N
+[1]   ⍝ Test that the GUI comes up and the "Find" works well
+[2]    ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+[3]    R←∆Failed
+[4]
+[5]    N←##.MyApp.GUI.Run 1
+[6]    N.SearchFor.Text←'⎕IO'
+[7]    N.StartLookingHere.Text←'#'
+[8]    1 ⎕NQ N.Find'Select'
+[9]    →GoToTidyUp 123 645 2.3≢N.∆Result
+[10]   R←∆OK
+[11]
+[12]  ∆TidyUp:
+[13]   1 ⎕NQ N.∆Form'Close'
+     ∇</code></pre>
+<p>Of course this is not how a real test would look (line [9]) but it demonstrates the principles.</p>
+<p>Note that <code>N.∆Result</code> was set in the <code>GUI.Find</code> function.</p>
+<p>After having executed <code>Init</code> there is a global reference <code>GUI.U</code> around that points to the namespace <code>GUI.GuiUtils</code>; that's necessary because otherwise later calls might well fail with a VALUE ERROR when <code>GUI.U</code> is not available.</p>
+<p>That's not a problem because we don't save the workspace, we recompile it from scratch whenever we start a development session.</p>
+<div class="h_tag">
+<a href="#Testing-the-business-logic" id="Testing-the-business-logic" class="autoheader_anchor">
+<h3>Testing the business logic</h3>
+</a>
+</div>
+<p>Take a copy of the first test and make it look like this:</p>
+<pre><code>     ∇ R←Test_02(stopFlag batchFlag);⎕TRAP;N;G
+[1]   ⍝ Test the business logic
+[2]    ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+[3]    R←∆Failed
+[4]
+[5]    N←##.MyApp.GUI.Run 1
+[6]    N.SearchFor.Text←'⎕IO'
+[7]    N.StartLookingHere.Text←'#'
+[8]    G←##.MyApp.GUI.CollectData N
+[9]    →GoToTidyUp 123 645 2.3≢##.MyApp.BusinessLogic.Find G
+[10]   R←∆OK
+[11]
+[12]  ∆TidyUp:
+[13]   1 ⎕NQ N.∆Form'Close'
+     ∇</code></pre>
+<div class="h_tag">
+<a href="#Test-missing-Search-For" id="Test-missing-Search-For" class="autoheader_anchor">
+<h3>Test missing “Search For”</h3>
+</a>
+</div>
+<p>Take a copy of the first test and make it look like this:</p>
+<pre><code>     ∇ R←Test_03(stopFlag batchFlag);⎕TRAP;N
+[1]   ⍝ Test whether an empty "Search for" field leads to an error message.
+[2]    ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+[3]    R←∆Failed
+[4]
+[5]    N←##.MyApp.GUI.Run 1
+[6]    N.StartLookingHere.Text←'#'
+[7]    1 ⎕NQ N.Find'Select'
+[8]    →GoToTidyUp 0=N.⎕NC'∆ErrorMsg'
+[9]    →GoToTidyUp'"Search for" is empty - nothing to look for...'≢N.∆ErrorMsg
+[10]   R←∆OK
+[11]
+[12]  ∆TidyUp:
+[13]   1 ⎕NQ N.∆Form'Close'
+     ∇</code></pre>
+<p>This works because when <code>testFlag</code> – the right argument of <code>GUI.Run</code> — is 1 then the function <code>Dialog.ShowMsg</code> does nothing but set a global variable <code>N.∆ErrorMsg</code> which we use in the test case in order to check whether our actions triggered the correct behaviour.</p>
+<p>We have eariler stated that we won't discuss <code>Dialogs.ShowMsg</code> in details but we list it here because the function illustrates an important concept of how GUIs can be tested at all:</p>
+<pre><code>     ∇ {r}←{caption}ShowMsg(N msg);n2;U
+[1]   ⍝ Takes `N` and a message to be displayed as mandatory right arguments.
+[2]   ⍝ Takes an optional `caption` as left argument.
+[3]   ⍝ Returns 1 when running under test conditions and 0 otherwise.
+[4]   ⍝ In test mode no GUI is created at all but a global `N.∆ErrorMsg` is set to `msg`.
+[5]    r←0
+[6]    caption←{0&lt;⎕NC ⍵:⍎⍵ ⋄ 'Attention!'}'caption'
+<span class="leanpub_code">[7]    :If N.∆TestFlag
+[8]        N.∆ErrorMsg←msg
+[9]        r←1
+[10]   :Else
+</span>[11]       U←##.GuiUtils
+[12]       n2←U.CreateNamespace
+[13]       n2.(∆V_Gap ∆H_Gap)←N.(∆V_Gap ∆H_Gap)
+[14]       n2←n2 CreateGUI N msg caption
+[15]       {}n2.OK U.DQ n2.∆Form
+[16]       Close n2.∆Form
+[17]   :EndIf
+     ∇</code></pre>
+<p>Now it becomes apparent why we assigned the right argument of <code>GUI.Run</code> — <code>testFlag</code> — to <code>N.∆TestFlag</code>: we need this potentially in order to avoid handing over control to the user; in test cases we don't want to do this.</p>
+<div class="h_tag">
+<a href="#Final-steps" id="Final-steps" class="autoheader_anchor">
+<h3>Final steps</h3>
+</a>
+</div>
+<ol start="1">
+<li>Delete <code>#._MyApp.TestCases.Test_0001</code></li>
+<li>Run <code>#._MyApp.TestCases.RunDebug 0</code>.</li>
+</ol>
+<div class="h_tag">
+<a href="#Pros-and-cons-of-GUI-testing" id="Pros-and-cons-of-GUI-testing" class="autoheader_anchor">
+<h3>Pros and cons of GUI testing</h3>
+</a>
+</div>
+<p>GUIs tend to change quite a lot over time, and rewriting — or adding — plenty of test cases can take a significant amount of time, sometimes far more than needed to implement the GUI in the first place.</p>
+<p>In such cases the time invested in exhaustive test cases might be too high.</p>
+<p>On the other hand if the application's main purposes is to make complex tasks manageable, there will be a lot of dependencies and checking going on in the background. In that case exhaustive test cases might well be a good investment if only because you will find bugs for sure. Your call.</p>
+<div class="h_tag">
+<a href="#Conclusion" id="Conclusion" class="autoheader_anchor">
+<h2>Conclusion</h2>
+</a>
+</div>
+<p>We believe we have demonstrated the combination of techniques outlined in this chapter leads not only to better code but makes it also far easier actually to write GUI applications in the first place.</p>
+<p>Having said this, the approach outlined here is insufficient if the GUI of an application changes heavily depending on the user's actions.</p>
+<p>However, the principal ideas can still be used but the list of controls were better compiled from scratch at the start of each callback function rather than having them as a static list in a namespace.</p>
+<p>It was Paul Mansour came up with many of the ideas outlined here. We stole plenty from him and owe him a big thank you.</p>
+<div id="footnotes_div">
+<hr>
+<p><strong>Footnotes</strong></p>
+<ol>
+<li id="fnref1"><p><a href="https://aws.amazon.com/appstream2/" class="external_link">https://aws.amazon.com/appstream2/</a></p><a href="#fnref1" class="footnote_anchor"></a>
+</ol>
+</div>
+</div>
+</div>
+<script>
+var snapper = new Snap({
+element: document.getElementById('content')
+});
+document.getElementById('mainmenu_match').onclick = function(){
+snapper.state().state==='closed'?snapper.open('left'):snapper.close();
+}
+</script>
+</body>
+</html>

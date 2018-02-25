@@ -1,0 +1,24 @@
+# Exclude all this:
+
+# LOGs
+*.log
+
+# EXEs, APLCOREs, ZIPs
+aplcore
+*.exe
+*.zip
+
+# URLs, DLLs
+*.url
+*.dll
+
+# crash files, reports
+code/v??/*.dcf
+code/v??/*.html
+code/v??/Errors/*.dcf
+code/v??/Errors/*.dws
+code/v??/Errors/*.html
+code/v???/*
+
+# these folders
+manuscript/images/originals

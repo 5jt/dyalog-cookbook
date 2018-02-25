@@ -1,0 +1,333 @@
+/* Print CSS version 1.3 from 2017-12-23 */
+
+@page {
+    margin: 25mm 20mm 25mm 20mm;
+}
+
+body  {
+    font-family: "Bookman Old Style", "Callisto MT", Bookman, "Goudy Old Style", Garamond, serif;
+    font-size: 9pt;
+    line-height: 1.2;
+}
+h1 {font-size: 170%;}
+h2 {font-size: 110%;}
+h3 {font-size: 110%;}
+h4 {font-size: 105%;}
+h5 {font-size: 100%;}
+h6 {font-size: 95%;}
+h1 {margin: 0 0 20pt 0;}
+h2 {margin: 15pt 0 3pt 0;}
+h3 {margin: 10pt 0 0pt 0;}
+h4 {margin: 10pt 0 0pt 0;}
+h5 {margin: 9pt 0 0pt 0;}
+h6 {margin: 9pt 0 0pt 0;}
+h1, h2, h3, h4, h5, h6 {
+    color: black;
+    font-family: "Arial Black";
+    page-break-after: avoid;
+    break-after: avoid;
+}
+h1 > code, h2 > code, h3 > code, h4 > code, h5 > code, h6 > code {
+    font-size: 100%;
+}
+h2 {
+    border-bottom: 1pt solid Silver;
+    padding-bottom: 2pt;
+}
+.h_tag {
+    page-break-after: avoid;
+    break-after: avoid;
+}
+abbr[title] {
+    border-bottom: 0;
+    text-decoration: none;
+}
+a {
+    color:black;
+    margin: 0;
+    padding: 0;
+    vertical-align: baseline;
+    text-decoration: none;
+    font-style: italic;
+}
+a.autoheader_anchor {
+    text-decoration: none;
+    font-style: normal;
+    page-break-after: avoid;
+    break-after: avoid;
+}
+ul {
+    list-style-type: square;
+}
+ul, ol {
+    padding: 0;
+    margin: 0;
+}
+li > ul, ol {
+    padding-bottom:0;
+}
+li {
+    line-height: 1.3;
+    margin-left: 13pt;
+    margin-bottom: 5pt;
+}
+ul > li {
+    margin-left: 10pt;
+}
+li ul {
+    margin-left: 5pt;
+}
+li ul {
+    margin-left: 3pt;
+}
+li p {
+    padding: 1pt 0 0 0; 
+    margin: 5pt 0 3pt 0;
+    line-height: 1.3;
+}
+p, ul, ol {
+    line-height: 1.3;
+    padding: 4pt 0 0 0;
+    margin: 0;
+    color: black;
+}
+pre {
+    padding: 3pt;
+    margin: 5pt 0;
+    white-space: pre-wrap;
+    background-color: #FBFBFB;
+    border: 1pt Silver solid;
+    display: block;
+    font-family: APLFont, monospace;
+    page-break-inside: avoid;
+    break-inside:  avoid;
+    -webkit-print-color-adjust: exact;
+}
+pre code {
+     background-color: #FBFBFB;
+     color: #950000;
+     padding: 0;
+     margin: 0 0 -6pt 0;
+     line-height: 1.1;
+     border: 0;
+}
+code {
+    font-family: APLFont, monospace;
+    line-height: 1.2;
+    padding: 3pt 1pt 3pt 1pt;
+    color: #950000;
+}
+
+tbody th, tfoot tr {
+    background-color: #e6e6e6;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #F5F5F5;
+}
+th {
+    background-color: #EBEBEB;
+}
+th, td {
+    padding: 1pt 5pt;
+}
+
+table {
+    margin: 10pt 0;
+    font-family: APLFont;
+    padding: 0;
+    border: 1pt solid silver;
+    -webkit-print-color-adjust: exact;
+}
+
+li > table {
+    margin: 10pt 0 10pt 0;
+}
+
+tr  {
+    margin: 20pt;
+}
+
+th {font-weight: bold;}
+tfoot td {font-weight: bold;}
+
+blockquote {
+    border-left: 5pt solid silver;
+    padding-left: 5pt;
+    margin: 8pt 3pt 8pt 8pt;
+}
+
+nav {
+    background-color: #f8f8f8;
+    border: 1pt solid Gray;
+    width: auto;    
+    float: right;
+    padding: 5pt 5pt 5pt 0;
+    margin: 5pt 0 5pt 5pt;
+    page-break-inside: avoid;
+    break-inside: avoid;
+}
+nav * {
+    font-size: 90%;
+}
+nav ul  {
+    list-style-type: none; 
+    margin: 0 0 2pt 0;
+    padding: 0;
+} 
+nav ul li {
+    margin-bottom: 0;
+}
+nav li p {
+    margin: 0;
+    padding: 0;
+    line-height: 1;
+    margin: 0;
+    padding: 0;
+}
+nav li {
+    font-size: 9pt;
+    line-height: 1;
+    padding: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-left: 8pt;
+}
+dl {
+    margin-top: 0;
+    margin-bottom: 10pt;
+}
+dt {
+    margin-top: 10pt;
+    margin-bottom: 0;
+    font-weight: 800;
+    page-break-inside: avoid;
+    break-inside: avoid;
+}
+dd {
+    margin-top: 2pt;
+}
+label#hide_toc_label {
+    font-size: 65%;
+}
+.toc-container {
+    position: relative;
+    height: auto;
+    margin-top: 5pt;
+}
+.toc-container h3 {
+    margin: 0 0 7pt 7pt;
+}
+[type="checkbox"] {
+    display:none;
+}
+label {
+    display: block;
+    width: 100%;
+    height: 1.1em;
+    top: 0;
+    padding-left: 10pt;
+}
+label:before {
+    content: 'Table of contents'; /* <<tocCaption>>; */
+    font-weight: bold;
+    font-size: 140%;
+    padding-bottom: 10pt;
+}
+a.external_link::before {content: " 🌎";}
+a.bookmark_link::before {content: " ➯";}
+a.mailto_link::before {content:" ✉"}
+nav a.bookmark_link {font-style: normal;}
+nav p {
+    margin-left: 10pt;
+    font-weight: bold;
+    font-size: 9pt;
+}
+nav a {font-style: normal;}
+nav a.bookmark_link::before {content:"";}
+div#footnotes_div a::before {content:"";}
+div#footnotes_div a {font-style:normal;}
+div#footnotes_div {page-break-inside: avoid;break-inside: avoid;}
+@font-face {
+    font-family: "APLFont";
+    src:
+    local("APL385 Unicode"),
+    url("http://misc.aplteam.com/apl385.ttf") format("truetype");
+}
+
+
+/* User classes */
+
+.no_print {display: none;}
+.red {color: red;}
+.avoid_page_break {page-break-inside: avoid;break-inside: avoid;}
+.page_break_before {page-break-before: auto;}
+
+
+/* LeanPub extensions */
+
+div.leanpub {
+    margin: 15pt 0 10pt 8pt;
+    page-break-inside: avoid;
+    break-inside: avoid;
+}
+div.leanpub_A {    
+    border: 1pt solid black;
+    background-color: #f9f9f9;
+    padding: 5pt;
+    margin: 10pt 0 10pt 0;
+    page-break-inside: avoid;
+    break-inside: avoid;    
+}
+div.leanpub h3, div.leanpub_A h3 {
+    font-size: 120%;
+    padding: 3pt 0 0 0;
+    margin: 0;
+}
+div.leanpub h4, div.leanpub_A h4 {
+    font-size: 110%;
+    padding: 3pt 0 0 0;
+    margin: 0;
+}
+div.leanpub h5, div.leanpub h5 {
+    font-size: 100%;
+    padding: 3pt 0 0 0;
+    margin: 0;
+}
+div.leanpub_A h5, div.leanpub_A h5 {
+    font-size: 100%;
+    padding: 3pt 0 0 0;
+    margin: 0;
+}
+div.leanpub img {
+    padding: 0;   
+    margin: 0 10pt 2pt 0;    
+}
+div.leanpub_A > p:first-child {
+    padding-top: 0;
+    margin-top: 0;
+}
+div.leanpub > div > h1:first-child {
+    padding-top: 5pt;
+}
+div.leanpub img {
+    float: left;
+    padding: 0;   
+    margin: 5pt 10pt 0 0;
+    clear: both;
+}
+
+div.leanpub p {       
+    padding: 3pt 0 0 0;
+    margin:0;
+}
+span.leanpub_code {
+    color: black;
+}
+div.leanpub p {
+    display:block;
+     padding: 8pt 0 0 0;
+}
+div.leanpub > div {
+    margin-left: 35pt;
+}

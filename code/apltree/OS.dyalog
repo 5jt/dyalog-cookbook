@@ -1,4 +1,4 @@
-﻿:Class OS
+:Class OS
 ⍝ This class offers methods that return the same result under Windows, Linux (without the PI) and Mac OS.
 ⍝ Examples are `GetPID` and `KillPID`.\\
 ⍝ Exceptions are the functions `ShellExecute` (Linux/Mac only) and `WinExecute` (Windows only). They
@@ -6,17 +6,19 @@
 ⍝ Kai Jaeger - APL Team Ltd.\\
 ⍝ Homepage: <http://aplwiki.com/OS>
 
-    :Include APLTreeUtils
+    :Include ##.APLTreeUtils
 
     ⎕IO←0 ⋄ ⎕ML←3
 
     ∇ r←Version
       :Access Public shared
-      r←(Last⍕⎕THIS)'1.3.1' '2017-08-23'
+      r←(Last⍕⎕THIS)'1.4.0' '2018-02-16'
     ∇
 
     ∇ History
       :Access Public shared
+      ⍝ * 1.4.0
+      ⍝   * Converted from the APL wiki to GitHub
       ⍝ * 1.3.1
       ⍝   * Some glitches in the documentation fixed.
       ⍝ * 1.3.0

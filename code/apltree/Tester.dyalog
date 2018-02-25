@@ -1,4 +1,4 @@
-﻿:Class Tester
+:Class Tester
 ⍝ This class establishes a test framework for APL applications. This help
 ⍝ is **not** an introduction into how the test framework works, and
 ⍝ how you should organize your test cases. More information is available
@@ -160,15 +160,20 @@
 
     ⎕IO←1 ⋄ ⎕ML←3
 
-    :Include APLTreeUtils
+    :Include ##.APLTreeUtils
 
     ∇ r←Version
       :Access Public shared
-      r←(Last⍕⎕THIS)'3.7.0' '2018-01-23'
+      r←(Last⍕⎕THIS)'3.9.0' '2018-02-16'
     ∇
 
     ∇ History
       :Access Public shared
+      ⍝ * 3.9.0
+      ⍝   * Converted from the APL wiki to GitHub.
+      ⍝ * 3.8.0
+      ⍝   All helpers are now truely and under all possible circumstances independent from `⎕IO/⎕ML` but also do not
+      ⍝   localize them.
       ⍝ * 3.7.0
       ⍝   Output improved. Mark-up is explained and non-active tests explain themselves.
       ⍝ * 3.6.2
@@ -184,18 +189,6 @@
       ⍝   * Change in policy regarding INI files: `Tester` now looks for both INI files, "testcase\_{computername}.ini"
       ⍝     as well as "testcase.ini". If both exist they are both taken into account. In case of a name conflict the
       ⍝     more specific one ("testcase\_{computername}.ini") wins.
-      ⍝ * 3.4.0
-      ⍝   * New constant `∆NotApplicable` added.
-      ⍝ * 3.3.0
-      ⍝   * `RunThese` had a problem with groups under certain circumstances.
-      ⍝   * acre 3.x is now supported (function `RenameTestFnsTo`).
-      ⍝   * Helper `FindSpecialString` introduced.
-      ⍝   * Helper `ListHelpers` now requires a right argument.
-      ⍝   * Method `History` introduced.
-      ⍝   * Bug fixes:
-      ⍝     * When `EstablishHelpersIn` was called from a namespace that was not a child of root it did not work.
-      ⍝     * Sorting of test function is now case insensitive.
-      ⍝   * Project is now managed by acre 3.
     ∇
 
     ∇ {(rc log)}←Run refToTestNamespace;flags;⎕IO;⎕ML
@@ -560,7 +553,7 @@
               :If rc∊0 1 ¯1
                   ps.log,←⊂('* '[1+rc∊0 ¯1]),' ',this,' (',(⍕i),' of ',(⍕noOf),') : ',msg
               :Else
-                  ps.log,←⊂'- ',this,' (',(⍕i),' of ',(⍕noOf),') : ',msg     
+                  ps.log,←⊂'- ',this,' (',(⍕i),' of ',(⍕noOf),') : ',msg
               :EndIf
               :If 0>rc
                   :If 0<ps.errCounter
@@ -709,36 +702,32 @@
           r←flag/label
         ∇
 
-        ∇ {r}←Run;ref;⎕IO;⎕ML
+        ∇ {r}←Run;ref
 ⍝ Run all test cases
-          ⎕IO←1 ⋄ ⎕ML←3
-          ref←{9=#.⎕NC ⍵:# ⋄ 9=(↑⎕RSI).⎕NC ⍵:↑⎕RSI ⋄ 9=##.⎕NC ⍵:## ⋄ 'Cannot find "Tester"'⎕SIGNAL 6}'Tester'
+          ref←{9=#.⎕NC ⍵:# ⋄ 9=({⎕ML←1 ⋄ ⊃⍵}⎕RSI).⎕NC ⍵:{⎕ML←1 ⋄ ⊃⍵}⎕RSI ⋄ 9=##.⎕NC ⍵:## ⋄ 'Cannot find "Tester"'⎕SIGNAL 6}'Tester'
           r←ref.Tester.Run ⎕THIS
         ∇
 
-        ∇ {r}←RunDebug debugFlag;ref;⎕IO;⎕ML
+        ∇ {r}←RunDebug debugFlag;ref
 ⍝ Run all test cases with DEBUG flag on
 ⍝ If `debugFlag` is 1 then `RunDebug` stops just before executing any specific test case.
-          ⎕IO←1 ⋄ ⎕ML←3
-          ref←{9=#.⎕NC ⍵:# ⋄ 9=(↑⎕RSI).⎕NC ⍵:↑⎕RSI ⋄ 9=##.⎕NC ⍵:## ⋄ 'Cannot find "Tester"'⎕SIGNAL 6}'Tester'
+          ref←{9=#.⎕NC ⍵:# ⋄ 9=({⎕ML←1 ⋄ ⊃⍵}⎕RSI).⎕NC ⍵:{⎕ML←1 ⋄ ⊃⍵}⎕RSI ⋄ 9=##.⎕NC ⍵:## ⋄ 'Cannot find "Tester"'⎕SIGNAL 6}'Tester'
           r←debugFlag ref.Tester.RunDebug ⎕THIS
         ∇
 
-        ∇ {r}←RunBatchTestsInDebugMode;ref;⎕IO;⎕ML
+        ∇ {r}←RunBatchTestsInDebugMode;ref
 ⍝ Run all batch tests in debug mode (no error trapping) and with stopFlag←1.
-          ⎕IO←1 ⋄ ⎕ML←3
-          ref←{9=#.⎕NC ⍵:# ⋄ 9=(↑⎕RSI).⎕NC ⍵:↑⎕RSI ⋄ 9=##.⎕NC ⍵:## ⋄ 'Cannot find "Tester"'⎕SIGNAL 6}'Tester'
+          ref←{9=#.⎕NC ⍵:# ⋄ 9=({⎕ML←1 ⋄ ⊃⍵}⎕RSI).⎕NC ⍵:{⎕ML←1 ⋄ ⊃⍵}⎕RSI ⋄ 9=##.⎕NC ⍵:## ⋄ 'Cannot find "Tester"'⎕SIGNAL 6}'Tester'
           r←0 1 ref.Tester.RunBatchTests ⎕THIS
         ∇
 
-        ∇ {r}←RunBatchTests;ref;⎕IO;⎕ML
+        ∇ {r}←RunBatchTests;ref
 ⍝ Run all batch tests
-          ⎕IO←1 ⋄ ⎕ML←3
-          ref←{9=#.⎕NC ⍵:# ⋄ 9=(↑⎕RSI).⎕NC ⍵:↑⎕RSI ⋄ 9=##.⎕NC ⍵:## ⋄ 'Cannot find "Tester"'⎕SIGNAL 6}'Tester'
+          ref←{9=#.⎕NC ⍵:# ⋄ 9=({⎕ML←1 ⋄ ⊃⍵}⎕RSI).⎕NC ⍵:{⎕ML←1 ⋄ ⊃⍵}⎕RSI ⋄ 9=##.⎕NC ⍵:## ⋄ 'Cannot find "Tester"'⎕SIGNAL 6}'Tester'
           r←ref.Tester.RunBatchTests ⎕THIS
         ∇
 
-        ∇ {r}←RunThese ids;ref;⎕IO;⎕ML
+        ∇ {r}←RunThese ids;ref
 ⍝ Run just the specified tests.
 ⍝
 ⍝ `ids` can be one of:
@@ -752,8 +741,7 @@
 ⍝ If negative numbers are used then they would still idendify the test cases but
 ⍝ `Tester` would stop just before any test case it actually executed,
 ⍝ allowing the user to investigate.
-          ⎕IO←1 ⋄ ⎕ML←3
-          ref←{9=#.⎕NC ⍵:# ⋄ 9=(↑⎕RSI).⎕NC ⍵:↑⎕RSI ⋄ 9=##.⎕NC ⍵:## ⋄ 'Cannot find "Tester"'⎕SIGNAL 6}'Tester'
+          ref←{9=#.⎕NC ⍵:# ⋄ 9=({⎕ML←1 ⋄ ⊃⍵}⎕RSI).⎕NC ⍵:{⎕ML←1 ⋄ ⊃⍵}⎕RSI ⋄ 9=##.⎕NC ⍵:## ⋄ 'Cannot find "Tester"'⎕SIGNAL 6}'Tester'
           r←ids ref.Tester.RunTheseIn ⎕THIS
         ∇
 
@@ -762,11 +750,11 @@
           :If 0∊⍴list
               list←'T'⎕NL 3
           :ElseIf 2=⍴⍴list
-              list←{⎕ML←3 ⋄ ⊃⍵}list[;⎕IO]
+              list←{⎕ML←1 ⋄ ↑⍵}list[;⎕IO]
           :Else
               'Invalid right argument'⎕SIGNAL 11
           :EndIf
-          {(0∊⍴⍵): ⋄ ⎕ML←3 ⋄ ⎕ED⊃⍵}&↓'Test_'{⍵⌿⍨⍺∧.=⍨(⍴,⍺)↑[1+⎕IO]⍵}list
+          {(0∊⍴⍵): ⋄ ⎕ML←1 ⋄ ⎕ED↑⍵}&↓'Test_'{⍵⌿⍨⍺∧.=⍨(⍴,⍺)↑[1+⎕IO]⍵}list
         ∇
 
         ∇ r←{numbers}L group;A
@@ -793,64 +781,64 @@
               group←A.Lowercase'test_'{((⍺≢(⍴⍺)↑⍵)/⍺),⍵}group
               r←(({⎕ML←1 ⋄ ↑⍵}A.Lowercase(⍴group)↑¨r)∧.=group)⌿r
           :EndIf
-          :If ~0∊⍴r
-          :AndIf ~0∊⍴numbers
-              r←(({⍎⍵↑⍨-(-⎕IO)+'_'⍳⍨⌽⍵}¨r)∊numbers)⌿r
+          :If 0∊⍴r
+              r←0 1⍴''
+          :Else
+              :If ~0∊⍴numbers
+                  r←(({⍎⍵↑⍨-(-⎕IO)+'_'⍳⍨⌽⍵}¨r)∊numbers)⌿r
+              :EndIf
+              r←r,⍪{{⍵↓⍨+/∧\' '=⍵}{⎕IO←1 ⋄ ⍵↓⍨⍵⍳'⍝'}{⎕ML←3 ⋄ ∊⍵}1↑1↓⎕NR ⍵}¨r
+              r←r[⍋{⎕ML←1 ⋄ ↑⍵}A.Lowercase r[;⎕IO];]
           :EndIf
-          r←r,⍪{⎕ML←3 ⋄ {⍵↓⍨+/∧\' '=⍵}{⎕IO←1 ⋄ ⍵↓⍨⍵⍳'⍝'}∊1↑1↓⎕NR ⍵}¨r
-          r←r[⍋{⎕ML←1 ⋄ ↑⍵}A.Lowercase r[;⎕IO];]
         ∇
 
-        ∇ r←G;⎕IO;A;⎕ML
+        ∇ r←G;A
 ⍝ Prints all groups to the session.
-          ⎕IO←0 ⋄ ⎕ML←1
           :If 9=#.⎕NC'APLTreeUtils'
               A←#.APLTreeUtils
           :ElseIf 9=⎕NC'APLTreeUtils'
               A←APLTreeUtils
           :ElseIf 9=##.⎕NC'APLTreeUtils'
               A←##.APLTreeUtils
-          :ElseIf 9∊⊃¨⎕RSI.⎕NC⊂'APLTreeUtils'
-              A←(⊃(9=⊃¨⎕RSI.⎕NC⊂'APLTreeUtils')/⎕RSI).APLTreeUtils
+          :ElseIf 9∊{⎕ML←1 ⋄ ⊃¨⍵}⎕RSI.⎕NC⊂'APLTreeUtils'
+              A←({⎕ML←1 ⋄ ⊃⍵}(9={⎕ML←1 ⋄ ⊃¨⍵}⎕RSI.⎕NC⊂'APLTreeUtils')/⎕RSI).APLTreeUtils
           :ElseIf 9∊⊃¨⎕RSI.##.⎕NC⊂'APLTreeUtils'
-              A←(⊃(9=⊃¨⎕RSI.##.⎕NC⊂'APLTreeUtils')/⎕RSI.##).APLTreeUtils
+              A←({⎕ML←1 ⋄ ⊃⍵}(9={⎕ML←1 ⋄ ⊃¨⍵}⎕RSI.##.⎕NC⊂'APLTreeUtils')/⎕RSI.##).APLTreeUtils
           :Else
               'Missing: APLTreeUtils'⎕SIGNAL 6
           :EndIf
-          r←↓'Test_'{⍵⌿⍨((⍴⍺)↑[1]⍵)∧.=⍺}'T'⎕NL 3
+          r←↓'Test_'{⍵⌿⍨((⍴⍺)↑[1+⎕IO]⍵)∧.=⍺}'T'⎕NL 3
           :If ~0∊⍴r←(2≤'_'+.=⍉{⎕ML←1 ⋄ ↑⍵}r)⌿r
-          :AndIf ~0∊⍴r←↑∪{⍵↓⍨-1+(⌽⍵)⍳'_'}¨' '~⍨¨r
+          :AndIf ~0∊⍴r←{⎕ML←1 ⋄ ↑⍵}∪{⎕IO←0 ⋄ ⍵↓⍨-1+(⌽⍵)⍳'_'}¨' '~⍨¨r
               r←r[⍋A.Lowercase r;]
           :EndIf
         ∇
 
-        ∇ r←{startIn}FindSpecialString what;⎕IO;⎕ML
+        ∇ r←{startIn}FindSpecialString what
 ⍝ Use this to search for stuff like "CHECK" or "TODO" enclosed between `⍝` (⍵).
 ⍝ Without left argument the search starts in #.
 ⍝ However, at the time of writing the user command ]locate does not work on #.
 ⍝ Reported as bug <01355> to Dyalog on 2017-04-24.
-          ⎕IO←0 ⋄ ⎕ML←3
           startIn←{0<⎕NC ⍵:⍎⍵ ⋄ '#'}'startIn'
-          r←⍉1↓[1]⎕SE.UCMD'locate ',what,' -return=count -objects=',⍕startIn
-          :If 0<1↑⍴r←(0<r[;1])⌿r                             ⍝ Drop those with no hits
-              r[;0]←{2>'#'+.=⍵:⍵ ⋄ {⌽⍵↑⍨1+⍵⍳'#'}⌽⍵}¨r[;0]    ⍝ Circumvent bug <01356>
+          r←⍉1↓[1+⎕IO]⎕SE.UCMD'locate ',what,' -return=count -objects=',⍕startIn
+          :If 0<1↑⍴r←(0<r[;⎕IO+1])⌿r                                    ⍝ Drop those with no hits
+              r[;⎕IO]←{2>'#'+.=⍵:⍵ ⋄ {⎕IO←0 ⋄ ⌽⍵↑⍨1+⍵⍳'#'}⌽⍵}¨r[;⎕IO]   ⍝ Circumvent bug <01356>
           :EndIf
         ∇
 
-        ∇ {r}←oldName RenameTestFnsTo newName;⎕IO;body;rc;⎕ML;header;comment;res;name;right;left;newParent;oldParent;delFilanme;A
+        ∇ {r}←oldName RenameTestFnsTo newName;body;rc;header;comment;res;name;right;left;newParent;oldParent;delFilanme;A
 ⍝ Renames a test function and tells acre.
 ⍝ r ← ⍬
-          ⎕IO←0 ⋄ ⎕ML←3
           :If 9=#.⎕NC'APLTreeUtils'
               A←#.APLTreeUtils
           :ElseIf 9=⎕NC'APLTreeUtils'
               A←APLTreeUtils
           :ElseIf 9=##.⎕NC'APLTreeUtils'
               A←##.APLTreeUtils
-          :ElseIf 9∊⊃¨⎕RSI.⎕NC⊂'APLTreeUtils'
-              A←(⊃(9=⊃¨⎕RSI.⎕NC⊂'APLTreeUtils')/⎕RSI).APLTreeUtils
-          :ElseIf 9∊⊃¨⎕RSI.##.⎕NC⊂'APLTreeUtils'
-              A←(⊃(9=⊃¨⎕RSI.##.⎕NC⊂'APLTreeUtils')/⎕RSI.##).APLTreeUtils
+          :ElseIf 9∊{⎕ML←1 ⋄ ⊃¨⍵}⎕RSI.⎕NC⊂'APLTreeUtils'
+              A←(⊃(9={⎕ML←1 ⋄ ⊃¨⍵}⎕RSI.⎕NC⊂'APLTreeUtils')/⎕RSI).APLTreeUtils
+          :ElseIf 9∊{⎕ML←1 ⋄ ⊃¨⍵}⎕RSI.##.⎕NC⊂'APLTreeUtils'
+              A←(⊃(9={⎕ML←1 ⋄ ⊃¨⍵}⎕RSI.##.⎕NC⊂'APLTreeUtils')/⎕RSI.##).APLTreeUtils
           :Else
               'Missing: APLTreeUtils'⎕SIGNAL 6
           :EndIf
@@ -860,7 +848,7 @@
               (oldParent oldName)←¯1 0↓¨'.'A.SplitPath oldName
               oldParent←⍎oldParent
           :Else
-              oldParent←↑⎕RSI
+              oldParent←{⎕ML←1 ⋄ ⊃⍵}⎕RSI
           :EndIf
           :If '.'∊newName
               (newParent newName)←¯1 0↓¨'.'A.SplitPath newName
@@ -873,21 +861,21 @@
           'New name is already used'⎕SIGNAL 11/⍨0<newParent.⎕NC newName
           'New name is invalid'⎕SIGNAL 11/⍨¯1=newParent.⎕NC newName
           body←oldParent.⎕NR oldName
-          header←0⊃body
-          (header comment)←header{(⍵↑⍺)(⍵↓⍺)}header⍳'⍝'
+          header←⎕IO⊃body
+          (header comment)←header{⎕IO←0 ⋄ ⍺{(⍵↑⍺)(⍵↓⍺)}⍵⍳'⍝'}header
           :If (oldParent.⎕NC⊂oldName)∊3.2   ⍝ Dfns
               :If 1=⍴body
-                  (oldName body)←{⍵{(⍵↑⍺)(⍵↓⍺)}⍵⍳'←'}0⊃body
+                  (oldName body)←{⎕IO←0 ⋄ ⍵{(⍵↑⍺)(⍵↓⍺)}⍵⍳'←'}⎕IO⊃body
                   body←,⊂newName,body
                   oldName~←' '
               :Else
-                  (0⊃body)←newName,'←{'
+                  (⎕IO⊃body)←newName,'←{'
               :EndIf
           :Else
-              (res header)←header{~'←'∊⍺:''⍺ ⋄ ((1+⍵)↑⍺)((1+⍵)↓⍺)}header⍳'←'
+              (res header)←header{⎕IO←0 ⋄ ⍺{~'←'∊⍺:''⍺ ⋄ ((1+⍵)↑⍺)((1+⍵)↓⍺)}⍵⍳'←'}header
               :If '('∊header
-                  (header right)←header{(⍵↑⍺)(⍵↓⍺)}header⍳'('
-                  header←{⍵⊂⍨' '≠⍵}header
+                  (header right)←header{⎕IO←0 ⋄ ⍺{(⍵↑⍺)(⍵↓⍺)}⍵⍳'('}header
+                  header←{⎕ML←3 ⋄ ⍵⊂⍨' '≠⍵}header
                   :Select ⍬⍴⍴header
                   :Case 1       ⍝ Monadic fns
                       name←header
@@ -898,7 +886,7 @@
                       .          ⍝ ?!
                   :EndSelect
               :Else
-                  header←{⍵⊂⍨' '≠⍵}header
+                  header←{⎕ML←3 ⋄ ⍵⊂⍨' '≠⍵}header
                   :Select ⍬⍴⍴header
                   :Case 1        ⍝ Niladic fns
                       name←header
@@ -913,9 +901,9 @@
                   :EndSelect
               :EndIf
               name←newName
-              (0⊃body)←res,left,' ',name,' ',right,comment
+              (⎕IO⊃body)←res,left,' ',name,' ',right,comment
           :EndIf
-          :If ' '≠1↑0⍴rc←newParent.⎕FX⊃body
+          :If ' '≠1↑0⍴rc←newParent.⎕FX{⎕ML←1 ⋄ ↑⍵}body
               . ⍝ something went wrong
           :EndIf
           :If (0=#.⎕NC'acre')∧0=⎕SE.⎕NC'acre'
@@ -924,18 +912,31 @@
           :Else
               (oldName newName)←{(⍕newParent),'.',⍵}¨oldName newName
               :If 0<⎕SE.⎕NC'acre'
-                  delFilanme←(↑⎕SE.UCMD'acre.getchangefilename ',newName),'.DEL'
-                  :If ⎕NEXISTS delFilanme
-                      ⎕NDELETE delFilanme
-                  :EndIf
-                  :If 0∊⍴rc←⎕SE.UCMD'acre.setchanged ',newName
-                      ⎕←'acre was told about the introduction of a new test fns but it was not interested.'
-                  :EndIf
-                  :If 0∊⍴rc←⎕SE.UCMD'acre.Erase ',oldName
-                      ⎕←'acre was told about the deletion of a test fns but it was not interested.'
+                  :If 3=⎕SE.acre.⎕NC'run'  ⍝ acre 4?!
+                      delFilanme←({⎕ML←1 ⋄ ⊃⍵}'changefile'⎕SE.acre.run newName),'.DEL'
+                      :If ⎕NEXISTS delFilanme
+                          ⎕NDELETE delFilanme
+                      :EndIf
+                      :If 0∊⍴rc←'putchange'⎕SE.acre.run,newName
+                          ⎕←'acre was told about the introduction of a new test fns but it was not interested.'
+                      :EndIf
+                      :If 0∊⍴rc←⎕SE.UCMD'acre.Erase ',oldName
+                          ⎕←'acre was told about the deletion of a test fns but it was not interested.'
+                      :EndIf
+                  :Else
+                      delFilanme←({⎕ML←1 ⋄ ⊃⍵}⎕SE.UCMD'acre.getchangefilename ',newName),'.DEL'
+                      :If ⎕NEXISTS delFilanme
+                          ⎕NDELETE delFilanme
+                      :EndIf
+                      :If 0∊⍴rc←⎕SE.UCMD'acre.setchanged ',newName
+                          ⎕←'acre was told about the introduction of a new test fns but it was not interested.'
+                      :EndIf
+                      :If 0∊⍴rc←⎕SE.UCMD'acre.Erase ',oldName
+                          ⎕←'acre was told about the deletion of a test fns but it was not interested.'
+                      :EndIf
                   :EndIf
               :Else
-                  delFilanme←(↑#.acre.GetChangeFileName newName),'.DEL'
+                  delFilanme←({⎕ML←1 ⋄ ⊃⍵}#.acre.GetChangeFileName newName),'.DEL'
                   :If ⎕NEXISTS delFilanme
                       ⎕NDELETE delFilanme
                   :EndIf
@@ -951,22 +952,21 @@
           :EndIf
         ∇
 
-        ∇ r←ListHelpers force;list;⎕IO;⎕ML;force;A
+        ∇ r←ListHelpers force;list;force;A
 ⍝ Lists all helpers available from the `Tester` class.
 ⍝ When called by a user pass a `0` as right argument to see all helpers that are actually available.
 ⍝ Specify a `1` in case you want to see all Helpers that **might** be available.
 ⍝ Helpers are usually established by calling the `EstablishHelpers' method.
 ⍝ The list includes helpers that won't be established in case the namespace hosting the test cases is scripted!
-          ⎕IO←1 ⋄ ⎕ML←1
-          force←⎕THIS≡⊃(1↓⎕RSI),⊂''
+          force←⎕THIS≡{⎕ML←1 ⋄ ⊃⍵}(1↓⎕RSI),⊂''
           r←0 2⍴' '
           list←'Run' 'RunDebug' 'RunThese' 'RunBatchTests' 'RunBatchTestsInDebugMode' 'E' 'L' 'G' 'FailsIf' 'PassesIf'
           list,←'GoToTidyUp' 'RenameTestFnsTo' 'ListHelpers' '∆OK' '∆Failed' '∆NoBatchTest' '∆Inactive' '∆NoAcreTests'
           list,←'∆WindowsOnly' '∆LinuxOnly' '∆MacOnly' '∆LinuxOrMacOnly' '∆LinuxOrWindowsOnly'
           list,←'∆MacOrWindowsOnly' 'FindSpecialString' '∆NotApplicable'
           list←,¨list
-          :If 'Tester.Helpers'≢{⍵↑⍨-+/∧\2>+\⌽'.'=⍵}⍕⊃⎕RSI
-              list/⍨←force∨0<⊃∘⎕NC¨list   ⍝ List only those that are around
+          :If 'Tester.Helpers'≢{⍵↑⍨-+/∧\2>+\⌽'.'=⍵}⍕{⎕ML←1 ⋄ ⊃⍵}⎕RSI
+              list/⍨←force∨0<{⎕ML←1 ⋄ ⊃⍵}∘⎕NC¨list   ⍝ List only those that are around
           :EndIf
           :If 9=#.⎕NC'APLTreeUtils'
               A←#.APLTreeUtils
@@ -974,14 +974,14 @@
               A←APLTreeUtils
           :ElseIf 9=##.⎕NC'APLTreeUtils'
               A←##.APLTreeUtils
-          :ElseIf 9∊⊃¨⎕RSI.⎕NC⊂'APLTreeUtils'
-              A←(⊃(9=⊃¨⎕RSI.⎕NC⊂'APLTreeUtils')/⎕RSI).APLTreeUtils
-          :ElseIf 9∊⊃¨⎕RSI.##.⎕NC⊂'APLTreeUtils'
-              A←(⊃(9=⊃¨⎕RSI.##.⎕NC⊂'APLTreeUtils')/⎕RSI.##).APLTreeUtils
+          :ElseIf 9∊{⎕ML←1 ⋄ ⊃¨⍵}⎕RSI.⎕NC⊂'APLTreeUtils'
+              A←(⊃(9={⎕ML←1 ⋄ ⊃ ⋄ ⍵}⎕RSI.⎕NC⊂'APLTreeUtils')/⎕RSI).APLTreeUtils
+          :ElseIf 9∊{⎕ML←1 ⋄ ⊃¨⍵}⎕RSI.##.⎕NC⊂'APLTreeUtils'
+              A←(⊃(9={⎕ML←1 ⋄ ⊃¨⍵}⎕RSI.##.⎕NC⊂'APLTreeUtils')/⎕RSI.##).APLTreeUtils
           :Else
               'Missing: APLTreeUtils'⎕SIGNAL 6
           :EndIf
-          r←↑{⍵(A.dlb{⍺⍺{⍵↓⍨¯1+⍵⍳'⍝'}⍺⍺ ⍵}1⊃(1↓⎕NR ⍵),⊂'')}¨list
+          r←{⎕ML←1 ⋄ ↑⍵}{⍵(A.dlb{⍺⍺{⎕IO←1 ⋄ ⍵↓⍨¯1+⍵⍳'⍝'}⍺⍺ ⍵}⎕IO⊃(1↓⎕NR ⍵),⊂'')}¨list
         ∇
 
         ∇ r←GetCode name
@@ -994,27 +994,27 @@
           :Access Public Shared
 ⍝ Returns a list of **all** helper functions.
 ⍝ These are defined as all private functions of the sub class `Helpers`.
-         
+
 ⍝ ↓↓↓↓ Circumvention of Dyalog bug <01154> (⎕nl 3 does NOT list the private functions of `Helpers`!)
-          r←(ListHelpers 1)[;1]
+          r←(ListHelpers 1)[;⎕IO]
         ∇
 
         ∇ R←Test_000(stopFlag batchFlag);⎕TRAP
 ⍝ Model for a test function.
           ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
           R←∆Failed
-         
+
 ⍝ Preconditions...
 ⍝ ...
-         
+
           →PassesIf 1≡1
           →FailsIf 1≢1
           →GoToTidyUp 1≢1
           R←∆OK
-         
+
          ∆TidyUp: ⍝ Clean up after this label
           ⍝ ...
-         
+
         ∇
 
         ∇ r←∆OK

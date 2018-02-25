@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta charset="utf-8">
+<title>aplcores</title>
+<link href="./CSS/BlackOnWhite_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/Cookbook_Chapter_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/snap.css" rel="stylesheet" media="screen">
+<link href="./CSS/BlackOnWhite_print.css" rel="stylesheet" media="print">
+<link href="./CSS/Cookbook_Chapter_print.css" rel="stylesheet" media="print">
+<script src="./JavaScript/snap.js"></script>
+</head>
+<body>
+<div class="snap-drawers">
+<div class="snap-drawer snap-drawer-left">
+<div class="h_tag">
+<h3>Chapters</h3>
+</div>
+<ol>
+<li><a href="./01%20Introduction.html" class="external_link">Introduction</a></li>
+<li><a href="./02%20Structure.html" class="external_link">Structure</a></li>
+<li><a href="./03%20Package%20MyApp%20as%20an%20executable.html" class="external_link">Package MyApp as an executable</a></li>
+<li><a href="./04%20Logging%20what%20happens%20.html" class="external_link">Logging what happens </a></li>
+<li><a href="./05%20Configuration%20settings.html" class="external_link">Configuration settings</a></li>
+<li><a href="./06%20Debugging%20a%20stand-alone%20EXE.html" class="external_link">Debugging a stand-alone EXE</a></li>
+<li><a href="./07%20Handling%20errors.html" class="external_link">Handling errors</a></li>
+<li><a href="./08%20Testing%20—%20the%20sound%20of%20breaking%20glass.html" class="external_link">Testing<br>The sound of breaking glass</a></li>
+<li><a href="./09%20Documentation%20—%20the%20Doc%20is%20in.html" class="external_link">Documentation<br>The Doc is in</a></li>
+<li><a href="./10%20Make%20me.html" class="external_link">Make me</a></li>
+<li><a href="./11%20Providing%20help.html" class="external_link">Providing help</a></li>
+<li><a href="./12%20Scheduled%20Tasks.html" class="external_link">Scheduled Tasks</a></li>
+<li><a href="./13%20Windows%20Services.html" class="external_link">Windows Services</a></li>
+<li><a href="./14%20The%20Windows%20Event%20Log.html" class="external_link">The Windows Event Log</a></li>
+<li><a href="./15%20The%20Windows%20Registry.html" class="external_link">The Windows Registry</a></li>
+<li><a href="./16%20Creating%20SetUp.exe%20with%20Inno.html" class="external_link">Creating SetUp.exe with Inno</a></li>
+<li><a href="./17%20RegularExpressions.html" class="external_link">RegularExpressions</a></li>
+<li><a href="./18%20GUI.html" class="external_link">GUI</a></li>
+</ol>
+<div class="h_tag">
+<h3>Appendices</h3>
+</div>
+<ol>
+<li><a href="./50%20Appendix%201%20—%20Windows%20environment%20variables.html" class="external_link">Windows environment variables</a></li>
+<li><a href="./51%20Appendix%202%20—%20User%20commands.html" class="external_link">User commands</a></li>
+<li><a href="./52%20Appendix%203%20—%20aplcores%20and%20WS%20integrity.html" class="external_link">aplcores and WS integrity</a></li>
+<li><a href="./53%20Appendix%204%20—%20The%20development%20environment.html" class="external_link">The development environment</a></li>
+<li><a href="./54%20Appendix%205%20—%20Special%20characters.html" class="external_link">Special characters</a></li>
+</ol>
+<div class="h_tag">
+<h3>Misc</h3>
+</div>
+<ul>
+<li><a href="51%20Appendix%202%20—%20User%20commands.html">Previous chapter</a></li>
+<li><a href="53%20Appendix%204%20—%20The%20development%20environment.html">Next chapter;</a></li>
+<li><a href="./Dyalog_Cookbook.html" class="external_link">Single document<br>(All chapters, for printing)</a></li>
+</ul>
+</div>
+</div>
+<div id="mainmenu">
+<a href=#><p><span id="mainmenu_match">≡</span></p></a>
+<p><span id="mainmenu_title">The Dyalog Cookbook</span></p>
+</div>
+<div id="content" class="snap-content">
+<div id="cookbook_content">
+<div class="h_tag">
+<a href="#21-Appendix-3-----aplcores-and-WS-integrity" id="21-Appendix-3-----aplcores-and-WS-integrity" class="autoheader_anchor">
+<h1>21. Appendix 3 — aplcores and WS integrity</h1>
+</a>
+</div>
+<p>The <em>workspace</em> (<abbr title="Short for Workspaces">WS</abbr>) is where the APL interpreter manages all code and all data in memory.</p>
+<p>The Dyalog tracer / debugger has extensive edit-and-continue capabilities; the downside is that these have been known occasionally to corrupt the workspace. However, there are many other ways the workspace may get corrupted:</p>
+<ul>
+<li>The interpreter might carry a bug.</li>
+<li>The user uses <code>⎕NA</code> incorrectly.</li>
+<li><abbr title="Short for Workspaces">WS</abbr> FULL.</li>
+<li>…</li>
+</ul>
+<p>The interpreter checks <abbr title="Short for Workspaces">WS</abbr> integrity every now and then; how often can be influenced by setting certain debug flags; see <em>The APL Command Line</em> in the documentation for details. Be warned that…</p>
+<ul>
+<li>the <code>-DW</code> flag slows an application down <em>extremely</em> even on very fast machines.</li>
+<li><code>-Dc</code> and <code>-Dw</code> slows the interpreter down in any case, but the effect depends on the workspace size.
+<p>You might not notice anything at all with, say, <code>maxws=64MB</code> but you will notice a delay with <code>maxws=2GB</code>.</p></li>
+</ul>
+<p>When the interpreter finds that the <abbr title="Short for Workspaces">WS</abbr> is damaged it will create a dump file <code>aplcore</code> and exit to prevent your application from producing (or storing) incorrect results.</p>
+<p>Regularly rebuilding the workspace from source files removes the risk of accumulating damage to the binary workspace.</p>
+<p>An aplcore is useful in two ways:</p>
+<ul>
+<li>You can copy from it.  Add a colon after <code>aplcore</code>:
+<pre><code>      )copy aplcore. myObj</code></pre>
+<p>It's not a good idea to copy the whole workspace; after all something has been wrong with it.</p>
+<p>It may be fine to recover a particular object (or some objects) from it, although you would be advised to rebuild recovered objects from the source (for example via the clipboard) rather than using binary data recovered from an aplcore.</p></li>
+<li>Send the aplcore to Dyalog. It's kind of a dump, so they might be able to determine the cause of the problem. Naturally it helps when you can provide information about your last actions or, even better, reproduce the aplcore at will.</li>
+</ul>
+<p>You can create an aplcore deliberately by executing:</p>
+<pre><code>      2 ⎕NQ '.' 'dumpws' 'C:\MyAplcore'</code></pre>
+<p>This might be a useful thing to do just before executing a line you already know will cause havoc in one way or another.</p>
+<p>In order to create a real aplcore, in the sense of corrupting the workspace, this will do:</p>
+<pre><code> ∇Crash;MEMCPY
+ :Trap 102
+     ⎕NA'dyalog32|MEMCPY u4 u4 u4'
+ :Else
+     ⎕NA'dyalog64|MEMCPY u4 u4 u4'
+ :EndTrap
+ MEMCPY 0 0 4
+ ∇</code></pre>
+<p>By default, an aplcore is saved with the name <code>aplcore</code> in what is at that moment the current directory. This is not nice because it means that any aplcore might overwrite an earlier one. That can become particularly annoying when you try to copy from an aplcore with :</p>
+<pre><code>     )copy C:\MyAplcore.</code></pre>
+<p>but this might actually create another aplcore, overwriting the first one. Now it might well be too late to restrict the attempt to copy to what is most important to you: the object or objects you have worked on most recently.</p>
+
+<div class="leanpub_A">
+<p>If the aplcore is saved at all that is, because if the current directory is something like <code>C:\Program files\</code> then you won't have the right to save into this directory anyway.</p>
+<p>When a program asks Windows to save a file in a location where that program has no write permission (e.g. <code>C:\Program Files</code>, <code>C:\Program Files (x86)</code>, <code>C:\Windows</code>) then Windows will tell the application that it has fulfilled the request, but the file will actually be saved in something like <code>C:\Users\{username}\AppData\Local\VirtualStore\Program Files\Dyalog\Dyalog APL-64 16.0 Unicode\</code></p>
+</div>
+
+<p>For that reason it is highly recommended to set the value <code>aplcorename</code> in the Windows Registry:</p>
+<p><img src="Images/aplcore_1.png" alt="Defining home and names of aplcores" title="Defining home and names of aplcores"></p>
+<p>This means that aplcores…</p>
+<ul>
+<li>get saved in a folder of your choice.</li>
+<li>start their names with <code>aplcore_Dyalog APL_W-64 16_0 Unicode_</code>.</li>
+<li>are numbered starting from 1; this as achieved by adding the trailing <code>*</code>.</li>
+</ul>
+<p>The same can be achieved by specifying <code>APLCORENAME=...</code> on the command line. That's particularly important for Windows Services.</p>
+</div>
+</div>
+<script>
+var snapper = new Snap({
+element: document.getElementById('content')
+});
+document.getElementById('mainmenu_match').onclick = function(){
+snapper.state().state==='closed'?snapper.open('left'):snapper.close();
+}
+</script>
+</body>
+</html>
