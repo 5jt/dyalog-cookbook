@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta charset="utf-8">
+<title>Registry</title>
+<link href="./CSS/BlackOnWhite_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/Cookbook_Chapter_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/snap.css" rel="stylesheet" media="screen">
+<link href="./CSS/BlackOnWhite_print.css" rel="stylesheet" media="print">
+<link href="./CSS/Cookbook_Chapter_print.css" rel="stylesheet" media="print">
+<script src="./JavaScript/snap.js"></script>
+</head>
+<body>
+<div class="snap-drawers">
+<div class="snap-drawer snap-drawer-left">
+<div class="h_tag">
+<h3>Chapters</h3>
+</div>
+<ol>
+<li><a href="./01%20Introduction.html" class="external_link">Introduction</a></li>
+<li><a href="./02%20Structure.html" class="external_link">Structure</a></li>
+<li><a href="./03%20Package%20MyApp%20as%20an%20executable.html" class="external_link">Package MyApp as an executable</a></li>
+<li><a href="./04%20Logging%20what%20happens%20.html" class="external_link">Logging what happens </a></li>
+<li><a href="./05%20Configuration%20settings.html" class="external_link">Configuration settings</a></li>
+<li><a href="./06%20Debugging%20a%20stand-alone%20EXE.html" class="external_link">Debugging a stand-alone EXE</a></li>
+<li><a href="./07%20Handling%20errors.html" class="external_link">Handling errors</a></li>
+<li><a href="./08%20Testing%20—%20the%20sound%20of%20breaking%20glass.html" class="external_link">Testing<br>The sound of breaking glass</a></li>
+<li><a href="./09%20Documentation%20—%20the%20Doc%20is%20in.html" class="external_link">Documentation<br>The Doc is in</a></li>
+<li><a href="./10%20Make%20me.html" class="external_link">Make me</a></li>
+<li><a href="./11%20Providing%20help.html" class="external_link">Providing help</a></li>
+<li><a href="./12%20Scheduled%20Tasks.html" class="external_link">Scheduled Tasks</a></li>
+<li><a href="./13%20Windows%20Services.html" class="external_link">Windows Services</a></li>
+<li><a href="./14%20The%20Windows%20Event%20Log.html" class="external_link">The Windows Event Log</a></li>
+<li><a href="./15%20The%20Windows%20Registry.html" class="external_link">The Windows Registry</a></li>
+<li><a href="./16%20Creating%20SetUp.exe%20with%20Inno.html" class="external_link">Creating SetUp.exe with Inno</a></li>
+<li><a href="./17%20RegularExpressions.html" class="external_link">RegularExpressions</a></li>
+<li><a href="./18%20GUI.html" class="external_link">GUI</a></li>
+</ol>
+<div class="h_tag">
+<h3>Appendices</h3>
+</div>
+<ol>
+<li><a href="./50%20Appendix%201%20—%20Windows%20environment%20variables.html" class="external_link">Windows environment variables</a></li>
+<li><a href="./51%20Appendix%202%20—%20User%20commands.html" class="external_link">User commands</a></li>
+<li><a href="./52%20Appendix%203%20—%20aplcores%20and%20WS%20integrity.html" class="external_link">aplcores and WS integrity</a></li>
+<li><a href="./53%20Appendix%204%20—%20The%20development%20environment.html" class="external_link">The development environment</a></li>
+<li><a href="./54%20Appendix%205%20—%20Special%20characters.html" class="external_link">Special characters</a></li>
+</ol>
+<div class="h_tag">
+<h3>Misc</h3>
+</div>
+<ul>
+<li><a href="14%20The%20Windows%20Event%20Log.html">Previous chapter</a></li>
+<li><a href="16%20Creating%20SetUp.exe%20with%20Inno.html">Next chapter;</a></li>
+<li><a href="./Dyalog_Cookbook.html" class="external_link">Single document<br>(All chapters, for printing)</a></li>
+</ul>
+</div>
+</div>
+<div id="mainmenu">
+<a href=#><p><span id="mainmenu_match">≡</span></p></a>
+<p><span id="mainmenu_title">The Dyalog Cookbook</span></p>
+<nav id="main_nav">
+<input type="checkbox" id="hide_toc">
+<label id="hide_toc_label" for="hide_toc"></label>
+<div class="toc-container">
+<ul>
+<li><a href="#What-is-it-actually">What is it, actually?</a></li>
+<li><a href="#Terminology">Terminology</a></li>
+<li><a href="#Data-types">Data types</a></li>
+<li><a href="#Root-keys">Root keys</a>
+<ul>
+<li><a href="#3264-bit-nightmares">32/64-bit nightmares</a></li>
+</ul></li>
+<li><a href="#The-class-WinRegSimple">The class WinRegSimple</a></li>
+<li><a href="#Examples">Examples</a>
+<ul>
+<li><a href="#Add-user-command-folder">Add user command folder</a></li>
+<li><a href="#Configure-Dyalogs-window-captions">Configure Dyalog's window captions</a>
+</li></ul></li>
+</ul>
+</div>
+</nav>
+</div>
+<div id="content" class="snap-content">
+<div id="cookbook_content">
+<div class="h_tag">
+<a href="#15-The-Windows-Registry" id="15-The-Windows-Registry" class="autoheader_anchor">
+<h1>15. The Windows Registry</h1>
+</a>
+</div>
+<div class="h_tag">
+<a href="#What-is-it-actually" id="What-is-it-actually" class="autoheader_anchor">
+<h2>What is it, actually?</h2>
+</a>
+</div>
+<p>We cannot say it any better than the Wikipedia [<a href="#fnref1" class="footnote_link"><sup>1</sup></a>]:</p>
+<blockquote>
+<p>The Registry is a hierarchical database that stores low-level settings for the Microsoft Windows operating system and for applications that opt to use the Registry. The kernel, device drivers, services, Security Accounts Manager (SAM), and user interface can all use the Registry. The Registry also allows access to counters for profiling system performance.</p>
+<p>In simple terms, The Registry or Windows Registry contains information, settings, options, and other values for programs and hardware installed on all versions of Microsoft Windows operating systems. For example, when a program is installed, a new subkey containing settings like a program's location, its version, and how to start the program, are all added to the Windows Registry.</p>
+</blockquote>
+<p>The Windows Registry is still the subject of heated discussion between programmers. Most hate it, some like it. Whatever your opinion, you cannot ignore it.</p>
+<p>Originally Microsoft designed the database as <em>the</em> source for any configuration parameters, be it for the operating system, users or applications.</p>
+<p>The Windows Registry will certainly remain the store for any OS-related information but, for applications, we have seen a comeback of the old-fashioned configuration file, be it as an <abbr title="File with the extension 'ini' containing configuration data">INI</abbr>, an XML or a JSON.</p>
+<p>Even if you use configuration files to configure your own application, you must be able to read and occasionally also to write to the Windows Registry, if only to configure Dyalog APL to suit your needs.</p>
+<p>The Windows Registry can be used by any application to store user-specific data. For example, if you want to save the current position and size of the main form of your application for each user so ou can restore both position and size next time the application is started≤ then the Windows Registry is the perfect place for these facts. The key suggests itself:</p>
+<pre><code>HKCU\Software\MyApplication\MainForm\Posn
+HKCU\Software\MyApplication\MainForm\Size</code></pre>
+<p>Note that <code>HKCU</code> is a short cut for “HKey Current User”. There are others, and we will discuss them.</p>
+<div class="h_tag">
+<a href="#Terminology" id="Terminology" class="autoheader_anchor">
+<h2>Terminology</h2>
+</a>
+</div>
+<p>Microsoft’s terminology for the Registry varies strikingly from common usage. That is a rich source of confusion, but there is no avoiding it. Has to be mastered.</p>
+<p>&lt;!– Find the terminology strange? So do we, but it was invented by Microsoft and defines the standard.</p>
+<p>So we use it too. That makes it easier to understand the Microsoft documentation and also to understand others discussing the Windows Registry. It also helps when you Google for Registry tweaks because the guys posting the solution to your problem are most likely using Microsoft speech as well.</p>
+<p>What is strange about the terminology? Microsoft gives common words unusual meanings when it comes to the Windows Registry. –&gt;</p>
+<p>Here’s an example. This is the definition of the MAX<abbr title="Short for Workspaces">WS</abbr> parameter for Dyalog 64 bit Unicode version 16:</p>
+<p><img src="Images/WinReg_maxws.png" alt="Definition of maxws in the Windows Registry" title="Definition of maxws in the Windows Registry"></p>
+<p>The full path is:</p>
+<pre><code>Computer\HKEY_CURRENT_USER\Software\Dyalog\Dyalog APL/W-64 16.0 Unicode\maxws</code></pre>
+<p>We can omit <code>Computer</code> if it is the local machine, and we can shorten “HKEY_CURRENT_USER” as “HKCU”. That leaves us with:</p>
+<pre><code>HKCU\Software\Dyalog\Dyalog APL/W-64 16.0 Unicode\maxws</code></pre>
+<p>That looks pretty much like a file path, doesn't it? So what about calling the different parts to the left of <code>maxws</code> <em>folders</em>?</p>
+<p>Well, that might be logical, but Microsoft did not do that. Instead they call <code>HKCU</code> a <em>key</em>. The top-level parts are sometimes called <em>root keys</em>. The other parts except <code>maxws</code> are called <em>subkeys</em>; sometimes just <em>keys</em>.</p>
+<p>So what's <code>maxws</code>? Well it holds a value, so why not call it <em>key</em>? Oops, that's already taken. Maybe <em>name</em> or <em>ID</em>? Well, Microsoft calls it a <em>value</em>. That's a strange name because is <em>has</em> an associated value, in our example, the string <code>'64000'</code>.</p>
+<p>To repeat: any given path to a particular piece of data in the Windows Registry consists of a <em>key</em>, one or more <em>subkeys</em> and a <em>value</em> that is associated with <em>data</em>:</p>
+<pre><code>root key\subkey\subkey\subkey\value = data</code></pre>
+<p>Some other things you should know:</p>
+<ul>
+<li>Keys and subkeys must not contain a backslash character (<code>\</code>) but values (!) and data may.</li>
+<li>Any subkey may have a <em>default value</em>. This is a piece of data associated with the subkey, not with a value.</li>
+<li>The Microsoft documentation clearly defines the word <em>key</em> for the top level only but later uses <em>key</em> and <em>subkey</em> interchangeably.</li>
+<li>According to the Microsoft documentation both keys and subkeys are case-insensitive. That suggests values are case-sensitive but actually they are case-insensitive too.</li>
+<li>Key names are not localised into other languages, although values may be.</li>
+</ul>
+<div class="h_tag">
+<a href="#Data-types" id="Data-types" class="autoheader_anchor">
+<h2>Data types</h2>
+</a>
+</div>
+<p>These days the Windows Registry offers quite a range of data types, but most of the time you can manage with just these:</p>
+<dl>
+<dt>REG_SZ</dt>
+<dd>The string data type. APLers call this a text vector. Both <code>WinReg</code> as well as <code>WinRegSimple</code> write text vectors as Unicode strings.</dd>
+<dt>REG_DWORD</dt>
+<dd>A 32-bit number.</dd>
+<dt>REG_BINARY</dt>
+<dd>Binary data in any form.</dd>
+<dt>REG_MULTI_SZ</dt>
+<dd>For an APLer this is a vector of text vectors. This data type was not available in the early days of the Windows Registry which is probably why it is not as widely used as you would expect.</dd>
+<dt>REG_QWORD</dt>
+<dd>A 64-bit number</dd>
+</dl>
+<p>There are more data types available, but they are less common.</p>
+<div class="h_tag">
+<a href="#Root-keys" id="Root-keys" class="autoheader_anchor">
+<h2>Root keys</h2>
+</a>
+</div>
+<p>A Windows Registry has just 5 root keys:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"> Root key            </th>
+<th style="text-align: left;"> Shortcut </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HKEY_CLASSES_ROOT</td>
+<td>HKCR</td>
+</tr>
+<tr>
+<td>HKEY_CURRENT_USER</td>
+<td>HKCU</td>
+</tr>
+<tr>
+<td>HKEY_LOCAL_MACHINE</td>
+<td>HKLM</td>
+</tr>
+<tr>
+<td>HKEY_USERS</td>
+<td>HKU</td>
+</tr>
+<tr>
+<td>HKEY_CURRENT_CONFIG</td>
+<td>HKCC</td>
+</tr>
+</tbody>
+</table>
+<p>From an application programmer’s point of view the HKCU and the HKLM are the most important ones, and usually the only ones to write to.</p>
+<div class="h_tag">
+<a href="#3264-bit-nightmares" id="3264-bit-nightmares" class="autoheader_anchor">
+<h3>32/64-bit nightmares</h3>
+</a>
+</div>
+<p>This is what the MSDN has to say about 32-bit and 64-bit applications when it comes to the Windows Registry:</p>
+<blockquote>
+<p>On 64-bit Windows, portions of the registry entries are stored separately for 32-bit application and 64-bit applications and mapped into separate logical registry views using the registry redirector and registry reflection, because the 64-bit version of an application may use different registry keys and values than the 32-bit version. There are also shared registry keys that are not redirected or reflected.</p>
+<p>The parent of each 64-bit registry node is the Image-Specific Node or ISN. The registry redirector transparently directs an application's registry access to the appropriate ISN subnode. Redirection subnodes in the registry tree are created automatically by the WOW64 component using the name Wow6432Node. As a result, it is essential not to name any registry key you create Wow6432Node.</p>
+<p>The KEY_WOW64_64KEY and KEY_WOW64_32KEY flags enable explicit access to the 64-bit registry view and the 32-bit view, respectively. For more information, see Accessing an Alternate Registry View.</p>
+</blockquote>
+<p>Probably best to avoid 32-bit applications and just create 64-bit applications these days if you can. If for any reason you are forced to deliver 32-bit applications then read up the details in the MSDN [<a href="#fnref2" class="footnote_link"><sup>2</sup></a>].</p>
+<p>The knowledge you have accumulated by now will probably suffice for the rest of your work as an application programmer. If you want to know all the details we recommend the Microsoft documentation [<a href="#fnref3" class="footnote_link"><sup>3</sup></a>].</p>
+<div class="h_tag">
+<a href="#The-class-WinRegSimple" id="The-class-WinRegSimple" class="autoheader_anchor">
+<h2>The class WinRegSimple</h2>
+</a>
+</div>
+<p>The APLTree class <code>WinRegSimple</code> is a very simple class that offers just three methods:</p>
+<ul>
+<li><code>Read</code></li>
+<li><code>Write</code></li>
+<li><code>Delete</code></li>
+</ul>
+<p>It is also limited to the two data types <code>REG_SZ</code> and <code>REG_DWORD</code>.</p>
+<p>The class uses the Windows Scripting Host (<abbr title="Short for Workspaces">WS</abbr>H) [<a href="#fnref4" class="footnote_link"><sup>4</sup></a>]. It is available on all Windows systems although it can be switched off by group policies, though we have never seen this in the wild.</p>
+<p>If you want to read just a certain value then this – very small – class might suffice. For example, to read the aforementioned <code>maxws</code> value:</p>
+<pre><code>      #.WinRegSimple.Read 'HKCU\Software\Dyalog\Dyalog APL/W-64 16.0 Unicode\maxws'
+64000</code></pre>
+<p>You can create a new value as well as a new key with <code>Write</code>:</p>
+<pre><code>      #.WinRegSimple.Write 'HKCU\Software\Cookbooktests\MyValue' 1200
+</code></pre>
+<p><img src="Images/WinReg_MyValue.png" alt="MyValue" title="MyValue"></p>
+<p>You can also delete a subkey or a value, but a subkey must be empty:</p>
+<pre><code>      #.WinRegSimple.Delete 'HKCU\Software\Cookbooktests'
+      #.WinRegSimple.Read 'HKCU\Software\Cookbooktests'
+      #.WinRegSimple.Read'HKCU\Software\Cookbooktests\MyValue'
+1200
+      #.WinRegSimple.Delete 'HKCU\Software\Cookbooktests\MyValue'
+Unable to open registry key "HKCU\Software\Cookbooktests\MyValue" for reading.
+      #.WinRegSimple.Read'HKCU\Software\Cookbooktests\MyValue'
+     ∧
+      #.WinRegSimple.Delete 'HKCU\Software\Cookbooktests\'</code></pre>
+<p>To delete a subkey you must specify a trailing backslash.</p>
+<p>You can also write the default value for a key. For that you must specify a trailing backslash as well. The same holds true for reading a default value:</p>
+<pre><code>      #.WinRegSimple.Write 'HKCU\Software\Cookbooktests\' 'APL is great'
+      #.WinRegSimple.Read 'HKCU\Software\Cookbooktests\'
+APL is great</code></pre>
+<p><img src="Images/WinReg_DefaultValue.png" alt="Default values" title="Default values"></p>
+<p>Whether <code>Write</code> writes a REG_SZ or a REG_DWORD depends on the data: a text vector becomes “REG_SZ” while a 32-bit integer becomes “REG_DWORD” though booleans as well as smaller integers are converted to a 32-bit integer. Other data types are rejected.</p>
+<p>If the <code>WinRegSimple</code> class does not suit your needs then have a look at the <code>WinReg</code> class. This class is much larger but has virtually no limitations at all.</p>
+<p>To give you idea here the list of methods:</p>
+<pre><code>]adoc WinReg -summary
+*** WinReg (Class) ***
+
+Shared Fields:
+  ERROR_ACCESS_DENIED
+  ...
+  REG_SZ
+Shared Methods:
+  Close
+  CopyTree
+  DeleteSubKeyTree
+  DeleteSubKey
+  DeleteValue
+  DoesKeyExist
+  DoesValueExist
+  GetAllNamesAndValues
+  GetAllSubKeyNames
+  GetAllValueNames
+  GetAllValues
+  GetDyalogRegPath
+  GetErrorAsStringFrom
+  GetString
+  GetTreeWithValues
+  GetTree
+  GetTypeAsStringFrom
+  GetValue
+  History
+  KeyInfo
+  ListError
+  ListReg
+  OpenAndCreateKey
+  OpenKey
+  PutBinary
+  PutString
+  PutValue
+  Version
+</code></pre>
+<div class="h_tag">
+<a href="#Examples" id="Examples" class="autoheader_anchor">
+<h2>Examples</h2>
+</a>
+</div>
+<p>We will use both the <code>WinReg</code> class and the <code>WinRegSimple</code> class for two tasks:</p>
+<ul>
+<li>Add a specific folder holding user commands to all versions of Dyalog APL installed on the current machine.</li>
+<li>Add pieces of information to the caption definitions for all dialog boxes of all versions of Dyalog APL installed on the current machine.</li>
+</ul>
+<p>The functions we develop along the way as well as the variables we need can be found in the workspace <code>WinReg</code> in the folder <code>Z:\code\Workspaces\</code>.</p>
+<div class="h_tag">
+<a href="#Add-user-command-folder" id="Add-user-command-folder" class="autoheader_anchor">
+<h3>Add user command folder</h3>
+</a>
+</div>
+<p>Let's assume we have a folder <code>C:\MyUserCommands</code>. We want to add this folder to the list of folders holding user commands. For that we must find out the subkeys of all versions of Dyalog installed on your machine:</p>
+<pre><code>∇ list←GetAllVersionsOfDyalog dummy
+[1] ⍝ Returns a vector of text vectors with Registry subkeys for all
+[2] ⍝ versions of Dyalog APL installed on the current machine.
+[3]   list←#.WinReg.GetAllSubKeyNames'HKCU\Software\Dyalog'
+[4]   ⍝ Get rid of "Installed components" etc:
+[5]   list←'Dyalog'{⍵/⍨((⍴⍺)↑[2]↑⍵)∧.=⍺}list
+∇
+      ↑GetAllVersionsOfDyalog ⍬
+Dyalog APL/W 14.1 Unicode
+Dyalog APL/W 15.0 Unicode
+Dyalog APL/W 16.0 Unicode
+Dyalog APL/W-64 13.2 Unicode
+Dyalog APL/W-64 14.0 Unicode
+Dyalog APL/W-64 14.1 Unicode
+Dyalog APL/W-64 15.0
+Dyalog APL/W-64 15.0 Unicode
+Dyalog APL/W-64 16.0 Unicode</code></pre>
+<p>That's step one. In the next step we need to write a function that adds a folder to the list of user command folders:</p>
+<pre><code>∇ {r}←path Add version;subkey;folders
+   r←⍬
+   subkey←'HKCU\Software\Dyalog\',version,'\SALT\CommandFolder'
+   'Subkey does not exist'⎕SIGNAL 11/⍨1≠#.WinReg.DoesValueExist subkey
+   folders←#.WinReg.GetString subkey
+   folders←';'{¯1↓¨⍵⊂⍨';'=¯1↓';',⍵}folders,';'
+   folders←(({(819⌶)⍵}¨folders)≢¨⊂(819⌶)path)/folders ⍝ drop doubles
+   folders←⊃{⍺,';',⍵}/folders,⊂path
+   #.WinReg.PutString subkey folders
+∇</code></pre>
+<p>Let's check the current status:</p>
+<pre><code>      dyalogVersions←AllVersionsOfDyalog ''
+      ⍪{#.WinReg.GetValue 'HKCU\Software\Dyalog\',⍵,'\SALT\CommandFolder'}¨dyalogVersions
+ C:\...\Dyalog APL 14.1 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\
+ C:\...\Dyalog APL 15.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\
+ C:\...\Dyalog APL 16.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\
+...
+      'C:\MyUserCommands'∘Add¨dyalogVersions
+      ⍪{#.WinReg.GetValue 'HKCU\Software\Dyalog\',⍵,'\SALT\CommandFolder'}¨dyalogVersions
+      C:\..\Dyalog APL 14.1 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands
+C:\...\Dyalog APL 15.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands
+C:\...\Dyalog APL 16.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands
+...
+      'C:\MyUserCommands'∘Add¨dyalogVersions
+      ⍪{#.WinReg.GetValue 'HKCU\Software\Dyalog\',⍵,'\SALT\CommandFolder'}¨dyalogVersions
+C:\...\Dyalog APL 14.1 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands
+C:\...\Dyalog APL 15.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands
+C:\...\Dyalog APL 16.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands</code></pre>
+<p>Although we called <code>Add</code> twice, the folder <code>C:\MyUserCommands</code> appears only once. This is because we carefully removed it before adding it.</p>
+<div class="h_tag">
+<a href="#Configure-Dyalogs-window-captions" id="Configure-Dyalogs-window-captions" class="autoheader_anchor">
+<h3>Configure Dyalog's window captions</h3>
+</a>
+</div>
+<p>In <a href="./53 Appendix 4 — The development environment.html" class="external_link"><em>Appendix 4 — The development environment</em></a> we mention that if you run more than one instance of Dyalog in parallel then you want to be able to associate any dialog box to the instance that issued it. This can be achieved by adding certain pieces of information to certain entries in the Windows Registry. We talk about this subkey of, say, Dyalog APL/W-64 16.0 Unicode:</p>
+<pre><code>HKCU\Software\Dyalog\Dyalog APL/W-64 16.0 Unicode\Captions</code></pre>
+<p>If that subkey exists (after an installation it doesn't) then it is supposed to contain particular values defining the captions for all dialog boxes that might make an appearance when running an instance of Dyalog.</p>
+<p>So to configure all these window captions you have to add the subkey <code>Chapter</code> and the required values in one way or another. This is a list of values honoured by version 16.0:</p>
+<table>
+<tbody>
+<tr>
+<td>Editor</td>
+</tr>
+<tr>
+<td>Event_Viewer</td>
+</tr>
+<tr>
+<td>ExitDialog</td>
+</tr>
+<tr>
+<td>Explorer</td>
+</tr>
+<tr>
+<td>FindReplace</td>
+</tr>
+<tr>
+<td>MessageBox</td>
+</tr>
+<tr>
+<td>Rebuild_Errors</td>
+</tr>
+<tr>
+<td>Refactor</td>
+</tr>
+<tr>
+<td>Session</td>
+</tr>
+<tr>
+<td>Status</td>
+</tr>
+<tr>
+<td>SysTray</td>
+</tr>
+<tr>
+<td><abbr title="Short for Workspaces">WS</abbr>Search</td>
+</tr>
+</tbody>
+</table>
+<p>Although it is not a big deal to add these values with the Registry Editor we do not recommend this, if only because when the next version of Dyalog comes along then you have to do it again.</p>
+<p>Let's suppose you have a variable <code>captionValues</code> which is a matrix with two columns:</p>
+<ul>
+<li><code>[;1]</code> is the name of a value</li>
+<li><code>[;2]</code> is the definition of the caption</li>
+</ul>
+<p>Here's what <code>captionValues</code> might look like:</p>
+<pre><code>      ⍴⎕←values
+ Editor          {PID} {TITLE} {WSID}-{NSID} {Chars} {Ver_A}.{VER_B}.{VER_C} {BITS}
+ Event_Viewer    {PID} {WSID} {PRODUCT}
+ ExitDialog      {PID} {WSID} {PRODUCT}
+ Explorer        {PID} {WSID} {PRODUCT}
+ FindReplace     {PID} {WSID}-{SNSID} {Chars} {Ver_A}.{VER_B}.{VER_C} {BITS}
+ MessageBox      {PID} {WSID} {PRODUCT}
+ Rebuild_Errors  {PID} {WSID} {PRODUCT}
+ Refactor        {PID} {WSID}-{SNSID} {Chars} {Ver_A}.{VER_B}.{VER_C} {BITS}
+ Session         {PID} {WSID}-{NSID} {Chars} {Ver_A}.{VER_B}.{VER_C} {BITS}
+ Status          {PID} {WSID} {PRODUCT}
+ SysTray         {PID} {WSID}
+ WSSearch        {PID} {WSID} {PRODUCT}
+13 2</code></pre>
+<p>Again, this variable can be copied from the workspace <code>Z:\code\Workspaces\WinReg</code>. We are going to write this data to the Windows Registry for all versions of Dyalog installed on the current machine.</p>
+<p>For that we need a list with all versions of Dyalog installed on the current machine. We can use the function <code>GetAllVersionsOfDyalog</code> we developed earlier in this chapter:</p>
+<pre><code>   dyalogVersions←GetAllVersionsOfDyalog ''</code></pre>
+<p>Now we write a function that takes a version and the variable <code>captionValues</code> as argument and creates a subkey <code>Captions</code> with all the values. This time we use <code>#.WinRegSimple.Write</code> for it:</p>
+<pre><code>∇ {r}←values WriteCaptionValues version;rk
+[1]  r←⍬
+[2]  rk←'HKCU\Software\Dyalog\',version,'\Captions\'
+[3]  rk∘{#.WinRegSimple.Write(⍺,(1⊃⍵))(2⊃⍵)}¨↓values
+∇</code></pre>
+<p>We can now write <code>captionValues</code> to all versions:</p>
+<pre><code>       captionValues∘WriteCaptionValues¨dyalogVersions
+      ⍝ Let's check:
+      rk←'HKCU\Software\Dyalog\Dyalog APL/W-64 16.0 Unicode\Captions'
+      #.WinReg.GetTreeWithValues rk
+0  HKCU\...\Captions\
+1  HKCU\...\Editor          {PID} {TITLE} {WSID}-{NSID} {Chars} {Ver_A}.{VER_B}.{VER_C} {BITS}
+1  HKCU\...\Event_Viewer    {PID} {WSID} {PRODUCT}
+1  HKCU\...\ExitDialog      {PID} {WSID} {PRODUCT}
+1  HKCU\...\Explorer        {PID} {WSID} {PRODUCT}
+1  HKCU\...\FindReplace     {PID} {WSID}-{SNSID} {Chars} {Ver_A}.{VER_B}.{VER_C} {BITS}
+1  HKCU\...\MessageBox      {PID} {WSID} {PRODUCT}
+1  HKCU\...\Rebuild_Errors  {PID} {WSID} {PRODUCT}
+1  HKCU\...\Refactor        {PID} {WSID}-{SNSID} {Chars} {Ver_A}.{VER_B}.{VER_C} {BITS}
+1  HKCU\...\Session         {PID} {WSID}-{NSID} {Chars} {Ver_A}.{VER_B}.{VER_C} {BITS}
+1  HKCU\...\Status          {PID} {WSID} {PRODUCT}
+1  HKCU\...\SysTray         {PID} {WSID}
+1  HKCU\...\WSSearch        {PID} {WSID} {PRODUCT}</code></pre>
+<div id="footnotes_div">
+<hr>
+<p><strong>Footnotes</strong></p>
+<ol>
+<li id="fnref1"><p>The Wikipedia on the Windows Registry:<br><a href="https://en.wikipedia.org/wiki/Windows_Registry" class="external_link">https://en.wikipedia.org/wiki/Windows_Registry</a></p><a href="#fnref1" class="footnote_anchor"></a>
+<li id="fnref2"><p>The MSDN on 32-bit and 64-bit applications and the Windows Registry:<br><a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms724072(v=vs.85).aspx" class="external_link">https://msdn.microsoft.com/en-us/library/windows/desktop/ms724072(v=vs.85).aspx</a></p><a href="#fnref2" class="footnote_anchor"></a>
+<li id="fnref3"><p>Microsoft on the Windows Registry:<br><a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms724946(v=vs.85).aspx" class="external_link">https://msdn.microsoft.com/en-us/library/windows/desktop/ms724946(v=vs.85).aspx</a></p><a href="#fnref3" class="footnote_anchor"></a>
+<li id="fnref4"><p>The Wikipedia on the Windows Scripting Host:<br><a href="https://en.wikipedia.org/wiki/Windows_Script_Host" class="external_link">https://en.wikipedia.org/wiki/Windows_Script_Host</a></p><a href="#fnref4" class="footnote_anchor"></a>
+</ol>
+</div>
+</div>
+</div>
+<script>
+var snapper = new Snap({
+element: document.getElementById('content')
+});
+document.getElementById('mainmenu_match').onclick = function(){
+snapper.state().state==='closed'?snapper.open('left'):snapper.close();
+}
+</script>
+</body>
+</html>

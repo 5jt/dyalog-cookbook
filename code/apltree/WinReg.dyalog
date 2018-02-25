@@ -1,4 +1,4 @@
-﻿:Class WinReg
+:Class WinReg
 ⍝ Offers shared methods useful to deal with the Windows Registry.
 ⍝
 ⍝ Note that the Window Registry contains data saved under a kind
@@ -36,16 +36,18 @@
     ⎕ML←3
     ⎕IO←1
 
-    :Include APLTreeUtils
+    :Include ##.APLTreeUtils
 
     ∇ R←Version
       :Access Public Shared
-      R←(Last⍕⎕THIS)'2.9.1' '2017-08-04'
+      R←(Last⍕⎕THIS)'3.0.0' '2018-02-16'
     ∇
 
     ∇ History
       :Access Public Shared
-      ⍝ * 2.9.0     1
+      ⍝ * 3.0.0
+      ⍝   * First version after the conversion from the APL wiki to GitHub.
+      ⍝ * 2.9.0
       ⍝   * Bug fix: `GetAllSubKeyNames` closed handle twice.
       ⍝ * 2.9.0
       ⍝   * Method `History` introduced.

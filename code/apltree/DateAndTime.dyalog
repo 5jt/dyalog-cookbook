@@ -1,4 +1,4 @@
-﻿:Class DateAndTime
+:Class DateAndTime
 ⍝ ## Overview
 ⍝ This namespace contains functions that deal with date and time.
 ⍝
@@ -77,20 +77,17 @@
 ⍝ | 20030203.040507        | 3 1 2 4 5 7      | `AddPeriod2DateTime`           | 20000101           |
 ⍝ | 20030203.040607        | 3 1 2 4 5 67     | `AddPeriod2DateTime`           | 20000101           |
 
-⍝ ## Misc
-⍝ Responsible: Kai Jaeger
-⍝
-⍝ Homepage: <http://aplwiki.com/DateAndTime>
-
     ⎕IO←⎕ML←0
 
     ∇ r←Version
       :Access Public Shared
-      r←({1↓⊃,/¯1↑⍵⊂⍨'.'=⍵}⍕⎕THIS)'1.4.0' '2017-10-31'
+      r←({1↓⊃,/¯1↑⍵⊂⍨'.'=⍵}⍕⎕THIS)'1.5.0' '2018-02-19'
     ∇
 
     ∇ History
       :Access Public Shared
+      ⍝ * 1.5.0
+      ⍝   * Converted from the APL wiki to GitHub.
       ⍝ * 1.4.0
       ⍝   * Method `FileDate2Timestap` introduced.
       ⍝   * Documentation improved.

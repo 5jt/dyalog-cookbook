@@ -1,4 +1,4 @@
-﻿:Class Logger
+:Class Logger
 ⍝ ## Overview
 ⍝ This class is designed to write log files. It does not need any parameters
 ⍝ when instantiated but you may specify the following parameters:
@@ -31,7 +31,7 @@
 ⍝ Author: Kai Jaeger ⋄ APL Team Ltd\\
 ⍝ Homepage: <http://aplwiki.com/Logger>
 
-    :Include APLTreeUtils
+    :Include ##.APLTreeUtils
 
     ⎕IO←1
     ⎕ML←3
@@ -39,7 +39,7 @@
 
     ∇ r←Version
       :Access Public shared
-      r←(Last⍕⎕THIS)'2.4.0' '2017-05-19'
+      r←(Last⍕⎕THIS)'2.5.0' '2018-02-19'
     ∇
 
     ∇ History
@@ -52,14 +52,6 @@
       ⍝     of the APLTree project. `CreateProperySpace` is deprecated now but is still available.
       ⍝   * The internal function in the namepsace created by `CreateParms` is now named `∆List` rather
       ⍝     then `List` for the same reason.
-      ⍝ * 2.2.0
-      ⍝   Compatibel now with `FilesAndDirs` version 1.3.
-      ⍝ * 2.1.0
-      ⍝   * Requires at least Dyalog 15 Unicode
-      ⍝   * Because Logger now requires a Unicode interpreter the "ASCII" encoding has lost
-      ⍝     its meanings. It's still accepted but internally changed to ANSI.
-      ⍝ * 2.0.0
-      ⍝   * Doc converted to Markdown (requires at least ADOC 5.0).
     ∇
 
 ⍝ --------------- Properties and Fields

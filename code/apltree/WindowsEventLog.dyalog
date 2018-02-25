@@ -1,4 +1,4 @@
-﻿:Class WindowsEventLog
+:Class WindowsEventLog
 ⍝ This class offers only methods and properties useful to write application related logging
 ⍝ information to the Windows Event Log.\\
 ⍝ It comes with reasonable defaults to make this as easy as possible.\\
@@ -24,17 +24,19 @@
 ⍝ Author: Kai Jaeger ⋄ APL Team Ltd\\
 ⍝ Homepage: <http://aplwiki.com/WindowsEventLog>
 
-    :Include APLTreeUtils
+    :Include ##.APLTreeUtils
 
     ⎕io←1 ⋄ ⎕ml←3
 
     ∇ r←Version
       :Access Public Shared
-      r←(Last⍕⎕THIS)'1.6.0' '2017-05-19'
+      r←(Last⍕⎕THIS)'1.7.0' '2018-02-16'
     ∇
 
     ∇ History
       :Access Public Shared
+      ⍝ * 1.7.0
+      ⍝   * Converted from the APL wiki to GitHub
       ⍝ * 1.6.0
       ⍝   * New method `History`.
       ⍝   * `WindowsEventLog` is now managed by acre 3.

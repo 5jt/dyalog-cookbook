@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta charset="utf-8">
+<title>Documentation</title>
+<link href="./CSS/BlackOnWhite_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/Cookbook_Chapter_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/snap.css" rel="stylesheet" media="screen">
+<link href="./CSS/BlackOnWhite_print.css" rel="stylesheet" media="print">
+<link href="./CSS/Cookbook_Chapter_print.css" rel="stylesheet" media="print">
+<script src="./JavaScript/snap.js"></script>
+</head>
+<body>
+<div class="snap-drawers">
+<div class="snap-drawer snap-drawer-left">
+<div class="h_tag">
+<h3>Chapters</h3>
+</div>
+<ol>
+<li><a href="./01%20Introduction.html" class="external_link">Introduction</a></li>
+<li><a href="./02%20Structure.html" class="external_link">Structure</a></li>
+<li><a href="./03%20Package%20MyApp%20as%20an%20executable.html" class="external_link">Package MyApp as an executable</a></li>
+<li><a href="./04%20Logging%20what%20happens%20.html" class="external_link">Logging what happens </a></li>
+<li><a href="./05%20Configuration%20settings.html" class="external_link">Configuration settings</a></li>
+<li><a href="./06%20Debugging%20a%20stand-alone%20EXE.html" class="external_link">Debugging a stand-alone EXE</a></li>
+<li><a href="./07%20Handling%20errors.html" class="external_link">Handling errors</a></li>
+<li><a href="./08%20Testing%20—%20the%20sound%20of%20breaking%20glass.html" class="external_link">Testing<br>The sound of breaking glass</a></li>
+<li><a href="./09%20Documentation%20—%20the%20Doc%20is%20in.html" class="external_link">Documentation<br>The Doc is in</a></li>
+<li><a href="./10%20Make%20me.html" class="external_link">Make me</a></li>
+<li><a href="./11%20Providing%20help.html" class="external_link">Providing help</a></li>
+<li><a href="./12%20Scheduled%20Tasks.html" class="external_link">Scheduled Tasks</a></li>
+<li><a href="./13%20Windows%20Services.html" class="external_link">Windows Services</a></li>
+<li><a href="./14%20The%20Windows%20Event%20Log.html" class="external_link">The Windows Event Log</a></li>
+<li><a href="./15%20The%20Windows%20Registry.html" class="external_link">The Windows Registry</a></li>
+<li><a href="./16%20Creating%20SetUp.exe%20with%20Inno.html" class="external_link">Creating SetUp.exe with Inno</a></li>
+<li><a href="./17%20RegularExpressions.html" class="external_link">RegularExpressions</a></li>
+<li><a href="./18%20GUI.html" class="external_link">GUI</a></li>
+</ol>
+<div class="h_tag">
+<h3>Appendices</h3>
+</div>
+<ol>
+<li><a href="./50%20Appendix%201%20—%20Windows%20environment%20variables.html" class="external_link">Windows environment variables</a></li>
+<li><a href="./51%20Appendix%202%20—%20User%20commands.html" class="external_link">User commands</a></li>
+<li><a href="./52%20Appendix%203%20—%20aplcores%20and%20WS%20integrity.html" class="external_link">aplcores and WS integrity</a></li>
+<li><a href="./53%20Appendix%204%20—%20The%20development%20environment.html" class="external_link">The development environment</a></li>
+<li><a href="./54%20Appendix%205%20—%20Special%20characters.html" class="external_link">Special characters</a></li>
+</ol>
+<div class="h_tag">
+<h3>Misc</h3>
+</div>
+<ul>
+<li><a href="08%20Testing%20—%20the%20sound%20of%20breaking%20glass.html">Previous chapter</a></li>
+<li><a href="10%20Make%20me.html">Next chapter;</a></li>
+<li><a href="./Dyalog_Cookbook.html" class="external_link">Single document<br>(All chapters, for printing)</a></li>
+</ul>
+</div>
+</div>
+<div id="mainmenu">
+<a href=#><p><span id="mainmenu_match">≡</span></p></a>
+<p><span id="mainmenu_title">The Dyalog Cookbook</span></p>
+<nav id="main_nav">
+<input type="checkbox" id="hide_toc">
+<label id="hide_toc_label" for="hide_toc"></label>
+<div class="toc-container">
+<ul>
+<li><a href="#Instructions-on-how-to-use-the-application">Instructions on how to use the application</a></li>
+<li><a href="#A-description-of-what-the-application-does">A description of what the application does</a></li>
+<li><a href="#A-description-of-how-the-application-works">A description of how the application works</a></li>
+<li><a href="#The-poor-relation">The poor relation</a></li>
+<li><a href="#ADoc">ADoc</a>
+<ul>
+<li><a href="#Get-a-summary">Get a summary</a></li>
+<li><a href="#Get-it-all">Get it all</a></li>
+<li><a href="#Getting-help">Getting help</a></li>
+</ul></li>
+<li><a href="#ADoc-for-MyApp">ADoc for MyApp</a>
+<ul>
+<li><a href="#Leading-comments-basic-information">Leading comments: basic information</a></li>
+<li><a href="#Public-interface">Public interface</a></li>
+<li><a href="#Reserved-names">Reserved names</a>
+<ul>
+<li><a href="#Version"><code>Version</code></a></li>
+<li><a href="#Copyright"><code>Copyright</code></a></li>
+<li><a href="#History"><code>History</code></a></li>
+<li><a href="#Public"><code>Public</code></a></li>
+<li><a href="#ADOC_Doc"><code>ADOC_Doc</code></a>
+</li></ul></li>
+</li></ul></li>
+</ul>
+</div>
+</nav>
+</div>
+<div id="content" class="snap-content">
+<div id="cookbook_content">
+<div class="h_tag">
+<a href="#9-Documentation-----the-Doc-is-in" id="9-Documentation-----the-Doc-is-in" class="autoheader_anchor">
+<h1>9. Documentation — the Doc is in</h1>
+</a>
+</div>
+<p>Documentation is the bad mother of software. Programmers learn early that we depend on it but must not trust it. On the one hand we need it for the software we use. On the other we learn a great wariness of it for the software we develop. Understanding why this is so will help us see what to do about documenting <code>MyApp</code>.</p>
+<p>It helps to distinguish three quite different things people refer to as <em>documentation</em>.</p>
+<ul>
+<li>instructions on how to use the application</li>
+<li>a description of what the application does</li>
+<li>a description of how the application works</li>
+</ul>
+<div class="h_tag">
+<a href="#Instructions-on-how-to-use-the-application" id="Instructions-on-how-to-use-the-application" class="autoheader_anchor">
+<h2>Instructions on how to use the application</h2>
+</a>
+</div>
+<p>Unless you are writing a tool or components for other developers to use, all software is operated through a graphical user interface. Users know the common conventions of UIs in various contexts. The standard for UIs is relatively demanding.</p>
+<p>If you know what the application is for, it should be obvious how to use its basic features. The application might help you with wizards (dialogue sequences) to accomplish complex tasks. A user might supplement this by consulting what the Help menu offers. She might search the Web for advice. The last thing she is likely to do is go looking for a printed manual.</p>
+<p>We’ll come in a later chapter to how to offer online help from a Help menu. For now, we mention Help to exclude it from what we mean by <em>documentation</em>.</p>
+<div class="h_tag">
+<a href="#A-description-of-what-the-application-does" id="A-description-of-what-the-application-does" class="autoheader_anchor">
+<h2>A description of what the application does</h2>
+</a>
+</div>
+<p>This is a useful thing to have, perhaps as a sales document. One or two pages suffices. Including limitations is important: files in certain formats, up to certain sizes. Perhaps a list of Frequently Asked Questions [<a href="#fnref1" class="footnote_link"><sup>1</sup></a>] and their answers.</p>
+<p>Beyond that, you have the formal tests. This is what you <em>know</em> the system does. It passes its tests. Especially if you’re supporting your application on multiple versions of Windows, you’ll want those tests to be extensive.</p>
+<div class="h_tag">
+<a href="#A-description-of-how-the-application-works" id="A-description-of-how-the-application-works" class="autoheader_anchor">
+<h2>A description of how the application works</h2>
+</a>
+</div>
+<p>This is what you want when you revisit part of the code after six months – or six days in some cases. How does this section work? What’s going on here?</p>
+<p>In the best case the code explains everything. Software is a story told in two worlds. One world is the domain of the user, for example, a world of customer records. The other world is the arrays and namespaces used to represent them.</p>
+<p>Good writing achieves a double vision. The transformations described by the code make sense in both worlds. Ken Iverson once coined the term <em>expository programming</em> for this writing. Expository programs reveal their workings to the reader.</p>
+<p>They also discover errors more easily, making it possible to “stare the bugs out”. (David Armstrong liked to say the best writing style for a philosopher lets him see his errors before his colleagues do.)</p>
+<p>APL requires little ‘ceremonial code’ – e.g. declarations of data type – and so makes high levels of semantic density achievable. It is perhaps easier to write expository code than in more commonly-used languages. But we have learned great respect for how quickly we can forget what a piece of code does. Then we need documentation in its third sense.</p>
+<p>It’s in this third sense that we’ll discuss <em>documentation</em>.</p>
+<div class="h_tag">
+<a href="#The-poor-relation" id="The-poor-relation" class="autoheader_anchor">
+<h2>The poor relation</h2>
+</a>
+</div>
+<p>We write software for people and people press us for results, which rarely include documentation. No one is pressing us for documentation.</p>
+<p>Documentation is for those who come after us, inclusing our future selves. Since 80% of the lifetime costs of software are spent on maintenance, documentation is a good investment. If the software is ours, we’re more likely to make that investment. But there will be constant pressure to defer writing it.</p>
+<p>The common result of this pressure is that application code has either no documentation, or its documentation is not up to date. Out-of-date documentation is worse than having none. If you have no documentation you have no help with the code. You have to read it and run it to understand what it does.</p>
+<p>But however difficult that is, it is utterly reliable. Out-of-date documentation is worse: it will mislead you and waste your time before sending you back to the code. Even if the relevant part of it is accurate, once you learn to distrust it, its value is mostly gone.</p>
+<p>The only place worth writing documentation is in the code itself. Maintaining documentation separately adds the uncertainty of matching versions. Writing the documentation as comments in the code encourages you to keep it in step with changes to the code. We write comments in three ways, serving slightly different purposes.</p>
+<dl>
+<dt>Header comments</dt>
+<dd>A block of comments at the top of a function serves as an abstract, describing argument/s and result and the relationship between them.</dd>
+<dt>Heading comments</dt>
+<dd>Heading comment lines serve exactly as headings in a book or document, helping the reader to navigate its structure.</dd>
+<dt>Trailing comments</dt>
+<dd><p class="first_dd">Comments at the ends of lines act as margin notes. Do not use them as a running translation of the code. Instead aim for expository style, and code that needs no translation. On lines where you’re not satisfied you’ve achieved expository style, do write an explanatory comment.</p></dd>
+<dd><p>Better to reserve trailing comments for other notes, such as <code>⍝FIXME⍝ slow for &gt;1E7 elements</code> [<a href="#fnref3" class="footnote_link"><sup>3</sup></a>]. (Using a tag such as <code>⍝FIXME⍝</code> makes it easy to bookmark lines for review.) Aligning trailing comments to begin at the same column makes them easier to scan, and is considered “OCD compliant” [<a href="#fnref2" class="footnote_link"><sup>2</sup></a>].</p></dd>
+</dl>
+<p>The above conventions are simple enough and have long been in wide use.</p>
+
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
+<div>
+<p>The Dyalog editor offers a special command for aligning comments: <em>AC</em>. You can assign a keystroke to this command: open the <em>Configuration</em> dialog (<em>Options / Configure…</em>), select the <em>Keyboard Shortcuts</em> tab and sort the table with a click on the <em>Code</em> column, then look for <em>AC</em>.</p>
+</div>
+</div>
+
+<p>If you are exporting scripts for others to use – for example, contributing to a library – then it’s worth going a step further. You and other <em>authors</em> of a script need to read comments in the context of the code, but potential <em>users</em> of a script will want to know only how to call its methods.</p>
+<p><em>Automatic documentation generation</em> will extract documentation from your scripts for other users. Just as above, the documentation is maintained as comments in the code. But now header comments are presented without the code lines.</p>
+<div class="h_tag">
+<a href="#ADoc" id="ADoc" class="autoheader_anchor">
+<h2>ADoc</h2>
+</a>
+</div>
+<p>ADoc is an acronym for <em>automatic documentation</em> generation. It works on classes and namespaces.</p>
+<p>In its most basic function, it lists methods, properties and fields (functions, operators and variableas) and requires no comments in the code.</p>
+<p>In its more powerful function, it composes an <abbr title="Hyper Text Mark-up language">HTML</abbr> page from header comments in the code. Honouring Markdown conventions, it provides all the typographical features you need for documentation.</p>
+<p>If Markdown is new to you, see the Markdown article on Wikipedia [<a href="#fnref4" class="footnote_link"><sup>4</sup></a>] and <code>Markdown2Help</code>’s own help file. Your time will be well spent: these days Markdown is used very widely.</p>
+<p>Previously only found as a class in the APLTree library, ADoc is now shipped in Dyalog Version 16.0 as a user command.</p>
+<div class="h_tag">
+<a href="#Get-a-summary" id="Get-a-summary" class="autoheader_anchor">
+<h3>Get a summary</h3>
+</a>
+</div>
+<p>Lists the methods and fields of a class. (Requires no comments.)</p>
+<pre><code>          ]ADoc #.HandleError -summary
+    *** HandleError (Class) ***
+
+    Shared Methods:
+      CreateParms
+      Process
+      ReportErrorToWindowsLog
+      SetTrap
+      Version</code></pre>
+<p>For a more detailed list with arguments and results specify <code>]ADoc #.HandleError -summary=full</code>.</p>
+<div class="h_tag">
+<a href="#Get-it-all" id="Get-it-all" class="autoheader_anchor">
+<h3>Get it all</h3>
+</a>
+</div>
+<pre><code>    ]ADoc #.HandleError</code></pre>
+<p><img src="Images/adoc_handleerror.png" alt="Using ADoc to browse the HandleError class" title="Using ADoc to browse the HandleError class"></p>
+<p>Composes a documentation page in <abbr title="Hyper Text Mark-up language">HTML</abbr> and displays it in your default browser.</p>
+<div class="h_tag">
+<a href="#Getting-help" id="Getting-help" class="autoheader_anchor">
+<h3>Getting help</h3>
+</a>
+</div>
+<p>To get basic help on ADoc enter <code>]?adoc</code>. For more detail, enter <code>]??adoc</code>. For the full picture enter <code>]???adoc</code>. The underlying <code>ADOC</code> class then processes itself and creates an <abbr title="Hyper Text Mark-up language">HTML</abbr> page with detailed information.</p>
+<p><img src="Images/adoc_help.png" alt="ADoc’s own documentation" title="ADoc’s own documentation"></p>
+<div class="h_tag">
+<a href="#ADoc-for-MyApp" id="ADoc-for-MyApp" class="autoheader_anchor">
+<h2>ADoc for MyApp</h2>
+</a>
+</div>
+<p>How might ADoc help us? Start by seeing what ADoc has to say about <code>MyApp</code> as it is now:</p>
+<pre><code>    ]ADoc #.MyApp</code></pre>
+<p><img src="Images/adoc_myapp_01.png" alt="Using ADoc to browse the MyApp namespace" title="Using ADoc to browse the MyApp namespace"></p>
+<p>ADoc has found and displayed all the functions within the <code>MyApp</code> namespace. If <code>MyApp</code> contained operators or variables you would find them in the document as well.</p>
+<p>We can improve this in several ways. Time for a new version of MyApp! Make a copy of <code>Z:\code\v08</code> as <code>Z:\code\v09</code>.</p>
+<div class="h_tag">
+<a href="#Leading-comments-basic-information" id="Leading-comments-basic-information" class="autoheader_anchor">
+<h3>Leading comments: basic information</h3>
+</a>
+</div>
+<p>First we edit the top of the script to follow ADoc’s conventions:</p>
+<pre><code>:Namespace MyApp
+    ⍝ Counting letter frequencies in text.\\
+    ⍝ Can do one of:
+    ⍝ * calculate the letters in a given document.
+    ⍝ * calculate the letters in all documents in a given folder.
+    ⍝
+    ⍝ Sample application used by the Dyalog Cookbook.\\
+    ⍝ Authors: Kai Jaeger &amp; Stephen Taylor.
+    ⍝ For more details see &lt;http://cookbook.dyalog.com&gt;
+...</code></pre>
+<div class="h_tag">
+<a href="#Public-interface" id="Public-interface" class="autoheader_anchor">
+<h3>Public interface</h3>
+</a>
+</div>
+<p>Next we specify which functions we want included in the document: not all but just those designed to be called from the outside. In a class those are called the <em>public interface</em>, and it’s easy to see why.</p>
+<p>For classes ADoc can work out what’s public and what isn’t using the <code>Public Access</code> statements. For namespaces there is no such mechanism.</p>
+<p>By default, ADoc considers all functions, operators and variables to be public; it also offers a mechanism to restrict this to what’s really public. For that, ADoc looks for a function <code>Public</code>. It may return an empty vector (nothing is public at all) or a list of names. This list would define what is public.</p>
+<p>Let’s define the public functions at the bottom of the script:</p>
+<pre><code>...
+∇ r←Public
+  r←'StartFromCmdLine' 'TxtToCsv' 'SetLX'
+∇
+:EndNamespace</code></pre>
+<div class="h_tag">
+<a href="#Reserved-names" id="Reserved-names" class="autoheader_anchor">
+<h3>Reserved names</h3>
+</a>
+</div>
+<p>ADoc honours five functions in a special way if they exist: <code>Copyright</code>, <code>History</code>, <code>Version</code>, <code>Public</code> and <code>ADOC_Doc</code>. If they exist, their results are treated in a special way.</p>
+<div class="h_tag">
+<a href="#Version" id="Version" class="autoheader_anchor">
+<h4><code>Version</code></h4>
+</a>
+</div>
+<p>If <code>Version</code> is niladic and returns a three-item vector, the vector is taken as:</p>
+<ul>
+<li>Name</li>
+<li>Version number</li>
+<li>Version data</li>
+</ul>
+<p>These pieces of information are then integrated into the document.</p>
+<div class="h_tag">
+<a href="#Copyright" id="Copyright" class="autoheader_anchor">
+<h4><code>Copyright</code></h4>
+</a>
+</div>
+<p>If <code>Copyright</code> is niladic and returns either a simple text vector or a vector of text vectors then the copyright declararion is integrated into the document.</p>
+<div class="h_tag">
+<a href="#History" id="History" class="autoheader_anchor">
+<h4><code>History</code></h4>
+</a>
+</div>
+<p><code>History</code> is expected to be a niladic function that does not return a result. Instead it should carry comments with information about the history of the script.</p>
+<p>MyApp already had a function <code>Version</code> in place. So far we’ve added comments regarding the different versions to it. Those should go into <code>History</code> instead. So we replace the existing <code>Version</code> function by these three functions:</p>
+<pre><code>∇ Z←Copyright
+  Z←'The Dyalog Cookbook, Kai Jaeger &amp; Stephen Taylor 2017'
+∇
+
+∇ r←Version
+  r←(⍕⎕THIS)'1.5.0' 'YYYY-MM-DD'
+∇
+
+∇ History
+  ⍝ * 1.5.0:
+  ⍝   * MyApp is now ADocable (function Public.
+  ⍝ * 1.4.0:
+  ⍝   * Handles errors with a global trap.
+  ⍝   * Returns an exit code to calling environment.
+  ⍝ * 1.3.0:
+  ⍝   * MyApp gives a Ride now, INI settings permitted.
+  ⍝ * 1.2.0:
+  ⍝   * The application now honours INI files.
+  ⍝ * 1.1.0:
+  ⍝   * Can now deal with non-existent files.
+  ⍝   * Logging implemented.
+  ⍝ * 1.0.0
+  ⍝   * Runs as a stand-alone EXE and takes parameters from the command line.
+∇</code></pre>
+<p>This gives us more prominent copyright and version notices as well as information about the most recent changes. Note that <code>History</code> is not expected to carry a history of all changes, but rather the most recent ones.</p>
+<p>The variables inside <code>EXIT</code> are essential for using <code>MyApp</code>; they should be part of the documentation. ADoc has ignored the namespace EXIT but we can change this by specifying it explicitly:</p>
+<pre><code>    ]ADoc #.MyApp #.MyApp.EXIT</code></pre>
+<p><img src="Images/adoc_myapp_02.png" alt="Browsing the revised MyApp namespace" title="Browsing the revised MyApp namespace"></p>
+<p>When you scroll down (or click at <em>Exit</em> in the top-left corner) then you get to the part of the document where <code>EXIT</code> is documented:</p>
+<p><img src="Images/adoc_myapp_03.png" alt="Browsing the revised MyApp namespace" title="Browsing the revised MyApp namespace"></p>
+<div class="h_tag">
+<a href="#Public" id="Public" class="autoheader_anchor">
+<h4><code>Public</code></h4>
+</a>
+</div>
+<p>See <em>Public interface</em> above.</p>
+<div class="h_tag">
+<a href="#ADOC_Doc" id="ADOC_Doc" class="autoheader_anchor">
+<h4><code>ADOC_Doc</code></h4>
+</a>
+</div>
+<p>There is one more reserved name: <code>ADOC_Doc</code>. This is useful when you want to document an unscripted (ordinary) namespace. Just add this as a niladic function carrying comments that returns no or a shy result.</p>
+<p>Its comments are then processed in exactly the same way leading comments in scripts are processed.</p>
+<p>That will do for now.</p>
+<div id="footnotes_div">
+<hr>
+<p><strong>Footnotes</strong></p>
+<ol>
+<li id="fnref1"><p>Compile those from questions actually asked by users. It's a common mistake to put together “Question we would like our users to ask”.</p><a href="#fnref1" class="footnote_anchor"></a>
+<li id="fnref2"><p>Thanks to Roger Hui for this term.</p><a href="#fnref2" class="footnote_anchor"></a>
+<li id="fnref3"><p>Be it <code>⍝FIXME⍝</code> or <code>⍝CHECKME⍝</code> or <code>⍝TODO⍝</code> - what matters is that you keep it consistent and searchable. That implies that the search term cannot be mistaken as something else by accident. For that reason <code>⍝TODO⍝</code> is slighty better better than <code>TODO</code>.</p><a href="#fnref3" class="footnote_anchor"></a>
+<li id="fnref4"><p><a href="https://en.wikipedia.org/wiki/Markdown" class="external_link">https://en.wikipedia.org/wiki/Markdown</a></p><a href="#fnref4" class="footnote_anchor"></a>
+</ol>
+</div>
+</div>
+</div>
+<script>
+var snapper = new Snap({
+element: document.getElementById('content')
+});
+document.getElementById('mainmenu_match').onclick = function(){
+snapper.state().state==='closed'?snapper.open('left'):snapper.close();
+}
+</script>
+</body>
+</html>

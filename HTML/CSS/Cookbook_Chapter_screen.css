@@ -1,0 +1,164 @@
+/* Cookbook's CSS file for the Main Menu (screen) */
+/* Version 1.1 from 2018-02-06 : px changed to em */
+
+div#mainmenu {
+    font-family: Verdana, "Bitstream Vera Sans", "DejaVu Sans", Tahoma, Geneva, Arial, Sans-serif;
+    font-size: 1.11em;
+    width: 100%;
+    padding: 0.56em 0 0.56em 0.56em;
+    margin: 0;
+    z-index: 3;
+    position: fixed;
+    overflow: hidden;
+    top:0;
+    left: 0;
+    background-color: #FFFFE5;
+    color: Black;
+    height: 4em;
+    border-bottom: 1px solid silver;
+}
+div#content{
+    background-color: #FFFFE5;
+}
+div#cookbook_footer {
+    width: 100%;
+    height: 1.6em;
+    padding: 0.56em 0 0.56em 0;
+    margin: 0;
+    z-index: 3;
+    position: fixed;
+    overflow: hidden;
+    bottom: 0;
+    left: 0;
+    background-color: #FFFFE5;
+    color: Black;
+    text-align: center;
+    border-top: 1px silver solid;
+}
+div#footnotes_div ol {
+    margin-bottom: 2em;
+}
+
+span#mainmenu_match {
+    float: left;
+    font-size: 1.67em;
+    padding: 0 1.11em 0 0.28em;
+    margin: 0;
+}
+span#cookbook_nav_buttons {
+    margin: 0 auto 0 auto;
+    display: inline-block;
+}
+
+span#mainmenu_title {
+    font-size: 1.11em;
+    padding: 0;
+    margin: 0;
+    float: left;
+}
+span#mainmenu_title p {
+    margin-top: 0;
+}
+span.mainmenu_button {
+    font-size: 1.11em;
+    color: black;
+    padding: 0;
+}
+
+span.mainmenu_button a {
+    text-decoration: none;
+    padding: 0.33em 0.56em;
+    font-size: 0.78em;
+    margin: 0 0 0 0;
+    background: #3498db;
+    background-image: -webkit-linear-gradient(top, #3498db, #2980b9);
+    background-image: -moz-linear-gradient(top, #3498db, #2980b9);
+    background-image: -ms-linear-gradient(top, #3498db, #2980b9);
+    background-image: -o-linear-gradient(top, #3498db, #2980b9);
+    background-image: linear-gradient(to bottom, #3498db, #2980b9);
+    color: #ffffff;
+}
+div#cookbook_content {
+    padding: 5.5em 1em 1em 1em;
+    margin: 0 1em;
+    background-color: #FFFCF5;
+    border: outset 1px silver;
+}
+
+.inactive {
+    color:gray !important;
+}
+
+div#mainmenu a.button:hover {
+    background: #3cb0fd;
+    text-decoration: none;
+}
+
+/* ###################################### */
+body {
+    margin: 2.22em auto 0.56em 0;
+    padding: 0.56em 1em 0 1em;
+    max-width: 1200px;
+    background-color: #FFFFE5;
+}
+nav#main_nav {
+    margin: 0 0 0 0.56em;
+    top: 0.56em;
+    right: 1.11em;
+}
+h1 {
+    font-size: 1.8em;
+    margin: 0.5em 0 0.25em 0;
+    padding: 0.56em 0 0.56em 0;
+    line-height: 1;
+}
+h2 {
+    font-size: 1.5em;
+    margin-top: 1em;
+    margin-bottom: 0;
+    padding-top: 0;
+    border-bottom: none;
+}
+
+h3 {
+    margin-top:1.67em;
+}
+
+p#copyright {
+    margin: 2.22em auto 1.11em auto;
+    border-top: 1px solid silver;
+}
+nav {
+    margin: 0.28em 0 0.28em 0.56em;
+}
+div.h_tag a h2 {
+    padding-top: 3.33em;
+    margin-top: -2.22em;
+}
+div.h_tag a h3 {
+    padding-top: 3.89em;
+    margin-top: -2.22em;
+}
+div.h_tag a h4 {
+    padding-top:  3.33em;
+    margin-top:   -2.78em;
+}
+div.h_tag a h5 {
+    padding-top: 3.44em;
+    margin-top: -2.78em;
+}
+div.h_tag a h6 {
+    padding-top: 3.44em;
+    margin-top: -2.78em;
+}
+p {
+    margin-top: 0.17em;
+    margin-bottom: 0.17em;
+}
+
+#cookbook_footer {
+    display: none;
+}
+dd {
+    color: #505050;
+}

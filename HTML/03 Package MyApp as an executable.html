@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta charset="utf-8">
+<title>Packaging</title>
+<link href="./CSS/BlackOnWhite_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/Cookbook_Chapter_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/snap.css" rel="stylesheet" media="screen">
+<link href="./CSS/BlackOnWhite_print.css" rel="stylesheet" media="print">
+<link href="./CSS/Cookbook_Chapter_print.css" rel="stylesheet" media="print">
+<script src="./JavaScript/snap.js"></script>
+</head>
+<body>
+<div class="snap-drawers">
+<div class="snap-drawer snap-drawer-left">
+<div class="h_tag">
+<h3>Chapters</h3>
+</div>
+<ol>
+<li><a href="./01%20Introduction.html" class="external_link">Introduction</a></li>
+<li><a href="./02%20Structure.html" class="external_link">Structure</a></li>
+<li><a href="./03%20Package%20MyApp%20as%20an%20executable.html" class="external_link">Package MyApp as an executable</a></li>
+<li><a href="./04%20Logging%20what%20happens%20.html" class="external_link">Logging what happens </a></li>
+<li><a href="./05%20Configuration%20settings.html" class="external_link">Configuration settings</a></li>
+<li><a href="./06%20Debugging%20a%20stand-alone%20EXE.html" class="external_link">Debugging a stand-alone EXE</a></li>
+<li><a href="./07%20Handling%20errors.html" class="external_link">Handling errors</a></li>
+<li><a href="./08%20Testing%20—%20the%20sound%20of%20breaking%20glass.html" class="external_link">Testing<br>The sound of breaking glass</a></li>
+<li><a href="./09%20Documentation%20—%20the%20Doc%20is%20in.html" class="external_link">Documentation<br>The Doc is in</a></li>
+<li><a href="./10%20Make%20me.html" class="external_link">Make me</a></li>
+<li><a href="./11%20Providing%20help.html" class="external_link">Providing help</a></li>
+<li><a href="./12%20Scheduled%20Tasks.html" class="external_link">Scheduled Tasks</a></li>
+<li><a href="./13%20Windows%20Services.html" class="external_link">Windows Services</a></li>
+<li><a href="./14%20The%20Windows%20Event%20Log.html" class="external_link">The Windows Event Log</a></li>
+<li><a href="./15%20The%20Windows%20Registry.html" class="external_link">The Windows Registry</a></li>
+<li><a href="./16%20Creating%20SetUp.exe%20with%20Inno.html" class="external_link">Creating SetUp.exe with Inno</a></li>
+<li><a href="./17%20RegularExpressions.html" class="external_link">RegularExpressions</a></li>
+<li><a href="./18%20GUI.html" class="external_link">GUI</a></li>
+</ol>
+<div class="h_tag">
+<h3>Appendices</h3>
+</div>
+<ol>
+<li><a href="./50%20Appendix%201%20—%20Windows%20environment%20variables.html" class="external_link">Windows environment variables</a></li>
+<li><a href="./51%20Appendix%202%20—%20User%20commands.html" class="external_link">User commands</a></li>
+<li><a href="./52%20Appendix%203%20—%20aplcores%20and%20WS%20integrity.html" class="external_link">aplcores and WS integrity</a></li>
+<li><a href="./53%20Appendix%204%20—%20The%20development%20environment.html" class="external_link">The development environment</a></li>
+<li><a href="./54%20Appendix%205%20—%20Special%20characters.html" class="external_link">Special characters</a></li>
+</ol>
+<div class="h_tag">
+<h3>Misc</h3>
+</div>
+<ul>
+<li><a href="02%20Structure.html">Previous chapter</a></li>
+<li><a href="04%20Logging%20what%20happens%20.html">Next chapter;</a></li>
+<li><a href="./Dyalog_Cookbook.html" class="external_link">Single document<br>(All chapters, for printing)</a></li>
+</ul>
+</div>
+</div>
+<div id="mainmenu">
+<a href=#><p><span id="mainmenu_match">≡</span></p></a>
+<p><span id="mainmenu_title">The Dyalog Cookbook</span></p>
+<nav id="main_nav">
+<input type="checkbox" id="hide_toc">
+<label id="hide_toc_label" for="hide_toc"></label>
+<div class="toc-container">
+<ul>
+<li><a href="#Output-to-the-session-log">Output to the session log</a></li>
+<li><a href="#Preparing-the-application">Preparing the application</a></li>
+<li><a href="#Conclusions">Conclusions</a></li>
+<li><a href="#Exporting-the-application">Exporting the application</a></li>
+<li><a href="#Running-the-stand-alone-EXE">Running the stand-alone EXE</a>
+</ul>
+</div>
+</nav>
+</div>
+<div id="content" class="snap-content">
+<div id="cookbook_content">
+<div class="h_tag">
+<a href="#3-Package-MyApp-as-an-executable" id="3-Package-MyApp-as-an-executable" class="autoheader_anchor">
+<h1>3. Package MyApp as an executable</h1>
+</a>
+</div>
+<p>Now we will make some adjustments to prepare <code>MyApp</code> for being packaged as an <abbr title="Executable file with the extension 'exe'">EXE</abbr>. It will run from the command line and it will run ‘headless’ – without a user interface (UI).</p>
+<p>Copy all files in <code>z:\code\v02\</code> to <code>z:\code\v03\</code>. Alternatively you can download version 3 from <a href="https://cookbook.dyalog.com" class="external_link">https://cookbook.dyalog.com</a>.</p>
+<div class="h_tag">
+<a href="#Output-to-the-session-log" id="Output-to-the-session-log" class="autoheader_anchor">
+<h2>Output to the session log</h2>
+</a>
+</div>
+<p>In a runtime interpreter or an <abbr title="Executable file with the extension 'exe'">EXE</abbr>, there is no APL session, and output to the session which would have been visible in a development system will simply disappear. If we want to see this output, we need to write it to a log file.</p>
+<p>But how do we find out where we need to make changes? We recommend you think about this from the start, and ensure that all <em>intentional</em> output goes through a log function, or at least use an explicit <code>⎕←</code> so that output can easily be identified in the source.</p>
+
+<div class="leanpub_A">
+<h3>Unwanted output to the session</h3>
+<p>What can you do if you have output appearing in the session and you don’t know where in your application it is being generated? The easiest way is to associate a callback function with the <code>SessionPrint</code> event as in:</p>
+<pre><code>   '⎕se' ⎕WS 'Event' 'SessionPrint' '#.Catch'
+   #.⎕FX ↑'what Catch m'  ':If 0∊⍴what' '. ⍝ !' ':Else' '⎕←what' ':Endif'
+   ⎕FX 'test arg'  '⎕←arg'
+   test 1 2 3
+⍎SYNTAX ERROR
+Catch[2] . ⍝ !</code></pre>
+<p>You can even use this to investigate what is about to be written to the session (the left argument of <code>Catch</code>) and make the function stop when it reaches the output you are looking for. In the above example we check for anything that’s empty.</p>
+<p>Notes:</p>
+<ul>
+<li>Avoid the <code>⎕se.onSessionPrint←'#.Catch'</code> syntax with <code>⎕SE</code>; just stick with <code>⎕WS</code> as in the above example.</li>
+<li>Remmeber to clear the stack after <code>Catch</code> crashed. If you don’t, and instead call <code>test</code> again, it will behave as if there were no handler associated with the <code>SessionPrint</code> event.</li>
+</ul>
+</div>
+
+<p><code>TxtToCsv</code> has a shy result, so it won't write its result to the session. That’s fine.</p>
+<div class="h_tag">
+<a href="#Preparing-the-application" id="Preparing-the-application" class="autoheader_anchor">
+<h2>Preparing the application</h2>
+</a>
+</div>
+<p><code>TxtToCsv</code> needs an argument. The <abbr title="Executable file with the extension 'exe'">EXE</abbr> we are about to create must fetch it from the command line. We’ll give <code>MyApp</code> a function <code>StartFromCmdLine</code>.</p>
+<p>We will also introduce <code>SetLX</code>: the last line of the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> will run it to set <code>⎕LX</code>:</p>
+<pre><code>Target #
+Load Constants
+Load Utilities
+Load MyApp
+Run #.MyApp.SetLX ⍬</code></pre>
+<p>In <code>MyApp.dyalog</code>:</p>
+<pre><code>:Namespace MyApp
+
+(⎕IO ⎕ML ⎕WX ⎕PP ⎕DIV)←1 1 3 15 1
+
+<span class="leanpub_code">    ∇r←Version
+    ⍝ * 1.0.0
+    ⍝   * Runs as a stand-alone EXE and takes parameters from the command line.
+      r←(⍕⎕THIS) '1.0.0' 'YYYY-MM-DD'
+    ∇
+</span>    ...
+    ⍝ === VARIABLES ===
+
+<span class="leanpub_code">    Accents←'ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝ' 'AAAAAACDEEEEIIIINOOOOOOUUUUY'
+</span>
+⍝ === End of variables definition ===
+
+      CountLetters←{
+<span class="leanpub_code">          {⍺(≢⍵)}⌸⎕A{⍵⌿⍨⍵∊⍺}Accents map toUppercase ⍵
+</span>      }
+    ...
+<span class="leanpub_code">    ∇ {r}←SetLX dummy
+    ⍝ Set Latent Expression (needed in order to export workspace as EXE)
+     #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
+     r←⍬
+     ⎕LX←'#.MyApp.StartFromCmdLine #.MyApp.GetCommandLineArgs ⍬'
+    ∇
+
+    ∇ {r}←StartFromCmdLine arg
+    ⍝ Run the application; arg = usually command line parameters .
+       r←⍬
+       r←TxtToCsv arg~''''
+    ∇
+
+    ∇ r←GetCommandLineArgs dummy
+       r←⊃¯1↑1↓2 ⎕NQ'.' 'GetCommandLineArgs' ⍝ Take the last one
+    ∇
+</span>
+:EndNamespace</code></pre>
+<p>Changes are emphasised.</p>
+<div class="h_tag">
+<a href="#Conclusions" id="Conclusions" class="autoheader_anchor">
+<h2>Conclusions</h2>
+</a>
+</div>
+<p>Now MyApp is ready to be run from the Windows command line, with the name of the file to be processed following the command name.</p>
+<p>Notes:</p>
+<ul>
+<li>By introducing a function <code>Version</code> we start to keep track of changes.</li>
+<li><code>Accents</code> is now a vector of text vectors (vtv). There is no point in making it a matrix when <code>CountLetters</code> (the only function that consumes <code>Accents</code>) requires a vtv anyway. We were able to simplify <code>CountLetters</code> as a bonus.</li>
+<li>Functions should return a result, even <code>StartFromCmdLine</code> and <code>SetLX</code>. Always.
+<p>If there is nothing reasonable to return as a result, return <code>⍬</code> as a shy result as in <code>StartFromCmdLine</code>. Make this a habit. It makes life easier in the long run.</p>
+<p>How? One example: you cannot call from a dfn a function that does not return a result. Another: you cannot provide it as an operand to the <code>⍣</code> (power) operator.</p></li>
+<li><em>Always</em> make a function monadic rather than niladic even if the function does not require an argument right now.
+<p>It is far easier to change a monadic function that has ignored its argument so far to one that actually requires an argument than to change a niladic function to a monadic one later on, especially when the function is called in many places, and this is something you <em>will</em> eventually encounter.</p></li>
+<li><code>GetCommandLineArgs</code> ignores its right argument. It makes that very clear by using the name <code>dummy</code>.
+<p>If you later change this, then of course change <code>dummy</code> to something meaningful.</p></li>
+<li>Ensure a <code>⎕LX</code> statement can be executed from anywhere. That requires names in it to be fully qualified, e.g. <code>#.MyApp</code> rather than <code>MyApp</code>. Make that a habit too. You will appreciate it when later you execute <code>⍎⎕LX</code> when you are not in the workspace root.</li>
+<li>Would <code>#.MyApp.(StartFromCmdLine GetCommandLineArgs ⍬)</code> be better than <code>#.MyApp.StartFromCmdLine #.MyApp.GetCommandLineArgs ⍬</code>? It is shorter.
+<p>Good point, but there is a drawback: you cannot &lt;Shift+Enter&gt; on either of the two functions within the shorter expression but you can with the longer one.</p></li>
+<li>Currently we allow only one file (or folder) to be specified. That’s the last parameter specified on the command line. We’ll improve on this later.</li>
+<li>Note that we now set <code>⎕IO</code>, <code>⎕ML</code>, <code>⎕WX</code>, <code>⎕PP</code> and <code>⎕DIV</code> in <code>#</code> (!) as soon as possible.
+<p>The reason: we want to ensure when we create a namespace with <code>#.⎕NS ''</code> those system variables have the expected values.</p>
+<p>Alternatively you could ensure you execute <code>⎕NS ''</code> within a namespace that is known to have system variables with the right values.</p></li>
+</ul>
+
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/warning.png" alt="Warning">
+<div>
+<h3>Inheriting system variables</h3>
+<p>A common source of confusion is code that relies on system variables having expected values. Your preferred values for those system variables are set in the Dyalog configuration.</p>
+<p>Whenever you execute then, say, <code>#.⎕NS ''</code> you can expect the resulting namespace to inherit those settings from the hosting namespace. That’s fine.</p>
+<p>But if you send your <abbr title="Short for Workspaces">WS</abbr> elsewhere then somebody with different values in their Dyalog configuration might load and run your <abbr title="Short for Workspaces">WS</abbr>. In this environment <code>#.⎕NS ''</code> creates a namespace with different values for system variables: a recipe for disaster.</p>
+</div>
+</div>
+
+<div class="h_tag">
+<a href="#Exporting-the-application" id="Exporting-the-application" class="autoheader_anchor">
+<h2>Exporting the application</h2>
+</a>
+</div>
+<p>We’re now nearly ready to export the first version of MyApp as an <abbr title="Executable file with the extension 'exe'">EXE</abbr>.</p>
+<ol start="1">
+<li>Double-click the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> to create the <abbr title="Short for Workspaces">WS</abbr>.</li>
+<li>From the <em>File</em> menu pick <em>Export</em>.</li>
+<li>Pick <code>Z:\code\v03</code> as the destination folder [<a href="#fnref1" class="footnote_link"><sup>1</sup></a>].</li>
+<li>From the list <em>Save as type</em> pick <code>Standalone Executable</code>.</li>
+<li>Set the <em>File name</em> as <code>MyApp</code>.</li>
+<li>Check the <em>Runtime application</em> checkbox.</li>
+<li>Clear the <em>Console application</em> checkbox.</li>
+<li>Click <em>Save</em>.</li>
+</ol>
+<p>You should see a message: <em>File Z:\code\v03\MyApp.exe successfully created.</em> This occasionally (rarely) fails for no obvious reason. If it does fail just try again and you should be fine.</p>
+<p>If it keeps failing then the by far most common reason is that the <abbr title="Executable file with the extension 'exe'">EXE</abbr> is running – you cannot replace an <abbr title="Executable file with the extension 'exe'">EXE</abbr> while it is running.</p>
+
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
+<div>
+<p>Although you cannot replace a running <abbr title="Executable file with the extension 'exe'">EXE</abbr> what you <em>can</em> do is to rename it; that is possible. You can then create a new <abbr title="Executable file with the extension 'exe'">EXE</abbr> with the original name.</p>
+</div>
+</div>
+
+<p>In case you wonder what a “Console application” is:</p>
+<ul>
+<li>It sets the <code>IMAGE_SUBSYSTEM_WINDOWS_CUI</code> flag in the header of the <abbr title="Executable file with the extension 'exe'">EXE</abbr>. The effect is that, when called <em>on a command line</em> (also known as the console), it will wait for the program to return.</li>
+<li>You can access the variable <code>ERRORLEVEL</code>. Yes, this implies that without ticking the checkbox <em>Console application</em> you <em>cannot</em> access this environment variable.</li>
+<li>When double-clicked, a console window pops up.</li>
+</ul>
+<p>Note that it catches the return code and assigns it to the environment variable “ERRORLEVEL” in any case.</p>
+<p>Note that you cannot really debug a console application with Ride; for details see the <em>Debugging a stand-alone <abbr title="Executable file with the extension 'exe'">EXE</abbr></em> chapter.</p>
+<p>If you do not check <em>Console application</em>, the program is started as a separate process and you cannot catch the return code.</p>
+<p>We therefore recommend you clear the <em>Console application</em> checkbox unless you have a good reason to do otherwise.</p>
+
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/tip.png" alt="Tip">
+<div>
+<p>Use the <em>Version</em> button to bind to the <abbr title="Executable file with the extension 'exe'">EXE</abbr> information about the application, author, version, copyright and so on. These pieces of information will show in the <em>Properties/Details</em> tab of the resulting <abbr title="Executable file with the extension 'exe'">EXE</abbr>.</p>
+<p>Note that to use the cursor keys or Home or End <em>within</em> a cell the <em>Version</em> dialog box requires you to enter ‘in-cell’ mode by pressing F2.</p>
+</div>
+</div>
+
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/tip.png" alt="Tip">
+<div>
+<p>You could specify an icon file to replace the Dyalog icon with your own one.</p>
+</div>
+</div>
+
+<div class="h_tag">
+<a href="#Running-the-stand-alone-EXE" id="Running-the-stand-alone-EXE" class="autoheader_anchor">
+<h2>Running the stand-alone EXE</h2>
+</a>
+</div>
+<p>Let’s run it. From a command line:</p>
+<pre><code>Z:\code\v03\MyApp.exe texts\en</code></pre>
+<p>Looking in Windows Explorer at <code>Z:\texts\en.csv</code>, we see its timestamp just changed. Our <abbr title="Executable file with the extension 'exe'">EXE</abbr> works!</p>
+<div id="footnotes_div">
+<hr>
+<p><strong>Footnotes</strong></p>
+<ol>
+<li id="fnref1"><p>Note that in the Dyalog Cookbook the words <em>folder</em> and <em>directory</em> are used interchangeably.</p><a href="#fnref1" class="footnote_anchor"></a>
+</ol>
+</div>
+</div>
+</div>
+<script>
+var snapper = new Snap({
+element: document.getElementById('content')
+});
+document.getElementById('mainmenu_match').onclick = function(){
+snapper.state().state==='closed'?snapper.open('left'):snapper.close();
+}
+</script>
+</body>
+</html>

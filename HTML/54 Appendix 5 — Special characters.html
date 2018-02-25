@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta charset="utf-8">
+<title>Special Chars</title>
+<link href="./CSS/BlackOnWhite_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/Cookbook_Chapter_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/snap.css" rel="stylesheet" media="screen">
+<link href="./CSS/BlackOnWhite_print.css" rel="stylesheet" media="print">
+<link href="./CSS/Cookbook_Chapter_print.css" rel="stylesheet" media="print">
+<script src="./JavaScript/snap.js"></script>
+</head>
+<body>
+<div class="snap-drawers">
+<div class="snap-drawer snap-drawer-left">
+<div class="h_tag">
+<h3>Chapters</h3>
+</div>
+<ol>
+<li><a href="./01%20Introduction.html" class="external_link">Introduction</a></li>
+<li><a href="./02%20Structure.html" class="external_link">Structure</a></li>
+<li><a href="./03%20Package%20MyApp%20as%20an%20executable.html" class="external_link">Package MyApp as an executable</a></li>
+<li><a href="./04%20Logging%20what%20happens%20.html" class="external_link">Logging what happens </a></li>
+<li><a href="./05%20Configuration%20settings.html" class="external_link">Configuration settings</a></li>
+<li><a href="./06%20Debugging%20a%20stand-alone%20EXE.html" class="external_link">Debugging a stand-alone EXE</a></li>
+<li><a href="./07%20Handling%20errors.html" class="external_link">Handling errors</a></li>
+<li><a href="./08%20Testing%20—%20the%20sound%20of%20breaking%20glass.html" class="external_link">Testing<br>The sound of breaking glass</a></li>
+<li><a href="./09%20Documentation%20—%20the%20Doc%20is%20in.html" class="external_link">Documentation<br>The Doc is in</a></li>
+<li><a href="./10%20Make%20me.html" class="external_link">Make me</a></li>
+<li><a href="./11%20Providing%20help.html" class="external_link">Providing help</a></li>
+<li><a href="./12%20Scheduled%20Tasks.html" class="external_link">Scheduled Tasks</a></li>
+<li><a href="./13%20Windows%20Services.html" class="external_link">Windows Services</a></li>
+<li><a href="./14%20The%20Windows%20Event%20Log.html" class="external_link">The Windows Event Log</a></li>
+<li><a href="./15%20The%20Windows%20Registry.html" class="external_link">The Windows Registry</a></li>
+<li><a href="./16%20Creating%20SetUp.exe%20with%20Inno.html" class="external_link">Creating SetUp.exe with Inno</a></li>
+<li><a href="./17%20RegularExpressions.html" class="external_link">RegularExpressions</a></li>
+<li><a href="./18%20GUI.html" class="external_link">GUI</a></li>
+</ol>
+<div class="h_tag">
+<h3>Appendices</h3>
+</div>
+<ol>
+<li><a href="./50%20Appendix%201%20—%20Windows%20environment%20variables.html" class="external_link">Windows environment variables</a></li>
+<li><a href="./51%20Appendix%202%20—%20User%20commands.html" class="external_link">User commands</a></li>
+<li><a href="./52%20Appendix%203%20—%20aplcores%20and%20WS%20integrity.html" class="external_link">aplcores and WS integrity</a></li>
+<li><a href="./53%20Appendix%204%20—%20The%20development%20environment.html" class="external_link">The development environment</a></li>
+<li><a href="./54%20Appendix%205%20—%20Special%20characters.html" class="external_link">Special characters</a></li>
+</ol>
+<div class="h_tag">
+<h3>Misc</h3>
+</div>
+<ul>
+<li><a href="53%20Appendix%204%20—%20The%20development%20environment.html">Previous chapter</a></li>
+<li><a title="There is no next chapter" class="inactive">Next chapter</a></li>
+<li><a href="./Dyalog_Cookbook.html" class="external_link">Single document<br>(All chapters, for printing)</a></li>
+</ul>
+</div>
+</div>
+<div id="mainmenu">
+<a href=#><p><span id="mainmenu_match">≡</span></p></a>
+<p><span id="mainmenu_title">The Dyalog Cookbook</span></p>
+</div>
+<div id="content" class="snap-content">
+<div id="cookbook_content">
+<div class="h_tag">
+<a href="#23-Appendix-5-----Special-characters" id="23-Appendix-5-----Special-characters" class="autoheader_anchor">
+<h1>23. Appendix 5 — Special characters</h1>
+</a>
+</div>
+<p>The following assumes <code>⎕IO←1</code>.</p>
+<div class="h_tag">
+<a href="#Carriage-return-new-line--and-form-feed" id="Carriage-return-new-line--and-form-feed" class="autoheader_anchor">
+<h2>Carriage return, new line  and form feed</h2>
+</a>
+</div>
+<p>The following contains everything you need to know about those characters.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"> Character       </th>
+<th style="text-align: right;"> <code>⎕ML&lt;3</code> </th>
+<th style="text-align: right;"> <code>⎕ML≥3</code> </th>
+<th style="text-align: right;"> Escaping </th>
+<th style="text-align: right;"> <code>⎕UCS</code> </th>
+<th style="text-align: right;"> Abbr. </th>
+<th style="text-align: right;">  Hex </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Carriage return</td>
+<td style="text-align: right;"><code>⎕TC[3]</code></td>
+<td style="text-align: right;"><code>⎕TC[2]</code></td>
+<td style="text-align: right;">\r</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">CR</td>
+<td style="text-align: right;">0x0D</td>
+</tr>
+<tr>
+<td>New line [<a href="#fnref1" class="footnote_link"><sup>1</sup></a>]</td>
+<td style="text-align: right;"><code>⎕TC[2]</code></td>
+<td style="text-align: right;"><code>⎕TC[3]</code></td>
+<td style="text-align: right;">\n</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">LF,NL</td>
+<td style="text-align: right;">0x0A</td>
+</tr>
+<tr>
+<td>Form feed</td>
+<td style="text-align: right;">n/a</td>
+<td style="text-align: right;">n/a</td>
+<td style="text-align: right;">\f</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">FF</td>
+<td style="text-align: right;">0x0D</td>
+</tr>
+</tbody>
+</table>
+<div class="h_tag">
+<a href="#Line-ending-characters" id="Line-ending-characters" class="autoheader_anchor">
+<h2>Line-ending characters</h2>
+</a>
+</div>
+<p>The following table contains everything you need to know about how different operating systems make use of line-ending characters.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"> OS            </th>
+<th style="text-align: left;"> Lines end </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Windows</td>
+<td>CR,LF</td>
+</tr>
+<tr>
+<td>Linux &amp; Unix</td>
+<td>NL</td>
+</tr>
+<tr>
+<td>Old Macs[<a href="#fnref2" class="footnote_link"><sup>2</sup></a>]</td>
+<td>CR</td>
+</tr>
+</tbody>
+</table>
+<p>Strictly speaking, a file should always end with such characters. However, for example under Windows even different software packages from Microsoft handle this differently.</p>
+<div id="footnotes_div">
+<hr>
+<p><strong>Footnotes</strong></p>
+<ol>
+<li id="fnref1"><p>Was “linefeed” in the old days.</p><a href="#fnref1" class="footnote_anchor"></a>
+<li id="fnref2"><p>Before OS X</p><a href="#fnref2" class="footnote_anchor"></a>
+</ol>
+</div>
+</div>
+</div>
+<script>
+var snapper = new Snap({
+element: document.getElementById('content')
+});
+document.getElementById('mainmenu_match').onclick = function(){
+snapper.state().state==='closed'?snapper.open('left'):snapper.close();
+}
+</script>
+</body>
+</html>

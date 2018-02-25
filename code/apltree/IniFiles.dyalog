@@ -1,4 +1,4 @@
-﻿:Class IniFiles
+:Class IniFiles
 ⍝ ## APL-like INI files
 ⍝ ### Overview
 ⍝ This class provides a kind of APL-like INI files.
@@ -12,28 +12,29 @@
 ⍝ Homepage: http://aplwiki.com/IniFiles
 
     ⎕IO←1 ⋄ ⎕ML←3
-    :Include APLTreeUtils  ⍝∇:require =/apltreeutils
+    :Include ##.APLTreeUtils
 
     ∇ r←Version
       :Access Public Shared
-      r←(Last⍕⎕THIS)'3.1.1' '2017-12-31'
+      r←(Last⍕⎕THIS)'3.2.0' '2018-02-18'
     ∇
 
     ∇ History
       :Access Public Shared
-      ⍝ * 3.1.1:
-      ⍝
+      ⍝ * 3.2.0
+      ⍝   * First version after the conversion from the APL wiki to GitHub.
+      ⍝ * 3.1.1
+      ⍝   * Bug fixes:
+      ⍝     * The List method crashed when there are no sections.
+      ⍝     * Typo in documentation fixed.
+      ⍝     * Clarified what happens in case an INI file has no sections at all. 
       ⍝   * Bug fixes:
       ⍝     * The `List` method crashed when there are no sections.
       ⍝     * Typo in documentation fixed.
       ⍝     * Clarified what happens in case an INI file has no sections at all
-      ⍝ * 3.1.0:
+      ⍝ * 3.1.0
       ⍝   * Method `History` introduced.
       ⍝   * `IniFiles` is now managed by acre 3.
-      ⍝ * 3.0.0:
-      ⍝   * Needs at least Dyalog version 15.0 Unicode
-      ⍝   * Does not need either `WinFile` or `FilesAndDirs` anymore.
-      ⍝   * Documentation converted to Markdown. Requires at least ADOC 5.0.
     ∇
 
     ∇ r←GetSections

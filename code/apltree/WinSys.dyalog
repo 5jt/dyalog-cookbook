@@ -1,4 +1,4 @@
-﻿:Class WinSys
+:Class WinSys
 ⍝ This class makes a variety of methods available which are somehow related
 ⍝ to the Windows Operating System.\\
 ⍝ In particular it features the `GetSystemMetric` function as well as all
@@ -8,18 +8,20 @@
 ⍝ Homepage: <http://aplwiki.com/WinSys>\\
 ⍝ Kai Jaeger ⋄ APL Team Ltd.
 
-    :Include APLTreeUtils
+    :Include ##.APLTreeUtils
 
     ⎕IO←0
     ⎕ML←3
 
     ∇ r←Version
       :Access Public shared
-      r←({⍵↑⍨-'.'⍳⍨⌽⍵}⍕⎕THIS)'2.6.0' '2017-05-19'
+      r←({⍵↑⍨-'.'⍳⍨⌽⍵}⍕⎕THIS)'2.7.0' '2018-02-15'
     ∇
 
     ∇ History
       :Access Public shared
+      ⍝ * 2.7.0:
+      ⍝   * Converted from the APL wiki to GitHub.
       ⍝ * 2.6.0:
       ⍝   Method `History` introduced.
       ⍝   `WinSys` is no managed by acre 3.

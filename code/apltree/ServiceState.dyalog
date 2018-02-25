@@ -1,4 +1,4 @@
-﻿:Namespace ServiceState
+:Namespace ServiceState
 ⍝ This namespace provides an interface between an APL application designed
 ⍝ to run as a service and the Windows Service Control Manager (SCM). The
 ⍝ SCM is sending messages which are caught by the `ServiceState.OnServiceHandler`
@@ -22,18 +22,18 @@
 ⍝ for a list of all defaults. Finally pass the parameter space as right argument
 ⍝ to `Init`.
 ⍝
-⍝ Note that `Init` associates `##.ServiceState.OnServiceHandler` as the
+⍝ Note that `Init` establishes `##.ServiceState.OnServiceHandler` as the
 ⍝ callback function for state changes requested by SCM. This callback will
 ⍝ set internally a variable which indicates what state is requested by the SCM.
 ⍝
-⍝ The application is supposed to check whether a state change is required and if so
-⍝ to take an appropriate action and finally signal back to the SCM that the state
-⍝ was changed accordingly.
+⍝ The application is supposed to check whether a state change is required and if that
+⍝ is the case to take an appropriate action and finally signal back to the SCM that 
+⍝ the state has been changed as requested.
 ⍝
 ⍝ All this can be achieved by calling the operator `CheckServiceMessages`, typically
 ⍝ in the main loop of the application. The operator takes a log function as operand
-⍝ and a flag that indicates whether the application is running as a service which is
-⍝ returned by a call to `##.ServiceState.IsRunningAsService` - no further actions needed.\\
+⍝ and a flag that indicates whether the application is running as a service (you can call
+⍝ `##.ServiceState.IsRunningAsService` for this), no further actions are required.\\
 ⍝ All this in a single function (not recommended but as an example):
 ⍝ ~~~
 ⍝ ∇ {r}←Run dummy;S
@@ -57,8 +57,6 @@
 ⍝ * Any request to "Pause" (as well as "Continue") will be handled within `CheckServiceMessages`.
 ⍝ * `CheckServiceMessages` return a 1 in case a "Stop" is requested and a 0 otherwise.
 ⍝
-⍝ See the test cases for examples and the homepage (see below) for more details.
-⍝
 ⍝ Note that with version 1.6 the `ride` parameter was removed from `ServiceState`. The
 ⍝ reason for this was two-fold:
 ⍝ * When a service does not start it's too late - you have to ride into the service
@@ -70,17 +68,18 @@
 ⍝
 ⍝ Needs Dyalog 14.0 or better.\\
 ⍝ Kai Jaeger ⋄ APL Team Ltd\\
-⍝ Homepage: <http://aplwiki.com/ServiceState>
 
     ⎕IO←⎕ML←1
 
     ∇ r←Version
       :Access Public Shared
-      r←({⍵↑⍨-¯1+'.'⍳⍨⌽⍵}⍕⎕THIS)'1.6.0' '2017-05-23'
+      r←({⍵↑⍨-¯1+'.'⍳⍨⌽⍵}⍕⎕THIS)'1.7.0' '2018-02-19'
     ∇
 
     ∇ History
     :Access Public Shared
+      ⍝ * 1.7.0:
+      ⍝   * Converted from the APL wiki to GitHub
       ⍝ * 1.6.0:
       ⍝   * `timeout` reduced from 10 to 5 seconds. 10 seconds may result in Windows
       ⍝      error messages.

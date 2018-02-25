@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta charset="utf-8">
+<title>Make</title>
+<link href="./CSS/BlackOnWhite_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/Cookbook_Chapter_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/snap.css" rel="stylesheet" media="screen">
+<link href="./CSS/BlackOnWhite_print.css" rel="stylesheet" media="print">
+<link href="./CSS/Cookbook_Chapter_print.css" rel="stylesheet" media="print">
+<script src="./JavaScript/snap.js"></script>
+</head>
+<body>
+<div class="snap-drawers">
+<div class="snap-drawer snap-drawer-left">
+<div class="h_tag">
+<h3>Chapters</h3>
+</div>
+<ol>
+<li><a href="./01%20Introduction.html" class="external_link">Introduction</a></li>
+<li><a href="./02%20Structure.html" class="external_link">Structure</a></li>
+<li><a href="./03%20Package%20MyApp%20as%20an%20executable.html" class="external_link">Package MyApp as an executable</a></li>
+<li><a href="./04%20Logging%20what%20happens%20.html" class="external_link">Logging what happens </a></li>
+<li><a href="./05%20Configuration%20settings.html" class="external_link">Configuration settings</a></li>
+<li><a href="./06%20Debugging%20a%20stand-alone%20EXE.html" class="external_link">Debugging a stand-alone EXE</a></li>
+<li><a href="./07%20Handling%20errors.html" class="external_link">Handling errors</a></li>
+<li><a href="./08%20Testing%20—%20the%20sound%20of%20breaking%20glass.html" class="external_link">Testing<br>The sound of breaking glass</a></li>
+<li><a href="./09%20Documentation%20—%20the%20Doc%20is%20in.html" class="external_link">Documentation<br>The Doc is in</a></li>
+<li><a href="./10%20Make%20me.html" class="external_link">Make me</a></li>
+<li><a href="./11%20Providing%20help.html" class="external_link">Providing help</a></li>
+<li><a href="./12%20Scheduled%20Tasks.html" class="external_link">Scheduled Tasks</a></li>
+<li><a href="./13%20Windows%20Services.html" class="external_link">Windows Services</a></li>
+<li><a href="./14%20The%20Windows%20Event%20Log.html" class="external_link">The Windows Event Log</a></li>
+<li><a href="./15%20The%20Windows%20Registry.html" class="external_link">The Windows Registry</a></li>
+<li><a href="./16%20Creating%20SetUp.exe%20with%20Inno.html" class="external_link">Creating SetUp.exe with Inno</a></li>
+<li><a href="./17%20RegularExpressions.html" class="external_link">RegularExpressions</a></li>
+<li><a href="./18%20GUI.html" class="external_link">GUI</a></li>
+</ol>
+<div class="h_tag">
+<h3>Appendices</h3>
+</div>
+<ol>
+<li><a href="./50%20Appendix%201%20—%20Windows%20environment%20variables.html" class="external_link">Windows environment variables</a></li>
+<li><a href="./51%20Appendix%202%20—%20User%20commands.html" class="external_link">User commands</a></li>
+<li><a href="./52%20Appendix%203%20—%20aplcores%20and%20WS%20integrity.html" class="external_link">aplcores and WS integrity</a></li>
+<li><a href="./53%20Appendix%204%20—%20The%20development%20environment.html" class="external_link">The development environment</a></li>
+<li><a href="./54%20Appendix%205%20—%20Special%20characters.html" class="external_link">Special characters</a></li>
+</ol>
+<div class="h_tag">
+<h3>Misc</h3>
+</div>
+<ul>
+<li><a href="09%20Documentation%20—%20the%20Doc%20is%20in.html">Previous chapter</a></li>
+<li><a href="11%20Providing%20help.html">Next chapter;</a></li>
+<li><a href="./Dyalog_Cookbook.html" class="external_link">Single document<br>(All chapters, for printing)</a></li>
+</ul>
+</div>
+</div>
+<div id="mainmenu">
+<a href=#><p><span id="mainmenu_match">≡</span></p></a>
+<p><span id="mainmenu_title">The Dyalog Cookbook</span></p>
+<nav id="main_nav">
+<input type="checkbox" id="hide_toc">
+<label id="hide_toc_label" for="hide_toc"></label>
+<div class="toc-container">
+<ul>
+<li><a href="#The-development-environment">The development environment</a>
+<ul>
+<li><a href="#Development-helpers">Development helpers</a></li>
+<li><a href="#Running-test-cases-first-thing-in-the-morning">Running test cases first thing in the morning</a></li>
+</ul></li>
+<li><a href="#MyAppdyalog">MyApp.dyalog</a></li>
+<li><a href="#Make-the-application">Make the application</a>
+<ul>
+<li><a href="#Batch-file-for-starting-Dyalog">Batch file for starting Dyalog</a></li>
+<li><a href="#The-DYAPP-file">The DYAPP file</a></li>
+<li><a href="#Assertions">Assertions</a></li>
+<li><a href="#INI-files">INI files</a></li>
+<li><a href="#Prerequisites">Prerequisites</a>
+<ul>
+<li><a href="#Bind-types">Bind types</a></li>
+<li><a href="#Flags">Flags</a></li>
+</ul></li>
+<li><a href="#Exporting">Exporting</a></li>
+<li><a href="#Check-the-result">Check the result</a></li>
+</ul></li>
+<li><a href="#The-tests">The tests</a></li>
+<li><a href="#Workflow">Workflow</a>
+</ul>
+</div>
+</nav>
+</div>
+<div id="content" class="snap-content">
+<div id="cookbook_content">
+<div class="h_tag">
+<a href="#10-Make-me" id="10-Make-me" class="autoheader_anchor">
+<h1>10. Make me</h1>
+</a>
+</div>
+<p>It’s time to take a closer look at the process of building the application workspace and exporting the <abbr title="Executable file with the extension 'exe'">EXE</abbr>. In this chapter we’ll</p>
+<ul>
+<li>add the automated execution of test cases to the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr></li>
+<li>create a Make utility that allows us to create everything thats finally shipped to the customer</li>
+</ul>
+<p>At first glance you might think all we need are two versions of the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>, one for development and one for producing the <abbr title="Executable file with the extension 'exe'">EXE</abbr>, but there will be tasks we cannot carry out with this approach. Examples are:</p>
+<ul>
+<li>On our development machine <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>s are associated (in the Windows Registry) with a single version of Dyalog. We need a way to control which version that is, even if at this point there is just one version installed on our machine.</li>
+<li>We might want to convert any Markdown documents – like README.<abbr title="File with the extension 'md' that contains markdown">MD</abbr> – into <abbr title="Hyper Text Mark-up language">HTML</abbr> documents. While the <abbr title="File with the extension 'md' that contains markdown">MD</abbr> is the source, only the <abbr title="Hyper Text Mark-up language">HTML</abbr> will be shipped.</li>
+<li>We need to ensure the Help system – which we will introduce soon – is properly compiled and configured by the Make utility.</li>
+<li>Soon we shall need an installer that produces an <abbr title="Executable file with the extension 'exe'">EXE</abbr> we can send to the customer for installing the software.</li>
+</ul>
+<p>We resume, as usual, by saving a copy of <code>Z:\code\v09</code> as <code>Z:\code\v10</code>. Now delete <code>MyApp.exe</code> from <code>Z:\code\v10</code>: from now on we will create the <abbr title="Executable file with the extension 'exe'">EXE</abbr> somewhere else.</p>
+<div class="h_tag">
+<a href="#The-development-environment" id="The-development-environment" class="autoheader_anchor">
+<h2>The development environment</h2>
+</a>
+</div>
+<p><code>MyApp.dyapp</code> does not need many changes, it comes with everything needed for development. The only thing we add is to execute the test cases automatically. Almost automatically.</p>
+<p>In an ideal world we would ensure all test cases pass before the end of each working day. But sometimes that is just not possible, due to the amount of work involved.</p>
+<p>In such cases it might be sensible to execute the test cases before you <em>start</em> working: if you <em>know</em> they will fail and there are <em>many</em> of them there is no point in wasting computer resource and your time; better ask.</p>
+<div class="h_tag">
+<a href="#Development-helpers" id="Development-helpers" class="autoheader_anchor">
+<h3>Development helpers</h3>
+</a>
+</div>
+<p>For that we are going to have a function <code>YesOrNo</code>, very simple and straightforward. Its right argument (<code>question</code>) is printed to the session and then the user might answer that question.</p>
+<p>If she does not enter one of: “YyNn” the question is repeated. If she enters one of “Yy” a 1 is returned, otherwise a 0. Since we use this to ask ourself (or other programmers) the function does not have to be bulletproof; we just use <code>¯1↑⍞</code>.</p>
+<p>But where exactly should this function go? Though it is helpful it has no part in our final application. Therefore we put it into a new script called <code>DevHelpers</code>. We also add a function <code>RunTests</code> to this new script:</p>
+<pre><code>:Namespace DevHelpers
+
+∇ {r}←RunTests forceFlag
+⍝ Runs the test cases in debug mode, either in case the user wants to
+⍝ or if `forceFlag` is 1.
+  r←''
+  :If forceFlag
+  :OrIf YesOrNo'Would you like to execute all test cases in debug mode?'
+      r←#.Tests.RunDebug 0
+  :EndIf
+∇
+
+∇ flag←YesOrNo question;isOkay;answer
+  isOkay←0
+  ⎕←(⎕PW-1)⍴'-'
+  :Repeat
+      ⍞←question,' (y/n) '
+      answer←¯1↑⍞
+      :If answer∊'YyNn'
+          isOkay←1
+          flag←answer∊'Yy'
+      :EndIf
+  :Until isOkay
+∇
+
+:EndNamespace</code></pre>
+<div class="h_tag">
+<a href="#Running-test-cases-first-thing-in-the-morning" id="Running-test-cases-first-thing-in-the-morning" class="autoheader_anchor">
+<h3>Running test cases first thing in the morning</h3>
+</a>
+</div>
+<p>We add a line to the bottom of <code>MyApp.dyapp</code>:</p>
+<pre><code>...
+Run #.Tester.EstablishHelpersIn #.Tests
+<span class="leanpub_code">Run #.DevHelpers.RunTests 0
+</span></code></pre>
+<p>Now a developer who double-clicks the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> in order to assemble the workspace will always be reminded of running all test cases before she starts working on the application. Experience tells us that this is a good thing.</p>
+<div class="h_tag">
+<a href="#MyAppdyalog" id="MyAppdyalog" class="autoheader_anchor">
+<h2>MyApp.dyalog</h2>
+</a>
+</div>
+<p>One minor thing needs our attention: because we create <code>MyApp.exe</code> now in a folder <code>MyApp</code>, simply setting <code>⎕WSID</code> to <code>MyApp</code> does not do any more. We need to make a change to the <code>StartFromCmdLine</code> function in <code>MyApp.dyalog</code>:</p>
+<pre><code>...
+∇ {r}←StartFromCmdLine arg;MyLogger;Config;rc;⎕TRAP
+   ⍝ Needs command line parameters, runs the application.
+      r←⍬
+      ⎕TRAP←#.HandleError.SetTrap ⍬
+      ⎕SIGNAL 0
+<span class="leanpub_code">      ⎕WSID←⊃{⍵/⍨~'='∊¨⍵}{⍵/⍨'-'≠⊃¨⍵}1↓2⎕nq # 'GetCommandLineArgs'
+</span>      #.FilesAndDirs.PolishCurrentDir
+...</code></pre>
+<p>This change ensures the <code>⎕WSID</code> will be correct. Under the current circumstances it will be <code>MyApp\MyApp.dws</code>.</p>
+<p>Note that we access <code>GetCommandLineArgs</code> as a function call with <code>⎕NQ</code> rather than referring to <code>#.GetCommandLineArgs</code>; over the years that has proven to be more reliable.</p>
+<div class="h_tag">
+<a href="#Make-the-application" id="Make-the-application" class="autoheader_anchor">
+<h2>Make the application</h2>
+</a>
+</div>
+
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
+<div>
+<p>In most programming languages the process of compiling the source code and putting together an application is done by a utility that's called Make; we use the same term.</p>
+</div>
+</div>
+
+<p>At first sight it might seem all we need is a reduced version of <code>MyApp.dyapp</code>, but not so. Soon we will discuss how to add a Help system to our application.</p>
+<p>We must then make sure that the Help system is compiled properly when the application is assembled. Later, more tasks will come up. Conclusion: our Make file cannot be a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>; we need more flexibility.</p>
+
+<div class="leanpub_A">
+<h3>More complex scenarios</h3>
+<p>In a more complex application than ours you might prefer a different approach. Using an <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file for this is not a bad idea: it gives you scope to define more than just the modules to be loaded, and some code to execute.</p>
+<p>Also, if you have not one butseveral applications to support, it is useful to implement your own generalised user command like <code>]runmake</code>.</p>
+</div>
+
+<p><code>Execute</code>, <code>Tester</code> and <code>Tests</code> have no place in the finished application, nor do we need the test helpers either.</p>
+<div class="h_tag">
+<a href="#Batch-file-for-starting-Dyalog" id="Batch-file-for-starting-Dyalog" class="autoheader_anchor">
+<h3>Batch file for starting Dyalog</h3>
+</a>
+</div>
+<p>For now, we’ll create a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> file <code>Make.dyapp</code> that performs the Make.</p>
+<p>However, if you want to specify explicitly the version of Dyalog that should run this <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> rather than using whichever version happens to be associated with the file extension <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> at the time you double-click it, (also <abbr title="Dyalog workspace">D<abbr title="Short for Workspaces">WS</abbr></abbr> and <abbr title="File with the extension 'dyalog' holding APL code">DYALOG</abbr>) you need a batch file that starts the correct version of Dyalog.</p>
+<p>Create such a batch file as <code>Make.bat</code>:</p>
+<pre><code>"C:\Program Files\Dyalog\Dyalog APL{yourPreferredVersion}\Dyalog.exe" DYAPP="%~dp0Make.dyapp"
+@echo off
+if NOT ["%errorlevel%"]==["0"] (
+    echo Error %errorlevel%
+    pause
+    exit /b %errorlevel%
+)</code></pre>
+<p>Edit to use your chosen Dyalog version of your choice. You can see the version currently associated on your machine:</p>
+<pre><code>'"',(⊃#.GetCommandLineArgs),'"'</code></pre>
+<p>You might want to add other parameters like <code>MAXWS=128M</code> (or <code>MAXWS=6G</code>) to the <abbr title="Executeabe file that contains batch commands">BAT</abbr>.</p>
+<p>Notes:</p>
+<ul>
+<li>The expression <code>%~dp0</code> in a batch file will give you the full path – with a trailing <code>\</code> – of the folder that hosts the batch file. In other words, <code>"%~dp0Make.dyapp"</code> would result in a full path pointing to <code>MyApp.dyapp</code>, no matter where that is as long as it is a sibling of the <abbr title="Executeabe file that contains batch commands">BAT</abbr> file.
+<p>You <em>must</em> specify a full path because when the interpreter looks for the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>, the current directory is where the <abbr title="Executable file with the extension 'exe'">EXE</abbr> lives, <em>not</em> where the <abbr title="Executeabe file that contains batch commands">BAT</abbr> file lives.</p></li>
+<li>Checking <code>errorlevel</code> ensures that, in case of an error, the batch file shows the return code and then pauses.
+<p>That gets us around the problem that when you double-click a <abbr title="Executeabe file that contains batch commands">BAT</abbr> file, you see a black windows popping up for a split of a second, leaving you wondering whether it succeeded.</p>
+<p>Now if an error occurs, the script will pause. And it will pass the value of <code>errorlevel</code> as its return code.</p>
+<p>However, this technique suits only scripts to be executed by a WCU [<a href="#fnref1" class="footnote_link"><sup>1</sup></a>]; you don’t want a pause in scripts called by other scripts.   &lt;!– FIXME What should those scripts do? –&gt;</p></li>
+</ul>
+
+<div class="leanpub_A">
+<h3>The current directory</h3>
+<p>For APLers, the current directory (sometimes called “working directory”) is, when running under Windows, a strange animal. In general, the current directory is where ‘the application’ lives.</p>
+<p>That means that for an application <code>C:\Program Files\Foo\Foo.exe</code> the current directory will be <code>C:\Program Files\Foo</code>.</p>
+<p>For APLers “the application” is <em>not</em> the <abbr title="File with the extension 'dyalog' holding APL code">DYALOG</abbr>.<abbr title="Executable file with the extension 'exe'">EXE</abbr>, it’s the workspace, whether it was loaded from disk or assembled by a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>. When you double-click <code>MyApp.dyapp</code> the interpreter changes the current directory for you: it’s going to be where the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> lives, which suits an APL application programmer’s point of view.</p>
+<p>The same holds true when you double-click a <abbr title="Dyalog workspace">D<abbr title="Short for Workspaces">WS</abbr></abbr> but it is <em>not</em> true when you <em>load</em> a workspace: the current directory then remains what it was before, by default where the Dyalog <abbr title="Executable file with the extension 'exe'">EXE</abbr> lives.</p>
+<p>So it’s smart to change the current directory yourself <em>at the earliest possible stage</em> after loading a workspace: call <code>#.FilesAndDirs.PolishCurrentDir</code> and you’re covered, no matter what the circumstances are. One of the authors has been doing this for roughly 20 years now, and it has solved several problems without introducing new ones.</p>
+</div>
+
+<div class="h_tag">
+<a href="#The-DYAPP-file" id="The-DYAPP-file" class="autoheader_anchor">
+<h3>The DYAPP file</h3>
+</a>
+</div>
+<p>Now we need to establish the <code>Make.dyapp</code> file:</p>
+<pre><code>Target #
+Load ..\AplTree\APLTreeUtils
+Load ..\AplTree\FilesAndDirs
+Load ..\AplTree\HandleError
+Load ..\AplTree\IniFiles
+Load ..\AplTree\OS
+Load ..\AplTree\Logger
+Load Constants
+Load Utilities
+Load MyApp
+Run #.MyApp.SetLX ⍬
+
+Load Make
+Run #.Make.Run 1</code></pre>
+<p>The upper part (until the blank line) is identical with <code>MyApp.dyapp</code>, without the stuff that’s needed only during development. We then load a script <code>Make</code> and finally we call <code>Make.Run</code>. Here’s <code>Make</code> at this point:</p>
+<pre><code>:Class Make
+⍝ Puts the application `MyApp` together:
+⍝ 1. Remove folder `DESTINATION\` in the current directory
+⍝ 2. Create folder `DESTINATION\` in the current directory
+⍝ 3. Copy icon to `DESTINATION\`
+⍝ 4. Copy the INI file template over to `DESTINATION`
+⍝ 5. Creates `MyApp.exe` within `DESTINATION\`
+    ⎕IO←1 ⋄ ⎕ML←1
+
+    DESTINATION←'MyApp'
+
+    ∇ {filename}←Run offFlag;rc;en;more;successFlag;F;U;msg
+      :Access Public Shared
+      F←##.FilesAndDirs ⋄ U←##.Utilities
+      (rc en more)←F.RmDir DESTINATION
+      U.Assert 0=rc
+      successFlag←'Create!'F.CheckPath DESTINATION
+      U.Assert successFlag
+      (successFlag more)←2↑'images'F.CopyTree DESTINATION,'\images'
+      U.Assert successFlag
+      (rc more)←'MyApp.ini.template'F.CopyTo DESTINATION,'\MyApp.ini'
+      U.Assert 0=rc
+      Export'MyApp.exe'
+      filename←DESTINATION,'\MyApp.exe'
+      :If offFlag
+          ⎕OFF
+      :EndIf
+      ∇
+:EndClass</code></pre>
+<div class="h_tag">
+<a href="#Assertions" id="Assertions" class="autoheader_anchor">
+<h3>Assertions</h3>
+</a>
+</div>
+<p>It is common practice in any programming language to inject checks into the code to throw an error if necessary conditions are not met.</p>
+<p>Let’s define a function <code>Assert</code> in <code>Utilities</code>:</p>
+<pre><code>:Namespace Utilities
+      map←{
+          (,2)≢⍴⍺:'Left argument is not a two-element vector'⎕SIGNAL 5
+          (old new)←⍺
+          nw←∪⍵
+          (new,nw)[(old,nw)⍳⍵]
+      }
+<span class="leanpub_code">       Assert←{⍺←'' ⋄ (success errorNo)←2↑⍵,11 ⋄ (,1)≡,success:r←1 ⋄ ⍺ ⎕SIGNAL errorNo}
+</span>:EndNamespace</code></pre>
+<p>Notes:</p>
+<ul>
+<li>The right argument of <code>Assert</code> is a scalar or vector of length 1 or 2.
+<ul>
+<li>The first element is a boolean: 1 for success</li>
+<li>The second element is the integer error number to signal; it defaults to 11 (DOMAIN ERROR)</li>
+</ul></li>
+<li>The optional left argument is a left argument to <code>⎕SIGNAL</code>.</li>
+<li>If the right argument is any ‘flavour’ of <code>1</code> (scalar, vector, matrix, …) <code>Assert</code> returns a (shy!) result <code>1</code>.</li>
+<li>In all other cases <code>Assert</code> signals <code>errorNo</code> with the message specified in the left argument, if any.</li>
+</ul>
+<p>Because it’s a one-liner you cannot trace into <code>Assert</code>. That’s a good thing.</p>
+<p>This is an easy way to make the calling function stop when something goes wrong. There is no point in doing anything but stopping the code from continuing since it is called by a programmer. When it fails you want to investigate straight away.</p>
+<p>And things <em>can</em> go wrong quite easily. For example, removing <code>DESTINATION</code> might fail simply because another user is looking into <code>DESTINATION</code> with Windows Explorer.</p>
+<p>First we create the folder <code>DESTINATION</code> from scratch and then we copy everything that’s needed to the folder <code>DESTINATION</code>: the application icon and the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file. Whether the function executes <code>⎕OFF</code> or not depends on the right argument <code>offFlag</code>. Why that is needed will become apparent soon.</p>
+<div class="h_tag">
+<a href="#INI-files" id="INI-files" class="autoheader_anchor">
+<h3>INI files</h3>
+</a>
+</div>
+<p>We don’t copy <code>MyApp.ini</code> into <code>DESTINATION</code> but <code>MyApp.ini.template</code>; therefore we must create this file: copy <code>MyApp.ini</code> to <code>MyApp.ini.template</code> and then check its settings: in particular these settings are important:</p>
+<pre><code>...
+[Config]
+Debug       = ¯1   ; 0=enfore error trapping; 1=prevent error trapping;
+Trap        = 1    ; 0 disables any :Trap statements (local traps)
+ForceError  = 0    ; 1=let TxtToCsv crash (for testing global trap handling)
+...
+[Ride]
+Active      = 0
+...</code></pre>
+<p>Those might well get changed in <code>MyApp.ini</code> while working on the project, so we make sure that we get them set correctly in <code>MyApp.ini.template</code>.</p>
+<p>However, that leaves us open to another problem. Suppose we introduce a new section and/or a new key and forget to copy it over to the template. To prevent this we add a test case to <code>Tests</code>:</p>
+<pre><code>    ∇ R←Test_misc_01(stopFlag batchFlag);⎕TRAP;ini1;ini2
+      ⍝ Check if MyApp.ini &amp; MyApp.ini.template have same sections &amp; keys
+      ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+      R←∆Failed
+      ini1←⎕NEW ##.IniFiles(,⊂'MyApp.ini')
+      ini2←⎕NEW ##.IniFiles(,⊂'MyApp.ini.template')
+      →PassesIf ini1.GetSections{(∧/⍺∊⍵)∧(∧/⍵∊⍺)}ini2.GetSections
+      →PassesIf(ini1.Get ⍬ ⍬)[;2]{(∧/⍺∊⍵)∧(∧/⍵∊⍺)}(ini2.Get ⍬ ⍬)[;2]
+      R←∆OK
+    ∇</code></pre>
+<p>The test simply checks whether the two <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> files have the same sections and the same keys; that will alert us if we forget something.</p>
+<div class="h_tag">
+<a href="#Prerequisites" id="Prerequisites" class="autoheader_anchor">
+<h3>Prerequisites</h3>
+</a>
+</div>
+<div class="h_tag">
+<a href="#Bind-types" id="Bind-types" class="autoheader_anchor">
+<h4>Bind types</h4>
+</a>
+</div>
+<p>For the <em>Bind</em> method we can specify different types. We add them to the <code>Constants</code> namespace, in their own subspace:</p>
+<pre><code>:Namespace Constants
+...
+    :EndNamespace
+<span class="leanpub_code">    :Namespace BIND_TYPES
+        ActiveXControl←'ActiveXControl'
+        InProcessServer←'InProcessServer'
+        Library←'Library'
+        NativeExe←'NativeExe'
+        OutOfProcessServer←'OutOfProcessServer'
+        StandaloneNativeExe←'StandaloneNativeExe'
+    :EndNamespace
+</span>:EndNamespace</code></pre>
+<p>Why do this? By listing all available options, it makes the code self-explanatory.</p>
+<div class="h_tag">
+<a href="#Flags" id="Flags" class="autoheader_anchor">
+<h4>Flags</h4>
+</a>
+</div>
+<pre><code>:Namespace Constants
+...
+    :EndNamespace
+<span class="leanpub_code">    :Namespace BIND_FLAGS
+        BOUND_CONSOLE←2
+        BOUND_USEDOTNET←4
+        RUNTIME←8
+        BOUND_XPLOOK←32
+    :EndNamespace
+</span>:EndNamespace</code></pre>
+<div class="h_tag">
+<a href="#Exporting" id="Exporting" class="autoheader_anchor">
+<h3>Exporting</h3>
+</a>
+</div>
+<p><code>Run</code> then calls <code>Export</code>, a new private function in the <code>Make</code> class:</p>
+<pre><code>...
+    ∇ {r}←{flags}Export exeName;type;flags;resource;icon;cmdline;try;max;success;details;fn
+    ⍝ Attempts to export the application
+      r←⍬
+      flags←##.Constants.BIND_FLAGS.RUNTIME{⍺←0 ⋄ 0&lt;⎕NC ⍵:⍎⍵ ⋄ ⍺}'flags'
+      max←50
+      type←##.Constants.BIND_TYPES.StandaloneNativeExe
+      icon←F.NormalizePath DESTINATION,'\images\logo.ico'
+      resource←cmdline←''
+      details←''
+      details,←⊂'CompanyName' 'My company'
+      details,←⊂'ProductVersion'(2⊃##.MyApp.Version)
+      details,←⊂'LegalCopyright' 'Dyalog Ltd 2018'
+      details,←⊂'ProductName' 'MyApp'
+      details,←⊂'FileVersion' '1.2.3.4'
+      details←↑details
+      success←try←0
+      fn←DESTINATION,'\',exeName     ⍝ filename
+      :Repeat
+          :Trap 11
+              2 ⎕NQ'.' 'Bind' fn type flags resource icon cmdline details
+              success←1
+          :Else
+              ⎕DL 0.2
+          :EndTrap
+      :Until success∨max&lt;try←try+1
+      :If 0=success
+          ⎕←'*** ERROR: Failed to export EXE to ',fn,' after ',(⍕try),' tries.'
+          . ⍝ Deliberate error; allows investigation
+      :EndIf
+    ∇
+:EndClass</code></pre>
+<p><code>Export</code> automates what we’ve done so far by calling the <em>Export</em> command from the <em>File</em> menu. If the <em>Bind</em> method fails, it retries up to 50 times before giving up.</p>
+<p>From experience we know that, with the OS, the machine, the network, the filesystem and who knows what else, the command can fail several times before finally succeeding.</p>
+
+<div class="leanpub_A">
+<h3>The <em>Bind</em> method</h3>
+<p>Note that for the <code>Bind</code> method to work as discussed in this chapter you must use at least version 16.0.31811.0 of Dyalog. Before that <code>Bind</code> was not an official method and did not support the <code>details</code>.</p>
+</div>
+
+<p>Double-click <code>Make.dyapp</code>: a folder <code>MyApp</code> should appear in <code>Z:\code\v10</code> with, among other files, <code>MyApp.exe</code>.</p>
+<div class="h_tag">
+<a href="#Check-the-result" id="Check-the-result" class="autoheader_anchor">
+<h3>Check the result</h3>
+</a>
+</div>
+<p>Open a Windows Explorer (Windows + E), navigate to the folder hosting the <abbr title="Executable file with the extension 'exe'">EXE</abbr>, right-click the <abbr title="Executable file with the extension 'exe'">EXE</abbr> and select <em>Properties</em> from the context menu, then click on the <em>Details</em> tab.</p>
+<p><img src="./Images/Stand-alone-properties.png" alt="EXEs properties" title="APL Team's dots"></p>
+<p>As you can see, the fields <em>File version</em>, <em>Product name</em>, <em>Product version</em> and <em>Copyright</em> hold the information we have specified.</p>
+
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/warning.png" alt="Warning">
+<div>
+<p>Note that the names we have used are not the names used by Microsoft in the GUI. The MSDN [<a href="#fnref2" class="footnote_link"><sup>2</sup></a>] provides details.</p>
+</div>
+</div>
+
+<div class="h_tag">
+<a href="#The-tests" id="The-tests" class="autoheader_anchor">
+<h2>The tests</h2>
+</a>
+</div>
+<p>Now that we have a way automatically to assemble all the files required by our application we need to amend our tests. Double-click <code>MyApp.dyapp</code>. You don't need to execute the test cases right now because we are going to change them.</p>
+<p>We need to make a few changes:</p>
+<pre><code>:Namespace Tests
+    ⎕IO←1 ⋄ ⎕ML←1
+    ∇ Initial;list;rc
+      U←##.Utilities ⋄ F←##.FilesAndDirs ⋄ A←##.APLTreeUtils
+      ∆Path←F.GetTempPath,'\MyApp_Tests'
+      F.RmDir ∆Path
+      'Create!'F.CheckPath ∆Path
+      list←⊃F.Dir'..\..\texts\en\*.txt'
+      rc←list F.CopyTo ∆Path,'\'
+      :If ~R←0∧.=⊃rc
+          ⎕←'Could not create ',∆Path
+      :EndIf
+<span class="leanpub_code">      ⎕SE.UCMD'Load ',F.PWD,'\Make.dyalog -target=#'
+      #.Make.Run 0
+</span>    ∇
+ ...
+:EndNamespace</code></pre>
+<p><code>Initial</code></p>
+<ul>
+<li>loads the script <code>Make.dyalog</code> into <code>#</code></li>
+<li>runs the function <code>Make.Run</code>; the <code>0</code> right argument tells <code>Make.Run</code> <em>not</em> to execute <code>⎕OFF</code> – something we would not appreciate at this stage</li>
+</ul>
+<div class="h_tag">
+<a href="#Workflow" id="Workflow" class="autoheader_anchor">
+<h2>Workflow</h2>
+</a>
+</div>
+<p>With the two <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>s and the <abbr title="Executeabe file that contains batch commands">BAT</abbr> file, your development cycle now looks like this:</p>
+<ol start="1">
+<li>Launch <code>MyApp.dyapp</code> and check the test results.</li>
+<li>Fix any errors and rerun <code>#.Tests.Run</code> until it’s fine. If you edit the test themselves, either rerun
+<pre><code>`#.Tester.EstablishHelpersIn #.Tests`</code></pre>
+<p>or simply close the session and relaunch <code>MyApp.dyapp</code>.</p></li>
+</ol>
+<div id="footnotes_div">
+<hr>
+<p><strong>Footnotes</strong></p>
+<ol>
+<li id="fnref1"><p>Worst Case User, also known as Dumbest Assumable User (DAU).</p><a href="#fnref1" class="footnote_anchor"></a>
+<li id="fnref2"><p>The <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa381058(v=vs.85).aspx" class="external_link">MSDN</a> provides more information on what names are actually recognized.</p><a href="#fnref2" class="footnote_anchor"></a>
+</ol>
+</div>
+</div>
+</div>
+<script>
+var snapper = new Snap({
+element: document.getElementById('content')
+});
+document.getElementById('mainmenu_match').onclick = function(){
+snapper.state().state==='closed'?snapper.open('left'):snapper.close();
+}
+</script>
+</body>
+</html>

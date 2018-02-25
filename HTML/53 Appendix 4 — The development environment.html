@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta charset="utf-8">
+<title>Quad-SE</title>
+<link href="./CSS/BlackOnWhite_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/Cookbook_Chapter_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/snap.css" rel="stylesheet" media="screen">
+<link href="./CSS/BlackOnWhite_print.css" rel="stylesheet" media="print">
+<link href="./CSS/Cookbook_Chapter_print.css" rel="stylesheet" media="print">
+<script src="./JavaScript/snap.js"></script>
+</head>
+<body>
+<div class="snap-drawers">
+<div class="snap-drawer snap-drawer-left">
+<div class="h_tag">
+<h3>Chapters</h3>
+</div>
+<ol>
+<li><a href="./01%20Introduction.html" class="external_link">Introduction</a></li>
+<li><a href="./02%20Structure.html" class="external_link">Structure</a></li>
+<li><a href="./03%20Package%20MyApp%20as%20an%20executable.html" class="external_link">Package MyApp as an executable</a></li>
+<li><a href="./04%20Logging%20what%20happens%20.html" class="external_link">Logging what happens </a></li>
+<li><a href="./05%20Configuration%20settings.html" class="external_link">Configuration settings</a></li>
+<li><a href="./06%20Debugging%20a%20stand-alone%20EXE.html" class="external_link">Debugging a stand-alone EXE</a></li>
+<li><a href="./07%20Handling%20errors.html" class="external_link">Handling errors</a></li>
+<li><a href="./08%20Testing%20—%20the%20sound%20of%20breaking%20glass.html" class="external_link">Testing<br>The sound of breaking glass</a></li>
+<li><a href="./09%20Documentation%20—%20the%20Doc%20is%20in.html" class="external_link">Documentation<br>The Doc is in</a></li>
+<li><a href="./10%20Make%20me.html" class="external_link">Make me</a></li>
+<li><a href="./11%20Providing%20help.html" class="external_link">Providing help</a></li>
+<li><a href="./12%20Scheduled%20Tasks.html" class="external_link">Scheduled Tasks</a></li>
+<li><a href="./13%20Windows%20Services.html" class="external_link">Windows Services</a></li>
+<li><a href="./14%20The%20Windows%20Event%20Log.html" class="external_link">The Windows Event Log</a></li>
+<li><a href="./15%20The%20Windows%20Registry.html" class="external_link">The Windows Registry</a></li>
+<li><a href="./16%20Creating%20SetUp.exe%20with%20Inno.html" class="external_link">Creating SetUp.exe with Inno</a></li>
+<li><a href="./17%20RegularExpressions.html" class="external_link">RegularExpressions</a></li>
+<li><a href="./18%20GUI.html" class="external_link">GUI</a></li>
+</ol>
+<div class="h_tag">
+<h3>Appendices</h3>
+</div>
+<ol>
+<li><a href="./50%20Appendix%201%20—%20Windows%20environment%20variables.html" class="external_link">Windows environment variables</a></li>
+<li><a href="./51%20Appendix%202%20—%20User%20commands.html" class="external_link">User commands</a></li>
+<li><a href="./52%20Appendix%203%20—%20aplcores%20and%20WS%20integrity.html" class="external_link">aplcores and WS integrity</a></li>
+<li><a href="./53%20Appendix%204%20—%20The%20development%20environment.html" class="external_link">The development environment</a></li>
+<li><a href="./54%20Appendix%205%20—%20Special%20characters.html" class="external_link">Special characters</a></li>
+</ol>
+<div class="h_tag">
+<h3>Misc</h3>
+</div>
+<ul>
+<li><a href="52%20Appendix%203%20—%20aplcores%20and%20WS%20integrity.html">Previous chapter</a></li>
+<li><a href="54%20Appendix%205%20—%20Special%20characters.html">Next chapter;</a></li>
+<li><a href="./Dyalog_Cookbook.html" class="external_link">Single document<br>(All chapters, for printing)</a></li>
+</ul>
+</div>
+</div>
+<div id="mainmenu">
+<a href=#><p><span id="mainmenu_match">≡</span></p></a>
+<p><span id="mainmenu_title">The Dyalog Cookbook</span></p>
+</div>
+<div id="content" class="snap-content">
+<div id="cookbook_content">
+<div class="h_tag">
+<a href="#22-Appendix-4-----The-development-environment" id="22-Appendix-4-----The-development-environment" class="autoheader_anchor">
+<h1>22. Appendix 4 — The development environment</h1>
+</a>
+</div>
+<div class="h_tag">
+<a href="#Configure-your-session" id="Configure-your-session" class="autoheader_anchor">
+<h2>Configure your session</h2>
+</a>
+</div>
+<p>Most developers adapt the development environment in one way or another:</p>
+<ul>
+<li>Make your favourite utilities available from within <code>⎕SE</code>.</li>
+<li>Add a menu to the session with often used commands.</li>
+<li>Define some function keys carrying out often used commands (not applicable with Ride).</li>
+<li>…</li>
+</ul>
+<p>There are several ways to achieve this:</p>
+<ol start="1">
+<li>Save a copy of the default session file somewhere <em>outside</em> the installation directory.
+<p>By default this is <code>def_{countryCode}.dse</code> in the installation directory, for example <code>def_uk.dse</code> for the UK.</p>
+<p>Edit the configuration so that this copy is loaded.</p></li>
+</ol>
+<ol start="2">
+<li>Save a copy of the build workspace (that is typically something like <code>C:\Program Files\Dyalog\...\ws\buildse.dws</code>) <em>outside</em> the installation directory. Then use it to create your own tailored version of a DSE.
+<p>Then follow the advice in 1)</p></li>
+</ol>
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/warning.png" alt="Warning">
+<div>
+<h3>Leave the Dyalog installation directory alone</h3>
+<p>Do <em>not</em> alter any files in the Dyalog installation directory, and don't add your own files there either: Dyalog may update files in there in any patch.</p>
+<p>Although this is not strictly true in 16.0 and earlier, Dyalog <em>may</em> start to issue .msp files which might change any file in the installation directory without warning!</p>
+</div>
+</div>
+
+<p>Both approaches have their own problems, the most obvious being that with a new version of Dyalog you start from scratch. However, there is a better way: save a function <code>Setup</code> in either <code>C:\Users\{UserName}\Documents\MyUCMDs\setup.dyalog</code> or one of the SALT work directories and it will be executed when…</p>
+<ul>
+<li>a new instance of Dyalog is fired up as part of the SALT boot process.
+<p>Note that the SALT boot process will be carried out even when the Enable<em> SALT callbacks</em> checkbox on the <em>SALT</em> tab of the Configuration dialog box is not ticked.</p></li>
+<li>the user command <code>]usetup</code> is issued.
+<p>This means that you can execute the function at will at any time in order to re-initialise your environment.</p></li>
+</ul>
+<p>The function may be saved in that file either on its own or as part of a namespace.</p>
+
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
+<div>
+<p>You might expect that saving a class script <code>Setup.dyalog</code> with a public shared function <code>Setup</code> would work as well but that's not the case.</p>
+</div>
+</div>
+
+<div class="leanpub_A">
+<h3>SALT work directories</h3>
+<p>You can check which folders are currently considered SALT work directories by issuing <code>]settings workdir</code>.</p>
+<p>You can add a folder <code>C:\Foo</code> with <code>]settings workdir ,C:\Foo</code>.</p>
+</div>
+
+<p>When called as part of the SALT boot process a right argument <code>'init'</code> will be passed. When called via <code>]usetup</code> then whatever is specified as argument to the user command will become the right argument of the <code>Setup</code> function.</p>
+<p>The Dyalog manuals mention this feature only when discussing the user command <code>]usetup</code> but not anywhere near how you can configure your environment; that's why we mention it here.</p>
+<p>If you want to debug any <code>Setup</code> function then the best way to do this is to make <code>⎕TRAP</code> a local variable of <code>Setup</code> and then add these lines at the top of the function:</p>
+<pre><code>[1] ⎕TRAP←0 'S'
+[2] .</code></pre>
+<p>This will cause an error that stops execution because error trapping is switched off. This way you get around the trap that the SALT boot process uses to avoid <code>Setup</code> causing a hiccup. However, if you change the function from the Tracer don't expect those changes to be saved automatically: you have to take care of that yourself.</p>
+<p>The following code is an example for how you can put this mechanism to good use:</p>
+<pre><code>:Namespace Setup
+⍝ Up to - and including - version 15.0 this script needs to go into:
+⍝ "C:\Users\[username]\Documents\MyUCMDs"
+⍝ Under 16.0 that still works but the SALT workdir folders are scanned as well.
+  ⎕IO←1 ⋄ ⎕ML←1
+
+∇ {r}←Setup arg;myStuff
+  r←⍬
+  'MyStuff'⎕SE.⎕CY 'C:\MyStuff'
+  ⎕SE.MyStuff.DefineMyFunctionKeys ⍬
+  EstablishOnDropHandler ⍬
+∇
+
+∇ {r}←EstablishOnDropHandler dummy;events
+  r←⍬
+  events←''
+  events,←⊂'Event' 'DropObjects' '⎕se.MyStuff.OnDrop'
+  events,←⊂'Event' 'DropFiles' '⎕se.MyStuff.OnDrop'
+  events,←⊂'AcceptFiles' 1
+  events∘{⍵ ⎕WS ¨⊂⍺}'⎕se.cbbot.bandsb2.sb' '⎕se.cbbot.bandsb1.sb'
+∇
+
+:EndNamespace</code></pre>
+<p>Suppose in the workspace <code>MyStuff</code> there is a namespace <code>MyStuff</code> that contains at least two functions:</p>
+<ol start="1">
+<li><code>DefineMyFunctionKeys</code>; this defines the function keys.</li>
+<li><code>OnDrop</code>; a handler that handles “DropObject” and “DropFiles” events on the session's status bar.</li>
+</ol>
+<p>This is how the <code>OnDrop</code> function might look:</p>
+<pre><code>OnDrop msg;⎕IO;⎕ML;files;file;extension;i;target
+⍝ Handles files dropped onto the status bar.
+ ⎕IO←1 ⋄ ⎕ML←1
+ files←3⊃msg
+ :For file :In files
+     extension←1(819⌶)3⊃1 ⎕NPARTS file
+     :Select extension
+     :Case '.DWS'
+         ⎕←'     )XLOAD ',{b←' '∊⍵ ⋄ (b/'"'),⍵,(b/'"')}file
+     :Case '.DYALOG'
+         :If 9=⎕NC'⎕SE.SALT'
+             target←((,'#')≢,1⊃⎕NSI)/' -Target=',(1⊃⎕NSI),''''
+             ⎕←'      ⎕SE.SALT.Load ''',file,'',target
+         :EndIf
+     :Else
+         :If 'APLCORE'{⍺≡1(819⌶)(⍴⍺)↑⍵}2⊃⎕NPARTS file
+             ⎕←'      )COPY ',{b←' '∊⍵ ⋄ (b/'"'),⍵,(b/'"')}file,'.'
+         :Else
+             :If ⎕NEXISTS file
+                 ⎕←{b←' '∊⍵ ⋄ (b/'"'),⍵,(b/'"')}file
+             :Else
+                 ⎕←file
+             :EndIf
+         :EndIf
+     :EndSelect
+ :EndFor</code></pre>
+<p>What this handler does depends on what extension the file has:</p>
+<ul>
+<li>For <code>.dyalog</code> it writes a SALT load statement to the session.
+<p>If the current namespace is not <code>#</code> but, say, <code>Foo</code> then <code>-target=Foo</code> is added.</p></li>
+<li>For <code>.dws</code> it writes an )XLOAD statement to the session.</li>
+<li>If the filename contains the string <code>aplcore</code> then it writes a )COPY statement for that aplcore with a trailing dot to the session.</li>
+<li>For any other files the fully qualified filename is written to the session.</li>
+</ul>
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
+<div>
+<p>When you start Dyalog with admin rights then it's not possible to drop files onto the status bar. That's because Microsoft considers drag'n drop too dangerous for admins. (One might think it better strategy to leave the dangerous stuff to the admins.)</p>
+</div>
+</div>
+
+<p>How you configure your development environment is of course very much a matter of personal preferences.</p>
+<p>However, you might consider loading a couple of scripts into <code>⎕SE</code> from within <code>Setup.dyalog</code>; the obvious candidates for this are <code>APLTreeUtils</code>, <code>FilesAndDirs</code>, <code>OS</code>, <code>WinSys</code>, <code>WinRegSimple</code> and <code>Events</code>. That would allow you to write user commands that can reference them with, say, <code>⎕SE.APLTreeUtils.Split</code>.</p>
+<div class="h_tag">
+<a href="#Define-your-function-keys" id="Define-your-function-keys" class="autoheader_anchor">
+<h2>Define your function keys</h2>
+</a>
+</div>
+<p>Defining function keys is of course not exactly a challenge. Implementing it in a way that is actually easy to read and maintain <em>is</em> a challenge.</p>
+<pre><code>:Namespace FunctionKeyDefinition
+
+    ∇ {r}←DefineFunctionKeys dummy;⎕IO;⎕ML
+      ⎕IO←1 ⋄ ⎕ML←3
+      r←⍬
+      ⎕SHADOW⊃list←'LL' 'DB' 'DI' 'ER' 'LC' 'DC' 'UC' 'RD' 'RL' 'RC' 'Rl' 'Ll' 'CP' 'PT' 'BH'
+      ⍎¨{⍵,'←⊂''',⍵,''''}¨list
+      r⍪←'F01'('')('(Reserved for help)')
+      r⍪←'F02'(')WSID',ER)(')wsid')
+      r⍪←'F03'('')('Show next hit')                  ⍝ Reserved for NX
+      r⍪←'F04'('⎕SE.Display ')('Call "Display"')
+      r⍪←'F05'(LL,'→⎕LC+1 ⍝ ',ER)('→⎕LC+1')
+      r⍪←'F06'(LL,'→⎕LC ⍝',ER)'→⎕LC'
+      ...
+:EndNamespace</code></pre>
+<p>This approach first defines all special shortcuts – like <code>ER</code> for Enter – as local variables; using <code>⎕SHADOW</code> avoids the need for maintaining a long list of local variables. The statement <code>⍎¨{⍵,'←⊂''',⍵,''''}¨list</code> assigns every name as an enclosed text string to itself like <code>ER←⊂'ER'</code>. Now we can use <code>ER</code> rather than <code>(⊂'ER)</code> which improves readability.</p>
+<p>A definition like <code>LL,'→⎕LC ⍝',ER</code> reads as follows:</p>
+<ul>
+<li><code>LL</code> positions the cursor to the very left of the current line.</li>
+<li><code>→⎕LC ⍝</code> is then written to the session, meaning that everything that was already on that line is now on the right of the <code>⍝</code> and therefore has no effect.</li>
+<li><code>ER</code> then executes Enter, meaning that the statement is actually executed.</li>
+</ul>
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
+<div>
+<p>If you don't know what <code>LL</code> and <code>ER</code> actually are read the page “Keyboard shortcuts” in the <em>UI Guide</em>.</p>
+</div>
+</div>
+
+<div class="h_tag">
+<a href="#Windows-captions" id="Windows-captions" class="autoheader_anchor">
+<h2>Windows captions</h2>
+</a>
+</div>
+<p>If you always run just one instance of the interpreter you can safely ignore this.</p>
+<p>If on the other hand you run occasionally (let alone often) more than one instance of Dyalog in parallel then you are familiar with how it feels when all of a sudden an unexpected dialog box pops up, be it an aplcore or a message box asking “Are you sure?” when you have no idea what you are expected to be sure about, or which instance has just crashed.</p>
+<p>There is a way to get around this. With version 14.0 Windows captions became configurable. This is a screenshot from the online help:</p>
+<p><img src="Images/HelpOnWindowCaptions.png" alt="Dyalog's help on Windows captions" title="Dyalog's help on Windows captions"></p>
+
+<div class="leanpub_A">
+<h3>Help — online versus offline</h3>
+<p>There are pros and cons:</p>
+<ul>
+<li>Pressing F1 on something you need help with opens the offline help at the time of writing (2017-07).</li>
+<li>The online help is frequently updated by Dyalog.</li>
+</ul>
+</div>
+
+<p>We suggest you configure Windows captions in a particular way in order to overcome this problem. The following screen shot shows the definitions for all Windows captions in the Windows Registry for version 16 in case you follow our suggestions:</p>
+<p><img src="Images/WindowsCaptions.png" alt="Windows Registry entries for 'Window captions'" title="Windows Registry entries for 'Window captions'"></p>
+<p>Notes:</p>
+<ul>
+<li>All definitions start with <code>{PID}</code>, which stands for process ID. That allows you to identify which process a particular window belongs to, and even to kill that process if needs must.</li>
+<li>All definitions contain <code>{WSID}</code> which stands for the workspace ID.</li>
+<li><code>{PRODUCT}</code> tells all about the version of Dyalog: version number, 32/64 and Classic/Unicode.
+<p>You might not be interested in this if you use just one version of Dyalog.</p></li>
+</ul>
+<p>The other pieces of information are less important. For details refer to the page “Window captions” in the <em>Installation and Configuration Guide</em>. These definitions ensure most dialog boxes (there are a few exceptions) can easily be associated with a particular Dyalog session. This is just an example:</p>
+<p><img src="Images/WindowsCaptionsDialogBox.png" alt="A typical dialog box" title="A typical dialog box"></p>
+<p>You can ask for the current settings with the user command <code>]caption</code>:</p>
+<pre><code>      ]caption</code></pre>
+<p>You can also change the settings with this user command. For details enter:</p>
+<pre><code>      ]??Caption</code></pre>
+</div>
+</div>
+<script>
+var snapper = new Snap({
+element: document.getElementById('content')
+});
+document.getElementById('mainmenu_match').onclick = function(){
+snapper.state().state==='closed'?snapper.open('left'):snapper.close();
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta charset="utf-8">
+<title>EnvVars</title>
+<link href="./CSS/BlackOnWhite_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/Cookbook_Chapter_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/snap.css" rel="stylesheet" media="screen">
+<link href="./CSS/BlackOnWhite_print.css" rel="stylesheet" media="print">
+<link href="./CSS/Cookbook_Chapter_print.css" rel="stylesheet" media="print">
+<script src="./JavaScript/snap.js"></script>
+</head>
+<body>
+<div class="snap-drawers">
+<div class="snap-drawer snap-drawer-left">
+<div class="h_tag">
+<h3>Chapters</h3>
+</div>
+<ol>
+<li><a href="./01%20Introduction.html" class="external_link">Introduction</a></li>
+<li><a href="./02%20Structure.html" class="external_link">Structure</a></li>
+<li><a href="./03%20Package%20MyApp%20as%20an%20executable.html" class="external_link">Package MyApp as an executable</a></li>
+<li><a href="./04%20Logging%20what%20happens%20.html" class="external_link">Logging what happens </a></li>
+<li><a href="./05%20Configuration%20settings.html" class="external_link">Configuration settings</a></li>
+<li><a href="./06%20Debugging%20a%20stand-alone%20EXE.html" class="external_link">Debugging a stand-alone EXE</a></li>
+<li><a href="./07%20Handling%20errors.html" class="external_link">Handling errors</a></li>
+<li><a href="./08%20Testing%20—%20the%20sound%20of%20breaking%20glass.html" class="external_link">Testing<br>The sound of breaking glass</a></li>
+<li><a href="./09%20Documentation%20—%20the%20Doc%20is%20in.html" class="external_link">Documentation<br>The Doc is in</a></li>
+<li><a href="./10%20Make%20me.html" class="external_link">Make me</a></li>
+<li><a href="./11%20Providing%20help.html" class="external_link">Providing help</a></li>
+<li><a href="./12%20Scheduled%20Tasks.html" class="external_link">Scheduled Tasks</a></li>
+<li><a href="./13%20Windows%20Services.html" class="external_link">Windows Services</a></li>
+<li><a href="./14%20The%20Windows%20Event%20Log.html" class="external_link">The Windows Event Log</a></li>
+<li><a href="./15%20The%20Windows%20Registry.html" class="external_link">The Windows Registry</a></li>
+<li><a href="./16%20Creating%20SetUp.exe%20with%20Inno.html" class="external_link">Creating SetUp.exe with Inno</a></li>
+<li><a href="./17%20RegularExpressions.html" class="external_link">RegularExpressions</a></li>
+<li><a href="./18%20GUI.html" class="external_link">GUI</a></li>
+</ol>
+<div class="h_tag">
+<h3>Appendices</h3>
+</div>
+<ol>
+<li><a href="./50%20Appendix%201%20—%20Windows%20environment%20variables.html" class="external_link">Windows environment variables</a></li>
+<li><a href="./51%20Appendix%202%20—%20User%20commands.html" class="external_link">User commands</a></li>
+<li><a href="./52%20Appendix%203%20—%20aplcores%20and%20WS%20integrity.html" class="external_link">aplcores and WS integrity</a></li>
+<li><a href="./53%20Appendix%204%20—%20The%20development%20environment.html" class="external_link">The development environment</a></li>
+<li><a href="./54%20Appendix%205%20—%20Special%20characters.html" class="external_link">Special characters</a></li>
+</ol>
+<div class="h_tag">
+<h3>Misc</h3>
+</div>
+<ul>
+<li><a href="18%20GUI.html">Previous chapter</a></li>
+<li><a href="51%20Appendix%202%20—%20User%20commands.html">Next chapter;</a></li>
+<li><a href="./Dyalog_Cookbook.html" class="external_link">Single document<br>(All chapters, for printing)</a></li>
+</ul>
+</div>
+</div>
+<div id="mainmenu">
+<a href=#><p><span id="mainmenu_match">≡</span></p></a>
+<p><span id="mainmenu_title">The Dyalog Cookbook</span></p>
+<nav id="main_nav">
+<input type="checkbox" id="hide_toc">
+<label id="hide_toc_label" for="hide_toc"></label>
+<div class="toc-container">
+<ul>
+<li><a href="#Overview">Overview</a></li>
+<li><a href="#Outdated">Outdated?!</a></li>
+<li><a href="#The-variables">The variables</a>
+</ul>
+</div>
+</nav>
+</div>
+<div id="content" class="snap-content">
+<div id="cookbook_content">
+<div class="h_tag">
+<a href="#19-Appendix-1-----Windows-environment-variables" id="19-Appendix-1-----Windows-environment-variables" class="autoheader_anchor">
+<h1>19. Appendix 1 — Windows environment variables</h1>
+</a>
+</div>
+<div class="h_tag">
+<a href="#Overview" id="Overview" class="autoheader_anchor">
+<h2>Overview</h2>
+</a>
+</div>
+<p>Windows comes with quite a number of environment variables. Those variables are helpful in addressing, say, a particular path without actually using a physical path.</p>
+<p>For example, on most PCs, Windows is installed in C:\Windows, but this is by no means guaranteed. It is therefore much better to address this particular folder as <code>⊣2 ⎕NQ # 'GetEnvironment' 'WINDIR'</code>.</p>
+<p>Below some of the environment variables found on a Windows 10 system are listed and explained.</p>
+
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
+<div>
+<p>The Dyalog Cookbook is usually referring to Windows 10 which, in most cases, is identical with Windows 8 and 7. The Cookbook is not applicable to unsupported versions of Windows like Vista and earlier.</p>
+</div>
+</div>
+
+<p>Notes:</p>
+<ul>
+<li>When something like “{this}” is part of a path then it means that this string has to be exchanged for something reasonable. For example, in “C:/Users/{yourName}/” the string “{yourName}” needs to be replaced by the value of <code>⎕AN</code>.</li>
+<li>The list of environment variables discussed in this appendix is by no means exhaustive.</li>
+<li>Under Windows, the names of environment variables are case-insensitive.</li>
+</ul>
+<div class="h_tag">
+<a href="#Outdated" id="Outdated" class="autoheader_anchor">
+<h2>Outdated?!</h2>
+</a>
+</div>
+<p>Some consider environment variables an outdated technology. We don't want to get involved in this argument here but enviroment variables will be round for a very long time, and Windows relies on them. (They are also standard under UNIX, including Linux and MacOS.)</p>
+<div class="h_tag">
+<a href="#The-variables" id="The-variables" class="autoheader_anchor">
+<h2>The variables</h2>
+</a>
+</div>
+<dl>
+<dt><code>AllUserProfile</code></dt>
+<dd>Defaults to <code>C:\ProgramData</code>: see <a href="#programdata" class="bookmark_link">ProgramData</a></dd>
+<dt id="appdata"><code>AppData</code></dt>
+<dd><p class="first_dd">Defaults to <code>C:\Users\{yourName}\AppData\Roaming</code></p></dd>
+<dd><p>Use this to store data that is both application <strong>and</strong> user specific that is supposed to roam [<a href="#fnref1" class="footnote_link"><sup>1</sup></a>] with the user. An <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> might be an example.</p></dd>
+<dd><p>See also <strong><a href="#localappdata" class="bookmark_link">LocalAppData</a></strong></p></dd>
+<dt><code>CommonProgramFiles</code></dt>
+<dd>Defaults to <code>C:\Program Files\Common Files</code></dd>
+<dt><code>CommonProgramFiles(x86)</code></dt>
+<dd>Defaults to <code>C:\Program Files (x86)\Common Files</code></dd>
+<dt><code>CommonProgramW6432</code></dt>
+<dd>Defaults to <code>C:\Program Files\Common Files</code></dd>
+<dt><code>ComputerName</code></dt>
+<dd>The name of the computer</dd>
+<dt><code>ComSpec</code></dt>
+<dd>Defaults to <code>C:\WINDOWS\system32\cmd.exe</code></dd>
+<dt><code>ErrorLevel</code></dt>
+<dd>This variable does not necessarily exist. If you execute <code>⎕OFF 123</code> in an APL application it will set <code>ErrorLevel</code> to 123.</dd>
+<dt><code>HomePath</code></dt>
+<dd>Defaults to <code>\Users\{yourName}</code></dd>
+<dt id="localappdata"><code>LocalAppData</code></dt>
+<dd><p class="first_dd">Defaults to <code>C:\Users\{yourName}\AppData\Local</code></p></dd>
+<dd><p>Use this to store data that is both application <strong>and</strong> user specific that is <strong>not</strong> supposed to roam [<a href="#fnref1" class="footnote_link"><sup>1</sup></a>] with the user.</p></dd>
+<dd><p>A log file might be an example. The reason is that when a user logs in all the data stored in <code>%APPDATA%</code> is copied over. A large log file might take significant time to be copied with very little (or no) benefit.</p></dd>
+<dd><p>See also <strong><a href="#appdata" class="bookmark_link">AppData</a></strong>.</p></dd>
+<dt><code>LogonServer</code></dt>
+<dd>Defaults to the name of the computer your are logged on to. In case of your own desktop PC the values of <code>LogonServer</code> and <code>ComputerName</code> will be the same. In a Windows Server Domain however they will differ.</dd>
+<dt><code>OS</code></dt>
+<dd>Specifies the Operating System; under Windows 10, <code>Windows_NT</code></dd>
+<dt><code>Path</code></dt>
+<dd>All the folders (separated by semicola) that the operating system should check if the user enters something like <code>my.exe</code> into a console window and <code>my.exe</code> is not found in the current directory.</dd>
+<dt><code>PathExt</code></dt>
+<dd>A list of the file extensions the operating system considers executable, for example: <code>.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC</code>.</dd>
+<dt id="programdata"><code>ProgramData</code></dt>
+<dd>Defaults to <code>C:\ProgramData</code>. Use this for information that is application-specific and needs write access after installation. For Dyalog, this would be the right place to store the session file, workspaces and user commands.</dd>
+<dt id="programfiles"><code>ProgramFiles</code></dt>
+<dd>Defaults to <code>C:\Program Files</code>. On a 64-bit version of Windows this is where 64-bit programs are installed. Note however that on a 32-bit version of Windows this points to <a href="#x86" class="bookmark_link">ProgramFiles(x86)</a>.</dd>
+<dt id="x86"><code>ProgramFiles(x86)</code></dt>
+<dd>Defaults to <code>C:\Program Files (x86)</code>. This is where 32-bit programs are installed.</dd>
+<dt><code>ProgramW6432</code></dt>
+<dd>Defaults to <code>C:\Program Files</code>. On a 64-bit version of Windows this path points to <a href="#programfiles" class="bookmark_link">ProgramFiles</a>. On a 32-bit version of Windows it also points to <code>ProgramFiles</code> which in turn points to <a href="#x86" class="bookmark_link">ProgramFiles(x86)</a>.</dd>
+</dl>
+<p>For details see <em>WOW64 Implementation Detail</em> [<a href="#fnref3" class="footnote_link"><sup>3</sup></a>].</p>
+<dl>
+<dt><code>PSModulePath</code></dt>
+<dd>Defaults to <code>C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\</code>. This path is used by Windows Power Shell [<a href="#fnref2" class="footnote_link"><sup>2</sup></a>] to locate modules when the user does not specify the full path to a module.</dd>
+<dt><code>Public</code></dt>
+<dd>Defaults to <code>C:\Users\Public</code>. It contains folders like <code>Public Documents</code>, <code>Public Music</code>, <code>Public Pictures</code>, <code>Public Videos</code>, … well, you get the picture.</dd>
+<dt id="systemroot"><code>SystemRoot</code></dt>
+<dd>Specifies the folder in which Windows is installed. Defaults to <code>C:\WINDOWS</code>.</dd>
+<dt><code>Temp</code></dt>
+<dd>Points to the folder that holds temporary files and folders. Defaults to <code>C:\Users\{username}\AppData\Local\Temp</code>. See also <code>TMP</code>.</dd>
+<dt><code>TMP</code></dt>
+<dd>Points to the folder that holds temporary files and folders. Defaults to <code>C:\Users\{username}\AppData\Local\Temp</code>. Note that the <code>GetTempFileName</code> API function (which is available as <code>FilesAndDirs.GetTempFilename</code>) will first look for the <code>TMP</code> environment variable and only if that does not exist for the <code>TEMP</code> variable.</dd>
+<dt><code>Username</code></dt>
+<dd>The username of the user currently logged on. Same as <code>⎕AN</code> in APL.</dd>
+<dt><code>UserProfile</code></dt>
+<dd>Defaults to <code>C:\Users\{username}</code>. That's where everything is saved that belongs to the user currently logged on. Note that this is kept apart from other user's eyes by the operating system.</dd>
+<dt><code>WinDir</code></dt>
+<dd>Defaults to the value of <a href="#systemroot" class="bookmark_link"><code>%SystemRoot%</code></a>. Deprecated.</dd>
+</dl>
+<div id="footnotes_div">
+<hr>
+<p><strong>Footnotes</strong></p>
+<ol>
+<li id="fnref1"><p><a href="https://en.wikipedia.org/wiki/Roaming_user_profile" class="external_link">https://en.wikipedia.org/wiki/Roaming_user_profile</a></p><a href="#fnref1" class="footnote_anchor"></a>
+<li id="fnref2"><p><a href="https://en.wikipedia.org/wiki/PowerShell" class="external_link">https://en.wikipedia.org/wiki/PowerShell</a></p><a href="#fnref2" class="footnote_anchor"></a>
+<li id="fnref3"><p><a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa384274(v=vs.85).aspx" class="external_link">https://msdn.microsoft.com/en-us/library/windows/desktop/aa384274(v=vs.85).aspx</a></p><a href="#fnref3" class="footnote_anchor"></a>
+</ol>
+</div>
+</div>
+</div>
+<script>
+var snapper = new Snap({
+element: document.getElementById('content')
+});
+document.getElementById('mainmenu_match').onclick = function(){
+snapper.state().state==='closed'?snapper.open('left'):snapper.close();
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta charset="utf-8">
+<title>Error Handling</title>
+<link href="./CSS/BlackOnWhite_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/Cookbook_Chapter_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/snap.css" rel="stylesheet" media="screen">
+<link href="./CSS/BlackOnWhite_print.css" rel="stylesheet" media="print">
+<link href="./CSS/Cookbook_Chapter_print.css" rel="stylesheet" media="print">
+<script src="./JavaScript/snap.js"></script>
+</head>
+<body>
+<div class="snap-drawers">
+<div class="snap-drawer snap-drawer-left">
+<div class="h_tag">
+<h3>Chapters</h3>
+</div>
+<ol>
+<li><a href="./01%20Introduction.html" class="external_link">Introduction</a></li>
+<li><a href="./02%20Structure.html" class="external_link">Structure</a></li>
+<li><a href="./03%20Package%20MyApp%20as%20an%20executable.html" class="external_link">Package MyApp as an executable</a></li>
+<li><a href="./04%20Logging%20what%20happens%20.html" class="external_link">Logging what happens </a></li>
+<li><a href="./05%20Configuration%20settings.html" class="external_link">Configuration settings</a></li>
+<li><a href="./06%20Debugging%20a%20stand-alone%20EXE.html" class="external_link">Debugging a stand-alone EXE</a></li>
+<li><a href="./07%20Handling%20errors.html" class="external_link">Handling errors</a></li>
+<li><a href="./08%20Testing%20—%20the%20sound%20of%20breaking%20glass.html" class="external_link">Testing<br>The sound of breaking glass</a></li>
+<li><a href="./09%20Documentation%20—%20the%20Doc%20is%20in.html" class="external_link">Documentation<br>The Doc is in</a></li>
+<li><a href="./10%20Make%20me.html" class="external_link">Make me</a></li>
+<li><a href="./11%20Providing%20help.html" class="external_link">Providing help</a></li>
+<li><a href="./12%20Scheduled%20Tasks.html" class="external_link">Scheduled Tasks</a></li>
+<li><a href="./13%20Windows%20Services.html" class="external_link">Windows Services</a></li>
+<li><a href="./14%20The%20Windows%20Event%20Log.html" class="external_link">The Windows Event Log</a></li>
+<li><a href="./15%20The%20Windows%20Registry.html" class="external_link">The Windows Registry</a></li>
+<li><a href="./16%20Creating%20SetUp.exe%20with%20Inno.html" class="external_link">Creating SetUp.exe with Inno</a></li>
+<li><a href="./17%20RegularExpressions.html" class="external_link">RegularExpressions</a></li>
+<li><a href="./18%20GUI.html" class="external_link">GUI</a></li>
+</ol>
+<div class="h_tag">
+<h3>Appendices</h3>
+</div>
+<ol>
+<li><a href="./50%20Appendix%201%20—%20Windows%20environment%20variables.html" class="external_link">Windows environment variables</a></li>
+<li><a href="./51%20Appendix%202%20—%20User%20commands.html" class="external_link">User commands</a></li>
+<li><a href="./52%20Appendix%203%20—%20aplcores%20and%20WS%20integrity.html" class="external_link">aplcores and WS integrity</a></li>
+<li><a href="./53%20Appendix%204%20—%20The%20development%20environment.html" class="external_link">The development environment</a></li>
+<li><a href="./54%20Appendix%205%20—%20Special%20characters.html" class="external_link">Special characters</a></li>
+</ol>
+<div class="h_tag">
+<h3>Misc</h3>
+</div>
+<ul>
+<li><a href="06%20Debugging%20a%20stand-alone%20EXE.html">Previous chapter</a></li>
+<li><a href="08%20Testing%20—%20the%20sound%20of%20breaking%20glass.html">Next chapter;</a></li>
+<li><a href="./Dyalog_Cookbook.html" class="external_link">Single document<br>(All chapters, for printing)</a></li>
+</ul>
+</div>
+</div>
+<div id="mainmenu">
+<a href=#><p><span id="mainmenu_match">≡</span></p></a>
+<p><span id="mainmenu_title">The Dyalog Cookbook</span></p>
+<nav id="main_nav">
+<input type="checkbox" id="hide_toc">
+<label id="hide_toc_label" for="hide_toc"></label>
+<div class="toc-container">
+<ul>
+<li><a href="#What-are-we-missing">What are we missing?</a></li>
+<li><a href="#Inspecting-Windows-exit-codes">Inspecting Windows exit codes</a></li>
+<li><a href="#Foreseen-errors">Foreseen errors</a>
+<ul>
+<li><a href="#Passing-an-exit-code-to-the-caller">Passing an exit code to the caller</a></li>
+<li><a href="#The-function-Off">The function <code>Off</code></a></li>
+<li><a href="#Trapping-errors">Trapping errors</a></li>
+</ul></li>
+<li><a href="#Unforeseen-errors">Unforeseen errors</a>
+<ul>
+<li><a href="#Global-trapping">Global trapping</a></li>
+<li><a href="#Trap-parameters">Trap parameters</a></li>
+<li><a href="#Test-the-global-trap">Test the global trap</a></li>
+<li><a href="#The-crash-files">The crash files</a></li>
+<li><a href="#About-ErrorParms">About #.ErrorParms</a></li>
+<li><a href="#Very-early-errors">Very early errors</a></li>
+</ul></li>
+<li><a href="#HandleError-in-detail">HandleError in detail</a>
+</ul>
+</div>
+</nav>
+</div>
+<div id="content" class="snap-content">
+<div id="cookbook_content">
+<div class="h_tag">
+<a href="#7-Handling-errors" id="7-Handling-errors" class="autoheader_anchor">
+<h1>7. Handling errors</h1>
+</a>
+</div>
+<p><code>MyApp</code> already anticipates, tests for and reports certain foreseeable problems with the parameters. We’ll now move on, to handle errors more comprehensively.</p>
+<div class="h_tag">
+<a href="#What-are-we-missing" id="What-are-we-missing" class="autoheader_anchor">
+<h2>What are we missing?</h2>
+</a>
+</div>
+<ol start="1">
+<li>Other problems are foreseeable. The file system is a rich source of ephemeral problems and displays. Many of these are caught and handled by the APLTree utilities.
+<p>They might make several attempts to read or write a file before giving up and signalling an error. Hooray. We need to handle the events signalled when the utilities give up.</p></li>
+<li>The MyApp <abbr title="Executable file with the extension 'exe'">EXE</abbr> terminates with an all-OK zero exit code even when it has caught and handled an error.
+<p>It would be a better Windows citizen if it returned custom exit codes, letting a calling program know how it terminated.</p></li>
+<li>By definition, unforeseen problems haven’t been foreseen.
+<p>But we foresee there will be some! A mere typo in the code could break execution. We need a master trap to catch any events that would break execution, save them for analysis, and report them in an orderly way.</p></li>
+</ol>
+<p>We'll start with the second item from the list above: quitting and passing an exit code.</p>
+<div class="h_tag">
+<a href="#Inspecting-Windows-exit-codes" id="Inspecting-Windows-exit-codes" class="autoheader_anchor">
+<h2>Inspecting Windows exit codes</h2>
+</a>
+</div>
+<p>How do you see the exit code returned to Windows? You can access it in the command shell like this:</p>
+<pre><code>Z:\code\v05\MyApp.exe Z:\texts\en
+
+echo Exit Code is %errorlevel%
+Exit Code is 0
+
+MyApp.exe Z:\texts\does_not_exist
+
+echo Exit Code is %errorlevel%
+Exit Code is 101</code></pre>
+<p>but only if you ticked the check box <em>Console application</em> in the <em>Export</em> dialog box. We don’t want to do this if we can help it, because we cannot ride into an application with this option active. Therefore we are going to execute our stand-alone <abbr title="Executable file with the extension 'exe'">EXE</abbr> from now on with the help of the APLTree class <code>Execute</code>.</p>
+<p>Copy <code>Z:\code\v06</code> to <code>Z:\code\v07</code>.</p>
+<p>For the implementation of global error handling we need APLTree's <code>HandleError</code> class. For calling the exported <abbr title="Executable file with the extension 'exe'">EXE</abbr> we need the <code>Execute</code> class. Therefore we add both to the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>. Edit <code>Z:\code\v07\MyApp.dyapp</code>:</p>
+<pre><code>Target #
+Load ..\AplTree\APLTreeUtils
+Load ..\AplTree\FilesAndDirs
+<span class="leanpub_code">Load ..\AplTree\HandleError
+Load ..\AplTree\Execute
+</span>Load ..\AplTree\Logger
+Load Constants
+Load Utilities
+Load MyApp
+Run MyApp.SetLX</code></pre>
+<div class="h_tag">
+<a href="#Foreseen-errors" id="Foreseen-errors" class="autoheader_anchor">
+<h2>Foreseen errors</h2>
+</a>
+</div>
+<p>For foreseen errors we check in the code and quit when something is wrong, and pass an error code to the calling environment.</p>
+<p>First we define in <code>#.MyApp</code> a child namespace of exit codes:</p>
+<pre><code>    :Namespace EXIT
+        OK←0
+        INVALID_SOURCE←111
+        SOURCE_NOT_FOUND←112
+        UNABLE_TO_READ_SOURCE←113
+        UNABLE_TO_WRITE_TARGET←114
+          GetName←{
+              l←' '~¨⍨↓⎕NL 2
+              ind←({⍎¨l}l)⍳⍵
+              ind⊃l,⊂'Unknown error'
+          }
+    :EndNamespace</code></pre>
+<p>We define an <code>OK</code> value of zero for completeness; we really <em>are</em> trying to eliminate from our functions numerical constants that the reader has to interpret. In Windows, an exit code of zero is a normal exit.</p>
+<p>All the exit codes are defined in this namespace. The function code can refer to them by name, so the meaning is clear. And this is the <em>only</em> definition of the exit-code values.</p>
+<p>We can convert the numeric value back to the symbolic name with the function <code>GetName</code>:</p>
+<pre><code>      EXIT.GetName EXIT.INVALID_SOURCE
+INVALID_SOURCE</code></pre>
+<p>This is useful when we want to log an error code: the name is telling while the number is meaningless.</p>
+
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
+<div>
+<p>We could have defined <code>EXIT</code> in <code>#.Constants</code>, but we reserve that script for Dyalog constants, keeping it as a component that could be used in other Dyalog applications. The exit codes defined in <code>EXIT</code> are specific to <code>MyApp</code>, so are better defined there.</p>
+</div>
+</div>
+
+<div class="h_tag">
+<a href="#Passing-an-exit-code-to-the-caller" id="Passing-an-exit-code-to-the-caller" class="autoheader_anchor">
+<h3>Passing an exit code to the caller</h3>
+</a>
+</div>
+<p>Now the result of <code>TxtToCsv</code> gets passed to <code>Off</code> to be returned to the operating system as an exit code.</p>
+<pre><code>∇ StartFromCmdLine;exit;args;rc
+ ⍝ Read command parameters, run the application
+  args←⌷2 ⎕NQ'.' 'GetCommandLineArgs'
+<span class="leanpub_code">  rc←TxtToCsv 2⊃2↑args
+  Off rc
+</span>∇</code></pre>
+<p>Note that in this particular case we set a local variable <code>rc</code>. Strictly speaking, this is not necessary. We learned from experience not to call several functions on a single line with the left-most being <code>Off</code>. (If you do, you will regret it one day.)</p>
+<div class="h_tag">
+<a href="#The-function-Off" id="The-function-Off" class="autoheader_anchor">
+<h3>The function <code>Off</code></h3>
+</a>
+</div>
+<p>Now we introduce a function <code>Off</code>:</p>
+<pre><code>∇ Off exitCode
+  :If 0&lt;⎕NC'MyLogger'
+      :If exitCode=EXIT.OK
+          MyLogger.Log'MyApp is closing down gracefully'
+      :Else
+          MyLogger.LogError exitCode('MyApp is unexpectedly shutting down: ',EXIT.GetName exitCode)
+      :EndIf
+  :EndIf
+  :If A.IsDevelopment
+      →
+  :Else
+      ⎕OFF exitCode
+  :EndIf
+∇</code></pre>
+
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
+<div>
+<p>In case you wonder about <code>⎕OFF</code>: that's actually a niladic function. Being able to provide a ‘right argument’ is therefore a kind of cheating because there can’t be any. This is a special case in the Dyalog parser.</p>
+</div>
+</div>
+
+<p>Note that <code>⎕OFF</code> is actually only executed when the program detects a runtime environment, otherwise it just quits. Although the workspace is much less important in these days of scripts you still don’t want to lose it by accident.</p>
+<p>We modify <code>GetFiles</code> so that it checks its arguments and the intermediary results:</p>
+<pre><code>leanpub-start-insert
+∇ (rc target files)←GetFiles fullfilepath;csv;target;path;stem;isDir
+⍝ Checks argument and returns a list of files (or a single file).
+</span>   fullfilepath~←'"'
+<span class="leanpub_code">   files←target←''
+   :If 0∊⍴fullfilepath
+       rc←EXIT.INVALID_SOURCE
+       :Return
+   :EndIf
+</span>   csv←'.csv'
+<span class="leanpub_code">   :If 0=F.Exists fullfilepath
+</span>       rc←EXIT.SOURCE_NOT_FOUND
+<span class="leanpub_code">   :ElseIf ~isDir←F.IsDir fullfilepath
+   :AndIf ~F.IsFile fullfilepath
+       rc←EXIT.INVALID_SOURCE
+   :Else
+       :If isDir
+</span>           target←F.NormalizePath fullfilepath,'\total',csv
+<span class="leanpub_code">           files←⊃F.Dir fullfilepath,'/*.txt'
+       :Else
+</span>           (path stem)←2↑⎕NPARTS fullfilepath
+           target←path,stem,csv
+           files←,⊂fullfilepath
+<span class="leanpub_code">       :EndIf
+</span>       target←(~0∊⍴files)/target
+<span class="leanpub_code">       rc←EXIT.OK
+</span>   :EndIf
+∇</code></pre>
+<p>Note that we have replaced some constants by calls to functions in <code>FilesAndDirs</code>. You might find this easier to read.</p>
+<p>In general, we like functions to <em>start at the top and exit at the bottom</em>. Returning from the middle of a function can lead to confusion, and we have acquired a great respect for our capacity to get confused.</p>
+<p>However, here we don’t mind exiting the function with <code>:Return</code> on line 5. It’s obvious why that is, and it saves us one level of nesting in the control structures. Also, there is no tidying up at the end of the function that we would miss with <code>:Return</code>.</p>
+<div class="h_tag">
+<a href="#Trapping-errors" id="Trapping-errors" class="autoheader_anchor">
+<h3>Trapping errors</h3>
+</a>
+</div>
+<p><code>ProcessFile</code> now traps some errors:</p>
+<pre><code>∇ data←(fns ProcessFiles)files;txt;file
+ Reads all files and executes `fns` on the contents.
+  data←⍬
+  :For file :In files
+<span class="leanpub_code">      :Trap Config.Trap/FileRelatedErrorCodes
+</span>          txt←'flat'A.ReadUtf8File file
+<span class="leanpub_code">      :Case
+          MyLogger.LogError'Unable to read source: ',file
+          Off EXIT.UNABLE_TO_READ_SOURCE
+      :EndTrap
+</span>      data,←⊂fns txt
+  :EndFor
+∇</code></pre>
+<p>In the line with the <code>:Trap</code> we call a niladic function (an exception to our rule!) which returns all error codes that are related to problems with files:</p>
+<pre><code>∇ r←FileRelatedErrorCodes
+⍝ Returns all the error codes that are related to files and directories.
+⍝ Useful to trap all those errors.
+  r←12 18 20 21 22 23 24 25 26 28 30 31 32 34 35
+∇</code></pre>
+<p>Doesn’t that breach our policy of avoiding unintelligible constants in the code? It does indeed.</p>
+<p>Let’s fix this. There is a class <code>EventCodes</code> available on the APLTree that contains symbolic names for all these error numbers. The symbolic names are taken from the help page you get when you press <code>F1</code> on <code>⎕TRAP</code>. Add this class to your <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> file:</p>
+<pre><code>...
+Load ..\AplTree\Logger
+<span class="leanpub_code">Load ..\AplTree\EventCodes.dyalog
+</span>Load Constants
+Load Utilities
+Load MyApp
+Run #.MyApp.SetLX ⍬</code></pre>
+<p>The <code>EventCodes</code> class comes with a method <code>GetName</code> that, when fed with an integer, returns the corresponding symbolic name. We can use that to convert return codes to meaningful names:</p>
+<pre><code>      #.EventCodes.GetName¨ #.MyApp.FileRelatedErrorCodes
+HOLD_ERROR  FILE_TIE_ERROR  FILE_INDEX_ERROR  FILE_FULL  FILE_NAME_ERROR...</code></pre>
+<p>We can convert this into something that will be useful when we change the function <code>FileRelatedErrorCodes</code>:</p>
+<pre><code>      ⍪'r,←E.'∘,¨#.EventCodes.GetName¨#.MyApp.FileRelatedErrorCodes
+ r,←E.HOLD_ERROR
+ r,←E.FILE_TIE_ERROR
+ r,←E.FILE_INDEX_ERROR
+ r,←E.FILE_FULL
+ ...</code></pre>
+<p>Now we can change <code>FileRelatedErrorCodes</code> by copying what we've just printed to the session into the function:</p>
+<pre><code>∇ r←FileRelatedErrorCodes;E
+⍝ Returns all the error codes that are related to files and directories.
+⍝ Useful to trap all those errors.
+  r←''
+  E←##.EventCodes
+  r,←E.HOLD_ERROR
+  r,←E.FILE_TIE_ERROR
+  r,←E.FILE_INDEX_ERROR
+  r,←E.FILE_FULL
+  r,←E.FILE_NAME_ERROR
+  r,←E.FILE_DAMAGED
+  r,←E.FILE_TIED
+  r,←E.FILE_TIED_REMOTELY
+  r,←E.FILE_SYSTEM_ERROR
+  r,←E.FILE_SYSTEM_NOT_AVAILABLE
+  r,←E.FILE_SYSTEM_TIES_USED_UP
+  r,←E.FILE_TIE_QUOTA_USED_UP
+  r,←E.FILE_NAME_QUOTA_USED_UP
+  r,←E.FILE_SYSTEM_NO_SPACE
+  r,←E.FILE_ACCESS_ERROR_CONVERTING_FILE
+∇</code></pre>
+
+<div class="leanpub_A">
+<h3>Why don’t we just <code>:Trap</code> all errors?</h3>
+<p><code>:Trap 0</code> would trap all errors - way easier to read and write, so why don’t we do this?</p>
+<p>Well, for a very good reason: trapping everything includes such basic things as a VALUE ERROR, most likely introduced by a typo, or removing a function you thought not called anywhere.</p>
+<p>We don’t want to trap those errors during development. The sooner they come to light the better. For that reason we restrict the errors to be trapped to whatever might pop up when it comes to dealing with files and directories.</p>
+<p>Your shipped system must trap all errors. (See <em>Unforeseen errors</em> below.) When you have to trap all errors, use a global flag which will allow you to switch it off in development. <code>:Trap trapFlag/0</code>: if <code>trapFlag</code> is 1 then the trap is active, otherwise it is not.</p>
+</div>
+
+<p>Back to <code>ProcessFiles</code>. Note that in this context the <code>:Trap</code> structure has an advantage over <code>⎕TRAP</code>. When it fires, and control advances to its <code>:Else</code> fork, the trap is immediately cleared.</p>
+<p>This neatly avoids the following pitfall: a trap fires and invokes a handling expression. But the handling expression also breaks, re-invoking the trap in what now becomes an open loop.</p>
+<p>So with <code>:Trap</code> there is no need to reset the trap to avoid an open loop. But you must still consider what might happen if you call other functions in the <code>:Else</code> fork: if they crash the <code>:Trap</code> would fire again!</p>
+<p>The handling of error codes and messages can easily obscure the rest of the logic. Clarity is not always easy to find, but is worth striving for. This is particularly true where there is no convenient test for an error, only a trap for when it is encountered.</p>
+<p>Note that here for the first time we take advantage of the <code>[Config]Trap</code> flag defined in the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file, which translates to <code>Config.Trap</code> at this stage. With this flag we can switch off all ‘local’ error trapping, a measure we sometimes need to take to get to the bottom of a problem.</p>
+<p>Finally we need to amend <code>TxtToCsv</code>:</p>
+<pre><code>    ∇ exit←TxtToCsv fullfilepath;∆;isDev;Log;LogError;files;target;success
+     ⍝ Write a sibling CSV of the TXT located at fullfilepath,
+     ⍝ containing a frequency count of the letters in the file text
+<span class="leanpub_code">     ⍝ Returns one of the values defined in `EXIT`.
+      (rc target files)←GetFiles fullfilepath
+      :If rc=EXIT.OK
+</span>          :If 0∊⍴files
+              MyLogger.Log'No files found to process'
+          :Else
+              tbl←⊃⍪/(CountLetters ProcessFiles)files
+              lines←{⍺,',',⍕⍵}/{⍵[⍒⍵[;2];]}⊃{⍺(+/⍵)}⌸/↓[1]tbl
+              :Trap Config.Trap/FileRelatedErrorCodes
+                  A.WriteUtf8File target lines
+                  success←1
+              :Case
+                  MyLogger.LogError'Writing to &lt;',target,'&gt; failed, rc=',(⍕⎕EN),'; ',⊃⎕DMX
+                  rc←EXIT.UNABLE_TO_WRITE_TARGET
+                  success←0
+              :EndTrap
+              :If success
+                  MyLogger.Log(⍕⍴files),' file',((1&lt;⍴files)/'s'),' processed:'
+                  MyLogger.Log' ',↑files
+              :EndIf
+<span class="leanpub_code">          :EndIf
+</span>      :EndIf
+    ∇</code></pre>
+<p>Note that the exit code is tested against <code>EXIT.OK</code>. Testing <code>0=exit</code> would work and read as well, but relies on <code>EXIT.OK</code> being 0. The point of defining the codes in <code>EXIT</code> is to make the functions relate to the exit codes only by their names.</p>
+
+<div class="leanpub_A">
+<h3>Logging file-related errors</h3>
+<p>Logging errors related to files in a real-world application requires more attention to detail: <code>⎕DMX</code> provides more information that can be very useful:</p>
+<ul>
+<li><code>Message</code></li>
+<li><code>OSErrors</code></li>
+<li><code>InternalLocation</code></li>
+</ul>
+</div>
+
+<div class="h_tag">
+<a href="#Unforeseen-errors" id="Unforeseen-errors" class="autoheader_anchor">
+<h2>Unforeseen errors</h2>
+</a>
+</div>
+<p>Our code so far covers the errors we foresee: errors in the parameters, and errors encountered in the file system. There remain the unforeseen errors, chief among them, errors in our own code.</p>
+<p>If the code we have so far breaks, the <abbr title="Executable file with the extension 'exe'">EXE</abbr> will try to report the problem to the session, find no session, and abort with an exit code of 4 to tell Windows “Sorry, it didn’t work out.”</p>
+<p>If the error is replicable, we can easily track it down using the development interpreter.</p>
+<p>But the error might not be replicable. It could, for instance, have been produced by ephemeral congestion on a network interfering with file operations. Or the parameters for your app might be so complicated that it is hard to replicate the environment and data with confidence. What you really want for analysing the crash is a <em>crash workspace</em>, a picture of the ship when it went down.</p>
+<div class="h_tag">
+<a href="#Global-trapping" id="Global-trapping" class="autoheader_anchor">
+<h3>Global trapping</h3>
+</a>
+</div>
+<p>For this we need a high-level – or global – trap to catch any event not trapped by any specific <code>:Trap</code> statements. We want it to save the workspace for analysis. We might also want it to report the incident to the developer – users don’t always do this! For this we’ll use the <code>HandleError</code> class from the APLTree.</p>
+<p>Define a new <code>EXIT</code> code constant:</p>
+<pre><code>    ....
+    OK←0
+<span class="leanpub_code">    APPLICATION_CRASHED←104
+</span>    INVALID_SOURCE←111
+    ...</code></pre>
+
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
+<div>
+<p>104? Why not 4, the standard Windows code for a crashed application? The distinction is useful. An exit code of 104 will tell us MyApp’s trap caught and reported the crash. An exit code of 4 tells you even the trap failed!</p>
+</div>
+</div>
+
+<p>We want to establish general error trapping as soon as possible, but we also need to know where to save crash files etc. That means we start right after having instantiated the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file, because that’s where we get this kind of information from. For establishing error trapping we need to set <code>⎕TRAP</code>.</p>
+<p>Because we want to ensure any function down the stack can pass a certain error up to the next definition of <code>⎕TRAP</code> (see the <code>⎕TRAP</code> help, options <code>C</code> and <code>N</code>) it is vitally important not only to set but also to <em>localise</em> <code>⎕TRAP</code> in <code>StartFromCmdLine</code></p>
+<pre><code>leanpub-start-insert
+∇ {r}←StartFromCmdLine arg;MyLogger;Config;rc;⎕TRAP
+</span>⍝ Needs command line parameters, runs the application.
+   r←⍬
+   (Config MyLogger)←Initial ⍬
+<span class="leanpub_code">   ⎕WSID←'MyApp'
+   ⎕TRAP←(Config.Debug=0) SetTrap Config
+</span>   rc←TxtToCsv arg~''''
+   Off rc
+∇</code></pre>
+<p>We need to set <code>⎕WSID</code> because the global trap will attempt to save a workspace in the event of a crash.</p>
+<div class="h_tag">
+<a href="#Trap-parameters" id="Trap-parameters" class="autoheader_anchor">
+<h3>Trap parameters</h3>
+</a>
+</div>
+<p>We set <code>⎕TRAP</code> by assigning the result of <code>SetTrap</code>, so we we need to create that function now:</p>
+<pre><code>∇ trap←{force}SetTrap Config
+⍝ Returns a nested array that can be assigned to `⎕TRAP`.
+  force←{0&lt;⎕NC ⍵:⍎⍵ ⋄ 0}'force'
+  #.ErrorParms←##.HandleError.CreateParms
+  #.ErrorParms.errorFolder←⊃Config.Get'Folders:Errors'
+  #.ErrorParms.returnCode←EXIT.APPLICATION_CRASHED
+  #.ErrorParms.logFunction←MyLogger.Log
+  #.ErrorParms.windowsEventSource←'MyApp'
+  #.ErrorParms.addToMsg←' --- Something went terribly wrong'
+  trap←force ##.HandleError.SetTrap '#.ErrorParms'
+∇</code></pre>
+<p>Notes:</p>
+<ul>
+<li>First we generate a parameter space with default values by calling <code>HandleError.CreateParms</code>.</li>
+<li>We then overwrite some of the defaults:
+<ul>
+<li>Where to save crash information</li>
+<li>The return code</li>
+<li>What function to use for logging purposes</li>
+<li>Name of the source to be used when reporting the problem to the Windows Event Log (empty=no reporting at all)</li>
+<li>Additional message to be added to the report send to the Windows Event Log: see the chapter on the Windows Event Log</li>
+</ul></li>
+<li>We specify <code>ErrorParms</code> as a global named namespace for two reasons:
+<ul>
+<li>Any function might crash, and we need to ‘see’ the namespace with the parameters needed in case of a crash, so it has to be a global in <code>#</code>.</li>
+<li>The <code>⎕TRAP</code> statement allows us to call a function and to pass parameters except references, so it has to be a named namespace.</li>
+</ul></li>
+</ul>
+<p>Let’s investigate how this will work; trace into <code>#.MyApp.StartFromCmdLine ''</code>. When you reach line 4, <code>Config</code> exists, so now you can call <code>MyApp.SetTrap</code> with different left arguments:</p>
+<pre><code>      SetTrap Config
+ 0 1000 S
+      0 SetTrap Config
+ 0 1000 S
+      1 SetTrap Config
+ 0 E #.HandleError.Process '#.ErrorParms'
+      #.ErrorParms.∆List
+ addToMsg
+ checkErrorFolder                                                      1
+ createHTML                                                            1
+ customFns
+ customFnsParent
+ enforceOff                                                            0
+ errorFolder                     C:\Users\kai\AppData\Local\MyApp\Errors
+ logFunction                                                         Log
+ logFunctionParent   [Logger:C:\Users\...\MyApp_20170305.log(¯70419218)]
+ off                                                                   1
+ returnCode                                                          104
+ saveCrash                                                             1
+ saveErrorWS                                                           1
+ saveVars                                                              1
+ signal                                                                0
+ trapInternalErrors                                                    1
+ trapSaveWSID                                                          1
+ windowsEventSource</code></pre>
+<div class="h_tag">
+<a href="#Test-the-global-trap" id="Test-the-global-trap" class="autoheader_anchor">
+<h3>Test the global trap</h3>
+</a>
+</div>
+<p>We can test this by inserting a line with a full stop[<a href="#fnref1" class="footnote_link"><sup>1</sup></a>] into, say, <code>CountLettersIn</code>.</p>
+<p>But that would be awkward. We don’t really want to change our source code in order to test error trapping. (Many an application crashed in production because a programmer forgot to remove a break point before going live.) So we put another setting in the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file:</p>
+<pre><code>[Config]
+Debug       = ¯1    ; 0=enfore error trapping; 1=prevent error trapping;
+Trap        = 1     ; 0 disables any :Trap statements (local traps)
+<span class="leanpub_code">ForceError  = 1     ; 1=let TxtToCsv crash (for testing global trap handling)
+</span>...</code></pre>
+<p>That requires two minor changes in <code>CreateConfig</code>:</p>
+<pre><code>∇ Config←CreateConfig dummy;myIni;iniFilename
+...
+<span class="leanpub_code">Config.ForceError←0
+</span>      iniFilename←'expand'F.NormalizePath'MyApp.ini'
+      :If F.Exists iniFilename
+          myIni←⎕NEW ##.IniFiles(,⊂iniFilename)
+<span class="leanpub_code">          Config.ForceError←myIni.Get'Config:ForceError'
+</span></code></pre>
+<p>We change <code>TxtToCsv</code> so that it crashes in case <code>Config.ForceError</code> equals 1:</p>
+<pre><code>∇ rc←TxtToCsv fullfilepath;files;tbl;lines;target
+⍝ Write a sibling CSV of the TXT located at fullfilepath,
+⍝ containing a frequency count of the letters in the file text.
+⍝ Returns one of the values defined in `EXIT`.
+   MyLogger.Log'Source: ',fullfilepath
+   (rc target files)←GetFiles fullfilepath
+<span class="leanpub_code">   {~⍵:r←⍬ ⋄ 'Deliberate error (INI flag "ForceError"'⎕SIGNAL 11}ForceError
+</span>...</code></pre>
+<p>The dfns <code>{~⍵:r←⍬ ⋄ …</code> uses a guard to signal an error in case <code>⍵</code> is true and otherwise does nothing but return a shy result. In order to test error trapping we don’t need even to create and execute a new <abbr title="Executable file with the extension 'exe'">EXE</abbr>. Instead we just set <code>ForceError</code> to 1 and then call <code>#.MyApp.StartFromCmdLine</code> from within the <abbr title="Short for Workspaces">WS</abbr>:</p>
+<pre><code>      #.MyApp.StartFromCmdLine 'Z:\texts\ulysses.txt'
+⍎SYNTAX ERROR
+TxtToCsv[6] . ⍝ Deliberate error (INI flag "ForceError")
+           ∧</code></pre>
+<p>That’s exactly what we want! Error trapping should not interfere when we are developing.</p>
+<p>To actually test error trapping we need to set the <code>Debug</code> flag in the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file to 0. That will tell <code>MyApp</code> we want error trapping active, no matter what environment we are in. Change the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file accordingly and execute it again.</p>
+<pre><code>      )reset
+      #.MyApp.StartFromCmdLine 'Z:\texts\ulysses.txt'
+HandleError.Process caught SYNTAX ERROR</code></pre>
+<p>Note that <code>HandleError</code> has not executed <code>⎕OFF</code> because we executed this in a development environment.</p>
+<p>That’s all we see in the session, but when you check the folder <code>#.ErrorParms.errorFolder</code> you will find that indeed there were three new files created in that folder for this crash.</p>
+<p>Note that had you traced through the code there would be just two files: the workspace would be missing.</p>
+<p>The reason is: with the Tracer active the current workspace cannot be saved. Generally there are two reasons for no workspace being saved:</p>
+<ul>
+<li>An open edit or trace window</li>
+<li>More than one thread running at the moment of the crash</li>
+</ul>
+
+<div class="leanpub_A">
+<p>This is not strictly true. When <code>HandleError</code> detects multiple threads it tries to kill all of them. By definition that won’t work because (a) it cannot kill the main thread (0); and (b) it cannot kill its own thread.</p>
+<p>However, if it happens to run in the main thread at that very moment it will get rid of all other running threads and be able to save a crash workspace afterwards as a result.</p>
+</div>
+
+<p>Because we’ve defined a source for the Windows Event Log, <code>HandleError</code> has reported the error accordingly:</p>
+<p><img src="Images/MyAppEventViewer.png" alt="Windows Event Log" title="Windows Event Log"></p>
+<p>See the discussion of the Windows Event Log in a later chapter.</p>
+<p>We also find evidence in the log file that something broke; see LogDog:</p>
+<p><img src="Images/LogDog2.png" alt="The log file" title="The log file"></p>
+<p>This is done for us automatically by the <code>HandleError</code> class because we provided the name of a logging function, and a ref pointing to the instance where that log function lives.</p>
+<p>We also have an HTM with a crash report, an eponymous <abbr title="Dyalog workspace">D<abbr title="Short for Workspaces">WS</abbr></abbr> containing the workspace saved at the time it broke, and an eponymous DCF whose single component is a namespace of all the variables visible at the moment of the crash. Some of this has got to help.</p>
+<p>Note that the crash file names are simply the <abbr title="Short for Workspaces">WS</abbr>ID and the timestamp prefixed by an underscore:</p>
+<pre><code>      ⍪{⊃,/1↓⎕NPARTS⍵}¨⊃#.FilesAndDirs.Dir #.ErrorParms.errorFolder,'\'
+ MyApp_20170307111141.dcf
+ MyApp_20170307111141.dws
+ MyApp_20170307111141.html</code></pre>
+<p>Save your work and re-export the <abbr title="Executable file with the extension 'exe'">EXE</abbr>.</p>
+<div class="h_tag">
+<a href="#The-crash-files" id="The-crash-files" class="autoheader_anchor">
+<h3>The crash files</h3>
+</a>
+</div>
+<p>What's <em>in</em> those crash files?</p>
+<p>The HTM contains a report of the crash and some key system variables:</p>
+<pre><code>MyApp_20170307111141
+
+Version:   Windows-64 16.0 W Development
+⎕WSID:       MyApp
+⎕IO:       1
+⎕ML:       1
+⎕WA:       62722168
+⎕TNUMS:       0
+Category:
+EM:           SYNTAX ERROR
+HelpURL:
+EN:           2
+ENX:       0
+InternalLocation:    parse.c 1739
+Message:
+OSError:   0 0
+Current Dir:    ...code\v07
+Command line:    "...\Dyalog\...\dyalog.exe" DYAPP="...code\v07\MyApp.dyapp"
+Stack:
+
+#.HandleError.Process[22]
+#.MyApp.TxtToCsv[6]
+#.MyApp.StartFromCmdLine[6]
+Error Message:
+
+⍎SYNTAX ERROR
+TxtToCsv[6] . ⍝ Deliberate error (INI flag "ForceError")
+           ∧</code></pre>
+<p>More information is saved in a single component – a namespace – on the DCF.</p>
+<pre><code>      (#.ErrorParms.errorFolder,'/MyApp_20160513112024.dcf') ⎕FTIE 1
+      ⎕FSIZE 1
+1 2 7300 1.844674407E19
+      q←⎕FREAD 1 1
+      q.⎕NL ⍳10
+AN
+Category
+CurrentDir
+DM
+EM
+EN
+ENX
+HelpURL
+InternalLocation
+LC
+Message
+OSError
+TID
+TNUMS
+Trap
+Vars
+WA
+WSID
+XSI</code></pre>
+<pre><code>      q.Vars.⎕NL 2
+ACCENTS
+args
+exit
+files
+fullfilepath
+i
+isDev
+tbl
+tgt</code></pre>
+<p>The <abbr title="Dyalog workspace">D<abbr title="Short for Workspaces">WS</abbr></abbr> is the crash workspace. Load it. The Latent Expression has been disabled to ensure <code>MyApp</code> does not attempt to start up again.</p>
+<pre><code>      ⎕LX
+⎕TRAP←0 'S' ⍝#.MyApp.StartFromCmdLine</code></pre>
+<p>The state indicator shows the workspace captured at the moment the <code>HandleError</code> object saved the workspace. Your real problem – the full stop in <code>MyApp.TxtToCsv</code> – is some levels down in the stack.</p>
+<pre><code>      )SI
+#.HandleError.SaveErrorWorkspace[7]*
+#.HandleError.Process[28]
+#.MyApp.TxtToCsv[6]*
+#.MyApp.StartFromCmdLine[6]</code></pre>
+<p>You can clear <code>HandleError</code> off the stack with a naked branch arrow; note the <code>*</code> on the first and third line. When you do so, you'll find the original global trap restored. Disable it. Otherwise any error you produce while running code will trigger <code>HandleError</code> again!</p>
+<pre><code>      →
+      )SI
+#.MyApp.TxtToCsv[6]*
+#.MyApp.StartFromCmdLine[6]
+      ⎕TRAP
+  0 E #.HandleError.Process '#.ErrorParms'
+      ⎕TRAP←0/⎕TRAP
+</code></pre>
+<p>We also want to check whether the correct return code is returned. For that we have to call the <abbr title="Executable file with the extension 'exe'">EXE</abbr>, but we don’t do this in a console window for the reasons we discussed earlier. Instead we use the <code>Execute</code> class which provides two main methods:</p>
+<ul>
+<li><code>Process</code> allows us to catch a program’s standard output</li>
+<li><code>Application</code> allows us to catch a program’s exit code</li>
+</ul>
+<pre><code>      ⎕←2⊃#.Execute.Application 'Myapp.exe '"Z:\texts\ulysses.txt"'
+104</code></pre>
+<p>In development you’ll discover and fix most errors while working from the APL session. Unforeseen errors encountered by the <abbr title="Executable file with the extension 'exe'">EXE</abbr> will be much rarer. Now you’re all set to investigate them!</p>
+<div class="h_tag">
+<a href="#About-ErrorParms" id="About-ErrorParms" class="autoheader_anchor">
+<h3>About #.ErrorParms</h3>
+</a>
+</div>
+<p>We’ve established <code>#.ErrorParms</code> as a namespace, and we have explained why: <code>HandleError.Process</code> needs to see <code>ErrorParms</code>, no matter the circumstances, otherwise it cannot work. Since we construct the workspace from scratch when we start developing it cannot do any harm because we quit as soon as the work is done.</p>
+<p>Or can it? Let’s check. First, change the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file so that it reads:</p>
+<pre><code>...
+</span>Trap        = 1    ; 0 disables any :Trap statements (local traps)
+<span class="leanpub_code">ForceError  = 0    ; 1=let TxtToCsv crash (for testing global trap handling)
+</span>...</code></pre>
+<p>Now double-click the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>, call <code>#.MyApp.StartFromCmdLine ''</code> and execute:</p>
+<pre><code>      ⎕nnames
+C:\Users\kai\AppData\Local\MyApp\Log\MyApp_20170309.log</code></pre>
+<p>The log file is still open! Now that’s what we expect to see as long as <code>MyLogger</code> lives, but that is kept local in <code>#.MyApp.StartFromCmdLine</code>, so why is this? The culprit is <code>ErrorParms</code>! In order to allow <code>HandleError</code> to write to our log file we’ve provided not only the name of the log file but also a reference pointing to the instance the log function is living in:</p>
+<pre><code>      #.ErrorParms.logFunctionParent
+[Logger:C:\Users\kai\AppData\Local\MyApp\Log/MyApp_20170309.log(¯76546889)]</code></pre>
+<p>In short: we have a good reason to get rid of <code>ErrorParms</code> once the program has finished – but how? <code>⎕SHADOW</code> to the rescue! With <code>⎕SHADOW</code> we can declare a variable to be local from within a function. Mainly useful for localising names that have been constructed by other expressions, we can use it to make <code>ErrorParms</code> local within <code>StartFromCmdLine</code>. For that we add a single line:</p>
+<pre><code>∇ {r}←StartFromCmdLine arg;MyLogger;Config;rc;⎕TRAP
+⍝ Needs command line parameters, runs the application.
+  r←⍬
+<span class="leanpub_code">  #.⎕SHADOW'ErrorParms'
+</span>  ⎕WSID←'MyApp'
+....</code></pre>
+<p>Note that we put <code>#.</code> in front of <code>⎕SHADOW</code>; that is effectlively the same as having a header <code>StartFromCmdLine;#.ErrorParms</code> – but that is syntactically impossible to do. With <code>#.⎕SHADOW</code> it works. When you now try a double-click on the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> and call <code>#.MyApp.StartFromCmdLine</code> you will find that no file is tied any more, and that <code>#.ErrorParms</code> is not hanging around either.</p>
+<div class="h_tag">
+<a href="#Very-early-errors" id="Very-early-errors" class="autoheader_anchor">
+<h3>Very early errors</h3>
+</a>
+</div>
+<p>Tthere is a possibility of <code>MyApp</code> crashing without the global trap catching it. This is because we establish the global trap only <em>after</em> instantiating the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file. Only then do we know where to write the crash files, how to log the error, etc.</p>
+<p>But an error might occur before that!</p>
+<p>Naturally there is no perfect solution available here but we can at least try to catch such errors.</p>
+<p>For this we establish a <code>⎕TRAP</code> with default settings very early, and we make sure that <code>⎕WSID</code> is set even earlier, otherwise any attempt to save the crash <abbr title="Short for Workspaces">WS</abbr> will fail.</p>
+<pre><code>∇ {r}←StartFromCmdLine arg;MyLogger;Config;rc;⎕TRAP
+⍝ Needs command line parameters, runs the application.
+  r←⍬
+<span class="leanpub_code">  ⎕WSID←'MyApp'
+  ⎕SIGNAL 0
+  ⎕TRAP←1 #.HandleError.SetTrap ⍬
+  .
+</span>  #.⎕SHADOW'ErrorParms'
+  ....</code></pre>
+<p>Note that we use the <code>SetTrap</code> function in <code>HandleError</code>. It accepts a parameter space as right argument, but it also accepts an empty vector, when it falls back to the defaults.</p>
+
+<div class="leanpub_A">
+<h3>Resetting the diagnostic message and the event number</h3>
+<p>We take the opportunity to initialize both <code>⎕DM</code> and <code>⎕EN</code>: with <code>⎕SIGNAL 0</code> we ensure</p>
+<pre><code>      .
+.
+SYNTAX ERROR
+     .
+    ∧
+      ⎕DM
+SYNTAX ERROR
+     ⎕EN
+2
+     ⎕SIGNAL 0
+     ⎕DM
+
+     ⎕EN
+0</code></pre>
+</div>
+
+<p>For testing purposes we have provided a <code>1</code> as left argument, which enforces error trapping even in a development environment. In the following line we break the program with a full stop.</p>
+<p>When you now call <code>#.MyApp.StartFromCmdLine ''</code> the error is caught. Of course no logging will take place but it will still try to save the crash files. Since no better place is known it will try to create a folder <code>MyApp\Errors</code> in <code>%LOCALAPPDATA%</code>.</p>
+<p>You can try this now but make sure that when you are ready you remove the line with the full stop from <code>MyApp.StartFromCmdLine</code> and also remove the <code>1</code> provided as left argument to <code>HandleError.SetTrap</code>.</p>
+<div class="h_tag">
+<a href="#HandleError-in-detail" id="HandleError-in-detail" class="autoheader_anchor">
+<h2>HandleError in detail</h2>
+</a>
+</div>
+<p><code>HandleError</code> can be configured in many ways by changing the defaults provided by the <code>CreateParms</code> method. There is a table with documentation available; execute <code>]ADoc #.HandleError</code> and scroll to <code>CreateParms</code>. Most of the parameters are self-explaining but some need background information.</p>
+<pre><code>    #.HandleError.CreateParms.∆List
+addToMsg
+checkErrorFolder          1
+createHTML                1
+customFns
+customFnsParent
+enforceOff                0
+errorFolder         Errors/
+logFunction
+logFunctionParent
+off                       1
+returnCode                1
+saveCrash                 1
+saveErrorWS               1
+saveVars                  1
+signal                    0
+trapInternalErrors        1
+trapSaveWSID              1
+windowsEventSource</code></pre>
+<dl>
+<dt><code>signal</code></dt>
+<dd><p class="first_dd">By default, <code>HandleError</code> executes <code>⎕OFF</code> in a runtime environment. That’s not always the best way to deal with an error.</p></dd>
+<dd><p>In a complex application it might be the case that just one command fails, but the rest of the application is doing fine. In that case we would be better off by setting <code>off</code> to 0 and signalling a numeric code that can be caught by yet another <code>⎕TRAP</code> that simply allows the user to explore other commands in the application.</p></dd>
+<dt><code>trapInternalErrors</code></dt>
+<dd>This flag allows you to switch off any error trapping <em>within</em> <code>HandleError</code>. This can be useful in case something goes wrong. It can be useful when working on or debugging <code>HandleError</code> itself.</dd>
+<dt><code>saveCrash</code>, <code>saveErrorWS</code> and <code>saveVars</code></dt>
+<dd>While <code>saveCrash</code> and <code>saveVars</code> are probably always 1, setting <code>saveErrorWS</code> to 0 is perfectly reasonable if you know any attempt to save the error <abbr title="Short for Workspaces">WS</abbr> will fail, for example because your application is multi-threaded. (Another good reason to not save a workspace is to keep your code from spying eyes.)</dd>
+<dt><code>customFns</code> and <code>customFnsParent</code></dt>
+<dd>This allows you to have <code>HandleError</code> call a function of your choice. For example, you can use this to send an email or a text to a certain address.</dd>
+<dt><code>windowsEventSource</code></dt>
+<dd>This defaults to an empty vector, meaning that <code>HandleError</code> does not attempt to write to the Windows Event Log. Writing to the Windows Event Log is discussed in its own chapter.</dd>
+</dl>
+<div id="footnotes_div">
+<hr>
+<p><strong>Footnotes</strong></p>
+<ol>
+<li id="fnref1"><p>The English poets among us love that the tersest way to bring a function to a full stop is to type one. (American poets will of course have typed a period and will think of it as calling time out.)</p><a href="#fnref1" class="footnote_anchor"></a>
+</ol>
+</div>
+</div>
+</div>
+<script>
+var snapper = new Snap({
+element: document.getElementById('content')
+});
+document.getElementById('mainmenu_match').onclick = function(){
+snapper.state().state==='closed'?snapper.open('left'):snapper.close();
+}
+</script>
+</body>
+</html>

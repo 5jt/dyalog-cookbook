@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta charset="utf-8">
+<title>Installer</title>
+<link href="./CSS/BlackOnWhite_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/Cookbook_Chapter_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/snap.css" rel="stylesheet" media="screen">
+<link href="./CSS/BlackOnWhite_print.css" rel="stylesheet" media="print">
+<link href="./CSS/Cookbook_Chapter_print.css" rel="stylesheet" media="print">
+<script src="./JavaScript/snap.js"></script>
+</head>
+<body>
+<div class="snap-drawers">
+<div class="snap-drawer snap-drawer-left">
+<div class="h_tag">
+<h3>Chapters</h3>
+</div>
+<ol>
+<li><a href="./01%20Introduction.html" class="external_link">Introduction</a></li>
+<li><a href="./02%20Structure.html" class="external_link">Structure</a></li>
+<li><a href="./03%20Package%20MyApp%20as%20an%20executable.html" class="external_link">Package MyApp as an executable</a></li>
+<li><a href="./04%20Logging%20what%20happens%20.html" class="external_link">Logging what happens </a></li>
+<li><a href="./05%20Configuration%20settings.html" class="external_link">Configuration settings</a></li>
+<li><a href="./06%20Debugging%20a%20stand-alone%20EXE.html" class="external_link">Debugging a stand-alone EXE</a></li>
+<li><a href="./07%20Handling%20errors.html" class="external_link">Handling errors</a></li>
+<li><a href="./08%20Testing%20—%20the%20sound%20of%20breaking%20glass.html" class="external_link">Testing<br>The sound of breaking glass</a></li>
+<li><a href="./09%20Documentation%20—%20the%20Doc%20is%20in.html" class="external_link">Documentation<br>The Doc is in</a></li>
+<li><a href="./10%20Make%20me.html" class="external_link">Make me</a></li>
+<li><a href="./11%20Providing%20help.html" class="external_link">Providing help</a></li>
+<li><a href="./12%20Scheduled%20Tasks.html" class="external_link">Scheduled Tasks</a></li>
+<li><a href="./13%20Windows%20Services.html" class="external_link">Windows Services</a></li>
+<li><a href="./14%20The%20Windows%20Event%20Log.html" class="external_link">The Windows Event Log</a></li>
+<li><a href="./15%20The%20Windows%20Registry.html" class="external_link">The Windows Registry</a></li>
+<li><a href="./16%20Creating%20SetUp.exe%20with%20Inno.html" class="external_link">Creating SetUp.exe with Inno</a></li>
+<li><a href="./17%20RegularExpressions.html" class="external_link">RegularExpressions</a></li>
+<li><a href="./18%20GUI.html" class="external_link">GUI</a></li>
+</ol>
+<div class="h_tag">
+<h3>Appendices</h3>
+</div>
+<ol>
+<li><a href="./50%20Appendix%201%20—%20Windows%20environment%20variables.html" class="external_link">Windows environment variables</a></li>
+<li><a href="./51%20Appendix%202%20—%20User%20commands.html" class="external_link">User commands</a></li>
+<li><a href="./52%20Appendix%203%20—%20aplcores%20and%20WS%20integrity.html" class="external_link">aplcores and WS integrity</a></li>
+<li><a href="./53%20Appendix%204%20—%20The%20development%20environment.html" class="external_link">The development environment</a></li>
+<li><a href="./54%20Appendix%205%20—%20Special%20characters.html" class="external_link">Special characters</a></li>
+</ol>
+<div class="h_tag">
+<h3>Misc</h3>
+</div>
+<ul>
+<li><a href="15%20The%20Windows%20Registry.html">Previous chapter</a></li>
+<li><a href="17%20RegularExpressions.html">Next chapter;</a></li>
+<li><a href="./Dyalog_Cookbook.html" class="external_link">Single document<br>(All chapters, for printing)</a></li>
+</ul>
+</div>
+</div>
+<div id="mainmenu">
+<a href=#><p><span id="mainmenu_match">≡</span></p></a>
+<p><span id="mainmenu_title">The Dyalog Cookbook</span></p>
+<nav id="main_nav">
+<input type="checkbox" id="hide_toc">
+<label id="hide_toc_label" for="hide_toc"></label>
+<div class="toc-container">
+<ul>
+<li><a href="#Defining-the-goal">Defining the goal</a></li>
+<li><a href="#Which-tool">Which tool</a></li>
+<li><a href="#Inno-and-Script-Studio">Inno and Script Studio</a></li>
+<li><a href="#Sources-of-information">Sources of information</a></li>
+<li><a href="#Considerations">Considerations</a></li>
+<li><a href="#Sample-application">Sample application</a></li>
+<li><a href="#Using-Inno">Using Inno</a>
+<ul>
+<li><a href="#Structure-of-an-Inno-script">Structure of an Inno script</a></li>
+<li><a href="#The-file-Fooiss">The file <code>Foo.iss</code></a></li>
+<li><a href="#Define-variables">Define variables</a></li>
+<li><a href="#setup">The section [Setup]</a></li>
+<li><a href="#lang">The section [Languages]</a></li>
+<li><a href="#registry">The section [Registry]</a></li>
+<li><a href="#dirs">The section [Dirs]</a></li>
+<li><a href="#files">The section [Files]</a></li>
+<li><a href="#icons">The section [Icons]</a></li>
+<li><a href="#run">The section [Run]</a></li>
+<li><a href="#tasks">The section [Tasks]</a></li>
+<li><a href="#code">The section [Code]</a></li>
+</ul></li>
+<li><a href="#Conclusion">Conclusion</a>
+</ul>
+</div>
+</nav>
+</div>
+<div id="content" class="snap-content">
+<div id="cookbook_content">
+<div class="h_tag">
+<a href="#16-Creating-SetUpexe-with-Inno" id="16-Creating-SetUpexe-with-Inno" class="autoheader_anchor">
+<h1>16. Creating SetUp.exe with Inno</h1>
+</a>
+</div>
+<div class="h_tag">
+<a href="#Defining-the-goal" id="Defining-the-goal" class="autoheader_anchor">
+<h2>Defining the goal</h2>
+</a>
+</div>
+<p>Our application is now ready to be installed on a client's machine. What we need is a tool that:</p>
+<ol start="1">
+<li>Collects all the files needed on a target machine</li>
+<li>Writes an installer <code>SetUp.exe</code> (you could choose a different name) that installs MyApp on the target machine with all its files</li>
+</ol>
+<p>There are other things an installer might do, but these are the essential tasks.</p>
+<div class="h_tag">
+<a href="#Which-tool" id="Which-tool" class="autoheader_anchor">
+<h2>Which tool</h2>
+</a>
+</div>
+<p>There are quite a number of tools available to write installers. Wix[<a href="#fnref1" class="footnote_link"><sup>1</sup></a>] is popular, and a good candidate if you need to install your application in a large corporations.</p>
+<p>Wix is very powerful, but its power has a price: complexity. We reckon your first customers are unlikely to have the complex installation requirements of a large corporation. You can start with something simpler.</p>
+<p>If that’s not so, and you need to install your application in a complex corporate IT environment, consider consulting an IT professional for this part of the work.</p>
+<p>Starting smaller allows you to choose a tool that is less complicated and can be mastered fast. Inno has made a name for itself as a tool that combines powerful features with an easy-to-use interface.</p>
+<p>To download Inno visit <a href="http://www.jrsoftware.org/isdl.php" class="external_link">http://www.jrsoftware.org/isdl.php</a>. We recommend the 'QuickStart Pack'. That not only installs the Inno compiler and its help but also Inno Script Studio from Kymoto (<a href="https://www.kymoto.org/" class="external_link">https://www.kymoto.org/</a>).</p>
+<p>It also comes with an encrypting DLL – although we don't see the point of encrypting the installer: after installation user can access all the files anyway.</p>
+<p>The Script Studio not only makes it easier to use Inno, it also comes with a very helpful debugger.</p>
+<p>At the time of writing both packages are free, even for commercial usage. We encourage you to donate to both Inno and Script Studio as soon as you start to make money with your software.</p>
+<div class="h_tag">
+<a href="#Inno-and-Script-Studio" id="Inno-and-Script-Studio" class="autoheader_anchor">
+<h2>Inno and Script Studio</h2>
+</a>
+</div>
+<p>The easiest way to start with Inno is to take an existing script and study it. Trial and error and Inno's old-fashioned-looking but otherwise excellent help are your friends.</p>
+<div class="h_tag">
+<a href="#Sources-of-information" id="Sources-of-information" class="autoheader_anchor">
+<h2>Sources of information</h2>
+</a>
+</div>
+<p>When you run into an issue or badly need a particular feature, then Googling for it is of course a good idea, and can be even better than referring to Inno's help. The help is excellent as a reference – you just type a term you need help with and press F1 – but if you don't know exactly what to search for, Google is your friend.</p>
+<p>Often enough Google points you to Inno's help anyway, getting you straight to the right page. In For example, Google does an excellent job when you search for something like <em>Inno src</em>.</p>
+<p>We have found that all we needed while getting acquainted with Inno.</p>
+<div class="h_tag">
+<a href="#Considerations" id="Considerations" class="autoheader_anchor">
+<h2>Considerations</h2>
+</a>
+</div>
+<p>An installer needs admin rights. Installing a program is a potentially dangerous thing.</p>
+
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
+<div>
+<p>It is rare these days to install an application in, say, <code>C:\MyFolder</code>. Under such rare circumstances it might be possible to install an application without admin rights.</p>
+<p>However, even installing a font requires admin rights.</p>
+</div>
+</div>
+
+<p>Programs are usually installed in one of:</p>
+<ul>
+<li><code>C:\Program Files</code></li>
+<li><code>C:\Program Files (x86)</code></li>
+</ul>
+<p>Those directories are protected by Windows, so only an administrator can install programs. An installer might do other things that require admin rights, for example…</p>
+<ul>
+<li>install a Windows Service</li>
+<li>create an Event Log</li>
+<li>create entries in the Windows Registry</li>
+</ul>
+<p>Again, you must consider where certain things should be written to. Log files cannot and should not go into either <code>C:\Program Files</code> and <code>C:\Program Files (x86)</code>, so they need to go elsewhere.</p>
+<p>Let's suppose we want to install an application Foo. Your options are to create a folder <code>Foo</code> within…</p>
+<ul>
+<li><code>C:\ProgramData</code></li>
+<li><code>C:\Users\{username}\AppData\Local</code></li>
+<li><code>C:\Users\{username}\AppData\Roaming</code></li>
+</ul>
+<p>The <code>Roaming</code> folder is the right choice if a user wants the application to be available regardless of which computer she logs on to.</p>
+
+<div class="leanpub_A">
+<h3>About C:\ProgramData</h3>
+<p>There is only one difference between the <em>AppData</em> and the <em>ProgramData</em> folders: every user has her own <em>AppData</em> folder but there is only a single <em>ProgramData</em> folder, shared by all users.</p>
+<p>The folder <code>C:\ProgramData</code> is hidden by default, so you will see it only when you tick the <em>Hidden items</em> check box on the <em>View</em> tab of the Windows Explorer.</p>
+</div>
+
+<p>Of course you can put that folder in any place you want — provided you have the necessary rights — but by choosing one of these two locations you stick to what's usual under Windows.</p>
+<div class="h_tag">
+<a href="#Sample-application" id="Sample-application" class="autoheader_anchor">
+<h2>Sample application</h2>
+</a>
+</div>
+<p>We use a very simple application for this chapter: the application Foo just puts up a form:</p>
+<p><img src="Images/foo.png" alt="Sample application 'Foo'" title="Sample application 'Foo'"></p>
+<p>As soon as you press either Enter or Esc or click the <em>Close</em> button it will quit. That's all it does.</p>
+<p>The application comes with several files. This is a list of <a href="http://cookbook.dyalog.com/code/v16/" class="external_link">http://cookbook.dyalog.com/code/v16/</a>:</p>
+<dl>
+<dt><code>Foo.dws</code></dt>
+<dd>The workspace from which <code>Foo.exe</code> was created with the <em>File &gt; Export</em> menu command</dd>
+<dt><code>Foo.exe</code></dt>
+<dd>The application's <abbr title="Executable file with the extension 'exe'">EXE</abbr>, created from the aforementioned workspace</dd>
+<dt><code>foo.ico</code></dt>
+<dd>The icon used by the application</dd>
+<dt><code>Foo.iss</code></dt>
+<dd>The Inno file that defines how to create the installer <abbr title="Executable file with the extension 'exe'">EXE</abbr>. It is this file we are going to discuss in detail.</dd>
+<dt><code>foo.ini.remove_me</code></dt>
+<dd>Foo's <abbr title="File with the extension 'ini' containing configuration data">INI</abbr></dd>
+<dt><code>ReadMe.html</code></dt>
+<dd><p class="first_dd">An HTM with basic information about the application</p></dd>
+<dd><p>With the exception of <code>Foo.exe</code> and <code>Foo.iss</code> the files are included for illustrative purposes only. The <abbr title="File with the extension 'ini' containing configuration data">INI</abbr>, for example, is not processed at all by Foo.</p></dd>
+</dl>
+<div class="h_tag">
+<a href="#Using-Inno" id="Using-Inno" class="autoheader_anchor">
+<h2>Using Inno</h2>
+</a>
+</div>
+<p>Before going into any detail let's look briefly at a typical Inno script.</p>
+<div class="h_tag">
+<a href="#Structure-of-an-Inno-script" id="Structure-of-an-Inno-script" class="autoheader_anchor">
+<h3>Structure of an Inno script</h3>
+</a>
+</div>
+<p>An Inno script, like a good old-fashioned <abbr title="File with the extension 'ini' containing configuration data">INI</abbr>, has sections:</p>
+<dl>
+<dt>Setup</dt>
+<dd>In this section you define all the constants specific to your application. There should be no other place where, say, a path or a filename is specified; it should all be done in the <code>[Setup]</code> section.</dd>
+<dt>Language</dt>
+<dd>Defines the language and the message file</dd>
+<dt>Registry</dt>
+<dd>Information to be written to the Windows Registry</dd>
+<dt>Dirs</dt>
+<dd>Constants that point to particular directories and specify permissions</dd>
+<dt>Files</dt>
+<dd>Files that are going to be collected within <code>SetUp.exe</code></dd>
+<dt>Icons</dt>
+<dd>Icons required</dd>
+<dt>Run</dt>
+<dd>Other programs to be run, either during installation or afterwards</dd>
+<dt>Tasks</dt>
+<dd>Check boxes or radio buttons for the installation wizard's windows so that the user can decide whether those tasks should be performed</dd>
+<dt>Code</dt>
+<dd><p class="first_dd">Defines programs (in a scripting language similar to Pascal) for doing more complex things</p></dd>
+<dd><p>Inno’s powerful built-in capabilities allow us to achieve our goals without writing any code, so we won't use the scripting capabilities. Note however that for many common tasks there are scripts available on the Internet.</p></dd>
+</dl>
+<div class="h_tag">
+<a href="#The-file-Fooiss" id="The-file-Fooiss" class="autoheader_anchor">
+<h3>The file <code>Foo.iss</code></h3>
+</a>
+</div>
+<p>Double-clicking the file's icon should open it in Inno Script Studio, the Inno IDE, with its execution and debugging tools.</p>
+<div class="h_tag">
+<a href="#Define-variables" id="Define-variables" class="autoheader_anchor">
+<h3>Define variables</h3>
+</a>
+</div>
+<p>As a preamble, define as variables all the values you will use in the script.</p>
+<p>This makes the script more readable, and guards against typos and conflicts.</p>
+<pre><code>#define MyAppVersion "1.0.0"
+#define MyAppName "Foo"
+#define MyAppExeName "Foo.exe"
+#define MyAppPublisher "My Company Ltd"
+#define MyAppURL "http://MyCompanyLtd.com/Foo"
+#define MyAppIcoName "Foo.ico"
+#define MyBlank " "</code></pre>
+<p><code>MyBlank</code> is included to improve readability. It makes it easier to spot a blank character in a name or path.</p>
+<div class="h_tag">
+<a href="#setup" id="setup" class="autoheader_anchor">
+<h3>The section [Setup]</h3>
+</a>
+</div>
+<pre><code>[Setup]
+; NOTE: The value of AppId uniquely identifies this application.
+; It's a 36-character long vector called a UUID or GUID.
+AppId={{E0DF5CAB-97E5-4935-A2ED-A7D43DD958D9}
+
+AppName="{#MyAppName}"
+AppVersion={#MyAppVersion}
+AppVerName={#MyAppName}{#MyBlank}{#MyAppVersion}
+AppPublisher={#MyAppPublisher}
+AppPublisherURL={#MyAppURL}
+AppSupportURL={#MyAppURL}
+AppUpdatesURL={#MyAppURL}
+DefaultDirName={pf32}\{#MyAppPublisher}\{#MyAppName}
+DefaultGroupName={#MyAppPublisher}\{#MyAppName}
+AllowNoIcons=yes
+OutputDir=ReadyToShip\Foo
+OutputBaseFilename="SetUp_{#MyAppName}"
+Compression=lzma
+SolidCompression=yes
+SetupIconFile={#MyAppIcoName}
+UninstallDisplayIcon={app}\{#MyAppIcoName}</code></pre>
+<p>The meaning of much of the above is pretty obvious. All those names <em>must</em> be be defined, however: Inno needs them.</p>
+<p>Notes:</p>
+<ul>
+<li>The variables defined at the top of the Inno script (before the first section) are dereferenced here as <code>{#varsname}</code>.</li>
+<li>The <code>AppId</code> is used to identify an application, in particular for un-installing it. It can be anything as long as it is less than 128 characters long but using a GUID[<a href="#fnref2" class="footnote_link"><sup>2</sup></a>] is a good idea. Tip: don't add a version number to it.
+<p>You can create a GUID from within Inno Script Studio: check the <em>Tools &gt; Generate GUID</em> menu item.</p></li>
+<li><code>pf32</code> is an internal Inno constant. It points to the machine's 32-bit program folder, by default <code>C:\Program folder (x86)</code>.
+<p>If you are packaging a 64-bit application, use <code>pf64</code> instead. Don't use <code>pf</code>. Although this does have a default and might work it's just not obvious: better to avoid this and be explicit.</p></li>
+<li><code>AllowNoIcons←1</code> will add a check box <em>Don't create a Start Menu folder</em> to the installer. That leaves it up to the user whether the installer should create such a folder, and under which name.</li>
+<li><code>app</code> is a constant that points to the folder where the user wants to install the application. It defaults to <code>DefaultDirName</code>: that is just a suggestion the user might or might not accept.
+<p><code>app</code> will point to the default, or whatever folder the user chooses instead.</p></li>
+</ul>
+<div class="h_tag">
+<a href="#lang" id="lang" class="autoheader_anchor">
+<h3>The section [Languages]</h3>
+</a>
+</div>
+<pre><code>[Languages]
+Name: "english"; MessagesFile: "compiler:Default.isl"; \
+  LicenseFile: "License.txt"; \
+  InfoBeforeFile: "ReadMe_Before.txt"; \
+  InfoAfterFile: "ReadMe_After.txt";</code></pre>
+<p>Inno supports multilingual installations but this is beyond the scope of this chapter. We define just one language here. The parameters for a single language must be defined on a single line but you can avoid very long lines by splitting them with a <code>\</code> at the end of a line as shown above.</p>
+<p>While the two parameters <code>Name</code> and <code>MessageFile</code> are required, the other three parameters are optional:</p>
+<ul>
+<li><code>LicenseFile</code></li>
+<li><code>InfoBeforeFile</code></li>
+<li><code>InfoAfterFile</code></li>
+</ul>
+<p>When we execute <code>Setup.exe</code> you will see when exactly their content is displayed. If <code>LicenseFile</code> is defined the user must accept the conditions before installation completes.</p>
+<div class="h_tag">
+<a href="#registry" id="registry" class="autoheader_anchor">
+<h3>The section [Registry]</h3>
+</a>
+</div>
+<pre><code>[Registry]
+Root: HKLM32; Subkey: "Software\{#MyAppPublisher}"; Flags: uninsdeletekeyifempty
+Root: HKLM32; Subkey: "Software\{#MyAppPublisher}\{#MyAppName}"; Flags: uninsdeletekey
+Root: HKLM32; Subkey: "Software\{#MyAppPublisher}\{#MyAppName}"; \
+  ValueType: string; ValueName: "RecentFiles"; ValueData: ""; Flags: uninsdeletekey</code></pre>
+<p>This section allows you to add settings to the Windows Registry.</p>
+<p>Notes:</p>
+<ul>
+<li>With <code>Root:</code> you define the root key. See <a href="./15 The Windows Registry#root-keys]" class="external_link">The Windows Registry: root keys</a> for details of which root keys you can specify.</li>
+<li>With <code>Subkey</code> you define the remaining part but the value. &lt;!– FIXME Clarify –&gt;</li>
+<li>A <em>value</em> in Microsoft terminology is called <code>ValueName</code> by Inno.</li>
+<li>The <em>data</em> is called <code>ValueData</code> by Inno.</li>
+<li><code>ValueType</code> specifies the data type of <code>ValueData</code>. If <code>ValueType</code> is unspecified (or <code>none</code>) Inno will create the key but <em>not</em> the value. &lt;FIXME Clarify: is it the <em>value</em> or the <em>data</em> Inno omits?)
+<p>Inno supports the following data types:</p>
+<ul>
+<li>none</li>
+<li>string</li>
+<li>expandsz</li>
+<li>multisz</li>
+<li>dword</li>
+<li>qword</li>
+<li>binary</li>
+</ul>
+<p>For details refer to the Inno help regarding the <code>[Registry]</code> setting.</p></li>
+<li>The keyword <code>uninsdeletekey</code> tells Inno that to delete the Registry key when the application is uninstalled. Without that keyword Inno would <em>not</em> delete any Registry keys and values when the application is uninstalled.</li>
+<li>The <code>uninsdeletekeyifempty</code> keyword is similar but let Inno delete the Registry key only when it is empty.
+<p>This comes in handy when you use the Registry for saving user preferences: as long as the user has not defined any preferences the key can be deleted safely.</p>
+<p>If she has defined preferences, you might prefer to leave them alone. She might uninstall just to install a better version, expecting her preferences to survive the procedure.</p></li>
+</ul>
+<div class="h_tag">
+<a href="#dirs" id="dirs" class="autoheader_anchor">
+<h3>The section [Dirs]</h3>
+</a>
+</div>
+<pre><code>[Dirs]
+Name: "{commonappdata}\{#MyAppName}"; Permissions: users-modify</code></pre>
+<p>From the Inno Help:</p>
+<blockquote>
+<p>This optional section defines any additional directories Setup is to create besides the application directory the user chooses, which is created automatically. Creating subdirectories underneath the main application directory is a common use for this section.</p>
+</blockquote>
+<p>With the above line we tell Inno to create a folder <code>{#MyAppName}</code> which in our case will be “My Company Ltd”. Note that <code>commonappdata</code> defaults to <code>ProgramData\</code>, usually on the <code>C:\</code> drive.</p>
+<p>Instead we could have used <code>localappdata</code>, which defaults to <code>C:\Users\{username}\AppData\Local</code>. There are many more constants available; refer to <em>Constants</em> in the Inno Help for details.</p>
+<p>We also tell Inno to give any user in the <code>Users</code> group the right to modify files in this directory.</p>
+
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/warning.png" alt="Warning">
+<div>
+<p>Of course you must not grant Modify rights to the folder where your application's <abbr title="Executable file with the extension 'exe'">EXE</abbr> lives, let alone to folders not associated with your application.</p>
+</div>
+</div>
+
+<p>Note that if you install the application <em>again</em> the folder <em>won't</em> be created – and you won't see an error message either.</p>
+<div class="h_tag">
+<a href="#files" id="files" class="autoheader_anchor">
+<h3>The section [Files]</h3>
+</a>
+</div>
+<pre><code>[Files]
+Source: "ReadMe.html"; DestDir: "{app}";
+Source: "Foo.ico"; DestDir: "{app}";
+;Source: "bridge160_unicode.dll"; DestDir: "{app}";
+;Source: "dyalognet.dll"; DestDir: "{app}";
+Source: "{#MyAppExeName}"; DestDir: "{app}";
+Source: "foo.ini.remove_me"; DestDir: "{app}"; DestName:"foo.ini"; Flags: onlyifdoesntexist;
+Source: {#MyAppIcoName}; DestDir: "{app}";
+Source: "C:\Windows\Fonts\apl385.ttf"; DestDir: "{fonts}"; FontInstall: "APL385 Unicode"; Flags: onlyifdoesntexist uninsneveruninstall
+; NOTE: Don't use "Flags: ignoreversion" on any shared system files
+
+; ----------- For Ride: ---------------
+;Source: "Conga*.dll"; DestDir: "{app}";
+; -------------------------------------</code></pre>
+<p>We have included here a number of files quite common in any APL application:</p>
+<ul>
+<li>A <code>ReadMe.html</code></li>
+<li>The icon used by the GUI</li>
+<li><code>bridge*</code> and <code>DyalogtNet.dll</code>, needed for even the simplest .NET call</li>
+<li>The <abbr title="Executable file with the extension 'exe'">EXE</abbr> of course</li>
+<li><code>foo.ini.remove_me</code>, to be renamed to <code>foo.ini</code> if one does not already exist
+<p>This way you ensure no existing <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file is overwritten. This is importantif the user installs a better version over an earlier one.</p></li>
+<li>With <code>{#MyAppIcoName}; DestDir: "{app}";</code> you make sure that a folder, etc., is inserted into the Start menu. However, you may give the user a say in this; see <code>AllowNoIcons</code> in the <a href="#setup" class="bookmark_link">The section [SetUp]</a>.</li>
+<li>We include the font <code>APL385 Unicode</code> if it does not already exist (<code>onlyifdoesntexist</code>) and we ensure the font is not uninstalled, even if the application is (<code>uninsneveruninstall</code>).</li>
+<li>If you want to Ride into your application you also need the Conga DLLs. Usually this would be done only while the application is still under development or being tested.</li>
+</ul>
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/warning.png" alt="Warning">
+<div>
+<h3>.NET</h3>
+<p>If your applications calls any .NET methods make sure you include the Dyalog .NET bridge files!</p>
+</div>
+</div>
+
+<div class="h_tag">
+<a href="#icons" id="icons" class="autoheader_anchor">
+<h3>The section [Icons]</h3>
+</a>
+</div>
+<pre><code>[Icons]
+Name: "{group}\Start Foo"; Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}\";  IconFilename: "{app}\{#MyAppIcoName}"
+Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\{#MyAppIcoName}"; Tasks: desktopicon</code></pre>
+<p>The first line inserts group and application name into the Windows Start menu. Read up on <em>group</em> in the Inno help for what the group name means and where it is installed: there are differences between users who install the application with admin rights and those who don't.</p>
+<div class="h_tag">
+<a href="#run" id="run" class="autoheader_anchor">
+<h3>The section [Run]</h3>
+</a>
+</div>
+<pre><code>[Run]
+Filename: "{app}\ReadMe.html"; Description: "View the README file"; Flags: postinstall shellexec skipifsilent
+Filename: "{app}\{#MyAppExeName}"; Description: "Launch Foo"; Flags: postinstall skipifsilent nowait</code></pre>
+<p>Notes:</p>
+<ul>
+<li>The first entry displays the file <code>ReadMe.html</code> with the default browser (<code>shellexec</code> on an <abbr title="Hyper Text Mark-up language">HTML</abbr> file) after the application has been installed (<code>postinstall</code>).
+<p>If the command-line options <code>silent</code> or <code>verysilent</code> are specified then <code>ReadMe.html</code> is <em>not</em> put on display (<code>skipifsilent</code>).</p></li>
+<li>The second entry offers to launch the application after the installation (<code>postinstall</code>) but only if neither <code>silent</code> nor <code>verysilent</code> were specified (<code>skipifsilent</code>) and Inno is not waiting for the application (<code>nowait</code>).</li>
+<li>Both entries are offered as check boxes ticked by default; the user may clear them to prevent the associated action from being carried out.</li>
+</ul>
+<div class="h_tag">
+<a href="#tasks" id="tasks" class="autoheader_anchor">
+<h3>The section [Tasks]</h3>
+</a>
+</div>
+<pre><code>[Tasks]
+Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}";</code></pre>
+<p>From the Inno help:</p>
+<blockquote>
+<p>This section is optional. It defines all of the user-customizable tasks Setup will perform during installation. These tasks appear as check boxes and radio buttons on the Select Additional Tasks wizard page.</p>
+</blockquote>
+<p>In our example we specify only one task, and it's linked to <code>desktopicon</code> (see the [Icons] section).</p>
+<p>However, this is a much more powerful feature than it looks like at first glance! For example, you can give the user a choice between installing the…</p>
+<ul>
+<li>application</li>
+<li>database engine</li>
+<li>test data</li>
+</ul>
+<p>or any combination of them.</p>
+<p>To achieve that you need to add the (optional) section <code>[Components]</code> and list all the files involved there. You can then create additional lines in the <code>[Task]</code> section that link to those lines in <code>[Components]</code>.</p>
+<p>The user is then presented with a list of check boxes that allow her to select the options she's after.</p>
+<p>Note that <code>cm:CreateDesktopIcon</code> refers to a message <code>CreateDesktopIcon</code> which can be modified if you wish. The <code>cm</code> stands for <em>Custom Message</em>. For that, you would insert the (optional) section <code>[CustomMessages]</code> like this:</p>
+<pre><code>[CustomMessages]
+CreateDesktopIcon = This and that</code></pre>
+<p>That would overwrite the internal message.</p>
+<div class="h_tag">
+<a href="#code" id="code" class="autoheader_anchor">
+<h3>The section [Code]</h3>
+</a>
+</div>
+<p>Inno comes with a built-in script language that allows you to do pretty much whatever you like. However, scripting is beyond the scope of this chapter.</p>
+<div class="h_tag">
+<a href="#Conclusion" id="Conclusion" class="autoheader_anchor">
+<h2>Conclusion</h2>
+</a>
+</div>
+<p>Although Inno is significantly easier to master than the top dog Wix, it provides a large selection of features and options. This chapter only scratches the surface, but it will get you going.</p>
+<div id="footnotes_div">
+<hr>
+<p><strong>Footnotes</strong></p>
+<ol>
+<li id="fnref1"><p><a href="http://wixtoolset.org/" class="external_link">http://wixtoolset.org/</a>:<br>Windows Installer</p><a href="#fnref1" class="footnote_anchor"></a>
+<li id="fnref2"><p><a href="https://blogs.msdn.microsoft.com/oldnewthing/20080627-00/?p=21823/" class="external_link">https://blogs.msdn.microsoft.com/oldnewthing/20080627-00/?p=21823/</a>:<br>About GUIDs</p><a href="#fnref2" class="footnote_anchor"></a>
+</ol>
+</div>
+</div>
+</div>
+<script>
+var snapper = new Snap({
+element: document.getElementById('content')
+});
+document.getElementById('mainmenu_match').onclick = function(){
+snapper.state().state==='closed'?snapper.open('left'):snapper.close();
+}
+</script>
+</body>
+</html>

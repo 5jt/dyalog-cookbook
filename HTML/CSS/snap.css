@@ -1,0 +1,117 @@
+html, body {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.snap-content {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: auto;
+  height: auto;
+  z-index: 2;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  -webkit-transform: translate3d(0, 0, 0);
+     -moz-transform: translate3d(0, 0, 0);
+      -ms-transform: translate3d(0, 0, 0);
+       -o-transform: translate3d(0, 0, 0);
+          transform: translate3d(0, 0, 0);
+}
+
+.snap-drawers {
+  position: absolute;
+  top: 5.5em;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin-left: 0.3em;
+  margin-bottom: 1em; /* */
+  width: auto;
+  height: auto;
+}
+
+.snap-drawer {
+  position: absolute;
+  top: 0;
+  right: auto;
+  bottom: 0;
+  left: auto;
+  width: 300px;
+  height: auto;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  -webkit-transition: width 0.3s ease;
+     -moz-transition: width 0.3s ease;
+      -ms-transition: width 0.3s ease;
+       -o-transition: width 0.3s ease;
+          transition: width 0.3s ease;
+}
+
+.snap-drawer-left {
+  left: 0;
+  z-index: 1;
+}
+
+.snap-drawer-left a, ol, h3 {
+    text-decoration: none;
+}
+.snap-drawer-left ol {
+    margin-left: 1em;
+}
+.snap-drawer-left a ,ol {
+    font-size: 0.9em;
+    line-height: 1;
+}
+
+.snap-drawer-right {
+  right: 0;
+  z-index: 1;
+}
+
+.snapjs-left .snap-drawer-right,
+.snapjs-right .snap-drawer-left {
+  display: none;
+}
+
+.snapjs-expand-left .snap-drawer-left,
+.snapjs-expand-right .snap-drawer-right {
+  width: 100%;
+}
+
+/* ************************************************************** */
+/* Additions for the Cookbook                                     */ 
+/* ************************************************************** */
+
+.snap-drawer > div.h_tag > h3 {
+    font-size: 0.9em;
+    margin: 1.5em 0 0.7em 0.5em;
+}
+.snap-drawer-left li  {
+    line-height: 1;
+}
+.snap-drawer > li {
+    font-size: 0.3em;
+
+.snap-drawer {
+    margin: 3.33em 0.56em 2.22em;
+}
+
+.snap-drawer ul {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+}
+.snap-drawer > ol {
+    font-size: 0.8rem;
+}
+
+.snap-drawer > ol > li > a {
+    font-size: 0.9rem;
+}

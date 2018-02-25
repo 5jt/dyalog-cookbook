@@ -1,0 +1,33 @@
+/* Cookbook's CSS file; to be used for the single HTML file with all chapters */
+
+div#mainmenu {
+     display: none;
+}
+div.toc-container h1 {
+    font-size: 1em;
+    margin: 2pt 0 3pt 8pt;
+    page-break-before: avoid;
+    page-break-after: avoid;
+}
+div.leanpub_A h1 {
+    page-break-before: avoid;
+    page-break-after: avoid;
+}
+h1 {
+    page-break-before: right;
+    page-break-after: always;
+    font-size: 22pt;
+    margin-top: 100pt;
+    text-align: center;
+}
+h2:first {
+    margin-top: 0;
+}
+h1.appendix_h1 {
+    margin: 30pt;
+    page-break-before: always;
+    page-break-after: avoid;
+    font-size: 18pt;
+    margin-top: 100pt;
+    text-align: center;
+}

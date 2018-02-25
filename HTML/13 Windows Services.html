@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta charset="utf-8">
+<title>Services</title>
+<link href="./CSS/BlackOnWhite_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/Cookbook_Chapter_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/snap.css" rel="stylesheet" media="screen">
+<link href="./CSS/BlackOnWhite_print.css" rel="stylesheet" media="print">
+<link href="./CSS/Cookbook_Chapter_print.css" rel="stylesheet" media="print">
+<script src="./JavaScript/snap.js"></script>
+</head>
+<body>
+<div class="snap-drawers">
+<div class="snap-drawer snap-drawer-left">
+<div class="h_tag">
+<h3>Chapters</h3>
+</div>
+<ol>
+<li><a href="./01%20Introduction.html" class="external_link">Introduction</a></li>
+<li><a href="./02%20Structure.html" class="external_link">Structure</a></li>
+<li><a href="./03%20Package%20MyApp%20as%20an%20executable.html" class="external_link">Package MyApp as an executable</a></li>
+<li><a href="./04%20Logging%20what%20happens%20.html" class="external_link">Logging what happens </a></li>
+<li><a href="./05%20Configuration%20settings.html" class="external_link">Configuration settings</a></li>
+<li><a href="./06%20Debugging%20a%20stand-alone%20EXE.html" class="external_link">Debugging a stand-alone EXE</a></li>
+<li><a href="./07%20Handling%20errors.html" class="external_link">Handling errors</a></li>
+<li><a href="./08%20Testing%20—%20the%20sound%20of%20breaking%20glass.html" class="external_link">Testing<br>The sound of breaking glass</a></li>
+<li><a href="./09%20Documentation%20—%20the%20Doc%20is%20in.html" class="external_link">Documentation<br>The Doc is in</a></li>
+<li><a href="./10%20Make%20me.html" class="external_link">Make me</a></li>
+<li><a href="./11%20Providing%20help.html" class="external_link">Providing help</a></li>
+<li><a href="./12%20Scheduled%20Tasks.html" class="external_link">Scheduled Tasks</a></li>
+<li><a href="./13%20Windows%20Services.html" class="external_link">Windows Services</a></li>
+<li><a href="./14%20The%20Windows%20Event%20Log.html" class="external_link">The Windows Event Log</a></li>
+<li><a href="./15%20The%20Windows%20Registry.html" class="external_link">The Windows Registry</a></li>
+<li><a href="./16%20Creating%20SetUp.exe%20with%20Inno.html" class="external_link">Creating SetUp.exe with Inno</a></li>
+<li><a href="./17%20RegularExpressions.html" class="external_link">RegularExpressions</a></li>
+<li><a href="./18%20GUI.html" class="external_link">GUI</a></li>
+</ol>
+<div class="h_tag">
+<h3>Appendices</h3>
+</div>
+<ol>
+<li><a href="./50%20Appendix%201%20—%20Windows%20environment%20variables.html" class="external_link">Windows environment variables</a></li>
+<li><a href="./51%20Appendix%202%20—%20User%20commands.html" class="external_link">User commands</a></li>
+<li><a href="./52%20Appendix%203%20—%20aplcores%20and%20WS%20integrity.html" class="external_link">aplcores and WS integrity</a></li>
+<li><a href="./53%20Appendix%204%20—%20The%20development%20environment.html" class="external_link">The development environment</a></li>
+<li><a href="./54%20Appendix%205%20—%20Special%20characters.html" class="external_link">Special characters</a></li>
+</ol>
+<div class="h_tag">
+<h3>Misc</h3>
+</div>
+<ul>
+<li><a href="12%20Scheduled%20Tasks.html">Previous chapter</a></li>
+<li><a href="14%20The%20Windows%20Event%20Log.html">Next chapter;</a></li>
+<li><a href="./Dyalog_Cookbook.html" class="external_link">Single document<br>(All chapters, for printing)</a></li>
+</ul>
+</div>
+</div>
+<div id="mainmenu">
+<a href=#><p><span id="mainmenu_match">≡</span></p></a>
+<p><span id="mainmenu_title">The Dyalog Cookbook</span></p>
+<nav id="main_nav">
+<input type="checkbox" id="hide_toc">
+<label id="hide_toc_label" for="hide_toc"></label>
+<div class="toc-container">
+<ul>
+<li><a href="#What-is-a-Windows-Service">What is a Windows Service</a></li>
+<li><a href="#Windows-Services-and-the-Windows-Event-Log">Windows Services and the Windows Event Log</a></li>
+<li><a href="#Restrictions">Restrictions</a></li>
+<li><a href="#The-ServiceState-namespace">The ServiceState namespace</a></li>
+<li><a href="#Installing-and-uninstalling-a-Service">Installing and uninstalling a Service.</a></li>
+<li><a href="#Obstacles">Obstacles</a>
+<ul>
+<li><a href="#The-Service-seems-to-be-doing-nothing-at-all">The Service seems to be doing nothing at all</a></li>
+<li><a href="#The-Service-starts-but-ignores-Pause-and-Stop-requests">The Service starts but ignores Pause and Stop requests</a></li>
+<li><a href="#The-application-does-not-do-whats-supposed-to-do">The application does not do what's supposed to do</a></li>
+</ul></li>
+<li><a href="#Potions-and-wands">Potions and wands</a>
+<ul>
+<li><a href="#Ride">Ride</a></li>
+</ul></li>
+<li><a href="#Logging">Logging</a>
+<ul>
+<li><a href="#Local-logging">Local logging</a>
+<ul>
+<li><a href="#Windows-event-log">Windows event log</a></li>
+</ul></li>
+<li><a href="#How-to-implement-it">How to implement it</a>
+<ul>
+<li><a href="#Setting-the-latent-expression">Setting the latent expression</a></li>
+<li><a href="#Initialising-the-Service">Initialising the Service</a></li>
+<li><a href="#The-business-logic">The “business logic”</a></li>
+<li><a href="#Running-the-test-cases">Running the test cases</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#Installing-and-un-installing-the-Service">Installing and un-installing the Service</a></li>
+<li><a href="#Make-for-the-Service">“Make” for the Service</a></li>
+<li><a href="#Testing-the-Service">Testing the Service</a>
+<ul>
+<li><a href="#Running-the-tests">Running the tests</a>
+</li></ul></li>
+</ul>
+</div>
+</nav>
+</div>
+<div id="content" class="snap-content">
+<div id="cookbook_content">
+<div class="h_tag">
+<a href="#13-Windows-Services" id="13-Windows-Services" class="autoheader_anchor">
+<h1>13. Windows Services</h1>
+</a>
+</div>
+<div class="h_tag">
+<a href="#What-is-a-Windows-Service" id="What-is-a-Windows-Service" class="autoheader_anchor">
+<h2>What is a Windows Service</h2>
+</a>
+</div>
+<p>While the Windows Task Manager just starts any ordinary application, any application that runs as a Windows Service must be specifically designed to meet certain requirements.</p>
+<p>In particular, services communicate by exchanging messages with the Windows Service Control Manager (SCM).</p>
+<p>Commands can be issued by the <code>SC.exe</code> (Service Controller) application or interactively via the Services application. This allows the user to start, pause, continue (resume) and stop a Windows Service.</p>
+<div class="h_tag">
+<a href="#Windows-Services-and-the-Windows-Event-Log" id="Windows-Services-and-the-Windows-Event-Log" class="autoheader_anchor">
+<h2>Windows Services and the Windows Event Log</h2>
+</a>
+</div>
+<p>Our application is already prepared to write log files and save information in the event of a crash, but that's not sufficient: while applications started by the Windows Task Scheduler <em>might</em> write to the Windows Event Log, applications running as a Windows Service are <em>expected</em> to do that, and for good reasons: when running on a server one cannot expect anybody to be keeping an eye on log or crash files.</p>
+<p>In large organisations running server farms it is common to have software in place that scans the Windows Event Logs of all the servers, and raises an alarm (TCP messages, text messages, emails, whatever) if it finds problems.</p>
+<p>We won't add the ability to write to the Windows Event Log in this chapter, but rather discuss how to do this in the next chapter.</p>
+<div class="h_tag">
+<a href="#Restrictions" id="Restrictions" class="autoheader_anchor">
+<h2>Restrictions</h2>
+</a>
+</div>
+<p>With Dyalog version 16.0 we cannot install a stand-alone <abbr title="Executable file with the extension 'exe'">EXE</abbr> as a Windows Service. All we can do is to install a given interpreter and then ask it to load a workspace, which implies running <code>⎕LX</code>. (This restriction may be lifted in a future version of Dyalog.)</p>
+<p>That means that unless you're happy to expose your code, you have a problem. There are solutions:</p>
+<ul>
+<li>Lock all the functions and operators in the workspace.</li>
+<li>Bury your APL code in .NET assemblies and call them from the workspace that runs as a Windows Service.</li>
+<li>Start the stand-alone <abbr title="Executable file with the extension 'exe'">EXE</abbr> from the workspace that runs as a Windows Service, and communicate with it via TCP/Conga.</li>
+</ul>
+<p>All three solutions add a level of complexity just to hide the code, but at least there are several escape routes available.</p>
+<p>We resume, as usual, by saving a copy of <code>Z:\code\v12</code> as <code>Z:\code\v13</code>.</p>
+<div class="h_tag">
+<a href="#The-ServiceState-namespace" id="The-ServiceState-namespace" class="autoheader_anchor">
+<h2>The ServiceState namespace</h2>
+</a>
+</div>
+<p>To simplify matters we shall use the <code>ServiceState</code> namespace, also from the APLTree project. It requires you to do just two things:</p>
+<ol start="1">
+<li>Call <code>ServiceState.Init</code> as early as possible. This function will ensure the Service can communicate with the SCM.
+<p>Do it as early as possible to enure any request from the SCM will be answered promptly. Windows is not exactly patient when it waits for a Service to respond to a Pause, Resume or Stop request: after only 5 seconds you may see an error message complaining that the Service refused to cooperate.</p>
+<p>However, note that the interpreter confirms the Start request for us; no further action is required.</p>
+<p>Create a parameter space by calling <code>CreateParmSpace</code>, and set at least the name of the log function and possibly the namespace (or class instance) the log function is in. This log function is used to log any incoming requests from the SCM. The parameter space is then passed to <code>Init</code> as the right argument.</p></li>
+<li>In its main loop the Service is expected to call <code>ServiceState.CheckServiceMessages</code>.
+<p>This is an operator, so it needs a function as operand: that is, a function that is doing the logging, allowing <code>CheckServiceMessages</code> to log its actions to the log file. (If you don't need a log file then simply passing <code>{⍵}</code> will do.</p>
+<p>When <code>CheckServiceMessages</code> is called, if no request of the SCM is pending it will quit straight away and return a 0. If a Pause is pending then it goes into a loop, and continues to loop (with a <code>⎕DL</code> in between) until either Continue (a.k.a. Resume) or Stop is requested by the SCM.</p>
+<p>If a Stop is requested, the operator will quit and return a 1.</p></li>
+</ol>
+<div class="h_tag">
+<a href="#Installing-and-uninstalling-a-Service" id="Installing-and-uninstalling-a-Service" class="autoheader_anchor">
+<h2>Installing and uninstalling a Service.</h2>
+</a>
+</div>
+<p><strong>Note:</strong> for installing or uninstalling a Service you need admin rights.</p>
+<p>Suppose you have loaded a <abbr title="Short for Workspaces">WS</abbr> <code>MyService</code> which you want to install as a Windows Service run by the same version of Dyalog you are currently in:</p>
+<pre><code>aplexe←'"',(2 ⎕NQ # 'GetEnvironment' 'dyalog'),'\dyalogrt.exe"'
+wsid←'"whereEverTheWsLives\MyAppService.DWS"'
+cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService DYALOG_NOPOPUPS=1'</code></pre>
+<p><code>cmd</code> could now be executed with the <code>Execute</code> class introduced in the chapter “<a href="./07 Handling errors.html" class="external_link">Handling Errors</a>”. That would do the trick.</p>
+<dl>
+<dt><code>DYALOG_NOPOPUPS</code></dt>
+<dd><p class="first_dd">Setting this to 1 prevents any dialogs popping up (aplcore, <abbr title="Short for Workspaces">WS</abbr> FULL etc.). You don't want them when Dyalog is running in the background because there's nobody around to click the <em>OK</em> button.</p></dd>
+<dd><p>This also prevents the <em>Service MyAppService successfully installed</em> message from popping up. You don't want to see that when executing tests that install, start, pause, resume, stop and uninstall a Service.</p></dd>
+</dl>
+<p>To uninstall the Service, simply open a console window with <em>Run as administrator</em> and enter:</p>
+<pre><code>sc delete MyAppService</code></pre>
+<p>and you are done.</p>
+
+<div class="leanpub_A">
+<h3>Pitfalls when installing or uninstalling Windows Services</h3>
+<p>When you have opened the <em>Services</em> GUI while installing or uninstalling a Windows Service you must press F5 on the GUI to refresh the display.</p>
+<p>The problem is not just that the GUI does not update itself – annoying as that may be. You might end up with a Service marked in the GUI as <code>disabled</code>, aftrer which you need to reboot the machine.</p>
+<p>This can happen if you try to perform an action from the GUI when it is out of sync with the Service's current state.</p>
+</div>
+
+<div class="leanpub_A">
+<h3>SC: Service Control</h3>
+<p><code>SC</code> is a command line program that allows a user with admin rights to issue particular commands regarding Windows Services. The general format is:</p>
+<pre><code>SC.exe {command} {serviceName}</code></pre>
+<p>Commonly used commands are:</p>
+<ul>
+<li>create</li>
+<li>start</li>
+<li>pause</li>
+<li>continue</li>
+<li>stop</li>
+<li>query</li>
+<li>delete</li>
+</ul>
+</div>
+
+<div class="h_tag">
+<a href="#Obstacles" id="Obstacles" class="autoheader_anchor">
+<h2>Obstacles</h2>
+</a>
+</div>
+<p>From experience we know there are pitfalls. In general, there are kinds of problem you might encounter:</p>
+<ol start="1">
+<li>The Service appears to start (shows <em>running</em> in the Services GUI) but nothing happens at all.</li>
+<li>The Service starts, the log file confirms it, but once you request the Service pauses or stops you get nothing but a Windows error message.</li>
+<li>The Service runs, but the application does not do anything, or it does something unexpected.</li>
+</ol>
+<div class="h_tag">
+<a href="#The-Service-seems-to-be-doing-nothing-at-all" id="The-Service-seems-to-be-doing-nothing-at-all" class="autoheader_anchor">
+<h3>The Service seems to be doing nothing at all</h3>
+</a>
+</div>
+<p>If a Service does not seem to do anything when started:</p>
+<ul>
+<li>Check the name and path of the workspace the Service is expected to load: if that's wrong you won't see anything at all - the message “Workspace not found” goes straight into the ether.</li>
+<li>Make sure the workspace size is sufficent. Insufficient memory conceals any error message.</li>
+<li>The Service might create an aplcore when it starts.</li>
+<li>Start the Event Viewer and check it for useful information. Although our application does not write to the application log (yet), the SCM might do!</li>
+</ul>
+
+<div class="leanpub_A">
+<h3>CONTINUE workspaces</h3>
+<p>The Service might have created a CONTINUE workspace, for various reasons.</p>
+<p>Note that, starting with version 16.0, Dyalog no longer drops a CONTINUE workspace by default. You must configure Dyalog to do so.</p>
+<p>A CONTINUE cannot be saved if there is more than one thread running – and Services are by definition multi-threaded. However, if it fails very early there <em>might</em> still be a CONTINUE.</p>
+<p>Once a second thread is started, Dyalog is no longer able to save a CONTINUE workspace. Establishing error trapping before a second thread is started avoids this problem.</p>
+</div>
+
+<div class="leanpub_A">
+<h3>aplcores</h3>
+<p>Writing to the directory the service is installed in might be prohibited by Windows. That might well prevent a CONTINUE or aplcore from being saved.</p>
+<p>While you cannot choose the folder in which a CONTINUE would be saved you can define a folder for aplcores:</p>
+<pre><code>`APLCORENAME='/pathToFolder/my_aplcore*`.</code></pre>
+<p>This saves any aplcore as “my_aplcore” followed by a running number. For more information regarding aplcores see “<a href="./52 Appendix 3 — aplcores and WS integrity.html" class="external_link">Appendix 3 — aplcores and WS integrity</a>”.</p>
+</div>
+
+<div class="h_tag">
+<a href="#The-Service-starts-but-ignores-Pause-and-Stop-requests" id="The-Service-starts-but-ignores-Pause-and-Stop-requests" class="autoheader_anchor">
+<h3>The Service starts but ignores Pause and Stop requests</h3>
+</a>
+</div>
+<p>Here the log file contains everything we expect: calling parameters etc. In such a case we <em>know</em> the Service started and is running.</p>
+<ul>
+<li>Check you have really called <code>ServiceState.Init</code>.</li>
+<li>Check you have called <code>CheckServiceMessages</code> in the main loop of the application.</li>
+</ul>
+<p>If these two conditions are met then it's hard to imagine what could prevent the application from reacting to any requests of the SCM, except when you have an endless loop somewhere in your application.</p>
+<div class="h_tag">
+<a href="#The-application-does-not-do-whats-supposed-to-do" id="The-application-does-not-do-whats-supposed-to-do" class="autoheader_anchor">
+<h3>The application does not do what's supposed to do</h3>
+</a>
+</div>
+<blockquote>
+<p>The very thought of you And I forget to do Those ordinary things That everyone ought to do</p>
+<p>— <em>Cole Porter</em></p>
+</blockquote>
+<p>First and foremost it is worth repeating that any application supposed to run as a Service should be developed as an ordinary application, including test cases. When it passes such test cases you have reasons to be confident the application will run as a Service too.</p>
+<p>Having said this, there can be surprising differences between running as an ordinary application and a Service. For example, when a Service runs, not with a user's account, but with the system account (which is quite normal to do) any call to <code>#.FilesAndDirs.GetTempPath</code> results in</p>
+<p><code>"C:\Windows\System32\config\systemprofile\AppData\Local\Apps"</code></p>
+<p>while for a user's account it would be something like</p>
+<p><code>'C:\Users\{username}\AppData\Local\Temp'</code>.</p>
+<p>When the application behaves in an unexpected way you need to debug it, and for that Ride is invaluable.</p>
+<div class="h_tag">
+<a href="#Potions-and-wands" id="Potions-and-wands" class="autoheader_anchor">
+<h2>Potions and wands</h2>
+</a>
+</div>
+<div class="h_tag">
+<a href="#Ride" id="Ride" class="autoheader_anchor">
+<h3>Ride</h3>
+</a>
+</div>
+<p>First of all we have to make sure that the application will give us a Ride if we need one. Since passing any arguments for a Ride via the command line requires the Service to be uninstalled and installed at least twice we recommend preparing the Service from within the application instead.</p>
+<p>If you have trouble Riding into any kind of application, check there is not an old instance of the Service running and occupying the port you need for the Ride.</p>
+<p>There are two very different scenarios in which you might want to use Ride:</p>
+<ol start="1">
+<li>The Service does not seem to start or does not respond to Pause or Stop requests.</li>
+<li>The Service starts fine and responds properly to Pause or Stop requests, but the application is otherwise behaving unexpectedly.</li>
+</ol>
+<p>In the former case ensure as soon as possible after startup you allow the programmer to Ride into the Service. The first line of the function in <code>⎕LX</code> should provide a Ride.</p>
+<p>At such an early stage we don't have an <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file instantiated, so we cannot switch Ride on and off via the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file, we have to modify the code for that.</p>
+<p>You might feel tempted to overcome this by doing it a bit later (e.g. after processing the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file) but beware: if a Service is not cooperating then “a bit later” might be too late to get investigate the problem. Resist temptation.</p>
+<p>In the second case, add the call to <code>CheckForRide</code> once the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file has been instantiated.</p>
+
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
+<div>
+<p>Make sure that you have <em>never</em> more than one of the two calls to <code>CheckForRide</code> active. If both are active you would be able to use the first one, but the second one would throw you out!</p>
+</div>
+</div>
+
+<div class="h_tag">
+<a href="#Logging" id="Logging" class="autoheader_anchor">
+<h2>Logging</h2>
+</a>
+</div>
+<div class="h_tag">
+<a href="#Local-logging" id="Local-logging" class="autoheader_anchor">
+<h3>Local logging</h3>
+</a>
+</div>
+<p>We want to log as soon as possible any command-line parameters, as well as any message exchange between the Service and the SCM.</p>
+<p>Again we advise you not to wait until the folder holding the log files is defined by instantiating the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file. Instead we suggest making the assumption that a certain folder (“Logs”) will (or might) exist in the current directory which will become where the workspace was loaded from.</p>
+<p>If that's not convenient, consider passing the directory that will contain the <code>Logs</code> folder as a command line parameter.</p>
+<div class="h_tag">
+<a href="#Windows-event-log" id="Windows-event-log" class="autoheader_anchor">
+<h4>Windows event log</h4>
+</a>
+</div>
+<p>In the next chapter (“<a href="./14 The Windows Event Log.html" class="external_link">The Windows Event Log</a>”) we will discuss why and how to use the Windows Event Log, in particular when it comes to Services.</p>
+<div class="h_tag">
+<a href="#How-to-implement-it" id="How-to-implement-it" class="autoheader_anchor">
+<h3>How to implement it</h3>
+</a>
+</div>
+<div class="h_tag">
+<a href="#Setting-the-latent-expression" id="Setting-the-latent-expression" class="autoheader_anchor">
+<h4>Setting the latent expression</h4>
+</a>
+</div>
+<p>First of all we need to point out that <code>MyApp</code> as it stands is hardly a candidate for a Service. We need to make something up. Let's specify one or more folders to be watched by the <code>MyApp</code> Service.</p>
+<p>If any files are found then they are processed. Finally the app will store hashes for all the files it has processed. That allows it to recognize any added, changed or removed files efficiently.</p>
+<p>For the Service we need to create a workspace that can be loaded by that Service. Therefore we need to set <code>⎕LX</code>, and for that we create a new function:</p>
+<pre><code> ∇ {r}←SetLXForService(earlyRide ridePort)
+   ⍝ Set Latent Expression (needed in order to export workspace as EXE)
+   ⍝ `earlyRide` is a flag. 1 allows a Ride.
+   ⍝ `ridePort`  is the port number to be used for a Ride.
+      #.⎕IO←1 ⋄ #.⎕ML←1 ⋄ #.⎕WX←3 ⋄ #.⎕PP←15 ⋄ #.⎕DIV←1
+      r←⍬
+      ⎕LX←'#.MyApp.RunAsService ',(⍕earlyRide),' ',(⍕ridePort)
+ ∇</code></pre>
+<p>The function takes a flag <code>earlyRide</code> and an integer <code>ridePort</code> as arguments. How and when this function is called will be discussed in a moment.</p>
+<p>Because we have now two functions that set <code>⎕LX</code> we shall rename the original one (<code>SetLX</code>) to <code>SetLXForApplication</code> to tell them apart.</p>
+<div class="h_tag">
+<a href="#Initialising-the-Service" id="Initialising-the-Service" class="autoheader_anchor">
+<h4>Initialising the Service</h4>
+</a>
+</div>
+<p>Next we need the main function for the service:</p>
+<pre><code> ∇ {r}←RunAsService(earlyRide ridePort);⎕TRAP;MyLogger;Config;∆FileHashes
+    ⍝ Main function when app is running as a Windows Service.
+    ⍝ `earlyRide`: flag that allows a very early Ride.
+    ⍝ `ridePort`: Port number used by Ride.
+      r←⍬
+      CheckForRide earlyRide ridePort
+      #.FilesAndDirs.PolishCurrentDir
+      ⎕TRAP←#.HandleError.SetTrap ⍬
+      (Config MyLogger)←Initial #.ServiceState.IsRunningAsService
+      ⎕TRAP←(Config.Debug=0)SetTrap Config
+      Config.ControlFileTieNo←CheckForOtherInstances ⍬
+      ∆FileHashes←0 2⍴''
+      :If #.ServiceState.IsRunningAsService
+          {MainLoop ⍵}&amp;⍬
+          ⎕DQ'.'
+      :Else
+          MainLoop ⍬
+      :EndIf
+      Cleanup ⍬
+      Off EXIT.OK
+    ∇</code></pre>
+<p>Notes:</p>
+<ul>
+<li>This function allows a Ride very early indeed.</li>
+<li>It calls the function <code>Initial</code> and passes the result of the function <code>#.ServiceState.IsRunningAsService</code> as right argument. We will discuss <code>Initial</code> next.</li>
+<li>We create a global variable <code>∆FileHashes</code>, which we use to collect the hashes of all files that we have processed. This gives us a fast and easy way to check whether any of the files we've already processed have changed since.</li>
+<li>We call <code>MainLoop</code> (a function that has not been established yet) in different ways depending on whether the function is running as a Windows Service or not, for the simple reason that it is much easier to debug an application that runs in a single thread.</li>
+</ul>
+<div class="h_tag">
+<a href="#The-business-logic" id="The-business-logic" class="autoheader_anchor">
+<h4>The “business logic”</h4>
+</a>
+</div>
+<p>Time to change the <code>MyApp.Initial</code> function:</p>
+<pre><code>leanpub-start-insert
+ ∇ (Config MyLogger)←Initial isService;parms
+</span>    ⍝ Prepares the application.
+<span class="leanpub_code">      Config←CreateConfig isService
+</span>      Config.ControlFileTieNo←CheckForOtherInstances ⍬
+      CheckForRide (0≠Config.Ride) Config.Ride
+      MyLogger←OpenLogFile Config.LogFolder
+      MyLogger.Log'Started MyApp in ',F.PWD
+      MyLogger.Log 2 ⎕NQ'#' 'GetCommandLine'
+      MyLogger.Log↓⎕FMT Config.∆List
+<span class="leanpub_code">      :If isService
+          parms←#.ServiceState.CreateParmSpace
+          parms.logFunction←'Log'
+          parms.logFunctionParent←MyLogger
+          #.ServiceState.Init parms
+      :EndIf
+</span> ∇</code></pre>
+<p>Note that we pass <code>isService</code> as right argument to <code>CreateConfig</code>, so we must amend <code>CreateConfig</code> accordingly:</p>
+<pre><code>leanpub-start-insert
+ ∇ Config←CreateConfig isService;myIni;iniFilename
+</span>   Config←⎕NS''
+   ...
+<span class="leanpub_code">   Config.IsService←isService
+</span>   ...
+       Config.Accents←⊃Config.Accents myIni.Get'Config:Accents'
+<span class="leanpub_code">        :If isService
+            Config.WatchFolders←⊃myIni.Get'Folders:Watch'
+        :Else
+            Config.LogFolder←'expand'F.NormalizePath⊃Config.LogFolder myIni.Get'Folders:Logs'
+        :EndIf
+</span>        Config.DumpFolder←'expand'F.NormalizePath⊃Config.DumpFolder myIni.Get'Folders:Errors'
+   ...
+ ∇</code></pre>
+<p>Note that <code>WatchFolder</code> is introduced only when the application is running as a Service.</p>
+<p>Time to introduce the function <code>MainLoop</code>:</p>
+<pre><code>∇ {r}←MainLoop port;S
+  r←⍬
+  MyLogger.Log'"MyApp" server started'
+  S←#.ServiceState
+  :Repeat
+      LoopOverFolder ⍬
+      :If (MyLogger.Log S.CheckServiceMessages)S.IsRunningAsService
+          MyLogger.Log'"MyApp" is about to shut down...'
+          :Leave
+      :EndIf
+      ⎕DL 2
+  :Until 0
+ ⍝Done
+∇</code></pre>
+<p>Notes:</p>
+<ul>
+<li>The call to <code>ServiceState.CheckServiceMessages</code> ensures the function reacts to any status-change requests from the SCM.</li>
+<li><code>LoopOverFolder</code> is doing the real work.</li>
+</ul>
+<p>The function <code>LoopOverFolder</code>:</p>
+<pre><code>∇ {r}←LoopOverFolder dummy;folder;files;hashes;noOf;rc
+  r←⍬
+  :For folder :In Config.WatchFolders
+      files←#.FilesAndDirs.ListFiles folder,'\*.txt'
+      hashes←GetHash¨files
+      (files hashes)←(~hashes∊∆FileHashes[;2])∘/¨files hashes
+      :If 0&lt;noOf←LoopOverFiles files hashes
+          :If EXIT.OK=rc←TxtToCsv folder
+              MyLogger.Log'Totals.csv updated'
+          :Else
+              LogError rc('Could not update Totals.csv, RC=',EXIT.GetName rc)
+          :EndIf
+      :EndIf
+  :EndFor
+∇</code></pre>
+<p>This function calls <code>GetHash</code> so we had better introduce it:</p>
+<pre><code> GetHash←{
+ ⍝ Get hash for file ⍵
+     ⊣2 ⎕NQ'#' 'GetBuildID'⍵
+ }</code></pre>
+<p>The function <code>LoopOverFiles</code>:</p>
+<pre><code> ∇ noOf←LoopOverFiles(files hashes);file;hash;rc
+   noOf←0
+   :For file hash :InEach files hashes
+       :If EXIT.OK=rc←TxtToCsv file
+           ∆FileHashes⍪←file hash
+           noOf+←1
+       :EndIf
+   :EndFor
+ ∇</code></pre>
+<p>This function finally calls <code>TxtToCsv</code>.</p>
+<p>Because of the change we've made to the right argument of <code>Initial</code> we need to change <code>StartFromCmdLine</code>. Here the function <code>Initial</code> needs to be told it is <em>not</em> running as a Service:</p>
+<pre><code>∇ {r}←StartFromCmdLine arg;MyLogger;Config;rc;⎕TRAP
+...
+   (Config MyLogger)←Initial #.ServiceState.IsRunningAsService
+...</code></pre>
+<p>Two more changes:</p>
+<pre><code> ∇ {r}←Cleanup dummy
+   r←⍬
+   ⎕FUNTIE Config.ControlFileTieNo
+   Config.ControlFileTieNo←⍬
+<span class="leanpub_code">   '#'⎕WS'Event' 'ServiceNotification' 0
+</span> ∇</code></pre>
+<p>This disconnects the handler from the ServiceNotification event.</p>
+<p>Finally we redefine which functions are public:</p>
+<pre><code> ∇ r←PublicFns
+<span class="leanpub_code">   r←'StartFromCmdLine' 'TxtToCsv' 'SetLXForApplication' 'SetLXForService' 'RunAsService'
+</span> ∇</code></pre>
+<div class="h_tag">
+<a href="#Running-the-test-cases" id="Running-the-test-cases" class="autoheader_anchor">
+<h4>Running the test cases</h4>
+</a>
+</div>
+<p>Now it's time to see if we broke anything. Double-click <code>MyApp.dyapp</code> and type <code>y</code> to answer the question whether you would like to run all test cases. If anything fails, execute <code>#.Tests.RunDebug 0</code> and fix the problem.</p>
+<div class="h_tag">
+<a href="#Installing-and-un-installing-the-Service" id="Installing-and-un-installing-the-Service" class="autoheader_anchor">
+<h2>Installing and un-installing the Service</h2>
+</a>
+</div>
+<p>In order to install or uninstall the Service we need two <abbr title="Executeabe file that contains batch commands">BAT</abbr>s: <code>InstallService.bat</code> and <code>Uninstall_Service.bat</code>. We will write these <abbr title="Executeabe file that contains batch commands">BAT</abbr>s from Dyalog. For that we write a class <code>ServiceHelpers</code>:</p>
+<pre><code>:Class ServiceHelpers
+
+    ∇ {r}←CreateBatFiles dummy;path;cmd;aplexe;wsid
+      :Access Public Shared
+    ⍝ Write two BAT files to the current directory:
+    ⍝ Install_Service.bat and Uninstall_Service.bat
+      r←⍬
+      path←#.FilesAndDirs.PWD
+
+      aplexe←'"',(2 ⎕NQ'#' 'GetEnvironment' 'dyalog'),'\dyalogrt.exe"'
+      wsid←'"%~dp0\MyAppService.DWS"'
+      cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService'
+     ⍝cmd,←' APLCORENAME={foldername}'
+     ⍝cmd,←' DYALOG_EVENTLOGNAME={foo}'
+      cmd,←' DYALOG_NOPOPUPS=1'
+      cmd,←' MAXWS=64MB'
+      #.APLTreeUtils.WriteUtf8File(path,'\Install_Service.bat')cmd
+
+      cmd←⊂'sc delete MyAppService'
+      cmd,←⊂'@echo off'
+      cmd,←⊂'    echo Error %errorlevel%'
+      cmd,←⊂'    if NOT ["%errorlevel%"]==["0"] ('
+      cmd,←⊂'    pause'
+      cmd,←⊂'exit /b %errorlevel%'
+      cmd,←⊂')'
+      #.APLTreeUtils.WriteUtf8File(path,'\Uninstall_Service.bat')cmd
+     ⍝Done
+    ∇
+
+:EndClass</code></pre>
+<p>Notes:</p>
+<ul>
+<li>The install <abbr title="Executeabe file that contains batch commands">BAT</abbr> will use the version of Dyalog used to create the <abbr title="Executeabe file that contains batch commands">BAT</abbr> file, and it will call the runtime <abbr title="Executable file with the extension 'exe'">EXE</abbr>.</li>
+<li><code>%~dp0</code> stands for: the directory from which this <abbr title="Executeabe file that contains batch commands">BAT</abbr> was loaded. In other words, as long as the workspace <code>MyAppService.DWS</code> (which we have not created yet) is a sibling of the <abbr title="Executeabe file that contains batch commands">BAT</abbr>, it will work.</li>
+<li>The setting of <code>APLCORENAME</code> specifies folder and name of any aplcores.
+<p>For example, <code>D:\MyAplcores\aplcore_64_16_0_Unicode_*</code> would specify in which folder the aplcores shall be saved and that the filenames should start with <code>aplcore_64_16_0_Unicode_</code> followed by a running number (the asterisk).</p></li>
+<li>By setting <code>DYALOG_EVENTLOGNAME</code> you tell the interpreter to write messages to the Windows Event Log, and what name to use for this.</li>
+<li>The uninstall <abbr title="Executeabe file that contains batch commands">BAT</abbr> will check the <code>errorlevel</code> variable.
+<p>If it detects an error it will pause so that one can actually see the error message even when we have just double-clicked the <abbr title="Executeabe file that contains batch commands">BAT</abbr>. This is discussed in the chapter <a href="./07 Handling errors.html" class="external_link"><em>Handling errors</em></a>.</p></li>
+</ul>
+<div class="h_tag">
+<a href="#Make-for-the-Service" id="Make-for-the-Service" class="autoheader_anchor">
+<h2>“Make” for the Service</h2>
+</a>
+</div>
+<p>Now it's time to create a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> for the service. For that copy <code>Make.dyapp</code> as <code>MakeService.dyapp</code> and then edit it:</p>
+<pre><code>Target #
+Load ..\AplTree\APLTreeUtils
+Load ..\AplTree\FilesAndDirs
+Load ..\AplTree\HandleError
+Load ..\AplTree\IniFiles
+Load ..\AplTree\OS
+Load ..\AplTree\Logger
+Load ..\AplTree\EventCodes
+Load Constants
+Load Utilities
+Load MyApp
+
+<span class="leanpub_code">Load ..\AplTree\ServiceState
+</span>Load ..\AplTree\Tester
+Load ..\AplTree\Execute
+<span class="leanpub_code">Load ..\AplTree\WinSys
+Load TestsForServices
+</span>Load ServiceHelpers
+
+<span class="leanpub_code">Run #.ServiceHelpers.CreateBatFiles ⍬
+Run '#.⎕EX''ServiceHelpers'''
+Run #.MyApp.SetLXForService 0 4599   ⍝ [1|0]: Ride/no Ride, [n] Ride port number
+
+Load MakeService
+Run #.MakeService.Run 0
+</span></code></pre>
+<p>Notes:</p>
+<ul>
+<li>We need some more APLTree modules: <code>Tester</code>, <code>Execute</code> and <code>WinSys</code>.</li>
+<li>Ensure the two <abbr title="Executeabe file that contains batch commands">BAT</abbr> (for installing and uninstalling the service) are written to the disk.</li>
+<li>We delete the class <code>ServiceHelpers</code>: it is not needed for running the Service once we've created the <abbr title="Executeabe file that contains batch commands">BAT</abbr>s.</li>
+<li>We set <code>⎕LX</code> by calling <code>SetLXForService</code>.</li>
+<li>We load the class <code>MakeService</code> and run <code>MakeService.Run</code>.</li>
+</ul>
+<p>That obviously requires the class <code>MakeService</code>:</p>
+<pre><code>:Class MakeService
+⍝ Creates a workspace "MyAppService" which can then run as a service.
+⍝ 1. Re-create folder DESTINATION in the current directory
+⍝ 2. Copy the INI file template over to DESTINATION\ as MyApp.ini
+⍝ 3. Save the workspace within DESTINATION
+    ⎕IO←1 ⋄ ⎕ML←1
+    DESTINATION←'MyAppService'
+
+    ∇ {r}←Run offFlag;en;F;U
+      :Access Public Shared
+      r←⍬
+      (F U)←##.(FilesAndDirs Utilities)
+      (rc en more)←F.RmDir DESTINATION
+      U.Assert 0=rc
+      U.Assert 'Create!'##.FilesAndDirs.CheckPath DESTINATION
+      'MyApp.ini.template' CopyTo DESTINATION,'\MyApp.ini'
+      'Install_Service.bat' CopyTo DESTINATION,'\'
+      'Uninstall_Service.bat' CopyTo DESTINATION,'\'
+      ⎕WSID←DESTINATION,'\',DESTINATION
+      #.⎕EX⍕⎕THIS
+      0 ⎕SAVE ⎕WSID
+      {⎕OFF}⍣(⊃offFlag)⊣⍬
+    ∇
+
+    ∇ {r}←from CopyTo to;rc;more;msg
+      r←⍬
+      (rc more)←from F.CopyTo to
+      msg←'Copy failed RC=' ,(⍕rc),'; ',more
+      msg ⎕signal 11/⍨0≠rc
+    ∇
+:EndClass</code></pre>
+<p>Notes:</p>
+<ul>
+<li>Assigns the name of the destination folder to the global <code>DESTINATION</code>.</li>
+<li>(Re-)creates a folder with the name in <code>DESTINATION</code>.</li>
+<li>Copies over the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> as well as the two <abbr title="Executeabe file that contains batch commands">BAT</abbr>s.</li>
+<li>Finally it sets <code>⎕WSID</code> and saves the workspace, without the status indicator, and without <code>MakeService</code> – by deleting itself.</li>
+</ul>
+
+<div class="leanpub_A">
+<h3>Self-deleting code</h3>
+<p>How it is possible for the function <code>MakeService.Run</code> to delete itself and keep running anyway?</p>
+<p>APL code (functions, operators and scripts) is copied onto the stack for execution. You can investigate the stack at any given moment with <code>)SI</code> and <code>)SINL</code>; for details type the command in question into the session and then press F1.</p>
+<p>Even if the code of a class executes <code>⎕EX ⍕⎕THIS</code> or a function or operator <code>⎕EX ⊃⎕SI</code> the code keeps running because the copy on the stack will exist until the function or operator quits. Scripts might even live longer: only when the last reference pointing to a script is deleted does the script cease to exist.</p>
+</div>
+
+<div class="h_tag">
+<a href="#Testing-the-Service" id="Testing-the-Service" class="autoheader_anchor">
+<h2>Testing the Service</h2>
+</a>
+</div>
+<p>We have test cases that tell us the “business logig” of <code>MyApp</code> works just fine. What we also need are tests that it runs fine as a Service as well.</p>
+<p>Since the two test scenarios are only loosely related we want to keep those tests separate. It is easy to see a way: testing the Service means assembling all the needed stuff, installing the Service, carrying out the tests and finally un-installing the tests and cleaning up.</p>
+<p>We don't want to execute all this unless we really have to.</p>
+<p>We start by creating a new script <code>TestsForServices</code> which we save alongside the other scrips in <code>v13/</code>:</p>
+<pre><code>:Namespace TestsForServices
+⍝ Installs a service "MyAppService" in a folder within the Windows Temp directory with
+⍝ a randomly chosen name. The tests then start, pause, continue and stop the service.\\
+⍝ They also check whether the application produces the expected results.
+
+    ⎕IO←1 ⋄ ⎕ML←1
+
+:EndNamespace</code></pre>
+<p>We now discuss the functions we are going to add one after the other. Note that the <code>Initial</code> function is particularly important in this scenario: we need to copy over all the stuff we need, code as well as input files, make adjustments, and install the Service.</p>
+<p>This could all be done in a single function but it would be lengthy and difficult to read. To avoid this we split the function into obvious units. By naming those functions carefully we should get away without adding any comments because the code explains itself. Here we go:</p>
+<pre><code>∇ r←Initial;rc;ini;row;bat;more
+   ∆Path←##.FilesAndDirs.GetTempFilename''
+   #.FilesAndDirs.DeleteFile ∆Path
+   ∆Path←¯4↓∆Path
+   ∆ServiceName←'MyAppService'
+   r←0
+   :If 0=#.WinSys.IsRunningAsAdmin
+       ⎕←'Sorry, but you need admin rights to run this test suite!'
+       :Return
+   :EndIf
+   ∆CreateFolderStructure ⍬
+   ∆CopyFiles ⍬
+   ∆CreateBATs ⍬
+   ∆CreateIniFile ⍬
+   ∆InstallService ⍬
+   ⎕←'*** Service ',∆ServiceName,' successfully installed'
+   r←1</code></pre>
+<p>Note that all the sub-function and global variables start their names with <code>∆</code>. An example is the function <code>∆Execute_SC_Cmd</code>:</p>
+<pre><code>∇ {(rc msg)}←∆Execute_SC_Cmd command;cmd;buff
+ ⍝ Executes a SC (Service Control) command
+   rc←1 ⋄ msg←'Could not execute the command'
+   cmd←'SC ',command,' ',∆ServiceName
+   buff←#.Execute.Process cmd
+   →FailsIf 0≠1⊃buff
+   msg←⊃,/2⊃buff
+   rc←3⊃buff
+∇</code></pre>
+<p>It executes <code>SC</code> commands like <code>start</code>, <code>pause</code>, <code>continue</code>, <code>stop</code> and <code>query</code> by preparing a string and then passing it to <code>Execute.Process</code>.</p>
+<p>It analyzes the result and returns the text part of it as well as a return code. While the first four commands aim to change the current status of a Service, <code>query</code> is designed to establish what the current status of a Service actually is.</p>
+<p>After having executed the test suite we want to clean up, so we create a function <code>Cleanup</code>.</p>
+<p>Remember: if the test framework finds a function <code>Initial</code>, it executes it <em>before</em> executing the actual test cases, while any function <code>Cleanup</code> will be executed <em>after</em> the test cases have been executed.</p>
+<pre><code>∇ {r}←Cleanup
+   r←⍬
+   :If 0&lt;⎕NC'∆ServiceName'
+       ∆Execute_SC_Cmd'stop'
+       ∆Execute_SC_Cmd'delete'
+       ##.FilesAndDirs.RmDir ∆Path
+       ⎕EX¨'∆Path' '∆ServiceName'
+   :EndIf
+∇</code></pre>
+<p>We also need <code>∆Pause</code>:</p>
+<pre><code>∇ {r}←∆Pause seconds
+   r←⍬
+   ⎕←'   Pausing for ',(⍕seconds),' seconds...'
+   ⎕DL seconds
+∇</code></pre>
+<p>We could discuss all the sub functions called by these two functions but it would tell us little. Therefore we suggest you copy the code from the web site. We discuss here just the two test functions:</p>
+<pre><code>∇ R←Test_01(stopFlag batchFlag);⎕TRAP;rc;more
+  ⍝ Start, pause, continue and stop the service.
+  ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+  R←∆Failed
+
+  (rc more)←∆Execute_SC_Cmd'start'
+  →FailsIf 0≠rc
+  ∆Pause 2
+  (rc more)←∆Execute_SC_Cmd'query'
+  →FailsIf 0≠rc
+  →FailsIf 0=∨/'STATE : 4 RUNNING'⍷#.APLTreeUtils.dmb more
+
+  (rc more)←∆Execute_SC_Cmd'pause'
+  →FailsIf 0≠rc
+  ∆Pause 2
+  →FailsIf 1≠⍴#.FilesAndDirs.ListFiles ∆Path,'\service\Logs\'
+  (rc more)←∆Execute_SC_Cmd'query'
+  →FailsIf 0=∨/'STATE : 7 PAUSED'⍷#.APLTreeUtils.dmb more
+
+  (rc more)←∆Execute_SC_Cmd'continue'
+  →FailsIf 0≠rc
+  ∆Pause 2
+  (rc more)←∆Execute_SC_Cmd'query'
+  →FailsIf 0=∨/'STATE : 4 RUNNING'⍷#.APLTreeUtils.dmb more
+
+  (rc more)←∆Execute_SC_Cmd'stop'
+  →FailsIf 0≠rc
+  ∆Pause 2
+  (rc more)←∆Execute_SC_Cmd'query'○
+  →FailsIf 0=∨/'STATE : 1 STOPPED'⍷#.APLTreeUtils.dmb more
+
+  R←∆OK
+∇</code></pre>
+<p>In order to understand the <code>→FailsIf</code> statements it is essential to have a look at a typical result returned by the <code>∆Execute_SC_Cmd</code> function, in this case a query:</p>
+<pre><code>      ⍴more
+328
+      ≡more
+1
+      #.APLTreeUtils.dmb more
+SERVICE_NAME: MyAppService TYPE : 10 WIN32_OWN_PROCESS STATE : 4 RUNNING (STOPPABLE, PAUSABLE, ACCEPTS_SHUTDOWN) WIN32_EXIT_CODE : 0 (0x0) SERVICE_EXIT_CODE
+       : 0 (0x0) CHECKPOINT</code></pre>
+<p>We have removed white space here to increase readability. (The result is richly endowed with them.)</p>
+<p>This test starts, pauses, continues and finally stops the Service after having processed some files:</p>
+<pre><code>∇ R←Test_02(stopFlag batchFlag);⎕TRAP;rc;more;noOfCSVs;success;oldTotal;newTotal;A;F
+  ⍝ Start service, check results, give it some more work to do, check and stop it.
+   ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+   R←∆Failed
+   (A F)←#.(APLTreeUtils FilesAndDirs)
+
+   (rc more)←∆Execute_SC_Cmd'start'
+   →FailsIf 0≠rc
+   ∆Pause 1
+   (rc more)←∆Execute_SC_Cmd'query'
+   →FailsIf 0=∨/'STATE : 4 RUNNING'⍷A.dmb more
+
+   ⍝ At this point the service will have processed all the text files, so there
+   ⍝ must now be some CSV files, including the Total.csv file.
+   ⍝ We then copy 6 more text files, so we should see 6 more CSVs &amp; a changed Total.
+   oldTotal←↑{','A.Split ⍵}¨A.ReadUtf8File ∆Path,'\input\en\total.csv'
+   noOfCSVs←⍴F.ListFiles ∆Path,'\input\en\*.csv'
+   (success more list)←(∆Path,'\texts')F.CopyTree ∆Path,'\input\'  ⍝ All of them
+   {1≠⍵:.}success
+   ∆Pause 2
+   newTotal←↑{','A.Split ⍵}¨A.ReadUtf8File ∆Path,'\input\en\total.csv'
+   →PassesIf(noOfCSVs+6)=⍴F.ListFiles ∆Path,'\input\en\*.csv'
+   →PassesIf oldTotal≢newTotal
+   oldTotal[;2]←⍎¨oldTotal[;2]
+   newTotal[;2]←⍎¨newTotal[;2]
+   →PassesIf oldTotal[;2]∧.≤newTotal[;2]
+
+   (rc more)←∆Execute_SC_Cmd'stop'
+   →FailsIf 0≠rc
+   ∆Pause 2
+   (rc more)←∆Execute_SC_Cmd'query'
+   →FailsIf 0=∨/'STATE : 1 STOPPED'⍷A.dmb more
+
+   R←∆OK
+∇</code></pre>
+<p>Though this test starts and stops the Service, its real purpose is to make sure that the Service processes input files as expected.</p>
+<div class="h_tag">
+<a href="#Running-the-tests" id="Running-the-tests" class="autoheader_anchor">
+<h3>Running the tests</h3>
+</a>
+</div>
+<p>First we need to ensure everything is assembled freshly, and with admin rights.</p>
+<p>The best way to do that is to run the script <code>MakeService.dyapp</code> from a console that was started <em>with admin rights</em>. (Unfortunately you cannot right-click on a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> and select “Run as administrator” from the context menu.)</p>
+<p>You must change the current directory in the console window to where the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> lives before actually calling it.</p>
+
+<div class="leanpub_A">
+<h3>Console with admin rights.</h3>
+<p>The best way to start a console window with admin rights:</p>
+<ol start="1">
+<li>Press the Windows key.</li>
+<li>Type <code>cmd</code>. If you wonder, “where shall I type this into” don't worry - just type.</li>
+<li>Right-click on <em>Command prompt</em> and select <em>Run as administrator</em>.</li>
+</ol>
+</div>
+
+<p>A Dyalog instance is started. In the session you should see something similar to this:</p>
+<pre><code>Booting C:\...\v13\MakeService.dyapp
+Loaded: #.APLTreeUtils
+Loaded: #.FilesAndDirs
+Loaded: #.HandleError
+Loaded: #.IniFiles
+Loaded: #.OS
+Loaded: #.Logger
+Loaded: #.EventCodes
+Loaded: #.Constants
+Loaded: #.Utilities
+Loaded: #.MyApp
+Loaded: #.ServiceState
+Loaded: #.Tester
+Loaded: #.Execute
+Loaded: #.WinSys
+Loaded: #.TestsForServices
+Loaded: #.ServiceHelpers
+#.⎕EX'ServiceHelpers'
+Loaded: #.MakeService</code></pre>
+<p>In the next step establish the test helpers by calling <code>#.TestsForServices.GetHelpers</code>.</p>
+<p>Finally run <code>#.TestsForServices.RunDebug 0</code>. You should see something like this:</p>
+<pre><code>#.TestsForServices.RunDebug 0
+--- Test framework "Tester" version 3.3.0 from YYYY-MM-DD -----------------------------
+Searching for INI file testcases_APLTEAM2.ini
+  ...not found
+Searching for INI file Testcases.ini
+  ...not found
+Looking for a function "Initial"...
+*** Service MyAppService successfully installed
+  "Initial" found and sucessfully executed
+--- Tests started at YYYY-MM-DD hh:mm:dd on #.TestsForServices ------------------------
+   Pausing for 2 seconds...
+   Pausing for 2 seconds...
+   Pausing for 2 seconds...
+   Pausing for 2 seconds...
+  Test_01 (1 of 2) : Start, pause and continue the service.
+   Pausing for 2 seconds...
+   Pausing for 2 seconds...
+   Pausing for 2 seconds...
+  Test_02 (2 of 2) : Start service, check results, give it some more work to do, check and stop it.
+ --------------------------------------------------------------------------------------------------
+   2 test cases executed
+   0 test cases failed
+   0 test cases broken
+Time of execution recorded on variable #.TestsForServices.TestCasesExecutedAt in: YYYY-MM-DD hh:mm:ss
+Looking for a function "Cleanup"...
+  Function "Cleanup" found and sucessfully executed.
+*** Tests done
+</code></pre>
+</div>
+</div>
+<script>
+var snapper = new Snap({
+element: document.getElementById('content')
+});
+document.getElementById('mainmenu_match').onclick = function(){
+snapper.state().state==='closed'?snapper.open('left'):snapper.close();
+}
+</script>
+</body>
+</html>

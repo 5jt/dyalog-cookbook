@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta charset="utf-8">
+<title>Debugging</title>
+<link href="./CSS/BlackOnWhite_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/Cookbook_Chapter_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/snap.css" rel="stylesheet" media="screen">
+<link href="./CSS/BlackOnWhite_print.css" rel="stylesheet" media="print">
+<link href="./CSS/Cookbook_Chapter_print.css" rel="stylesheet" media="print">
+<script src="./JavaScript/snap.js"></script>
+</head>
+<body>
+<div class="snap-drawers">
+<div class="snap-drawer snap-drawer-left">
+<div class="h_tag">
+<h3>Chapters</h3>
+</div>
+<ol>
+<li><a href="./01%20Introduction.html" class="external_link">Introduction</a></li>
+<li><a href="./02%20Structure.html" class="external_link">Structure</a></li>
+<li><a href="./03%20Package%20MyApp%20as%20an%20executable.html" class="external_link">Package MyApp as an executable</a></li>
+<li><a href="./04%20Logging%20what%20happens%20.html" class="external_link">Logging what happens </a></li>
+<li><a href="./05%20Configuration%20settings.html" class="external_link">Configuration settings</a></li>
+<li><a href="./06%20Debugging%20a%20stand-alone%20EXE.html" class="external_link">Debugging a stand-alone EXE</a></li>
+<li><a href="./07%20Handling%20errors.html" class="external_link">Handling errors</a></li>
+<li><a href="./08%20Testing%20—%20the%20sound%20of%20breaking%20glass.html" class="external_link">Testing<br>The sound of breaking glass</a></li>
+<li><a href="./09%20Documentation%20—%20the%20Doc%20is%20in.html" class="external_link">Documentation<br>The Doc is in</a></li>
+<li><a href="./10%20Make%20me.html" class="external_link">Make me</a></li>
+<li><a href="./11%20Providing%20help.html" class="external_link">Providing help</a></li>
+<li><a href="./12%20Scheduled%20Tasks.html" class="external_link">Scheduled Tasks</a></li>
+<li><a href="./13%20Windows%20Services.html" class="external_link">Windows Services</a></li>
+<li><a href="./14%20The%20Windows%20Event%20Log.html" class="external_link">The Windows Event Log</a></li>
+<li><a href="./15%20The%20Windows%20Registry.html" class="external_link">The Windows Registry</a></li>
+<li><a href="./16%20Creating%20SetUp.exe%20with%20Inno.html" class="external_link">Creating SetUp.exe with Inno</a></li>
+<li><a href="./17%20RegularExpressions.html" class="external_link">RegularExpressions</a></li>
+<li><a href="./18%20GUI.html" class="external_link">GUI</a></li>
+</ol>
+<div class="h_tag">
+<h3>Appendices</h3>
+</div>
+<ol>
+<li><a href="./50%20Appendix%201%20—%20Windows%20environment%20variables.html" class="external_link">Windows environment variables</a></li>
+<li><a href="./51%20Appendix%202%20—%20User%20commands.html" class="external_link">User commands</a></li>
+<li><a href="./52%20Appendix%203%20—%20aplcores%20and%20WS%20integrity.html" class="external_link">aplcores and WS integrity</a></li>
+<li><a href="./53%20Appendix%204%20—%20The%20development%20environment.html" class="external_link">The development environment</a></li>
+<li><a href="./54%20Appendix%205%20—%20Special%20characters.html" class="external_link">Special characters</a></li>
+</ol>
+<div class="h_tag">
+<h3>Misc</h3>
+</div>
+<ul>
+<li><a href="05%20Configuration%20settings.html">Previous chapter</a></li>
+<li><a href="07%20Handling%20errors.html">Next chapter;</a></li>
+<li><a href="./Dyalog_Cookbook.html" class="external_link">Single document<br>(All chapters, for printing)</a></li>
+</ul>
+</div>
+</div>
+<div id="mainmenu">
+<a href=#><p><span id="mainmenu_match">≡</span></p></a>
+<p><span id="mainmenu_title">The Dyalog Cookbook</span></p>
+<nav id="main_nav">
+<input type="checkbox" id="hide_toc">
+<label id="hide_toc_label" for="hide_toc"></label>
+<div class="toc-container">
+<ul>
+<li><a href="#Going-for-a-ride">Going for a ride</a></li>
+<li><a href="#The-Console-application-flag">The Console application flag</a></li>
+<li><a href="#Code-changes">Code changes</a>
+<ul>
+<li><a href="#Making-Ride-configurable">Making Ride configurable</a></li>
+<li><a href="#Allowing-a-Ride">Allowing a Ride</a></li>
+</ul></li>
+<li><a href="#DLLs-required-by-Ride">DLLs required by Ride</a>
+</ul>
+</div>
+</nav>
+</div>
+<div id="content" class="snap-content">
+<div id="cookbook_content">
+<div class="h_tag">
+<a href="#6-Debugging-a-stand-alone-EXE" id="6-Debugging-a-stand-alone-EXE" class="autoheader_anchor">
+<h1>6. Debugging a stand-alone EXE</h1>
+</a>
+</div>
+<p>Imagine the following situation: MyApp is started with a double-click on the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> and, when tested, everything works just fine. Then you create a stand-alone <abbr title="Executable file with the extension 'exe'">EXE</abbr> from the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> and execute it with some appropriate parameter, but it does not create the CSV files.</p>
+<p>In this situation obviously you need to debug the <abbr title="Executable file with the extension 'exe'">EXE</abbr>. In this chapter we’ll discuss how to achieve that. In addition we will make <code>MyApp.exe</code> return an exit code.</p>
+<p>For debugging we are going to use Ride. (See the Dyalog manuals for information about Ride.) If enabled, you can use Ride to hook into a running interpreter, interrupt any running code, investigate, and even change that code.</p>
+<div class="h_tag">
+<a href="#Going-for-a-ride" id="Going-for-a-ride" class="autoheader_anchor">
+<h2>Going for a ride</h2>
+</a>
+</div>
+<p>We introduce a <code>[RIDE]</code> section into the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file:</p>
+<pre><code>[Ride]
+Active      = 1
+Port        = 4599
+Wait        = 1</code></pre>
+<p>By setting <code>Active</code> to 1 and defining a <code>Port</code> number for the communication between Ride and the <abbr title="Executable file with the extension 'exe'">EXE</abbr> you can tell MyApp that you want ‘to take it for a ride’. Setting <code>Wait</code> to 1 lets the application wait for a ride. That simply means it enters an endless loop.</p>
+<p>That’s not always appropriate of course, because it allows anybody to read your code.</p>
+<p>If that's something you need to avoid, you have to find other ways to make the <abbr title="Executable file with the extension 'exe'">EXE</abbr> communicate with Ride, perhaps by making temporary changes to the code.</p>
+<p>The approach would be the same in both cases. In MyApp we keep things simple and allow the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file to rule whether the user may ride into the application or not.</p>
+<p>Copy <code>Z:\code\v05</code> to <code>Z:\code\v06</code> and then run the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> to recreate the <code>MyApp</code> workspace.</p>
+
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
+<div>
+<p>Note that 4502 is Ride’s default port, and that we’ve settled for a different port, and for good reasons. Using the default port leaves room for mistakes.</p>
+<p>Using a dedicated port rather than using the default minimises the risk of connecting to the wrong application.</p>
+</div>
+</div>
+
+<div class="h_tag">
+<a href="#The-Console-application-flag" id="The-Console-application-flag" class="autoheader_anchor">
+<h2>The Console application flag</h2>
+</a>
+</div>
+<p>If you exported the <abbr title="Executable file with the extension 'exe'">EXE</abbr> with the <em>Console application</em> checkbox ticked there is a problem. You can connect to the <abbr title="Executable file with the extension 'exe'">EXE</abbr> with Ride, but all output goes into the console window.</p>
+<p>That means you can enter statements in Ride but any response from the interpreter goes to the console window rather than Ride.</p>
+<p>For debugging we therefore recommend creating the <abbr title="Executable file with the extension 'exe'">EXE</abbr> with the check box cleared.</p>
+<div class="h_tag">
+<a href="#Code-changes" id="Code-changes" class="autoheader_anchor">
+<h2>Code changes</h2>
+</a>
+</div>
+<div class="h_tag">
+<a href="#Making-Ride-configurable" id="Making-Ride-configurable" class="autoheader_anchor">
+<h3>Making Ride configurable</h3>
+</a>
+</div>
+<p>We want to make the ride configurable. That means we cannot do it earlier than after having instantiated the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file. But not long after either, so we change <code>Initial</code>:</p>
+<pre><code>∇ (Config MyLogger)←Initial dummy
+⍝ Prepares the application.
+  Config←CreateConfig ⍬
+<span class="leanpub_code">  CheckForRide Config.(Ride WaitForRide)
+</span>  MyLogger←OpenLogFile Config.LogFolder
+  MyLogger.Log'Started MyApp in ',F.PWD
+  MyLogger.Log #.GetCommandLine
+  MyLogger.Log↓⎕FMT Config.∆List
+∇</code></pre>
+<p>We have to ensure <code>Ride</code> makes it into <code>Config</code>, so we establish a default 0 (no Ride) and overwrite with <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> settings.</p>
+<pre><code>∇ Config←CreateConfig dummy;myIni;iniFilename
+  Config←⎕NS''
+  Config.⎕FX'r←∆List' 'r←{0∊⍴⍵:0 2⍴'''' ⋄ ⍵,[1.5]⍎¨⍵}'' ''~¨⍨↓⎕NL 2'
+  Config.Debug←A.IsDevelopment
+  Config.Trap←1
+  Config.Accents←'ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝ' 'AAAAAACDEEEEIIIINOOOOOOUUUUY'
+  Config.LogFolder←'./Logs'
+  Config.DumpFolder←'./Errors'
+<span class="leanpub_code">  Config.Ride←0        ⍝ If not 0 the app accepts a Ride &amp; treats Config.Ride as port number.
+  Config.WaitForRide←0 ⍝ If 1 `CheckForRide` will enter an endless loop.
+</span>  iniFilename←'expand'F.NormalizePath'MyApp.ini'
+  :If F.Exists iniFilename
+      myIni←⎕NEW ##.IniFiles(,⊂iniFilename)
+      Config.Debug{¯1≡⍵:⍺ ⋄ ⍵}←myIni.Get'Config:debug'
+      Config.Trap←⊃Config.Trap myIni.Get'Config:trap'
+      Config.Accents←⊃Config.Accents myIni.Get'Config:Accents'
+      Config.LogFolder←'expand'F.NormalizePath⊃Config.LogFolder myIni.Get'Folders:Logs'
+      Config.DumpFolder←'expand'F.NormalizePath⊃Config.DumpFolder myIni.Get'Folders:Errors'
+<span class="leanpub_code">      :If myIni.Exist'Ride'
+      :AndIf myIni.Get'Ride:Active'
+          Config.Ride←⊃Config.Ride myIni.Get'Ride:Port'
+          Config.WaitForRide←⊃Config.Ride myIni.Get'Ride:Wait'
+      :EndIf
+<span class="leanpub_code">  :EndIf
+  Config.LogFolder←'expand'F.NormalizePath Config.LogFolder
+  Config.DumpFolder←'expand'F.NormalizePath Config.DumpFolder
+∇</code></pre>
+<p>As a result <code>Config.Ride</code> will be 0 if the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> rules that no Ride is permitted, otherwise the port number to be used by Ride.</p>
+<div class="h_tag">
+<a href="#Allowing-a-Ride" id="Allowing-a-Ride" class="autoheader_anchor">
+<h3>Allowing a Ride</h3>
+</a>
+</div>
+<p>We add a function <code>CheckForRide</code>:</p>
+<pre><code>∇ {r}←CheckForRide (ridePort waitFlag);rc;init;msg
+ ⍝ Depending on what's provided as right argument we prepare for a Ride
+ ⍝ or we don't. In case `waitFlag` is 1 we enter an endless loop.
+  r←1
+  :If 0&lt;ridePort
+      {}3502⌶0                     ⍝ Switch Ride off
+      init←'SERVE::',⍕ridePort     ⍝ Initialisation string
+      rc←3502⌶ini                  ⍝ Specify INIT string
+      :If 32=rc
+          11⎕Signal⍨'Cannot Ride: Conga DLLs are missing'
+      :ElseIf 64=rc
+          11 ⎕Signal⍨'Cannot Ride; invalid initialisation string: ',ini
+      :ElseIf 0≠rc
+          msg←'Problem setting the Ride connecion string to SERVE::'
+          msg,←,(⍕ridePort),', rc=',⍕rc
+          11 ⎕SIGNAL⍨msg
+      :EndIf
+      rc←3502⌶1
+      :If ~rc∊0 ¯1
+          11 ⎕SIGNAL⍨'Switching on Ride failed, rc=',⍕rc
+      :EndIf
+      {}{_←⎕DL ⍵ ⋄ ∇ ⍵}⍣(⊃waitFlag)⊣1  ⍝ Endless loop for an early RIDE
+  :EndIf
+∇</code></pre>
+<p>Notes:</p>
+<ul>
+<li><code>ridePort</code> will be either the port to be used for communicating with Ride, or 0 if no Ride is required.</li>
+<li>The optional left argument defaults to 0. If it is 1 then the function waits for Ride to hook on.</li>
+<li>In this specific case we pass a reference to <code>Config</code> as argument to <code>CheckForRide</code>. For two reasons:
+<ul>
+<li><code>CheckForRide</code> really needs <code>Config</code>.</li>
+<li>We have nothing else to pass but we don’t want niladic functions around (except in very special circumstances).</li>
+</ul></li>
+<li>We catch the return codes from the calls to <code>3502⌶</code> and check them on the next line. This is important because the calls may fail for several reasons; see below for an example. If something goes wrong, the function signals an error.</li>
+<li>With <code>3502⌶0</code> we switch Ride off, just in case. That way we ensure we can execute <code>→1</code> while tracing <code>CheckForRide</code> at any point if we wish to; see “Restartable functions” underneath this list.</li>
+<li>With <code>3502⌶'SERVE::',⍕ridePort</code> we establish the Ride parameters: type (<code>'SERVE'</code>), host (nothing between the two colons, so it defaults to <code>'localhost'</code>) and port number.</li>
+<li>With <code>3502⌶1</code> we enable Ride.</li>
+<li>With <code>{_←⎕DL ⍵ ⋄ ∇ ⍵}1</code> we start an endless loop: it waits for a second, then calls itself (<code>∇</code>) recursively. It’s a dfn, so there is no stack growing on tail-recursive calls.</li>
+<li>We could have passed <code>Config</code> rather than <code>Config.(Ride WaitForRide)</code> to <code>CheckForRide</code>. By <em>not</em> doing this we allow the function <code>CheckForRide</code> to be tested independently from <code>Config</code>.
+<p>This is an important point. There is value in keeping the function independent in this way, but if you suspect that later you will need other parameters in <code>Config</code>, then the flexibility you gain here outweighs the value of keeping the function independent from <code>Config</code>.</p></li>
+</ul>
+<p>Finally we amend the <code>Version</code> function:</p>
+<pre><code>∇r←Version
+   ⍝ * 1.3.0:
+   ⍝   * MyApp gives a Ride now, INI settings permitted.
+   ...
+∇</code></pre>
+<p>Now you can start Ride, enter both <code>'localhost'</code> and the port number as parameters, connect to the interpreter or stand-alone <abbr title="Executable file with the extension 'exe'">EXE</abbr> etc., and then pick <em>Strong interrupt</em> from the <em>Actions</em> menu to interrupt the endless loop; you can then start debugging the application.</p>
+<p>Note that this does not require the development <abbr title="Executable file with the extension 'exe'">EXE</abbr> to be involved: it may well be a runtime <abbr title="Executable file with the extension 'exe'">EXE</abbr>.</p>
+<p><strong>NB</strong> You need a development licence to be legally entitled to Ride into an application run by the RunTime <abbr title="Executable file with the extension 'exe'">EXE</abbr> (DyalogRT.exe).</p>
+<div class="h_tag">
+<a href="#DLLs-required-by-Ride" id="DLLs-required-by-Ride" class="autoheader_anchor">
+<h2>DLLs required by Ride</h2>
+</a>
+</div>
+<p>Prior to version 16.0 one had to copy these files :</p>
+<ul>
+<li><code>ride27_64.dll</code></li>
+<li><code>ride27ssl64.dll</code></li>
+</ul>
+<p>or these:</p>
+<ul>
+<li><code>ride27_32.dll</code></li>
+<li><code>ride27ssl32.dll</code></li>
+</ul>
+<p>as siblings of the <abbr title="Executable file with the extension 'exe'">EXE</abbr>. From 16.0 onward you must copy the Conga DLLs instead.</p>
+<p>Neglecting that will make <code>3502⌶1</code> fail. Note that 2.7 refers to the version of Conga, not Ride.</p>
+<p>Prior to version 3.0 of Conga every application (interpreter, Ride, etc.) needed their own copy of the Conga DLLs, with a different name.</p>
+<p>Since 3.0 Conga can serve several applications in parallel. We suggest you copy the 32-bit and the 64-bit DLLs as siblings of your <abbr title="Executable file with the extension 'exe'">EXE</abbr>.</p>
+<p>If you forgot to copy the DLLs you will see an error <em>Can't find Conga DLL</em>. This is because the OS does not bother to tell you about dependencies.</p>
+<p>You need a tool like DependencyWalker for finding out exactly what’s missing. (We said <em>OS</em> because this is <em>not</em> a Windows-only problem.)</p>
+
+<div class="leanpub_A">
+<h3>Restartable functions</h3>
+<p>Not only do we try to exit functions at the bottom, we also like them to be restartable.</p>
+<p>What we mean by that is that we want if possible a function – and its variables – to survive <code>→1</code>. That is not possible for all functions: for example, a function that starts a thread and <em>must not</em> start a second one for the same task, or a file was tied etc. But most functions can be restartable.</p>
+<p>That means that something like this should be avoided:</p>
+<pre><code>∇r←MyFns arg
+r←⍬
+:Repeat
+    r,← DoSomethingSensible ⊃arg
+:Until 0∊⍴arg←1↓arg</code></pre>
+<p>This function does not make much sense but the point is that the right argument is overwritten; so one cannot restart this function with <code>→1</code>. Don’t do overwrite an argument without a <em>very</em> good reason. In this example, a counter is a better way to iterate. (Faster, too.)</p>
+</div>
+</div>
+</div>
+<script>
+var snapper = new Snap({
+element: document.getElementById('content')
+});
+document.getElementById('mainmenu_match').onclick = function(){
+snapper.state().state==='closed'?snapper.open('left'):snapper.close();
+}
+</script>
+</body>
+</html>
