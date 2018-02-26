@@ -1,9 +1,9 @@
 {:: encoding="utf-8" /}
-[parm]:title  = 'acre'
+[parm]:title  = 'Git for APLers'
 [parm]:toc    =  0
 
 
-# Managing source code with "acre-desktop"
+# Git for APLers
 
 ## Overview
 
