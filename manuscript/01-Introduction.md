@@ -103,7 +103,7 @@ Kai Jaeger & Stephen Taylor
 
 [^apltree]: _APLTree_ is the name of an open-source library that offers robust, tested and well documented solutions to many everyday problems you  face when addressing the tasks discussed in this book.
 
-  We will use this library extensively and discuss it in detail. More at the source: <https://aplteam.github.io/apltree>. You can also search for "apltree" on [GitHub](https://github.com).
+  We will use this library extensively and discuss it in detail. More at the source: <https://github.com/aplteam/apltree/wiki/Members>. You can also search for "apltree" on [GitHub](https://github.com).
   
   
 [^classes]: These days seasoned programmers often have strong opinions about whether to use an object-oriented approach or a functional approach, or to mix them both. 

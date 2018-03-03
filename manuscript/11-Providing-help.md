@@ -6,7 +6,7 @@
 
 Users expect applications to provide help in one way or another. One option is to provide the help as a hypertext system. Under Windows, CHM files are the standard way to provide such help. There are powerful applications available that can assist you in providing help; HelpAndManual [^ham] is just an example.
 
-However, we take a different approach here: rather than using any third-party software we use `Markdown2Help` from the APLTree library. That allows us to create a help system that:
+However, we take a different approach here: rather than using any third-party software we use `Markdown2Help` from the APL_cation [^aplcation] project. That allows us to create a help system that:
 
 * offers pretty much the same functionality as CHM.
 * allows us to keep the Help close to the code.
@@ -482,6 +482,8 @@ leanpub-end-insert
 
 
 [^ham]: <http://www.helpandmanual.com/>
+
+[^aplcation]: <https://github.com/aplteam/apltree/wiki/Members>
 
 
 *[HTML]: Hyper Text Mark-up language

@@ -161,7 +161,7 @@ Defining function keys is of course not exactly a challenge. Implementing it in 
       ⎕SHADOW⊃list←'LL' 'DB' 'DI' 'ER' 'LC' 'DC' 'UC' 'RD' 'RL' 'RC' 'Rl' 'Ll' 'CP' 'PT' 'BH'
       ⍎¨{⍵,'←⊂''',⍵,''''}¨list
       r⍪←'F01'('')('(Reserved for help)')
-      r⍪←'F02'(')WSID',ER)(')wsid')
+      r⍪←'F02'(')WSID',ER)(')wsid')
       r⍪←'F03'('')('Show next hit')                  ⍝ Reserved for NX
       r⍪←'F04'('⎕SE.Display ')('Call "Display"')
       r⍪←'F05'(LL,'→⎕LC+1 ⍝ ',ER)('→⎕LC+1')

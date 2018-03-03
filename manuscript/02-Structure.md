@@ -166,7 +166,7 @@ Note that we have some functions that start with lowercase characters while othe
 
 To expand this program into distributable software we’re going to add features, many of them drawn from the APLTree library. To facilitate that we’ll first organise the existing code into script files, and write a _build script_ to assemble a workspace from them.  
 
-I> The APLTree library is an open-source project hosted on [GitHub](https://github.com). It offers solutions for many every-day problems a Dyalog APL programmer might run into. In the Cookbook we will use many of its members. For details see <https://aplteam.github.io/apltree>.
+I> The APLTree library is an open-source project hosted on [GitHub](https://github.com). It offers solutions for many every-day problems a Dyalog APL programmer might run into. In the Cookbook we will use many of its members. For details see <https://github.com/aplteam/apltree/wiki>.
 
 Start at the root namespace (`#`). We’re going to be conservative about defining names in `#`. Why? Right now the program stands by itself and can do what it likes in the workspace. But in the future your program might become part of a larger APL system. In that case it will share `#` with other objects you don’t know anything about right now. 
 
