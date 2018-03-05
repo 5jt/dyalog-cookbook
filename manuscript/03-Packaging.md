@@ -11,9 +11,13 @@ Copy all files in `z:\code\v02\` to `z:\code\v03\`. Alternatively you can downlo
 
 ## Output to the session log
 
-In a runtime interpreter or an EXE, there is no APL session, and output to the session which would have been visible in a development system will simply disappear. If we want to see this output, we need to write it to a log file.
+In a runtime interpreter or an EXE, there is no APL session, and output to the session which would have been visible in a development system will simply disappear. 
 
-But how do we find out where we need to make changes? We recommend you think about this from the start, and ensure that all _intentional_ output goes through a log function, or at least use an explicit `⎕←` so that output can easily be identified in the source.
+I> Note that output assigned to `⎕` or `⍞` does not stop the runtime executable.
+I>
+I> However, when the result of a function is neither consumed by another function nor assigned to a variable then you will see the message "This Dyalog APL runtime application has attempted to use the APL session and therefore be closed.", and that will be the end of it.
+
+If we want to see this output, we need to write it to a log file. But how do we find out where we need to make changes? We recommend you think about this from the start, and ensure that all _intentional_ output goes through a log function, or at least use an explicit `⎕←` so that output can easily be identified in the source.
 
 A> # Unwanted output to the session
 A>
