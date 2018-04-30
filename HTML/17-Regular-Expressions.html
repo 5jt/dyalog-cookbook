@@ -4,68 +4,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta charset="utf-8">
 <title>RegEx</title>
-<link href="./CSS/BlackOnWhite_screen.css" rel="stylesheet" media="screen">
-<link href="./CSS/Cookbook_Chapter_screen.css" rel="stylesheet" media="screen">
-<link href="./CSS/snap.css" rel="stylesheet" media="screen">
-<link href="./CSS/BlackOnWhite_print.css" rel="stylesheet" media="print">
-<link href="./CSS/Cookbook_Chapter_print.css" rel="stylesheet" media="print">
-<script src="./JavaScript/snap.js"></script>
+<link href="file:///C:/Program Files (x86)/APL Team Ltd/Meddy/CSS/MarkAPL_screen.css" rel="stylesheet" media="screen">
+<link href="file:///C:/Program Files (x86)/APL Team Ltd/Meddy/CSS/MarkAPL_print.css" rel="stylesheet" media="print">
+<meta name="author" content="kai">
 </head>
 <body>
-<div class="snap-drawers">
-<div class="snap-drawer snap-drawer-left">
-<div class="h_tag">
-<h3>Chapters</h3>
-</div>
-<ol>
-<li><a href="./01-Introduction.html" class="external_link">Introduction</a></li>
-<li><a href="./02-Structure.html" class="external_link">Structure</a></li>
-<li><a href="./03-Packaging.html" class="external_link">Packaging</a></li>
-<li><a href="./04-Logging%20.html" class="external_link">Logging </a></li>
-<li><a href="./05-Configuration.html" class="external_link">Configuration</a></li>
-<li><a href="./06-Debugging-EXEs.html" class="external_link">Debugging EXEs</a></li>
-<li><a href="./07-Handling-errors.html" class="external_link">Handling errors</a></li>
-<li><a href="./08-Testing.html" class="external_link">Testing</a></li>
-<li><a href="./09-Documentation.html" class="external_link">Documentation</a></li>
-<li><a href="./10-Make.html" class="external_link">Make</a></li>
-<li><a href="./11-Providing-help.html" class="external_link">Providing help</a></li>
-<li><a href="./12-Scheduled-Tasks.html" class="external_link">Scheduled Tasks</a></li>
-<li><a href="./13-Windows-Services.html" class="external_link">Windows Services</a></li>
-<li><a href="./14-Windows-Event-Log.html" class="external_link">Windows Event Log</a></li>
-<li><a href="./15-Windows-Registry.html" class="external_link">Windows Registry</a></li>
-<li><a href="./16-Creating-SetUp.exe.html" class="external_link">Creating SetUp.exe</a></li>
-<li><a href="./17-Regular-Expressions.html" class="external_link">Regular Expressions</a></li>
-<li><a href="./18-Acre.html" class="external_link">Acre</a></li>
-<li><a href="./19-GUI.html" class="external_link">GUI</a></li>
-<li><a href="./20-Git.html" class="external_link">Git</a></li>
-</ol>
-<div class="h_tag">
-<h3>Appendices</h3>
-</div>
-<ol>
-<li><a href="./Appendix-01_Windows-environment-vars.html" class="external_link">Windows environment vars</a></li>
-<li><a href="./Appendix-02_User-commands.html" class="external_link">User commands</a></li>
-<li><a href="./Appendix-03_aplcores-&-WS-integrity.html" class="external_link">aplcores & WS integrity</a></li>
-<li><a href="./Appendix-04_Development-environment.html" class="external_link">Development environment</a></li>
-<li><a href="./Appendix-05_Special-characters.html" class="external_link">Special characters</a></li>
-</ol>
-<div class="h_tag">
-<h3>Misc</h3>
-</div>
-<ul>
-<li><a href="16-Creating-SetUp.exe.html">Previous chapter</a></li>
-<li><a href="18-Acre.html">Next chapter</a></li>
-<li><a href="./Dyalog_Cookbook.html" class="external_link" alt="All chapters, for printing" title="All chapters, for printing">Single document<br></a></li>
-</ul>
-</div>
-</div>
-<div id="mainmenu">
-<a href=# style="color:black;"><p><span id="mainmenu_match">≡</span></p></a>
-<p><span id="mainmenu_title">The Dyalog Cookbook</span></p>
-<nav id="main_nav">
-<input type="checkbox" id="hide_toc">
-<label id="hide_toc_label" for="hide_toc"></label>
+<nav id="main_nav_no_collapse">
 <div class="toc-container">
+<h3>Table of contents</h3>
 <ul>
 <li><a href="#Start-here">Start here</a></li>
 <li><a href="#What-you-can-expect">What you can expect</a></li>
@@ -101,7 +47,12 @@
 <li><a href="#Optional-items">Optional items</a></li>
 <li><a href="#Extract-whats-between-HTML-tags">Extract what's between HTML tags</a></li>
 </ul></li>
-<li><a href="#Attention-empty-vectors">Attention: empty vectors</a></li>
+<li><a href="#Warnings">Warnings</a>
+<ul>
+<li><a href="#The--character">The <code>.</code> character</a></li>
+<li><a href="#Assumptions">Assumptions</a></li>
+<li><a href="#Empty-vectors">Empty vectors</a></li>
+</ul></li>
 <li><a href="#Miscellaneous">Miscellaneous</a>
 <ul>
 <li><a href="#Tests">Tests</a></li>
@@ -111,12 +62,9 @@
 </ul>
 </div>
 </nav>
-</div>
-<div id="content" class="snap-content">
-<div id="cookbook_content">
 <div class="h_tag">
-<a href="#17-Regular-expressions-with-Dyalog" id="17-Regular-expressions-with-Dyalog" class="autoheader_anchor">
-<h1>17. Regular expressions with Dyalog</h1>
+<a href="#Regular-expressions-with-Dyalog" id="Regular-expressions-with-Dyalog" class="autoheader_anchor">
+<h1>Regular expressions with Dyalog</h1>
 </a>
 </div>
 <div class="h_tag">
@@ -648,6 +596,17 @@ a←1 ⋄ ⍈←1 2 ⋄ txt←'The ⍝ marks a comment; foo' ⍝ set up vars a, 
 </ol>
 <p>As a result <code>foo</code> is found within the code but neither between the double quotes nor as part of the comment.</p>
 <p>As far as we know, this powerful feature is specific to Dyalog, but we have only limited experience with other regular expression engines.</p>
+<p>However, be aware that the third pattern must be very specific! To rephrase it: if the third pattern is matching anything between quotes etc. then it will change them anyway.</p>
+<p>In this example this is illustrated:</p>
+<pre><code>      '''\N*''' '⍝\N*$' '^.*$'⎕R(,¨'&amp;&amp;⍈')⍠('Greedy' 1)('Mode' 'D')⊣is
+⍈</code></pre>
+<p>The expression <code>^.*$</code> together with <code>('Greedy' 1)</code> and <code>('Mode' 'D')</code> means:</p>
+<ol start="1">
+<li>The <code>^</code> matches the <em>start of the document</em>!</li>
+<li>The <code>$</code> matches the <em>end of the document</em>!</li>
+<li>The expression <code>.*</code> matches <em>everything including line breaks</em>!</li>
+</ol>
+<p>Therefore the expression changes the whole document into a single <code>⍈</code> despite the first two patterns.</p>
 <div class="h_tag">
 <a href="#Regular-expressions-and-scalar-extension" id="Regular-expressions-and-scalar-extension" class="autoheader_anchor">
 <h3>Regular expressions and scalar extension</h3>
@@ -972,8 +931,50 @@ This ⍈; more: ⍈</code></pre>
 <li>The <code>.*</code>consumes everything until the RegEx engine arrives at the <code>&lt;</code> (as part of <code>&lt;/a&gt;</code>) because the <code>?</code> makes the quantifier lazy.</li>
 </ul>
 <div class="h_tag">
-<a href="#Attention-empty-vectors" id="Attention-empty-vectors" class="autoheader_anchor">
-<h2>Attention: empty vectors</h2>
+<a href="#Warnings" id="Warnings" class="autoheader_anchor">
+<h2>Warnings</h2>
+</a>
+</div>
+<div class="h_tag">
+<a href="#The--character" id="The--character" class="autoheader_anchor">
+<h3>The <code>.</code> character</h3>
+</a>
+</div>
+<p>Be very careful whith the <code>.</code> in RegEx: because it matches <em>every</em> character except newline (and with <code>('DotAll' 1)</code> even newline) it can produce unwanted results, in particular with <code>('Greedy' 1)</code> but not restricted to that.</p>
+<p>Because it's so powerful it allows you to be lazy: you write a RegEx and it matches everything that you want it to match, but it might always match everything, including stuff it shouldn't!</p>
+<p>To illustrate the point let's assume that we want to match a date in a text vector in the international date format (<code>yyyy-mm-dd</code>). The naive approach with a dot works fine:</p>
+<pre><code>      '\d\d\d\d.\d\d.\d\d'⎕S 0 ⊣'1988-02-03'
+0</code></pre>
+<p>Not really:</p>
+<pre><code>      '\d\d\d\d.\d\d.\d\d'⎕S 0 ⊣'1988/02/03'
+0</code></pre>
+<p>While this might be acceptable because it seems to give the user the freedom to use a different separator the following example is certainly not acceptable:</p>
+<pre><code>      '\d\d\d\d.\d\d.\d\d'⎕S 0 ⊣'1988020312'
+0</code></pre>
+<p>Its's much better to specify what's excepted as separator explicitly:</p>
+<pre><code>      '\d\d\d\d[-./ ]\d\d[-./ ]\d\d'⎕S 0⊣'1988/02/03'
+0</code></pre>
+<p>Even this has it's problems:</p>
+<pre><code>      '\d\d\d\d[-./ ]\d\d[-./ ]\d\d'⎕S 0⊣'1988 02/03'
+0
+      '\d\d\d\d[-./ ]\d\d[-./ ]\d\d'⎕S 0⊣'1988-99-99'
+0</code></pre>
+<p>Whether that's acceptable or not depends on the application.</p>
+<div class="h_tag">
+<a href="#Assumptions" id="Assumptions" class="autoheader_anchor">
+<h3>Assumptions</h3>
+</a>
+</div>
+<p>One of the greatest problems in programming is making assumptions and not document them. Or worse, not even being aware of your assumptions.</p>
+<p>The above is an example. Imagine these two different scenarios:</p>
+<ol start="1">
+<li>You want to extract everything from a log file that's a date. You know that every record, if it carries a date at all, will start with the date, and you can savely assume that the dates are correctly saved in international date format.</li>
+<li>You allow the user to enter her date of birth in a dialog box.</li>
+</ol>
+<p>In the first case you can take a relaxed approach because you know all dates are valid and follow precise rules while in the second you have to be meticulous because otherwise you will accept and save rubbish sooner rather than later.</p>
+<div class="h_tag">
+<a href="#Empty-vectors" id="Empty-vectors" class="autoheader_anchor">
+<h3>Empty vectors</h3>
 </a>
 </div>
 <p>Given this variable:</p>
@@ -993,7 +994,7 @@ This ⍈; more: ⍈</code></pre>
 │ │ │ │A paragraph.      │ │ │ │
 │ └─┘ └──────────────────┘ └─┘ │
 └∊─────────────────────────────┘</code></pre>
-<p>This is so in version 16.0, but might change in a future version of Dyalog.</p>
+<p>That's what happens in version 16.0. Be aware that this might change in a later version of Dyalog.</p>
 <div class="h_tag">
 <a href="#Miscellaneous" id="Miscellaneous" class="autoheader_anchor">
 <h2>Miscellaneous</h2>
@@ -1004,35 +1005,35 @@ This ⍈; more: ⍈</code></pre>
 <h3>Tests</h3>
 </a>
 </div>
-<p>Complex regular expressions are hard to read and maintain. Document them intensively, with exhaustive test cases.</p>
+<p>Complex regular expressions are hard to read and maintain. Document them intensively and cover them with exhaustive test cases.</p>
+<p>At first this might seem overkill, but as usual tests will prove to be useful when you need to…</p>
+<ul>
+<li>understand a RegEx because the tests will demonstrate what the RegEx was supposed to do.</li>
+<li>make sure that after a change a RegEx is still doing what it was supposed to do, no matter whether the change was trivial or not.</li>
+</ul>
 <div class="h_tag">
 <a href="#Performance" id="Performance" class="autoheader_anchor">
 <h3>Performance</h3>
 </a>
 </div>
 <p>Don't expect regular expressions to be faster than a tailored APL solution; expect them to be slightly slower.</p>
-<p>However, many regular expressions, like finding a simple string in another simple string or uppercasing or lowercasing characters are converted by the interpreter into a native (faster) APL expression (<code>⍷</code> and <code>⌶ 819</code> respectively).</p>
+<p>However, many regular expressions, like finding a simple string in another simple string or uppercasing or lowercasing characters are converted by the interpreter into a native (faster) APL expression (<code>⍷</code> and <code>⌶ 819</code> respectively) anyway.</p>
 <div class="h_tag">
 <a href="#Helpful-stuff" id="Helpful-stuff" class="autoheader_anchor">
 <h3>Helpful stuff</h3>
 </a>
 </div>
 <dl>
+<dt>Online Tutotrial</dt>
+<dd><p class="first_dd">A web site that explores Regular Expressions in detail:</p></dd>
+<dd><p><a href="https://www.regular-expressions.info/tutorial.html" class="external_link">https://www.regular-expressions.info/tutorial.html</a></p></dd>
+<dd><p>From the author of RegExBuddy.</p></dd>
 <dt>RegexBuddy</dt>
-<dd>Software that helps interpret or build  regular expressions</dd>
-<dt><a href="http://www.regular-expressions.info/tutorial.html" class="external_link">http://www.regular-expressions.info/tutorial.html</a></dt>
-<dd><p class="first_dd">A web site that explores the details. From the author of RegExBuddy.</p></dd>
-<dd><p>The web site also comes with detailed book reviews: <a href="http://www.regular-expressions.info/hipowls.html" class="external_link">http://www.regular-expressions.info/hipowls.html</a></p></dd>
+<dd><p class="first_dd">Software that helps interpret or build  regular expressions:</p></dd>
+<dd><p><a href="https://www.regexbuddy.com/" class="external_link">https://www.regexbuddy.com/</a></p></dd>
+<dt>Book reviews</dt>
+<dd><p class="first_dd">The aforementioned website comes with detailed book reviews:</p></dd>
+<dd><p><a href="https://www.regular-expressions.info/hipowls.html" class="external_link">https://www.regular-expressions.info/hipowls.html</a></p></dd>
 </dl>
-</div>
-</div>
-<script>
-var snapper = new Snap({
-element: document.getElementById('content')
-});
-document.getElementById('mainmenu_match').onclick = function(){
-snapper.state().state==='closed'?snapper.open('left'):snapper.close();
-}
-</script>
 </body>
 </html>

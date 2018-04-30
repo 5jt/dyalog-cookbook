@@ -568,6 +568,25 @@ As a result `foo` is found within the code but neither between the double quotes
 
 As far as we know, this powerful feature is specific to Dyalog, but we have only limited experience with other regular expression engines.
 
+However, be aware that the third pattern must be very specific! To rephrase it: if the third pattern is matching anything between quotes etc. then it will change them anyway. 
+
+In this example this is illustrated:
+
+~~~
+      '''\N*''' '⍝\N*$' '^.*$'⎕R(,¨'&&⍈')⍠('Greedy' 1)('Mode' 'D')⊣is
+⍈
+~~~
+
+The expression `^.*$` together with `('Greedy' 1)` and `('Mode' 'D')` means:
+
+1. The `^` matches the _start of the document_!
+
+1. The `$` matches the _end of the document_!
+
+1. The expression `.*` matches _everything including line breaks_!
+
+Therefore the expression changes the whole document into a single `⍈` despite the first two patterns.
+
 
 ### Regular expressions and scalar extension
 
@@ -1015,7 +1034,7 @@ Well, yes, but it also works on this:
 ~~~
       txt←'This <abbr title="FooGoo"><a href="#page">is a link</a></abbr>'
       '<a.*>.*</a>'⎕R'⍈'⊣txt
-This ⍈</abbr>	
+This ⍈</abbr>    
 ~~~
 
 That might come as a nasty surprise but when you think it through it's obvious why that is: the expression `<a.*>` does indeed catch not only `<a` but also `<abbr>`. Shows how important it is to be precise.
@@ -1049,7 +1068,68 @@ Notes:
 * The `.*`consumes everything until the RegEx engine arrives at the `<` (as part of `</a>`) because the `?` makes the quantifier lazy.
 
 
-## Attention: empty vectors
+## Warnings
+
+### The `.` character
+
+Be very careful whith the `.` in RegEx: because it matches _every_ character except newline (and with `('DotAll' 1)` even newline) it can produce unwanted results, in particular with `('Greedy' 1)` but not restricted to that.
+
+Because it's so powerful it allows you to be lazy: you write a RegEx and it matches everything that you want it to match, but it might always match everything, including stuff it shouldn't!
+
+To illustrate the point let's assume that we want to match a date in a text vector in the international date format (`yyyy-mm-dd`). The naive approach with a dot works fine:
+
+~~~
+      '\d\d\d\d.\d\d.\d\d'⎕S 0 ⊣'1988-02-03'
+0
+~~~
+
+Not really:
+
+~~~
+      '\d\d\d\d.\d\d.\d\d'⎕S 0 ⊣'1988/02/03'
+0
+~~~
+
+While this might be acceptable because it seems to give the user the freedom to use a different separator the following example is certainly not acceptable:
+
+~~~
+      '\d\d\d\d.\d\d.\d\d'⎕S 0 ⊣'1988020312'
+0
+~~~
+
+Its's much better to specify what's excepted as separator explicitly:
+
+~~~
+      '\d\d\d\d[-./ ]\d\d[-./ ]\d\d'⎕S 0⊣'1988/02/03'
+0
+~~~
+
+Even this has it's problems:
+
+~~~
+      '\d\d\d\d[-./ ]\d\d[-./ ]\d\d'⎕S 0⊣'1988 02/03'
+0
+      '\d\d\d\d[-./ ]\d\d[-./ ]\d\d'⎕S 0⊣'1988-99-99'
+0
+~~~
+
+Whether that's acceptable or not depends on the application.
+
+
+### Assumptions
+
+One of the greatest problems in programming is making assumptions and not document them. Or worse, not even being aware of your assumptions.
+
+The above is an example. Imagine these two different scenarios:
+
+1. You want to extract everything from a log file that's a date. You know that every record, if it carries a date at all, will start with the date, and you can savely assume that the dates are correctly saved in international date format.
+
+1. You allow the user to enter her date of birth in a dialog box.
+
+In the first case you can take a relaxed approach because you know all dates are valid and follow precise rules while in the second you have to be meticulous because otherwise you will accept and save rubbish sooner rather than later.
+
+
+### Empty vectors
 
 Given this variable:
 
@@ -1081,7 +1161,7 @@ If you want a stricter correspondence between input and output you need to proce
 └∊─────────────────────────────┘
 ~~~
 
-This is so in version 16.0, but might change in a future version of Dyalog.
+That's what happens in version 16.0. Be aware that this might change in a later version of Dyalog.
 
 
 ## Miscellaneous
@@ -1089,25 +1169,40 @@ This is so in version 16.0, but might change in a future version of Dyalog.
 
 ### Tests
 
-Complex regular expressions are hard to read and maintain. Document them intensively, with exhaustive test cases.
+Complex regular expressions are hard to read and maintain. Document them intensively and cover them with exhaustive test cases.
+
+At first this might seem overkill, but as usual tests will prove to be useful when you need to...
+
+* understand a RegEx because the tests will demonstrate what the RegEx was supposed to do.
+
+* make sure that after a change a RegEx is still doing what it was supposed to do, no matter whether the change was trivial or not.
 
 
 ### Performance
 
 Don't expect regular expressions to be faster than a tailored APL solution; expect them to be slightly slower.
 
-However, many regular expressions, like finding a simple string in another simple string or uppercasing or lowercasing characters are converted by the interpreter into a native (faster) APL expression (`⍷` and `⌶ 819` respectively).
+However, many regular expressions, like finding a simple string in another simple string or uppercasing or lowercasing characters are converted by the interpreter into a native (faster) APL expression (`⍷` and `⌶ 819` respectively) anyway.
 
 
 ### Helpful stuff
 
+Online Tutotrial
+
+: A web site that explores Regular Expressions in detail:
+: <https://www.regular-expressions.info/tutorial.html>
+: From the author of RegExBuddy.
+
 RegexBuddy
-: Software that helps interpret or build  regular expressions
+: Software that helps interpret or build  regular expressions:
 
-<http://www.regular-expressions.info/tutorial.html>
-: A web site that explores the details. From the author of RegExBuddy.
+: <https://www.regexbuddy.com/>
 
-: The web site also comes with detailed book reviews: <http://www.regular-expressions.info/hipowls.html>
+Book reviews
+
+: The aforementioned website comes with detailed book reviews: 
+
+: <https://www.regular-expressions.info/hipowls.html>
 
 
 *[HTML]: Hyper Text Mark-up language
