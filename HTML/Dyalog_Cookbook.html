@@ -108,7 +108,7 @@
 <p><strong>Footnotes</strong></p>
 <ol>
 <li id="fnref1"><p>Perhaps one day you would like it to ship on multiple platforms. Perhaps one day we’ll write that book too. Meanwhile, Microsoft Windows.</p><p>You will however find that whenever possible we keep the code platform independent. If we use platform-dependent utilities we mention it and explain why; we might also mention alternatives available on other platforms.</p><a href="#fnref1" class="footnote_anchor"></a>
-<li id="fnref2"><p><em>APLTree</em> is the name of an open-source library that offers robust, tested and well documented solutions to many everyday problems you face when addressing the tasks discussed in this book.</p><p>We will use this library extensively and discuss it in detail. More at the source:<br><a href="https://aplteam.github.io/apltree" class="external_link">https://aplteam.github.io/apltree</a>. You can also search for “apltree” on <a href="https://github.com" class="external_link">GitHub</a>.</p><a href="#fnref2" class="footnote_anchor"></a>
+<li id="fnref2"><p><em>APLTree</em> is the name of an open-source library that offers robust, tested and well documented solutions to many everyday problems you face when addressing the tasks discussed in this book.</p><p>We will use this library extensively and discuss it in detail. More at the source:<br><a href="https://github.com/aplteam/apltree/wiki/Members" class="external_link">https://github.com/aplteam/apltree/wiki/Members</a>. You can also search for “apltree” on <a href="https://github.com" class="external_link">GitHub</a>.</p><a href="#fnref2" class="footnote_anchor"></a>
 <li id="fnref3"><p>These days seasoned programmers often have strong opinions about whether to use an object-oriented approach or a functional approach, or to mix them both.</p><p>We have seen friendships broken on these issues. In this book we take a mixed approach.</p><a href="#fnref3" class="footnote_anchor"></a>
 </ol>
 </div>
@@ -264,7 +264,7 @@ AAAAAACDEEEEIIIINOOOOOOUUUUY</code></pre>
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
-<p>The APLTree library is an open-source project hosted on <a href="https://github.com" class="external_link">GitHub</a>. It offers solutions for many every-day problems a Dyalog APL programmer might run into. In the Cookbook we will use many of its members. For details see <a href="https://aplteam.github.io/apltree" class="external_link">https://aplteam.github.io/apltree</a>.</p>
+<p>The APLTree library is an open-source project hosted on <a href="https://github.com" class="external_link">GitHub</a>. It offers solutions for many every-day problems a Dyalog APL programmer might run into. In the Cookbook we will use many of its members. For details see <a href="https://github.com/aplteam/apltree/wiki" class="external_link">https://github.com/aplteam/apltree/wiki</a>.</p>
 </div>
 </div>
 
@@ -738,8 +738,17 @@ Load MyApp</code></pre>
 <h2>1. Output to the session log</h2>
 </a>
 </div>
-<p>In a runtime interpreter or an <abbr title="Executable file with the extension 'exe'">EXE</abbr>, there is no APL session, and output to the session which would have been visible in a development system will simply disappear. If we want to see this output, we need to write it to a log file.</p>
-<p>But how do we find out where we need to make changes? We recommend you think about this from the start, and ensure that all <em>intentional</em> output goes through a log function, or at least use an explicit <code>⎕←</code> so that output can easily be identified in the source.</p>
+<p>In a runtime interpreter or an <abbr title="Executable file with the extension 'exe'">EXE</abbr>, there is no APL session, and output to the session which would have been visible in a development system will simply disappear.</p>
+
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
+<div>
+<p>Note that output assigned to <code>⎕</code> or <code>⍞</code> does not stop the runtime executable.</p>
+<p>However, when the result of a function is neither consumed by another function nor assigned to a variable then you will see the message “This Dyalog APL runtime application has attempted to use the APL session and therefore be closed.”, and that will be the end of it.</p>
+</div>
+</div>
+
+<p>If we want to see this output, we need to write it to a log file. But how do we find out where we need to make changes? We recommend you think about this from the start, and ensure that all <em>intentional</em> output goes through a log function, or at least use an explicit <code>⎕←</code> so that output can easily be identified in the source.</p>
 
 <div class="leanpub_A">
 <h3>Unwanted output to the session</h3>
@@ -3545,7 +3554,7 @@ Run #.Tester.EstablishHelpersIn #.Tests
 <div class="leanpub_A">
 <h3>More complex scenarios</h3>
 <p>In a more complex application than ours you might prefer a different approach. Using an <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file for this is not a bad idea: it gives you scope to define more than just the modules to be loaded, and some code to execute.</p>
-<p>Also, if you have not one butseveral applications to support, it is useful to implement your own generalised user command like <code>]runmake</code>.</p>
+<p>Also, if you have not one but several applications to support, it is useful to implement your own generalised user command like <code>]runmake</code>.</p>
 </div>
 
 <p><code>Execute</code>, <code>Tester</code> and <code>Tests</code> have no place in the finished application, nor do we need the test helpers either.</p>
@@ -3754,7 +3763,7 @@ Active      = 0
       details,←⊂'ProductVersion'(2⊃##.MyApp.Version)
       details,←⊂'LegalCopyright' 'Dyalog Ltd 2018'
       details,←⊂'ProductName' 'MyApp'
-      details,←⊂'FileVersion' '1.2.3.4'
+      details,←⊂'FileVersion' (2⊃##.MyApp.Version)
       details←↑details
       success←try←0
       fn←DESTINATION,'\',exeName     ⍝ filename
@@ -3775,8 +3784,16 @@ Active      = 0
 <p><code>Export</code> automates what we’ve done so far by calling the <em>Export</em> command from the <em>File</em> menu. If the <em>Bind</em> method fails, it retries up to 50 times before giving up.</p>
 <p>From experience we know that, with the OS, the machine, the network, the filesystem and who knows what else, the command can fail several times before finally succeeding.</p>
 
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
+<div>
+<p>Why is there a “ProductVersion” and a “FileVersion”? No idea! On Stack Overflow this was discussed more than once, and it seems that there are very few cases were it might make sense to have them <strong>not</strong> in sync.</p>
+<p>But “FileVersion” is the more important one: the Inno installer for example (see <a href="./16-Creating-SetUp.exe.html" class="external_link">chapter 16 “Creating SetUp.exe”</a>) compares the “FileVersion” of an already installed version with the possibly new version, and if they are not different then it won't overwrite the <abbr title="Executable file with the extension 'exe'">EXE</abbr> - you don't want that!</p>
+</div>
+</div>
+
 <div class="leanpub_A">
-<h3>The <em>Bind</em> method</h3>
+<h3>The <code>Bind</code> method</h3>
 <p>Note that for the <code>Bind</code> method to work as discussed in this chapter you must use at least version 16.0.31811.0 of Dyalog. Before that <code>Bind</code> was not an official method and did not support the <code>details</code>.</p>
 </div>
 
@@ -3854,7 +3871,7 @@ Active      = 0
 </a>
 </div>
 <p>Users expect applications to provide help in one way or another. One option is to provide the help as a hypertext system. Under Windows, <abbr title="Executable file with the extension 'chm' that contains Windows Help(Compiled Help)">CHM</abbr> files are the standard way to provide such help. There are powerful applications available that can assist you in providing help; HelpAndManual [<a href="#fnref1" class="footnote_link"><sup>1</sup></a>] is just an example.</p>
-<p>However, we take a different approach here: rather than using any third-party software we use <code>Markdown2Help</code> from the APLTree library. That allows us to create a help system that:</p>
+<p>However, we take a different approach here: rather than using any third-party software we use <code>Markdown2Help</code> from the APL_cation [<a href="#fnref2" class="footnote_link"><sup>2</sup></a>] project. That allows us to create a help system that:</p>
 <ul>
 <li>offers pretty much the same functionality as <abbr title="Executable file with the extension 'chm' that contains Windows Help(Compiled Help)">CHM</abbr>.</li>
 <li>allows us to keep the Help close to the code.</li>
@@ -4233,6 +4250,7 @@ Run #.Make.Run 1</code></pre>
 <p><strong>Footnotes</strong></p>
 <ol>
 <li id="fnref1"><p><a href="http://www.helpandmanual.com/" class="external_link">http://www.helpandmanual.com/</a></p><a href="#fnref1" class="footnote_anchor"></a>
+<li id="fnref2"><p><a href="https://github.com/aplteam/apltree/wiki/Members" class="external_link">https://github.com/aplteam/apltree/wiki/Members</a></p><a href="#fnref2" class="footnote_anchor"></a>
 </ol>
 </div>
 </article>
@@ -4552,7 +4570,7 @@ The process cannot access the file because it is being used by another process.<
 </a>
 </div>
 <p>If for some reason you’ve created <code>MyApp.exe</code> by binding the application to the development version of Dyalog rather than the runtime (you can do this by providing a 0 as left argument to the <code>MakeExport</code> function) then you might run into a problem. Our code notices whether it is running under a development <abbr title="Executable file with the extension 'exe'">EXE</abbr> or a runtime <abbr title="Executable file with the extension 'exe'">EXE</abbr>. Error trapping will be inactive (unless it is enforced via the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr>) and <code>⎕OFF</code> won’t be executed; instead it would execute <code>→</code> and hang around but without you being able to see the session.</p>
-<p>So don’t do this. Because you have Ride, the development version has no advantages over the runtime <abbr title="Executable file with the extension 'exe'">EXE</abbr> anyway.</p>
+<p>So don’t do this. Because you have Ride at your disposal the development version has no advantages over the runtime <abbr title="Executable file with the extension 'exe'">EXE</abbr> anyway.</p>
 <div class="h_tag">
 <a href="#Your-application-doesnt-do-what-its-supposed-to-do" id="Your-application-doesnt-do-what-its-supposed-to-do" class="autoheader_anchor">
 <h3>7.6. Your application doesn’t do what it’s supposed to do</h3>
@@ -6378,8 +6396,51 @@ CreateDesktopIcon = This and that</code></pre>
 </div>
 <p>Inno comes with a built-in script language that allows you to do pretty much whatever you like. However, scripting is beyond the scope of this chapter.</p>
 <div class="h_tag">
+<a href="#Potential-problems" id="Potential-problems" class="autoheader_anchor">
+<h2>8. Potential problems</h2>
+</a>
+</div>
+<div class="h_tag">
+<a href="#Updating-an-already-installed-version" id="Updating-an-already-installed-version" class="autoheader_anchor">
+<h3>8.1. Updating an already installed version</h3>
+</a>
+</div>
+<p>There is no need to take action - Inno will handle this automatically for you. There is however one exception and one pitfall:</p>
+<div class="h_tag">
+<a href="#Files-that-are-not-needed-any-longer" id="Files-that-are-not-needed-any-longer" class="autoheader_anchor">
+<h4>8.1.1. Files that are not needed any longer</h4>
+</a>
+</div>
+<p>Inno won't (can't) delete those automatically. This is the recommended way to delete files:</p>
+<pre><code>[InstallDelete]
+Type: files; Name: {app}\foo.bar
+Type: files; Name: {app}\baz\quux.txt</code></pre>
+<p>Although wildcards are supported they should never be used because you may well delete user files.</p>
+<div class="h_tag">
+<a href="#The-EXE" id="The-EXE" class="autoheader_anchor">
+<h4>8.1.2. The EXE</h4>
+</a>
+</div>
+<p>When an <abbr title="Executable file with the extension 'exe'">EXE</abbr> is part of the installation Inno compares the “FileVersion” of what's already installed with the one that is about to be installed. It they match Inno won't take any action. That means that if you forget to set the “FileVersion” (see <a href="./10-Make.html#Exporting" class="external_link">chapter 10: “Make: Export”</a>) when creating the stand-alone <abbr title="Executable file with the extension 'exe'">EXE</abbr> then it will always be 0.0.0.0, so they won't ever differ, and the first installed <abbr title="Executable file with the extension 'exe'">EXE</abbr> will never be replaced!</p>
+<div class="h_tag">
+<a href="#Analyzing-problems" id="Analyzing-problems" class="autoheader_anchor">
+<h3>8.2. Analyzing problems</h3>
+</a>
+</div>
+<p>A problem like the aforementioned one won't cause an error message; you just don't get the new <abbr title="Executable file with the extension 'exe'">EXE</abbr> installed. Assuming that you have been careful enough to realize that there is a problem, how to get to the bottom of it?</p>
+<p>If the installer does not behave as expected add <code>/LOG={filename}</code> to it. Then Inno will report all actions and even conclusions to that file.</p>
+<p>In the above scenario you would find something similiar to this in the log file:</p>
+<pre><code>2018-05-08 06:26:30.826   -- File entry --
+2018-05-08 06:26:30.827   Dest filename: C:\Program Files (x86)\..\Foo.exe
+2018-05-08 06:26:30.827   Time stamp of our file: 2018-05-07 13:07:26.000
+2018-05-08 06:26:30.827   Dest file exists.
+2018-05-08 06:26:30.827   Time stamp of existing file: 2018-05-07 12:51:24.000
+2018-05-08 06:26:30.827   Version of our file: 0.0.0.0
+2018-05-08 06:26:30.832   Version of existing file: 0.0.0.0
+2018-05-08 06:26:30.832   Same version. Skipping.</code></pre>
+<div class="h_tag">
 <a href="#Conclusion" id="Conclusion" class="autoheader_anchor">
-<h2>8. Conclusion</h2>
+<h2>9. Conclusion</h2>
 </a>
 </div>
 <p>Although Inno is significantly easier to master than the top dog Wix, it provides a large selection of features and options. This chapter only scratches the surface, but it will get you going.</p>
@@ -6927,6 +6988,17 @@ a←1 ⋄ ⍈←1 2 ⋄ txt←'The ⍝ marks a comment; foo' ⍝ set up vars a, 
 </ol>
 <p>As a result <code>foo</code> is found within the code but neither between the double quotes nor as part of the comment.</p>
 <p>As far as we know, this powerful feature is specific to Dyalog, but we have only limited experience with other regular expression engines.</p>
+<p>However, be aware that the third pattern must be very specific! To rephrase it: if the third pattern is matching anything between quotes etc. then it will change them anyway.</p>
+<p>In this example this is illustrated:</p>
+<pre><code>      '''\N*''' '⍝\N*$' '^.*$'⎕R(,¨'&amp;&amp;⍈')⍠('Greedy' 1)('Mode' 'D')⊣is
+⍈</code></pre>
+<p>The expression <code>^.*$</code> together with <code>('Greedy' 1)</code> and <code>('Mode' 'D')</code> means:</p>
+<ol start="1">
+<li>The <code>^</code> matches the <em>start of the document</em>!</li>
+<li>The <code>$</code> matches the <em>end of the document</em>!</li>
+<li>The expression <code>.*</code> matches <em>everything including line breaks</em>!</li>
+</ol>
+<p>Therefore the expression changes the whole document into a single <code>⍈</code> despite the first two patterns.</p>
 <div class="h_tag">
 <a href="#Regular-expressions-and-scalar-extension" id="Regular-expressions-and-scalar-extension" class="autoheader_anchor">
 <h3>5.18. Regular expressions and scalar extension</h3>
@@ -7251,8 +7323,50 @@ This ⍈; more: ⍈</code></pre>
 <li>The <code>.*</code>consumes everything until the RegEx engine arrives at the <code>&lt;</code> (as part of <code>&lt;/a&gt;</code>) because the <code>?</code> makes the quantifier lazy.</li>
 </ul>
 <div class="h_tag">
-<a href="#Attention-empty-vectors" id="Attention-empty-vectors" class="autoheader_anchor">
-<h2>6. Attention: empty vectors</h2>
+<a href="#Warnings" id="Warnings" class="autoheader_anchor">
+<h2>6. Warnings</h2>
+</a>
+</div>
+<div class="h_tag">
+<a href="#The--character" id="The--character" class="autoheader_anchor">
+<h3>6.1. The <code>.</code> character</h3>
+</a>
+</div>
+<p>Be very careful whith the <code>.</code> in RegEx: because it matches <em>every</em> character except newline (and with <code>('DotAll' 1)</code> even newline) it can produce unwanted results, in particular with <code>('Greedy' 1)</code> but not restricted to that.</p>
+<p>Because it's so powerful it allows you to be lazy: you write a RegEx and it matches everything that you want it to match, but it might always match everything, including stuff it shouldn't!</p>
+<p>To illustrate the point let's assume that we want to match a date in a text vector in the international date format (<code>yyyy-mm-dd</code>). The naive approach with a dot works fine:</p>
+<pre><code>      '\d\d\d\d.\d\d.\d\d'⎕S 0 ⊣'1988-02-03'
+0</code></pre>
+<p>Not really:</p>
+<pre><code>      '\d\d\d\d.\d\d.\d\d'⎕S 0 ⊣'1988/02/03'
+0</code></pre>
+<p>While this might be acceptable because it seems to give the user the freedom to use a different separator the following example is certainly not acceptable:</p>
+<pre><code>      '\d\d\d\d.\d\d.\d\d'⎕S 0 ⊣'1988020312'
+0</code></pre>
+<p>Its's much better to specify what's excepted as separator explicitly:</p>
+<pre><code>      '\d\d\d\d[-./ ]\d\d[-./ ]\d\d'⎕S 0⊣'1988/02/03'
+0</code></pre>
+<p>Even this has it's problems:</p>
+<pre><code>      '\d\d\d\d[-./ ]\d\d[-./ ]\d\d'⎕S 0⊣'1988 02/03'
+0
+      '\d\d\d\d[-./ ]\d\d[-./ ]\d\d'⎕S 0⊣'1988-99-99'
+0</code></pre>
+<p>Whether that's acceptable or not depends on the application.</p>
+<div class="h_tag">
+<a href="#Assumptions" id="Assumptions" class="autoheader_anchor">
+<h3>6.2. Assumptions</h3>
+</a>
+</div>
+<p>One of the greatest problems in programming is making assumptions and not document them. Or worse, not even being aware of your assumptions.</p>
+<p>The above is an example. Imagine these two different scenarios:</p>
+<ol start="1">
+<li>You want to extract everything from a log file that's a date. You know that every record, if it carries a date at all, will start with the date, and you can savely assume that the dates are correctly saved in international date format.</li>
+<li>You allow the user to enter her date of birth in a dialog box.</li>
+</ol>
+<p>In the first case you can take a relaxed approach because you know all dates are valid and follow precise rules while in the second you have to be meticulous because otherwise you will accept and save rubbish sooner rather than later.</p>
+<div class="h_tag">
+<a href="#Empty-vectors" id="Empty-vectors" class="autoheader_anchor">
+<h3>6.3. Empty vectors</h3>
 </a>
 </div>
 <p>Given this variable:</p>
@@ -7272,7 +7386,7 @@ This ⍈; more: ⍈</code></pre>
 │ │ │ │A paragraph.      │ │ │ │
 │ └─┘ └──────────────────┘ └─┘ │
 └∊─────────────────────────────┘</code></pre>
-<p>This is so in version 16.0, but might change in a future version of Dyalog.</p>
+<p>That's what happens in version 16.0. Be aware that this might change in a later version of Dyalog.</p>
 <div class="h_tag">
 <a href="#Miscellaneous" id="Miscellaneous" class="autoheader_anchor">
 <h2>7. Miscellaneous</h2>
@@ -7283,25 +7397,35 @@ This ⍈; more: ⍈</code></pre>
 <h3>7.1. Tests</h3>
 </a>
 </div>
-<p>Complex regular expressions are hard to read and maintain. Document them intensively, with exhaustive test cases.</p>
+<p>Complex regular expressions are hard to read and maintain. Document them intensively and cover them with exhaustive test cases.</p>
+<p>At first this might seem overkill, but as usual tests will prove to be useful when you need to…</p>
+<ul>
+<li>understand a RegEx because the tests will demonstrate what the RegEx was supposed to do.</li>
+<li>make sure that after a change a RegEx is still doing what it was supposed to do, no matter whether the change was trivial or not.</li>
+</ul>
 <div class="h_tag">
 <a href="#Performance" id="Performance" class="autoheader_anchor">
 <h3>7.2. Performance</h3>
 </a>
 </div>
 <p>Don't expect regular expressions to be faster than a tailored APL solution; expect them to be slightly slower.</p>
-<p>However, many regular expressions, like finding a simple string in another simple string or uppercasing or lowercasing characters are converted by the interpreter into a native (faster) APL expression (<code>⍷</code> and <code>⌶ 819</code> respectively).</p>
+<p>However, many regular expressions, like finding a simple string in another simple string or uppercasing or lowercasing characters are converted by the interpreter into a native (faster) APL expression (<code>⍷</code> and <code>⌶ 819</code> respectively) anyway.</p>
 <div class="h_tag">
 <a href="#Helpful-stuff" id="Helpful-stuff" class="autoheader_anchor">
 <h3>7.3. Helpful stuff</h3>
 </a>
 </div>
 <dl>
+<dt>Online Tutotrial</dt>
+<dd><p class="first_dd">A web site that explores Regular Expressions in detail:</p></dd>
+<dd><p><a href="https://www.regular-expressions.info/tutorial.html" class="external_link">https://www.regular-expressions.info/tutorial.html</a></p></dd>
+<dd><p>From the author of RegExBuddy.</p></dd>
 <dt>RegexBuddy</dt>
-<dd>Software that helps interpret or build  regular expressions</dd>
-<dt><a href="http://www.regular-expressions.info/tutorial.html" class="external_link">http://www.regular-expressions.info/tutorial.html</a></dt>
-<dd><p class="first_dd">A web site that explores the details. From the author of RegExBuddy.</p></dd>
-<dd><p>The web site also comes with detailed book reviews: <a href="http://www.regular-expressions.info/hipowls.html" class="external_link">http://www.regular-expressions.info/hipowls.html</a></p></dd>
+<dd><p class="first_dd">Software that helps interpret or build  regular expressions:</p></dd>
+<dd><p><a href="https://www.regexbuddy.com/" class="external_link">https://www.regexbuddy.com/</a></p></dd>
+<dt>Book reviews</dt>
+<dd><p class="first_dd">The aforementioned website comes with detailed book reviews:</p></dd>
+<dd><p><a href="https://www.regular-expressions.info/hipowls.html" class="external_link">https://www.regular-expressions.info/hipowls.html</a></p></dd>
 </dl>
 </article>
 <article>
@@ -8840,7 +8964,7 @@ This ⍈; more: ⍈</code></pre>
       ⎕SHADOW⊃list←'LL' 'DB' 'DI' 'ER' 'LC' 'DC' 'UC' 'RD' 'RL' 'RC' 'Rl' 'Ll' 'CP' 'PT' 'BH'
       ⍎¨{⍵,'←⊂''',⍵,''''}¨list
       r⍪←'F01'('')('(Reserved for help)')
-      r⍪←'F02'(')WSID',ER)(')wsid')
+      r⍪←'F02'(')WSID',ER)(')wsid')
       r⍪←'F03'('')('Show next hit')                  ⍝ Reserved for NX
       r⍪←'F04'('⎕SE.Display ')('Call "Display"')
       r⍪←'F05'(LL,'→⎕LC+1 ⍝ ',ER)('→⎕LC+1')

@@ -426,6 +426,53 @@ That would overwrite the internal message.
 Inno comes with a built-in script language that allows you to do pretty much whatever you like. However, scripting is beyond the scope of this chapter.
 
 
+
+Potential problems
+------------------
+
+### Updating an already installed version
+
+There is no need to take action - Inno will handle this automatically for you. There is however one exception and one pitfall:
+
+
+#### Files that are not needed any longer
+
+Inno won't (can't) delete those automatically. This is the recommended way to delete files:
+
+~~~
+[InstallDelete]
+Type: files; Name: {app}\foo.bar
+Type: files; Name: {app}\baz\quux.txt
+~~~
+
+Although wildcards are supported they should never be used because you may well delete user files.
+
+
+#### The EXE
+
+When an EXE is part of the installation Inno compares the "FileVersion" of what's already installed with the one that is about to be installed. It they match Inno won't take any action. That means that if you forget to set the "FileVersion" (see [chapter 10: "Make: Export"](./10-Make.html#Exporting)) when creating the stand-alone EXE then it will always be 0.0.0.0, so they won't ever differ, and the first installed EXE will never be replaced!
+
+
+### Analyzing problems
+
+A problem like the aforementioned one won't cause an error message; you just don't get the new EXE installed. Assuming that you have been careful enough to realize that there is a problem, how to get to the bottom of it?
+
+If the installer does not behave as expected add `/LOG={filename}` to it. Then Inno will report all actions and even conclusions to that file.
+
+In the above scenario you would find something similiar to this in the log file:
+
+~~~
+2018-05-08 06:26:30.826   -- File entry --
+2018-05-08 06:26:30.827   Dest filename: C:\Program Files (x86)\..\Foo.exe
+2018-05-08 06:26:30.827   Time stamp of our file: 2018-05-07 13:07:26.000
+2018-05-08 06:26:30.827   Dest file exists.
+2018-05-08 06:26:30.827   Time stamp of existing file: 2018-05-07 12:51:24.000
+2018-05-08 06:26:30.827   Version of our file: 0.0.0.0
+2018-05-08 06:26:30.832   Version of existing file: 0.0.0.0
+2018-05-08 06:26:30.832   Same version. Skipping.
+~~~
+
+
 Conclusion
 ----------
 

@@ -45,7 +45,7 @@
       details,←⊂'ProductVersion'(2⊃##.MyApp.Version)
       details,←⊂'LegalCopyright' 'Dyalog Ltd 2018'
       details,←⊂'ProductName' 'MyApp'
-      details,←⊂'FileVersion' '1.2.3.4'
+      details,←⊂'FileVersion' (2⊃##.MyApp.Version)
       details←↑details
       success←try←0
       fn←DESTINATION,'\',exeName   ⍝ filename

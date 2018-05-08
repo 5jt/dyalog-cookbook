@@ -4,14 +4,68 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta charset="utf-8">
 <title>RegEx</title>
-<link href="file:///C:/Program Files (x86)/APL Team Ltd/Meddy/CSS/MarkAPL_screen.css" rel="stylesheet" media="screen">
-<link href="file:///C:/Program Files (x86)/APL Team Ltd/Meddy/CSS/MarkAPL_print.css" rel="stylesheet" media="print">
-<meta name="author" content="kai">
+<link href="./CSS/BlackOnWhite_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/Cookbook_Chapter_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/snap.css" rel="stylesheet" media="screen">
+<link href="./CSS/BlackOnWhite_print.css" rel="stylesheet" media="print">
+<link href="./CSS/Cookbook_Chapter_print.css" rel="stylesheet" media="print">
+<script src="./JavaScript/snap.js"></script>
 </head>
 <body>
-<nav id="main_nav_no_collapse">
+<div class="snap-drawers">
+<div class="snap-drawer snap-drawer-left">
+<div class="h_tag">
+<h3>Chapters</h3>
+</div>
+<ol>
+<li><a href="./01-Introduction.html" class="external_link">Introduction</a></li>
+<li><a href="./02-Structure.html" class="external_link">Structure</a></li>
+<li><a href="./03-Packaging.html" class="external_link">Packaging</a></li>
+<li><a href="./04-Logging%20.html" class="external_link">Logging </a></li>
+<li><a href="./05-Configuration.html" class="external_link">Configuration</a></li>
+<li><a href="./06-Debugging-EXEs.html" class="external_link">Debugging EXEs</a></li>
+<li><a href="./07-Handling-errors.html" class="external_link">Handling errors</a></li>
+<li><a href="./08-Testing.html" class="external_link">Testing</a></li>
+<li><a href="./09-Documentation.html" class="external_link">Documentation</a></li>
+<li><a href="./10-Make.html" class="external_link">Make</a></li>
+<li><a href="./11-Providing-help.html" class="external_link">Providing help</a></li>
+<li><a href="./12-Scheduled-Tasks.html" class="external_link">Scheduled Tasks</a></li>
+<li><a href="./13-Windows-Services.html" class="external_link">Windows Services</a></li>
+<li><a href="./14-Windows-Event-Log.html" class="external_link">Windows Event Log</a></li>
+<li><a href="./15-Windows-Registry.html" class="external_link">Windows Registry</a></li>
+<li><a href="./16-Creating-SetUp.exe.html" class="external_link">Creating SetUp.exe</a></li>
+<li><a href="./17-Regular-Expressions.html" class="external_link">Regular Expressions</a></li>
+<li><a href="./18-Acre.html" class="external_link">Acre</a></li>
+<li><a href="./19-GUI.html" class="external_link">GUI</a></li>
+<li><a href="./20-Git.html" class="external_link">Git</a></li>
+</ol>
+<div class="h_tag">
+<h3>Appendices</h3>
+</div>
+<ol>
+<li><a href="./Appendix-01_Windows-environment-vars.html" class="external_link">Windows environment vars</a></li>
+<li><a href="./Appendix-02_User-commands.html" class="external_link">User commands</a></li>
+<li><a href="./Appendix-03_aplcores-&-WS-integrity.html" class="external_link">aplcores & WS integrity</a></li>
+<li><a href="./Appendix-04_Development-environment.html" class="external_link">Development environment</a></li>
+<li><a href="./Appendix-05_Special-characters.html" class="external_link">Special characters</a></li>
+</ol>
+<div class="h_tag">
+<h3>Misc</h3>
+</div>
+<ul>
+<li><a href="16-Creating-SetUp.exe.html">Previous chapter</a></li>
+<li><a href="18-Acre.html">Next chapter</a></li>
+<li><a href="./Dyalog_Cookbook.html" class="external_link" alt="All chapters, for printing" title="All chapters, for printing">Single document<br></a></li>
+</ul>
+</div>
+</div>
+<div id="mainmenu">
+<a href=# style="color:black;"><p><span id="mainmenu_match">≡</span></p></a>
+<p><span id="mainmenu_title">The Dyalog Cookbook</span></p>
+<nav id="main_nav">
+<input type="checkbox" id="hide_toc">
+<label id="hide_toc_label" for="hide_toc"></label>
 <div class="toc-container">
-<h3>Table of contents</h3>
 <ul>
 <li><a href="#Start-here">Start here</a></li>
 <li><a href="#What-you-can-expect">What you can expect</a></li>
@@ -62,9 +116,12 @@
 </ul>
 </div>
 </nav>
+</div>
+<div id="content" class="snap-content">
+<div id="cookbook_content">
 <div class="h_tag">
-<a href="#Regular-expressions-with-Dyalog" id="Regular-expressions-with-Dyalog" class="autoheader_anchor">
-<h1>Regular expressions with Dyalog</h1>
+<a href="#17-Regular-expressions-with-Dyalog" id="17-Regular-expressions-with-Dyalog" class="autoheader_anchor">
+<h1>17. Regular expressions with Dyalog</h1>
 </a>
 </div>
 <div class="h_tag">
@@ -1035,5 +1092,15 @@ This ⍈; more: ⍈</code></pre>
 <dd><p class="first_dd">The aforementioned website comes with detailed book reviews:</p></dd>
 <dd><p><a href="https://www.regular-expressions.info/hipowls.html" class="external_link">https://www.regular-expressions.info/hipowls.html</a></p></dd>
 </dl>
+</div>
+</div>
+<script>
+var snapper = new Snap({
+element: document.getElementById('content')
+});
+document.getElementById('mainmenu_match').onclick = function(){
+snapper.state().state==='closed'?snapper.open('left'):snapper.close();
+}
+</script>
 </body>
 </html>

@@ -416,7 +416,7 @@ The process cannot access the file because it is being used by another process.<
 </a>
 </div>
 <p>If for some reason you’ve created <code>MyApp.exe</code> by binding the application to the development version of Dyalog rather than the runtime (you can do this by providing a 0 as left argument to the <code>MakeExport</code> function) then you might run into a problem. Our code notices whether it is running under a development <abbr title="Executable file with the extension 'exe'">EXE</abbr> or a runtime <abbr title="Executable file with the extension 'exe'">EXE</abbr>. Error trapping will be inactive (unless it is enforced via the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr>) and <code>⎕OFF</code> won’t be executed; instead it would execute <code>→</code> and hang around but without you being able to see the session.</p>
-<p>So don’t do this. Because you have Ride, the development version has no advantages over the runtime <abbr title="Executable file with the extension 'exe'">EXE</abbr> anyway.</p>
+<p>So don’t do this. Because you have Ride at your disposal the development version has no advantages over the runtime <abbr title="Executable file with the extension 'exe'">EXE</abbr> anyway.</p>
 <div class="h_tag">
 <a href="#Your-application-doesnt-do-what-its-supposed-to-do" id="Your-application-doesnt-do-what-its-supposed-to-do" class="autoheader_anchor">
 <h3>Your application doesn’t do what it’s supposed to do</h3>

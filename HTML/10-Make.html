@@ -202,7 +202,7 @@ Run #.Tester.EstablishHelpersIn #.Tests
 <div class="leanpub_A">
 <h3>More complex scenarios</h3>
 <p>In a more complex application than ours you might prefer a different approach. Using an <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file for this is not a bad idea: it gives you scope to define more than just the modules to be loaded, and some code to execute.</p>
-<p>Also, if you have not one butseveral applications to support, it is useful to implement your own generalised user command like <code>]runmake</code>.</p>
+<p>Also, if you have not one but several applications to support, it is useful to implement your own generalised user command like <code>]runmake</code>.</p>
 </div>
 
 <p><code>Execute</code>, <code>Tester</code> and <code>Tests</code> have no place in the finished application, nor do we need the test helpers either.</p>
@@ -411,7 +411,7 @@ Active      = 0
       details,←⊂'ProductVersion'(2⊃##.MyApp.Version)
       details,←⊂'LegalCopyright' 'Dyalog Ltd 2018'
       details,←⊂'ProductName' 'MyApp'
-      details,←⊂'FileVersion' '1.2.3.4'
+      details,←⊂'FileVersion' (2⊃##.MyApp.Version)
       details←↑details
       success←try←0
       fn←DESTINATION,'\',exeName     ⍝ filename
@@ -432,8 +432,16 @@ Active      = 0
 <p><code>Export</code> automates what we’ve done so far by calling the <em>Export</em> command from the <em>File</em> menu. If the <em>Bind</em> method fails, it retries up to 50 times before giving up.</p>
 <p>From experience we know that, with the OS, the machine, the network, the filesystem and who knows what else, the command can fail several times before finally succeeding.</p>
 
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
+<div>
+<p>Why is there a “ProductVersion” and a “FileVersion”? No idea! On Stack Overflow this was discussed more than once, and it seems that there are very few cases were it might make sense to have them <strong>not</strong> in sync.</p>
+<p>But “FileVersion” is the more important one: the Inno installer for example (see <a href="./16-Creating-SetUp.exe.html" class="external_link">chapter 16 “Creating SetUp.exe”</a>) compares the “FileVersion” of an already installed version with the possibly new version, and if they are not different then it won't overwrite the <abbr title="Executable file with the extension 'exe'">EXE</abbr> - you don't want that!</p>
+</div>
+</div>
+
 <div class="leanpub_A">
-<h3>The <em>Bind</em> method</h3>
+<h3>The <code>Bind</code> method</h3>
 <p>Note that for the <code>Bind</code> method to work as discussed in this chapter you must use at least version 16.0.31811.0 of Dyalog. Before that <code>Bind</code> was not an official method and did not support the <code>details</code>.</p>
 </div>
 

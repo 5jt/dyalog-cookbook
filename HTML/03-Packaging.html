@@ -90,8 +90,17 @@
 <h2>Output to the session log</h2>
 </a>
 </div>
-<p>In a runtime interpreter or an <abbr title="Executable file with the extension 'exe'">EXE</abbr>, there is no APL session, and output to the session which would have been visible in a development system will simply disappear. If we want to see this output, we need to write it to a log file.</p>
-<p>But how do we find out where we need to make changes? We recommend you think about this from the start, and ensure that all <em>intentional</em> output goes through a log function, or at least use an explicit <code>⎕←</code> so that output can easily be identified in the source.</p>
+<p>In a runtime interpreter or an <abbr title="Executable file with the extension 'exe'">EXE</abbr>, there is no APL session, and output to the session which would have been visible in a development system will simply disappear.</p>
+
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
+<div>
+<p>Note that output assigned to <code>⎕</code> or <code>⍞</code> does not stop the runtime executable.</p>
+<p>However, when the result of a function is neither consumed by another function nor assigned to a variable then you will see the message “This Dyalog APL runtime application has attempted to use the APL session and therefore be closed.”, and that will be the end of it.</p>
+</div>
+</div>
+
+<p>If we want to see this output, we need to write it to a log file. But how do we find out where we need to make changes? We recommend you think about this from the start, and ensure that all <em>intentional</em> output goes through a log function, or at least use an explicit <code>⎕←</code> so that output can easily be identified in the source.</p>
 
 <div class="leanpub_A">
 <h3>Unwanted output to the session</h3>

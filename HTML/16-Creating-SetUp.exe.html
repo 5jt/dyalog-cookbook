@@ -88,6 +88,15 @@
 <li><a href="#tasks">The section [Tasks]</a></li>
 <li><a href="#code">The section [Code]</a></li>
 </ul></li>
+<li><a href="#Potential-problems">Potential problems</a>
+<ul>
+<li><a href="#Updating-an-already-installed-version">Updating an already installed version</a>
+<ul>
+<li><a href="#Files-that-are-not-needed-any-longer">Files that are not needed any longer</a></li>
+<li><a href="#The-EXE">The EXE</a></li>
+</ul></li>
+<li><a href="#Analyzing-problems">Analyzing problems</a></li>
+</ul></li>
 <li><a href="#Conclusion">Conclusion</a>
 </ul>
 </div>
@@ -465,6 +474,49 @@ CreateDesktopIcon = This and that</code></pre>
 </a>
 </div>
 <p>Inno comes with a built-in script language that allows you to do pretty much whatever you like. However, scripting is beyond the scope of this chapter.</p>
+<div class="h_tag">
+<a href="#Potential-problems" id="Potential-problems" class="autoheader_anchor">
+<h2>Potential problems</h2>
+</a>
+</div>
+<div class="h_tag">
+<a href="#Updating-an-already-installed-version" id="Updating-an-already-installed-version" class="autoheader_anchor">
+<h3>Updating an already installed version</h3>
+</a>
+</div>
+<p>There is no need to take action - Inno will handle this automatically for you. There is however one exception and one pitfall:</p>
+<div class="h_tag">
+<a href="#Files-that-are-not-needed-any-longer" id="Files-that-are-not-needed-any-longer" class="autoheader_anchor">
+<h4>Files that are not needed any longer</h4>
+</a>
+</div>
+<p>Inno won't (can't) delete those automatically. This is the recommended way to delete files:</p>
+<pre><code>[InstallDelete]
+Type: files; Name: {app}\foo.bar
+Type: files; Name: {app}\baz\quux.txt</code></pre>
+<p>Although wildcards are supported they should never be used because you may well delete user files.</p>
+<div class="h_tag">
+<a href="#The-EXE" id="The-EXE" class="autoheader_anchor">
+<h4>The EXE</h4>
+</a>
+</div>
+<p>When an <abbr title="Executable file with the extension 'exe'">EXE</abbr> is part of the installation Inno compares the “FileVersion” of what's already installed with the one that is about to be installed. It they match Inno won't take any action. That means that if you forget to set the “FileVersion” (see <a href="./10-Make.html#Exporting" class="external_link">chapter 10: “Make: Export”</a>) when creating the stand-alone <abbr title="Executable file with the extension 'exe'">EXE</abbr> then it will always be 0.0.0.0, so they won't ever differ, and the first installed <abbr title="Executable file with the extension 'exe'">EXE</abbr> will never be replaced!</p>
+<div class="h_tag">
+<a href="#Analyzing-problems" id="Analyzing-problems" class="autoheader_anchor">
+<h3>Analyzing problems</h3>
+</a>
+</div>
+<p>A problem like the aforementioned one won't cause an error message; you just don't get the new <abbr title="Executable file with the extension 'exe'">EXE</abbr> installed. Assuming that you have been careful enough to realize that there is a problem, how to get to the bottom of it?</p>
+<p>If the installer does not behave as expected add <code>/LOG={filename}</code> to it. Then Inno will report all actions and even conclusions to that file.</p>
+<p>In the above scenario you would find something similiar to this in the log file:</p>
+<pre><code>2018-05-08 06:26:30.826   -- File entry --
+2018-05-08 06:26:30.827   Dest filename: C:\Program Files (x86)\..\Foo.exe
+2018-05-08 06:26:30.827   Time stamp of our file: 2018-05-07 13:07:26.000
+2018-05-08 06:26:30.827   Dest file exists.
+2018-05-08 06:26:30.827   Time stamp of existing file: 2018-05-07 12:51:24.000
+2018-05-08 06:26:30.827   Version of our file: 0.0.0.0
+2018-05-08 06:26:30.832   Version of existing file: 0.0.0.0
+2018-05-08 06:26:30.832   Same version. Skipping.</code></pre>
 <div class="h_tag">
 <a href="#Conclusion" id="Conclusion" class="autoheader_anchor">
 <h2>Conclusion</h2>

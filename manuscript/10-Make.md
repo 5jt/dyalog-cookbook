@@ -121,7 +121,7 @@ A> # More complex scenarios
 A> 
 A> In a more complex application than ours you might prefer a different approach. Using an INI file for this is not a bad idea: it gives you scope to define more than just the modules to be loaded, and some code to execute.
 A> 
-A> Also, if you have not one butseveral applications to support, it is useful to implement your own generalised user command like `]runmake`.
+A> Also, if you have not one but several applications to support, it is useful to implement your own generalised user command like `]runmake`.
 
 `Execute`, `Tester` and `Tests` have no place in the finished application, nor do we need the test helpers either.
 
@@ -381,7 +381,7 @@ leanpub-end-insert
       details,←⊂'ProductVersion'(2⊃##.MyApp.Version)
       details,←⊂'LegalCopyright' 'Dyalog Ltd 2018'
       details,←⊂'ProductName' 'MyApp'
-      details,←⊂'FileVersion' '1.2.3.4'
+      details,←⊂'FileVersion' (2⊃##.MyApp.Version)
       details←↑details
       success←try←0
       fn←DESTINATION,'\',exeName     ⍝ filename
@@ -405,7 +405,11 @@ leanpub-end-insert
 
 From experience we know that, with the OS, the machine, the network, the filesystem and who knows what else, the command can fail several times before finally succeeding. 
 
-A> # The _Bind_ method
+I> Why is there a "ProductVersion" and a "FileVersion"? No idea! On Stack Overflow this was discussed more than once, and it seems that there are very few cases were it might make sense to have them **not** in sync. 
+I>
+I> But "FileVersion" is the more important one: the Inno installer for example (see [chapter 16 "Creating SetUp.exe"](./16-Creating-SetUp.exe.html)) compares the "FileVersion" of an already installed version with the possibly new version, and if they are not different then it won't overwrite the EXE - you don't want that!
+
+A> # The `Bind` method
 A>
 A> Note that for the `Bind` method to work as discussed in this chapter you must use at least version 16.0.31811.0 of Dyalog. Before that `Bind` was not an official method and did not support the `details`.
 

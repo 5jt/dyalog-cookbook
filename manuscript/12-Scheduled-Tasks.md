@@ -352,7 +352,7 @@ A> Sadly, the error messages are not always that helpful. The above message appe
 
 If for some reason you’ve created `MyApp.exe` by binding the application to the development version of Dyalog rather than the runtime (you can do this by providing a 0 as left argument to the `MakeExport` function) then you might run into a problem. Our code notices whether it is running under a development EXE or a runtime EXE. Error trapping will be inactive (unless it is enforced via the INI) and `⎕OFF` won’t be executed; instead it would execute `→` and hang around but without you being able to see the session. 
 
-So don’t do this. Because you have Ride, the development version has no advantages over the runtime EXE anyway.
+So don’t do this. Because you have Ride at your disposal the development version has no advantages over the runtime EXE anyway.
 
 
 ### Your application doesn’t do what it’s supposed to do

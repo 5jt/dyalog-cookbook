@@ -1,0 +1,1 @@
+All images are resized by 80%
