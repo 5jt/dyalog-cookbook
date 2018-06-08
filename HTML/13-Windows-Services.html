@@ -156,7 +156,7 @@
 <p>Create a parameter space by calling <code>CreateParmSpace</code>, and set at least the name of the log function and possibly the namespace (or class instance) the log function is in. This log function is used to log any incoming requests from the SCM. The parameter space is then passed to <code>Init</code> as the right argument.</p></li>
 <li>In its main loop the Service is expected to call <code>ServiceState.CheckServiceMessages</code>.
 <p>This is an operator, so it needs a function as operand: that is, a function that is doing the logging, allowing <code>CheckServiceMessages</code> to log its actions to the log file. (If you don't need a log file then simply passing <code>{⍵}</code> will do.</p>
-<p>When <code>CheckServiceMessages</code> is called, if no request of the SCM is pending it will quit straight away and return a 0. If a Pause is pending then it goes into a loop, and continues to loop (with a <code>⎕DL</code> in between) until either Continue (a.k.a. Resume) or Stop is requested by the SCM.</p>
+<p>When <code>CheckServiceMessages</code> is called if no request of the SCM is pending it will quit straight away and return a 0. If a Pause is pending then it goes into a loop, and continues to loop (with a <code>⎕DL</code> in between) until either Continue (a.k.a. Resume) or Stop is requested by the SCM.</p>
 <p>If a Stop is requested, the operator will quit and return a 1.</p></li>
 </ol>
 <div class="h_tag">
@@ -493,7 +493,7 @@ cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService DYALOG_NOPOPUPS=1'</code
 <h2>Installing and un-installing the Service</h2>
 </a>
 </div>
-<p>In order to install or uninstall the Service we need two <abbr title="Executeabe file that contains batch commands">BAT</abbr>s: <code>InstallService.bat</code> and <code>Uninstall_Service.bat</code>. We will write these <abbr title="Executeabe file that contains batch commands">BAT</abbr>s from Dyalog. For that we write a class <code>ServiceHelpers</code>:</p>
+<p>In order to install or uninstall the Service we need two <abbr title="Executable file that contains batch commands">BAT</abbr>s: <code>InstallService.bat</code> and <code>Uninstall_Service.bat</code>. We will write these <abbr title="Executable file that contains batch commands">BAT</abbr>s from Dyalog. For that we write a class <code>ServiceHelpers</code>:</p>
 <pre><code>:Class ServiceHelpers
 
     ∇ {r}←CreateBatFiles dummy;path;cmd;aplexe;wsid
@@ -526,13 +526,13 @@ cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService DYALOG_NOPOPUPS=1'</code
 :EndClass</code></pre>
 <p>Notes:</p>
 <ul>
-<li>The install <abbr title="Executeabe file that contains batch commands">BAT</abbr> will use the version of Dyalog used to create the <abbr title="Executeabe file that contains batch commands">BAT</abbr> file, and it will call the runtime <abbr title="Executable file with the extension 'exe'">EXE</abbr>.</li>
-<li><code>%~dp0</code> stands for: the directory from which this <abbr title="Executeabe file that contains batch commands">BAT</abbr> was loaded. In other words, as long as the workspace <code>MyAppService.DWS</code> (which we have not created yet) is a sibling of the <abbr title="Executeabe file that contains batch commands">BAT</abbr>, it will work.</li>
+<li>The install <abbr title="Executable file that contains batch commands">BAT</abbr> will use the version of Dyalog used to create the <abbr title="Executable file that contains batch commands">BAT</abbr> file, and it will call the runtime <abbr title="Executable file with the extension 'exe'">EXE</abbr>.</li>
+<li><code>%~dp0</code> stands for: the directory from which this <abbr title="Executable file that contains batch commands">BAT</abbr> was loaded. In other words, as long as the workspace <code>MyAppService.DWS</code> (which we have not created yet) is a sibling of the <abbr title="Executable file that contains batch commands">BAT</abbr>, it will work.</li>
 <li>The setting of <code>APLCORENAME</code> specifies folder and name of any aplcores.
 <p>For example, <code>D:\MyAplcores\aplcore_64_16_0_Unicode_*</code> would specify in which folder the aplcores shall be saved and that the filenames should start with <code>aplcore_64_16_0_Unicode_</code> followed by a running number (the asterisk).</p></li>
 <li>By setting <code>DYALOG_EVENTLOGNAME</code> you tell the interpreter to write messages to the Windows Event Log, and what name to use for this.</li>
-<li>The uninstall <abbr title="Executeabe file that contains batch commands">BAT</abbr> will check the <code>errorlevel</code> variable.
-<p>If it detects an error it will pause so that one can actually see the error message even when we have just double-clicked the <abbr title="Executeabe file that contains batch commands">BAT</abbr>. This is discussed in the chapter <a href="./07 Handling errors.html" class="external_link"><em>Handling errors</em></a>.</p></li>
+<li>The uninstall <abbr title="Executable file that contains batch commands">BAT</abbr> will check the <code>errorlevel</code> variable.
+<p>If it detects an error it will pause so that one can actually see the error message even when we have just double-clicked the <abbr title="Executable file that contains batch commands">BAT</abbr>. This is discussed in the chapter <a href="./07 Handling errors.html" class="external_link"><em>Handling errors</em></a>.</p></li>
 </ul>
 <div class="h_tag">
 <a href="#Make-for-the-Service" id="Make-for-the-Service" class="autoheader_anchor">
@@ -569,8 +569,8 @@ Run #.MakeService.Run 0
 <p>Notes:</p>
 <ul>
 <li>We need some more APLTree modules: <code>Tester</code>, <code>Execute</code> and <code>WinSys</code>.</li>
-<li>Ensure the two <abbr title="Executeabe file that contains batch commands">BAT</abbr> (for installing and uninstalling the service) are written to the disk.</li>
-<li>We delete the class <code>ServiceHelpers</code>: it is not needed for running the Service once we've created the <abbr title="Executeabe file that contains batch commands">BAT</abbr>s.</li>
+<li>Ensure the two <abbr title="Executable file that contains batch commands">BAT</abbr> (for installing and uninstalling the service) are written to the disk.</li>
+<li>We delete the class <code>ServiceHelpers</code>: it is not needed for running the Service once we've created the <abbr title="Executable file that contains batch commands">BAT</abbr>s.</li>
 <li>We set <code>⎕LX</code> by calling <code>SetLXForService</code>.</li>
 <li>We load the class <code>MakeService</code> and run <code>MakeService.Run</code>.</li>
 </ul>
@@ -610,7 +610,7 @@ Run #.MakeService.Run 0
 <ul>
 <li>Assigns the name of the destination folder to the global <code>DESTINATION</code>.</li>
 <li>(Re-)creates a folder with the name in <code>DESTINATION</code>.</li>
-<li>Copies over the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> as well as the two <abbr title="Executeabe file that contains batch commands">BAT</abbr>s.</li>
+<li>Copies over the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> as well as the two <abbr title="Executable file that contains batch commands">BAT</abbr>s.</li>
 <li>Finally it sets <code>⎕WSID</code> and saves the workspace, without the status indicator, and without <code>MakeService</code> – by deleting itself.</li>
 </ul>
 

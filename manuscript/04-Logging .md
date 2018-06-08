@@ -3,7 +3,7 @@
 
 # Logging what happens 
 
-MyApp 1.0 is now working, but handles errors poorly. See what happens when we try to work on a non-existent file/folder:
+MyApp 1.0 is now working but handles errors poorly. See what happens when we try to work on a non-existent file/folder:
 
 ~~~
 Z:\code\v03\MyApp.exe Z:\texts\Does_not_exist
@@ -204,7 +204,7 @@ We also need to change `ProcessFile`:
 
 ~~~
 ∇ data←(fns ProcessFiles)files;txt;file
-⍝ was: (data enc nl)←(fns ProcessFiles)files;txt;file
+⍝ was: (data enc nl)←(fns Pe processFiles)files;txt;file
 ⍝ Reads all files and executes `fns` on the contents.
    data←⍬
    :For file :In files
@@ -235,7 +235,7 @@ Now we have to make sure that `Initial` is called from `StartFromCmdLine`:
 ∇
 ~~~
 
-Note that we now log the full command line. In an application that receives its parameters from the command line this is important to do.
+Note that we now log the full command line. In an application that receives its parameters from the command line, this is important to do.
 
 
 ## Improvements to our code
@@ -292,7 +292,7 @@ Notes:
 
   Apart from offering recursive searches (a feature we don’t need here) the `Dir` function also normalizes the separator character. Under Windows it will always be a backslash while under Linux it is always a slash character.
 
-  Although Windows itself is quite relaxed about the separator and accepts a slash as well as a backslash, as soon as you call something else in one way or another you will find that slashes are not accepted. For example: any setting of `⎕USING`.
+  Although Windows itself is quite relaxed about the separator and accepts a slash as well as a backslash, as soon as you call something else in one way or another you will find that slashes are not accepted. For example any setting of `⎕USING`.
 
 * We use `APLTreeUtils.WriteUtf8File` rather than `⎕NPUT`:
   
@@ -440,7 +440,7 @@ From now on we will assume you have LogDog always up and running, so that you wi
 
 We now have `MyApp` logging its work in a subfolder of the application folder and reporting any problems it has anticipated.
 
-Next we need to consider how to handle and report errors we have _not_ anticipated. We should also return some kind of error code to Windows. If `MyApp` encounters an error, any process calling it needs to know. But before we are doing this we will disuss how to configure `MyApp`.
+Next we need to consider how to handle and report errors we have _not_ anticipated. We should also return some kind of error code to Windows. If `MyApp` encounters an error, any process calling it needs to know. But before we are doing this we will discuss how to configure `MyApp`.
 
 A> # Destructors versus the Tracer
 A>
@@ -462,7 +462,7 @@ A> `MyLogger` is localized in the header of `TxtToCsv`, meaning that when `TxtTo
 *[INI]: File with the extension 'ini' containing configuration data
 *[DYAPP]: File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application
 *[EXE]: Executable file with the extension 'exe'
-*[BAT]: Executeabe file that contains batch commands
+*[BAT]: Executable file that contains batch commands
 *[CSS]: File that contains layout definitions (Cascading Style Sheet)
 *[MD]: File with the extension 'md' that contains markdown
 *[CHM]: Executable file with the extension 'chm' that contains Windows Help(Compiled Help) 

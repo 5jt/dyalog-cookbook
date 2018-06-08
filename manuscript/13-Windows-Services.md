@@ -54,7 +54,7 @@ To simplify matters we shall use the `ServiceState` namespace, also from the APL
    
    This is an operator, so it needs a function as operand: that is, a function that is doing the logging, allowing `CheckServiceMessages` to log its actions to the log file. (If you don't need a log file then simply passing `{⍵}` will do.
       
-   When `CheckServiceMessages` is called, if no request of the SCM is pending it will quit straight away and return a 0. If a Pause is pending then it goes into a loop, and continues to loop (with a `⎕DL` in between) until either Continue (a.k.a. Resume) or Stop is requested by the SCM. 
+   When `CheckServiceMessages` is called if no request of the SCM is pending it will quit straight away and return a 0. If a Pause is pending then it goes into a loop, and continues to loop (with a `⎕DL` in between) until either Continue (a.k.a. Resume) or Stop is requested by the SCM. 
 
    If a Stop is requested, the operator will quit and return a 1.
 
@@ -173,7 +173,7 @@ If these two conditions are met then it's hard to imagine what could prevent the
 > That everyone ought to do
 > --- _Cole Porter_
 
-First  and foremost it is worth repeating that any application supposed to run as a Service should be developed as an ordinary application, including test cases. When it passes such test cases you have reasons to be confident the application will run as a Service too.
+First and foremost it is worth repeating that any application supposed to run as a Service should be developed as an ordinary application, including test cases. When it passes such test cases you have reasons to be confident the application will run as a Service too.
 
 Having said this, there can be surprising differences between running as an ordinary application and a Service. For example, when a Service runs, not with a user's account, but with the system account (which is quite normal to do) any call to `#.FilesAndDirs.GetTempPath` results in
 
@@ -207,7 +207,7 @@ You might feel tempted to overcome this by doing it a bit later (e.g. after proc
   
 In the second case, add the call to `CheckForRide` once the INI file has been instantiated.
 
-I> Make sure that you have _never_ more than one of the two calls to `CheckForRide` active. If both are active you would be able to  use the first one, but the second one would throw you out!  
+I> Make sure that you have _never_ more than one of the two calls to `CheckForRide` active. If both are active you would be able to use the first one, but the second one would throw you out!  
 
 
 ## Logging
@@ -880,7 +880,7 @@ Looking for a function "Cleanup"...
 *[INI]: File with the extension 'ini' containing configuration data
 *[DYAPP]: File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application
 *[EXE]: Executable file with the extension 'exe'
-*[BAT]: Executeabe file that contains batch commands
+*[BAT]: Executable file that contains batch commands
 *[CSS]: File that contains layout definitions (Cascading Style Sheet)
 *[MD]: File with the extension 'md' that contains markdown
 *[CHM]: Executable file with the extension 'chm' that contains Windows Help(Compiled Help) 

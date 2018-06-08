@@ -152,9 +152,9 @@
 <h2>Readability</h2>
 </a>
 </div>
-<p>Reading and understanding APL code is more difficult than in other programming language due to the higher abstraction level and the power of APL’s primitives. However, as long as you have at least one example with correct arguments, it’s always possible to decipher the code.</p>
+<p>Reading and understanding APL code is more difficult than in other programming languages due to the higher abstraction level and the power of APL’s primitives. However, as long as you have at least one example with correct arguments, it’s always possible to decipher the code.</p>
 <p>Things can become very nasty indeed if an application crashes because inappropriate data arrives at your function. However, before you can figure out whether the data is appropriate or not you need to understand the code – a chicken-egg problem.</p>
-<p>That’s when test cases can be very useful as well, because they demonstrate which data a function is expected to process. It also emphasises why it is important to have test cases for all the different types of data (or parameters) a function is supposed to process. In this respect test cases should be exhaustive.</p>
+<p>That’s when test cases can be very useful as well because they demonstrate which data a function is expected to process. It also emphasises why it is important to have test cases for all the different types of data (or parameters) a function is supposed to process. In this respect test cases should be exhaustive.</p>
 <div class="h_tag">
 <a href="#Write-better" id="Write-better" class="autoheader_anchor">
 <h3>Write better</h3>
@@ -264,7 +264,7 @@ RunThese
 ∆WindowsOnly</code></pre>
 <p>The helpers can be categorized:</p>
 <ul>
-<li>Those starting their names with a <code>∆</code> character are niladic functions that return a result. They act like constants in other programming languages. APL does not have constants, but they can be emulated with niladic functions. (Strictly speaking they are not helpers)</li>
+<li>Those starting their names with a <code>∆</code> character are niladic functions that return a result. They act like constants in other programming languages. APL does not have constants, but they can be emulated with niladic functions. (Strictly speaking, they are not helpers)</li>
 <li>Those starting their names with <code>Run</code> are used to run all or selected test cases in slightly different scenarios.</li>
 <li><code>FailsIf</code>, <code>PassesIf</code> and <code>GoToTidyUp</code> are used for flow control.</li>
 <li>Miscellaneous</li>
@@ -377,7 +377,7 @@ Run #.MyApp.SetLX ⍬
 <h3>Ordinary namespaces versus scripted ones</h3>
 <p>There’s a difference between an ordinary namespace and a scripted namespace: imagine you've called <code>#.Tester.EstablishHelpersIn</code> within an ordinary namespace.</p>
 <p>Now you change/add/delete test functions; that would have no effect on anything else in that namespace. In other words, the helpers would continue to exist.</p>
-<p>When you change a namespace script on the other hand the namespace is re-created from the script, and that means that our helpers will disappear because they are not a part of the <code>Tests</code> script.</p>
+<p>When you change a namespace script, on the other hand, the namespace is re-created from the script, and that means that our helpers will disappear because they are not a part of the <code>Tests</code> script.</p>
 </div>
 
 <p>Let’s call our test case. We do this by running the <code>Run</code> method first:</p>
@@ -439,7 +439,7 @@ SYNTAX ERROR
 #.Tester.Run__[39]
 #.Tester.RunDebug[17]
 #.Tests.RunDebug[3]</code></pre>
-<p>It stopped in line 6. Obviously the call to <code>FailsIf</code> has something to do with this, and so has the <code>⎕TRAP</code> setting, because apparently that’s where the “Deliberate error” comes from.</p>
+<p>It stopped in line 6. Obviously the call to <code>FailsIf</code> has something to do with this, and so has the <code>⎕TRAP</code> setting because apparently that’s where the “Deliberate error” comes from.</p>
 <p>This is indeed the case. All three flow-control functions, <code>FailIf</code>, <code>PassesIf</code> and <code>GoToTidyUp</code> check whether they are running in debug mode; if so, rather than return a result that indicates a failing test case, they <code>⎕SIGNAL 999</code>, which is then caught by the <code>⎕TRAP</code>, which in turn first prints <code>⍝ Deliberate error</code> to the session and then hands over control to the user.</p>
 <p>You can now investigate variables or start the Tracer, etc. to investigate the problem.</p>
 <p>The difference between <code>Run</code> and <code>RunDebug</code> is the setting of the first of the two flags provided as right argument to the test function: <code>stopFlag</code>. This is <code>0</code> when <code>Run</code> executes the test cases, but it is <code>1</code> when <code>RunDebug</code> is in charge. The three flow-control functions <code>FailsIf</code>, <code>PassesIf</code> and <code>GoToTidyUp</code> all honour <code>stopFlag</code> – that’s how it works.</p>
@@ -606,7 +606,7 @@ TxtToCsv[4] MyLogger.Log'Source: ',fullfilepath
       R←∆OK
     ∇
 ...</code></pre>
-<p>Note that now both <code>Config</code> and <code>MyLogger</code> exist within <code>MyApp</code>, not in <code>Tests</code>. Therefore we don't even have to keep them local within <code>Test_003</code>. They are however not part of the script, so will disapear as soon as the script <code>Tests</code> is fixed again, very much like the helpers.</p>
+<p>Note that now both <code>Config</code> and <code>MyLogger</code> exist within <code>MyApp</code>, not in <code>Tests</code>. Therefore we don't even have to keep them local within <code>Test_003</code>. They are however not part of the script, so will disappear as soon as the script <code>Tests</code> is fixed again, very much like the helpers.</p>
 <p>Let’s try again:</p>
 <pre><code>      RunThese 3
 --- Test framework "Tester" version 3.6.0 from YYYY-MM-DD -------------------------
@@ -668,7 +668,7 @@ Looking for a function "Cleanup"...
 
 <div class="leanpub_A">
 <h3>Machine-dependent initialisation</h3>
-<p>What if you need to initialise something (say a database connection) but it is depends on the machine the tests are executed on – its IP address, user-id, password…?</p>
+<p>What if you need to initialise something (say a database connection) but it depends on the machine the tests are executed on – its IP address, user-id, password…?</p>
 <p>The test framework looks for two different <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> files in the current directory: First it looks for <code>testcase.ini</code>. It then tries to find <code>testcase_{computername}.ini</code>. <code>computername</code> here is what you get when you execute <code>⊣ 2 ⎕nq # 'GetEnvironment' 'Computername'</code>.</p>
 <p>If it finds any of them (or both) it instantiates the <code>IniFile</code> class as <code>INI</code> on these <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> files within the namespace that hosts your test cases. In the case of a clash, the setting in <code>testcase_{computername}.ini</code> prevails.</p>
 </div>
@@ -817,7 +817,7 @@ TxtToCsv
 </a>
 </div>
 <p>Whenever the test cases were executed <code>Tester</code> notifies the time on a global variable <code>TestCasesExecutedAt</code> in the hosting namespace. This can be used in order to find out whether part of the code has been changed since the last time the cases were executed.</p>
-<p>However, in order to do this you have to make sure that the variable is either saved somewhere or added to the script <code>Tests</code>. For example, it could be handled by a cover function that calls any of <code>Tester</code>s <code>Run*</code> functions and then handled that variable.</p>
+<p>However, in order to do this, you have to make sure that the variable is either saved somewhere or added to the script <code>Tests</code>. For example, it could be handled by a cover function that calls any of <code>Tester</code>s <code>Run*</code> functions and then handled that variable.</p>
 <div class="h_tag">
 <a href="#Conclusion" id="Conclusion" class="autoheader_anchor">
 <h2>Conclusion</h2>
@@ -851,7 +851,7 @@ TxtToCsv
 <h2>Testing APLTree modules</h2>
 </a>
 </div>
-<p>By now we are using quite a number of modules from the APLTree project. Shouldn’t we test them as well? After all if they break, our application will stop working! Well, there are pros and cons:</p>
+<p>By now we are using quite a number of modules from the APLTree project. Shouldn’t we test them as well? After all, if they break, our application will stop working! Well, there are pros and cons:</p>
 <dl>
 <dt>Pro</dt>
 <dd><p class="first_dd">The modules have their own unit tests, and those are exhaustive. An update is published only after all the test cases have passed.</p></dd>

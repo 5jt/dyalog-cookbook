@@ -9,7 +9,7 @@ It’s time to take a closer look at the process of building the application wor
 
 * add the automated execution of test cases to the DYAPP
 
-* create a Make utility that allows us to create everything thats finally shipped to the customer
+* create a Make utility that allows us to create everything that's finally shipped to the customer
 
 At first glance you might think all we need are two versions of the DYAPP, one for development and one for producing the EXE, but there will be tasks we cannot carry out with this approach. Examples are:
 
@@ -88,7 +88,7 @@ Now a developer who double-clicks the DYAPP in order to assemble the workspace w
 
 ## MyApp.dyalog
 
-One minor thing needs our attention: because we create `MyApp.exe` now in a folder `MyApp`, simply setting `⎕WSID` to `MyApp` does not do any more. We need to make a change to the `StartFromCmdLine` function in `MyApp.dyalog`:
+One minor thing needs our attention: because we create `MyApp.exe` now in a folder `MyApp`, simply setting `⎕WSID` to `MyApp` does not do anymore. We need to make a change to the `StartFromCmdLine` function in `MyApp.dyalog`:
 
 ~~~
 ...
@@ -405,7 +405,7 @@ leanpub-end-insert
 
 From experience we know that, with the OS, the machine, the network, the filesystem and who knows what else, the command can fail several times before finally succeeding. 
 
-I> Why is there a "ProductVersion" and a "FileVersion"? No idea! On Stack Overflow this was discussed more than once, and it seems that there are very few cases were it might make sense to have them **not** in sync. 
+I> Why is there a "ProductVersion" and a "FileVersion"? No idea! On Stack Overflow this was discussed more than once, and it seems that there are very few cases when it might make sense to have them **not** in sync. 
 I>
 I> But "FileVersion" is the more important one: the Inno installer for example (see [chapter 16 "Creating SetUp.exe"](./16-Creating-SetUp.exe.html)) compares the "FileVersion" of an already installed version with the possibly new version, and if they are not different then it won't overwrite the EXE - you don't want that!
 
@@ -484,7 +484,7 @@ With the two DYAPPs and the BAT file, your development cycle now looks like this
 *[INI]: File with the extension 'ini' containing configuration data
 *[DYAPP]: File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application
 *[EXE]: Executable file with the extension 'exe'
-*[BAT]: Executeabe file that contains batch commands
+*[BAT]: Executable file that contains batch commands
 *[CSS]: File that contains layout definitions (Cascading Style Sheet)
 *[MD]: File with the extension 'md' that contains markdown
 *[CHM]: Executable file with the extension 'chm' that contains Windows Help(Compiled Help) 

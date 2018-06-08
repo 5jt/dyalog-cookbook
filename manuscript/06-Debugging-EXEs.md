@@ -7,7 +7,7 @@
 Imagine the following situation: MyApp is started with a double-click on the DYAPP and, when tested, everything works just fine. 
 Then you create a stand-alone EXE from the DYAPP and execute it with some appropriate parameter, but it does not create the CSV files. 
 
-In this situation obviously you need to debug the EXE. In this chapter we’ll discuss how to achieve that. In addition we will make `MyApp.exe` return an exit code. 
+In this situation, obviously you need to debug the EXE. In this chapter we’ll discuss how to achieve that. In addition we will make `MyApp.exe` return an exit code. 
 
 For debugging we are going to use Ride. (See the Dyalog manuals for information about Ride.) If enabled, you can use Ride to hook into a running interpreter, interrupt any running code, investigate, and even change that code.
 
@@ -143,7 +143,7 @@ Notes:
 
 * The optional left argument defaults to 0. If it is 1 then the function waits for Ride to hook on.
 
-* In this specific case we pass a reference to `Config` as argument to `CheckForRide`. For two reasons:
+* In this specific case we pass a reference to `Config` as an argument to `CheckForRide`. For two reasons:
   * `CheckForRide` really needs `Config`.
   * We have nothing else to pass but we don’t want niladic functions around (except in very special circumstances).
 
@@ -227,7 +227,7 @@ A> This function does not make much sense but the point is that the right argume
 *[INI]: File with the extension 'ini' containing configuration data
 *[DYAPP]: File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application
 *[EXE]: Executable file with the extension 'exe'
-*[BAT]: Executeabe file that contains batch commands
+*[BAT]: Executable file that contains batch commands
 *[CSS]: File that contains layout definitions (Cascading Style Sheet)
 *[MD]: File with the extension 'md' that contains markdown
 *[CHM]: Executable file with the extension 'chm' that contains Windows Help(Compiled Help) 

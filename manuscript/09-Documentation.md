@@ -5,7 +5,7 @@
 
 
 
-Documentation is the bad mother of software. Programmers learn early that we depend on it but must not trust it. On the one hand we need it for the software we use. On the other we learn a great wariness of it for the software we develop. Understanding why this is so will help us see what to do about documenting `MyApp`.
+Documentation is the bad mother of software. Programmers learn early that we depend on it but must not trust it. On the one hand we need it for the software we use; on the other hand we learn a great wariness of it for the software we develop. Understanding why this is so will help us see what to do about documenting `MyApp`.
 
 It helps to distinguish three quite different things people refer to as _documentation_.
 
@@ -18,14 +18,14 @@ It helps to distinguish three quite different things people refer to as _documen
 
 Unless you are writing a tool or components for other developers to use, all software is operated through a graphical user interface. Users know the common conventions of UIs in various contexts. The standard for UIs is relatively demanding. 
 
-If you know what the application is for, it should be obvious how to use its basic features. The application might help you with wizards (dialogue sequences) to accomplish complex tasks. A user might supplement this by consulting what the Help menu offers. She might search the Web for advice. The last thing she is likely to do is go looking for a printed manual.
+If you know what the application is for, it should be obvious how to use its basic features. The application might help you with wizards (dialogue sequences) to accomplish complex tasks. A user might supplement this by consulting what the Help menu offers. She might search the Web for advice. The last thing she is likely to do is to go looking for a printed manual.
 
 We’ll come in a later chapter to how to offer online help from a Help menu. For now, we mention Help to exclude it from what we mean by _documentation_.
 
 
 ## A description of what the application does
 
-This is a useful thing to have, perhaps as a sales document. One or two pages suffices. Including limitations is important: files in certain formats, up to certain sizes. Perhaps a list of Frequently Asked Questions [^faq] and their answers.
+This is a useful thing to have, perhaps as a sales document. One or two pages suffice. Including limitations is important: files in certain formats, up to certain sizes. Perhaps a list of Frequently Asked Questions [^faq] and their answers.
 
 Beyond that, you have the formal tests. This is what you _know_ the system does. It passes its tests. Especially if you’re supporting your application on multiple versions of Windows, you’ll want those tests to be extensive.
 
@@ -49,7 +49,7 @@ It’s in this third sense that we’ll discuss _documentation_.
 
 We write software for people and people press us for results, which rarely include documentation. No one is pressing us for documentation.
 
-Documentation is for those who come after us, inclusing our future selves. Since 80% of the lifetime costs of software are spent on maintenance, documentation is a good investment. If the software is ours, we’re more likely to make that investment. But there will be constant pressure to defer writing it.
+Documentation is for those who come after us, including our future selves. Since 80% of the lifetime costs of software are spent on maintenance, documentation is a good investment. If the software is ours, we’re more likely to make that investment. But there will be constant pressure to defer writing it.
 
 The common result of this pressure is that application code has either no documentation, or its documentation is not up to date. Out-of-date documentation is worse than having none. If you have no documentation you have no help with the code. You have to read it and run it to understand what it does.
 
@@ -81,7 +81,7 @@ _Automatic documentation generation_ will extract documentation from your script
 
 ADoc is an acronym for _automatic documentation_ generation. It works on classes and namespaces.
 
-In its most basic function, it lists methods, properties and fields (functions, operators and variableas) and requires no comments in the code. 
+In its most basic function, it lists methods, properties and fields (functions, operators and variables) and requires no comments in the code. 
 
 In its more powerful function, it composes an HTML page from header comments in the code. Honouring Markdown conventions, it provides all the typographical features you need for documentation.
 
@@ -162,7 +162,7 @@ First we edit the top of the script to follow ADoc’s conventions:
 
 ### Public interface
 
-Next we specify which functions we want included in the document: not all but just those designed to be called from the outside. In a class those are called the _public interface_, and it’s easy to see why.
+Next we specify which functions we want to be included in the document: not all but just those designed to be called from the outside. In a class those are called the _public interface_, and it’s easy to see why.
 
 For classes ADoc can work out what’s public and what isn’t using the `Public Access` statements. For namespaces there is no such mechanism. 
 
@@ -197,14 +197,14 @@ These pieces of information are then integrated into the document.
 
 #### `Copyright`
 
-If `Copyright` is niladic and returns either a simple text vector or a vector of text vectors then the copyright declararion is integrated into the document.
+If `Copyright` is niladic and returns either a simple text vector or a vector of text vectors then the copyright declaration is integrated into the document.
 
 
 #### `History`
 
 `History` is expected to be a niladic function that does not return a result. Instead it should carry comments with information about the history of the script.
 
-MyApp already had a function `Version` in place. So far we’ve added comments regarding the different versions to it. Those should go into `History` instead. So we replace the existing `Version` function by these three functions:
+MyApp already had a function `Version` in place. So far we’ve added comments to it regarding the different versions. Those should go into `History` instead. So we replace the existing `Version` function by these three functions:
 
 ~~~
 ∇ Z←Copyright
@@ -265,7 +265,7 @@ That will do for now.
 
 [^ocd]: Thanks to Roger Hui for this term.
 
-[^fixme]: Be it `⍝FIXME⍝` or `⍝CHECKME⍝` or `⍝TODO⍝` - what matters is that you keep it consistent and searchable. That implies that the search term cannot be mistaken as something else by accident. For that reason  `⍝TODO⍝` is slighty better better than `TODO`.
+[^fixme]: Be it `⍝FIXME⍝` or `⍝CHECKME⍝` or `⍝TODO⍝` - what matters is that you keep it consistent and searchable. That implies that the search term cannot be mistaken as something else by accident. For that reason, `⍝TODO⍝` is slighty better than `TODO`.
 
 [^markdown]: <https://en.wikipedia.org/wiki/Markdown>
 
@@ -276,7 +276,7 @@ That will do for now.
 *[INI]: File with the extension 'ini' containing configuration data
 *[DYAPP]: File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application
 *[EXE]: Executable file with the extension 'exe'
-*[BAT]: Executeabe file that contains batch commands
+*[BAT]: Executable file that contains batch commands
 *[CSS]: File that contains layout definitions (Cascading Style Sheet)
 *[MD]: File with the extension 'md' that contains markdown
 *[CHM]: Executable file with the extension 'chm' that contains Windows Help(Compiled Help) 

@@ -125,14 +125,14 @@
 <h2>Which tool</h2>
 </a>
 </div>
-<p>There are quite a number of tools available to write installers. Wix[<a href="#fnref1" class="footnote_link"><sup>1</sup></a>] is popular, and a good candidate if you need to install your application in a large corporations.</p>
+<p>There are quite a number of tools available to write installers. Wix[<a href="#fnref1" class="footnote_link"><sup>1</sup></a>] is popular, and a good candidate if you need to install your application in large corporations.</p>
 <p>Wix is very powerful, but its power has a price: complexity. We reckon your first customers are unlikely to have the complex installation requirements of a large corporation. You can start with something simpler.</p>
 <p>If that’s not so, and you need to install your application in a complex corporate IT environment, consider consulting an IT professional for this part of the work.</p>
 <p>Starting smaller allows you to choose a tool that is less complicated and can be mastered fast. Inno has made a name for itself as a tool that combines powerful features with an easy-to-use interface.</p>
 <p>To download Inno visit <a href="http://www.jrsoftware.org/isdl.php" class="external_link">http://www.jrsoftware.org/isdl.php</a>. We recommend the 'QuickStart Pack'. That not only installs the Inno compiler and its help but also Inno Script Studio from Kymoto (<a href="https://www.kymoto.org/" class="external_link">https://www.kymoto.org/</a>).</p>
 <p>It also comes with an encrypting DLL – although we don't see the point of encrypting the installer: after installation user can access all the files anyway.</p>
 <p>The Script Studio not only makes it easier to use Inno, it also comes with a very helpful debugger.</p>
-<p>At the time of writing both packages are free, even for commercial usage. We encourage you to donate to both Inno and Script Studio as soon as you start to make money with your software.</p>
+<p>At the time of writing, both packages are free, even for commercial usage. We encourage you to donate to both Inno and Script Studio as soon as you start to make money with your software.</p>
 <div class="h_tag">
 <a href="#Inno-and-Script-Studio" id="Inno-and-Script-Studio" class="autoheader_anchor">
 <h2>Inno and Script Studio</h2>
@@ -144,7 +144,7 @@
 <h2>Sources of information</h2>
 </a>
 </div>
-<p>When you run into an issue or badly need a particular feature, then Googling for it is of course a good idea, and can be even better than referring to Inno's help. The help is excellent as a reference – you just type a term you need help with and press F1 – but if you don't know exactly what to search for, Google is your friend.</p>
+<p>When you run into an issue or badly need a particular feature, then Googling for it is, of course, a good idea, and can be even better than referring to Inno's help. The help is excellent as a reference – you just type a term you need help with and press F1 – but if you don't know exactly what to search for, Google is your friend.</p>
 <p>Often enough Google points you to Inno's help anyway, getting you straight to the right page. In For example, Google does an excellent job when you search for something like <em>Inno src</em>.</p>
 <p>We have found that all we needed while getting acquainted with Inno.</p>
 <div class="h_tag">
@@ -157,7 +157,7 @@
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
-<p>It is rare these days to install an application in, say, <code>C:\MyFolder</code>. Under such rare circumstances it might be possible to install an application without admin rights.</p>
+<p>It is rare these days to install an application in, say, <code>C:\MyFolder</code>. Under such rare circumstances, it might be possible to install an application without admin rights.</p>
 <p>However, even installing a font requires admin rights.</p>
 </div>
 </div>
@@ -185,7 +185,7 @@
 <div class="leanpub_A">
 <h3>About C:\ProgramData</h3>
 <p>There is only one difference between the <em>AppData</em> and the <em>ProgramData</em> folders: every user has her own <em>AppData</em> folder but there is only a single <em>ProgramData</em> folder, shared by all users.</p>
-<p>The folder <code>C:\ProgramData</code> is hidden by default, so you will see it only when you tick the <em>Hidden items</em> check box on the <em>View</em> tab of the Windows Explorer.</p>
+<p>The folder <code>C:\ProgramData</code> is hidden by default, so you will see it only when you tick the <em>Hidden items</em> checkbox on the <em>View</em> tab of the Windows Explorer.</p>
 </div>
 
 <p>Of course you can put that folder in any place you want — provided you have the necessary rights — but by choosing one of these two locations you stick to what's usual under Windows.</p>
@@ -241,7 +241,7 @@
 <dt>Run</dt>
 <dd>Other programs to be run, either during installation or afterwards</dd>
 <dt>Tasks</dt>
-<dd>Check boxes or radio buttons for the installation wizard's windows so that the user can decide whether those tasks should be performed</dd>
+<dd>Checkboxes or radio buttons for the installation wizard's windows so that the user can decide whether those tasks should be performed</dd>
 <dt>Code</dt>
 <dd><p class="first_dd">Defines programs (in a scripting language similar to Pascal) for doing more complex things</p></dd>
 <dd><p>Inno’s powerful built-in capabilities allow us to achieve our goals without writing any code, so we won't use the scripting capabilities. Note however that for many common tasks there are scripts available on the Internet.</p></dd>
@@ -293,7 +293,7 @@ Compression=lzma
 SolidCompression=yes
 SetupIconFile={#MyAppIcoName}
 UninstallDisplayIcon={app}\{#MyAppIcoName}</code></pre>
-<p>The meaning of much of the above is pretty obvious. All those names <em>must</em> be be defined, however: Inno needs them.</p>
+<p>The meaning of much of the above is pretty obvious. All those names <em>must</em> be defined, however: Inno needs them.</p>
 <p>Notes:</p>
 <ul>
 <li>The variables defined at the top of the Inno script (before the first section) are dereferenced here as <code>{#varsname}</code>.</li>
@@ -301,7 +301,7 @@ UninstallDisplayIcon={app}\{#MyAppIcoName}</code></pre>
 <p>You can create a GUID from within Inno Script Studio: check the <em>Tools &gt; Generate GUID</em> menu item.</p></li>
 <li><code>pf32</code> is an internal Inno constant. It points to the machine's 32-bit program folder, by default <code>C:\Program folder (x86)</code>.
 <p>If you are packaging a 64-bit application, use <code>pf64</code> instead. Don't use <code>pf</code>. Although this does have a default and might work it's just not obvious: better to avoid this and be explicit.</p></li>
-<li><code>AllowNoIcons←1</code> will add a check box <em>Don't create a Start Menu folder</em> to the installer. That leaves it up to the user whether the installer should create such a folder, and under which name.</li>
+<li><code>AllowNoIcons←1</code> will add a checkbox <em>Don't create a Start Menu folder</em> to the installer. That leaves it up to the user whether the installer should create such a folder, and under which name.</li>
 <li><code>app</code> is a constant that points to the folder where the user wants to install the application. It defaults to <code>DefaultDirName</code>: that is just a suggestion the user might or might not accept.
 <p><code>app</code> will point to the default, or whatever folder the user chooses instead.</p></li>
 </ul>
@@ -322,7 +322,7 @@ Name: "english"; MessagesFile: "compiler:Default.isl"; \
 <li><code>InfoBeforeFile</code></li>
 <li><code>InfoAfterFile</code></li>
 </ul>
-<p>When we execute <code>Setup.exe</code> you will see when exactly their content is displayed. If <code>LicenseFile</code> is defined the user must accept the conditions before installation completes.</p>
+<p>When we execute <code>Setup.exe</code> you will see when exactly their content is displayed. If <code>LicenseFile</code> is defined the user must accept the conditions before the installation completes.</p>
 <div class="h_tag">
 <a href="#registry" id="registry" class="autoheader_anchor">
 <h3>The section [Registry]</h3>
@@ -352,7 +352,7 @@ Root: HKLM32; Subkey: "Software\{#MyAppPublisher}\{#MyAppName}"; \
 <li>binary</li>
 </ul>
 <p>For details refer to the Inno help regarding the <code>[Registry]</code> setting.</p></li>
-<li>The keyword <code>uninsdeletekey</code> tells Inno that to delete the Registry key when the application is uninstalled. Without that keyword Inno would <em>not</em> delete any Registry keys and values when the application is uninstalled.</li>
+<li>The keyword <code>uninsdeletekey</code> tells Inno that to delete the Registry key when the application is uninstalled. Without that keyword, Inno would <em>not</em> delete any Registry keys and values when the application is uninstalled.</li>
 <li>The <code>uninsdeletekeyifempty</code> keyword is similar but let Inno delete the Registry key only when it is empty.
 <p>This comes in handy when you use the Registry for saving user preferences: as long as the user has not defined any preferences the key can be deleted safely.</p>
 <p>If she has defined preferences, you might prefer to leave them alone. She might uninstall just to install a better version, expecting her preferences to survive the procedure.</p></li>
@@ -406,7 +406,7 @@ Source: "C:\Windows\Fonts\apl385.ttf"; DestDir: "{fonts}"; FontInstall: "APL385 
 <li><code>bridge*</code> and <code>DyalogtNet.dll</code>, needed for even the simplest .NET call</li>
 <li>The <abbr title="Executable file with the extension 'exe'">EXE</abbr> of course</li>
 <li><code>foo.ini.remove_me</code>, to be renamed to <code>foo.ini</code> if one does not already exist
-<p>This way you ensure no existing <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file is overwritten. This is importantif the user installs a better version over an earlier one.</p></li>
+<p>This way you ensure no existing <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file is overwritten. This is important if the user installs a better version over an earlier one.</p></li>
 <li>With <code>{#MyAppIcoName}; DestDir: "{app}";</code> you make sure that a folder, etc., is inserted into the Start menu. However, you may give the user a say in this; see <code>AllowNoIcons</code> in the <a href="#setup" class="bookmark_link">The section [SetUp]</a>.</li>
 <li>We include the font <code>APL385 Unicode</code> if it does not already exist (<code>onlyifdoesntexist</code>) and we ensure the font is not uninstalled, even if the application is (<code>uninsneveruninstall</code>).</li>
 <li>If you want to Ride into your application you also need the Conga DLLs. Usually this would be done only while the application is still under development or being tested.</li>
@@ -415,7 +415,7 @@ Source: "C:\Windows\Fonts\apl385.ttf"; DestDir: "{fonts}"; FontInstall: "APL385 
 <img src="https://download.aplwiki.com/LeanPub/Images/warning.png" alt="Warning">
 <div>
 <h3>.NET</h3>
-<p>If your applications calls any .NET methods make sure you include the Dyalog .NET bridge files!</p>
+<p>If your applications call any .NET methods make sure you include the Dyalog .NET bridge files!</p>
 </div>
 </div>
 
@@ -441,7 +441,7 @@ Filename: "{app}\{#MyAppExeName}"; Description: "Launch Foo"; Flags: postinstall
 <li>The first entry displays the file <code>ReadMe.html</code> with the default browser (<code>shellexec</code> on an <abbr title="Hyper Text Mark-up language">HTML</abbr> file) after the application has been installed (<code>postinstall</code>).
 <p>If the command-line options <code>silent</code> or <code>verysilent</code> are specified then <code>ReadMe.html</code> is <em>not</em> put on display (<code>skipifsilent</code>).</p></li>
 <li>The second entry offers to launch the application after the installation (<code>postinstall</code>) but only if neither <code>silent</code> nor <code>verysilent</code> were specified (<code>skipifsilent</code>) and Inno is not waiting for the application (<code>nowait</code>).</li>
-<li>Both entries are offered as check boxes ticked by default; the user may clear them to prevent the associated action from being carried out.</li>
+<li>Both entries are offered as checkboxes ticked by default; the user may clear them to prevent the associated action from being carried out.</li>
 </ul>
 <div class="h_tag">
 <a href="#tasks" id="tasks" class="autoheader_anchor">
@@ -452,7 +452,7 @@ Filename: "{app}\{#MyAppExeName}"; Description: "Launch Foo"; Flags: postinstall
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}";</code></pre>
 <p>From the Inno help:</p>
 <blockquote>
-<p>This section is optional. It defines all of the user-customizable tasks Setup will perform during installation. These tasks appear as check boxes and radio buttons on the Select Additional Tasks wizard page.</p>
+<p>This section is optional. It defines all of the user-customizable tasks Setup will perform during installation. These tasks appear as checkboxes and radio buttons on the Select Additional Tasks wizard page.</p>
 </blockquote>
 <p>In our example we specify only one task, and it's linked to <code>desktopicon</code> (see the [Icons] section).</p>
 <p>However, this is a much more powerful feature than it looks like at first glance! For example, you can give the user a choice between installing the…</p>
@@ -463,7 +463,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 </ul>
 <p>or any combination of them.</p>
 <p>To achieve that you need to add the (optional) section <code>[Components]</code> and list all the files involved there. You can then create additional lines in the <code>[Task]</code> section that link to those lines in <code>[Components]</code>.</p>
-<p>The user is then presented with a list of check boxes that allow her to select the options she's after.</p>
+<p>The user is then presented with a list of checkboxes that allow her to select the options she's after.</p>
 <p>Note that <code>cm:CreateDesktopIcon</code> refers to a message <code>CreateDesktopIcon</code> which can be modified if you wish. The <code>cm</code> stands for <em>Custom Message</em>. For that, you would insert the (optional) section <code>[CustomMessages]</code> like this:</p>
 <pre><code>[CustomMessages]
 CreateDesktopIcon = This and that</code></pre>
@@ -484,7 +484,7 @@ CreateDesktopIcon = This and that</code></pre>
 <h3>Updating an already installed version</h3>
 </a>
 </div>
-<p>There is no need to take action - Inno will handle this automatically for you. There is however one exception and one pitfall:</p>
+<p>There is no need to take action - Inno will handle this automatically for you. There is, however, one exception and one pitfall:</p>
 <div class="h_tag">
 <a href="#Files-that-are-not-needed-any-longer" id="Files-that-are-not-needed-any-longer" class="autoheader_anchor">
 <h4>Files that are not needed any longer</h4>
@@ -500,7 +500,7 @@ Type: files; Name: {app}\baz\quux.txt</code></pre>
 <h4>The EXE</h4>
 </a>
 </div>
-<p>When an <abbr title="Executable file with the extension 'exe'">EXE</abbr> is part of the installation Inno compares the “FileVersion” of what's already installed with the one that is about to be installed. It they match Inno won't take any action. That means that if you forget to set the “FileVersion” (see <a href="./10-Make.html#Exporting" class="external_link">chapter 10: “Make: Export”</a>) when creating the stand-alone <abbr title="Executable file with the extension 'exe'">EXE</abbr> then it will always be 0.0.0.0, so they won't ever differ, and the first installed <abbr title="Executable file with the extension 'exe'">EXE</abbr> will never be replaced!</p>
+<p>When an <abbr title="Executable file with the extension 'exe'">EXE</abbr> is part of the installation Inno compares the “FileVersion” of what's already installed with the one that is about to be installed. If they match Inno won't take any action. That means that if you forget to set the “FileVersion” (see <a href="./10-Make.html#Exporting" class="external_link">chapter 10: “Make: Export”</a>) when creating the stand-alone <abbr title="Executable file with the extension 'exe'">EXE</abbr> then it will always be 0.0.0.0, so they won't ever differ, and the first installed <abbr title="Executable file with the extension 'exe'">EXE</abbr> will never be replaced!</p>
 <div class="h_tag">
 <a href="#Analyzing-problems" id="Analyzing-problems" class="autoheader_anchor">
 <h3>Analyzing problems</h3>

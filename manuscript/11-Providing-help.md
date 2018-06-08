@@ -103,7 +103,7 @@ In the workspace all nodes (in our case `MyHelp` and `Sub`) are ordinary namespa
 
 ![The help system in the Workspace Explorer](Images/Structure.png)
 
-This is the why the names of nodes and pages must be valid APL names. Those names appear in the Help tree as topics by default, but we can of course improve on that. We’ll come back to this soon.
+This is why the names of nodes and pages must be valid APL names. Those names appear in the Help tree as topics by default, but we can of course improve on that. We’ll come back to this soon.
 
 
 ## Editing a page
@@ -144,7 +144,7 @@ After confirming this is really what you want to do you will see something like 
 ⍝ You can edit this function from the Markdown2Help GUI via the context menu.
 ⍝ *** NOTE:
 ⍝     Make only changes to this function that affect the explicit result.
-⍝     Any other changes will eventually disappear because these functions are rebuild
+⍝     Any other changes will eventually disappear because these functions are rebuilt
 ⍝     under program control from their explicit result under certain circumstances.
 ⍝        This is also the reason why you should use the `active` flag to hide a topic
 ⍝     temporarily because although just putting a `⍝` symbol in front of its line
@@ -209,9 +209,9 @@ Compiling the help system converts
 
 into a single component file (DCF) containing the HTML generated from the Markdown, plus some more pieces of information.
 
-It’s more than just converting Markdown to HTML. For example, the words of all the pages are extracted, ‘dead’ words like _and_, _then_, _it_, etc. are removed (because searching for them does not make too much sense) and the index, together with pointers to the pages they apear on, are saved in a component. 
+It’s more than just converting Markdown to HTML. For example, the words of all the pages are extracted, ‘dead’ words like _and_, _then_, _it_, etc. are removed (because searching for them does not make too much sense) and the index, together with pointers to the pages they appear on, are saved in a component. 
 
-This allows `Markdown2Help` to provide a very fast Search function. Actually the list is saved in two forms, ‘as is’ and with all words lowercased to speed up any case-insensitive search operations.
+This allows `Markdown2Help` to provide a very fast Search function. The list is actually saved in two forms, ‘as is’ and with all words lowercased to speed up any case-insensitive search operations.
  
 Without specifying a particular folder, `Markdown2Help` would create a temporary folder and compile into that folder. It is better to define a permanent location, which avoids having the Help system compile the Markdown into HTML whenever it is called. 
 
@@ -222,9 +222,9 @@ For converting the Markdown to HTML, `Markdown2Help` needs the `MarkAPL` class, 
 
 ## Editing the Help system directly
 
-Besides editing a variable with a double-click in the Workspace Explorer, you could also also edit it from the session with `)ED`. Our advice: **don't!**
+Besides editing a variable with a double-click in the Workspace Explorer, you could also edit it from the session with `)ED`. Our advice: **don't!**
 
-The reason is simple: when you change a Help system via the context menu then other important steps are performed. An example is when you have a `∆TopicProperties` function in a perticular node and you want to add a new help page to that node. 
+The reason is simple: when you change a Help system via the context menu then other important steps are performed. An example is when you have a `∆TopicProperties` function in a particular node and you want to add a new help page to that node. 
 
 You have to right-click on a page and select the _Inject new help page (stub)_ command from the context menu. You will then be prompted for a valid name and finally the new help page is injected after the page you have clicked at. 
 
@@ -322,7 +322,7 @@ I> A Windows Registry key? The user can mark any help page as a favourite, and t
 
 This function requires the Help system to be available in the workspace.
 
-Strictly speaking only the `source` parameter needs to be specified to get it to work, but best to specify the other parameters too, before a client sets eyes on your Help system.
+Strictly speaking, only the `source` parameter needs to be specified to get it to work, but best to specify the other parameters too before a client sets eyes on your Help system.
 
 Most of the parameters should explain themselves, but if in doubt you can always start `Markdown2Help`’s own Help system with `#.Markdown2Help.Selfie ⍬` and read the pages under the `Parameters` node. Here’s what you should see:
 
@@ -439,7 +439,7 @@ Load Make
 Run #.Make.Run 1
 ~~~
 
-Finally we ensure the compiled Help system is copied over together with the standalone Help viewer:
+Finally we ensure the compiled Help system is copied over together with the standalone Help Viewer:
 
 ~~~
 :Class Make
@@ -492,7 +492,7 @@ leanpub-end-insert
 *[INI]: File with the extension 'ini' containing configuration data
 *[DYAPP]: File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application
 *[EXE]: Executable file with the extension 'exe'
-*[BAT]: Executeabe file that contains batch commands
+*[BAT]: Executable file that contains batch commands
 *[CSS]: File that contains layout definitions (Cascading Style Sheet)
 *[MD]: File with the extension 'md' that contains markdown
 *[CHM]: Executable file with the extension 'chm' that contains Windows Help(Compiled Help) 

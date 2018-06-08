@@ -258,7 +258,7 @@
 
 <div class="leanpub_A">
 <h3>Shuffle test cases</h3>
-<p>At the time of writing (2017-07) the sequence of the test cases relies on alphabetical order and is therefore predictable. On the to-do list for the <code>Tester</code> class is a topic: Add option that makes the test framework shuffle the test cases so that the order of execution is not predictable anymore.</p>
+<p>At the time of writing (2017-07) the sequence of the test cases relies on alphabetical order and is therefore predictable. On the to-do list for the <code>Tester</code> class is a topic: Add an option that makes the test framework shuffle the test cases so that the order of execution is not predictable anymore.</p>
 </div>
 
 <div class="h_tag">
@@ -286,13 +286,13 @@
 <dd>Used in the list presented by the Task Scheduler.</dd>
 <dt><em>Description</em></dt>
 <dd>Shown in the list presented by the Task Scheduler. Keep it concise.</dd>
-<dt><em>Run only when user is logged on</em></dt>
-<dd>You will almost certainly change this to <em>Run whether user is logged on or not</em>.</dd>
-<dt><em>Do not store password</em></dt>
+<dt><em>Run only when the user is logged on</em></dt>
+<dd>You will almost certainly change this to <em>Run whether the user is logged on or not</em>.</dd>
+<dt><em>Do not store a password</em></dt>
 <dd>The password is stored safely, so there is no reason not to provide it.</dd>
 <dt><em>Running with highest privileges</em></dt>
 <dd><p class="first_dd">Unfortunately this check box is offered whether your user account has admin rights or not. If it does not, then ticking the box won’t have any effect.</p></dd>
-<dd><p>If your user account has no admin rights but your Scheduled Task needs to run with highest privileges then you need to specify a different user id / password after clicking the <em>Change user or group</em> button.</p></dd>
+<dd><p>If your user account has no admin rights but your Scheduled Task needs to run with highest privileges then you need to specify a different user id/password after clicking the <em>Change user or group</em> button.</p></dd>
 <dd><p>Whether your application needs to run with highest privileges or not is impossible to say. Experience shows that sometimes a process that fails when – and only when – the application runs as a Scheduled Task will work fine if run as a Schedule Task with highest privileges, although it is by no means clear what those rights are required for.</p></dd>
 <dt><em>Configure for</em></dt>
 <dd>Generally you should select the OS the task is running on.</dd>
@@ -322,10 +322,10 @@
 </div>
 <p>After clicking <em>New</em> this is what you get:</p>
 <p><img src="Images/scheduler_03.png" alt="New Action" title="New Action"></p>
-<p>Make sure you use the <em>Browse</em> button to navigate to the <abbr title="Executable file with the extension 'exe'">EXE</abbr>/<abbr title="Executeabe file that contains batch commands">BAT</abbr>/whatever you want to run as a Scheduled Task. This avoids typos.</p>
+<p>Make sure you use the <em>Browse</em> button to navigate to the <abbr title="Executable file with the extension 'exe'">EXE</abbr>/<abbr title="Executable file that contains batch commands">BAT</abbr>/whatever you want to run as a Scheduled Task. This avoids typos.</p>
 <dl>
 <dt><em>Add arguments</em></dt>
-<dd>allows you specify something like <code>MAXWS=345M</code> or the name of a workspace in case <em>Program</em> is not an <abbr title="Executable file with the extension 'exe'">EXE</abbr> but a Dyalog interpreter. In particular, you should add <code>DYALOG_NOPOPUPS=1</code>. This prevents any dialogs from popping up (aplcore, <abbr title="Short for Workspaces">WS</abbr> FULL, etc.). You don’t want them when Dyalog is running in the background because there's nobody around to click the <em>OK</em> button…</dd>
+<dd>allows you to specify something like <code>MAXWS=345M</code> or the name of a workspace in case <em>Program</em> is not an <abbr title="Executable file with the extension 'exe'">EXE</abbr> but a Dyalog interpreter. In particular, you should add <code>DYALOG_NOPOPUPS=1</code>. This prevents any dialogs from popping up (aplcore, <abbr title="Short for Workspaces">WS</abbr> FULL, etc.). You don’t want them when Dyalog is running in the background because there's nobody around to click the <em>OK</em> button…</dd>
 <dt><em>Start in</em></dt>
 <dd><p class="first_dd">is useful for specifying what will become the current (or working) directory for the running program. We recommend setting the current directory in your code as early as possible, so you don’t really need to set this here except that when you don’t you might well get an error code 2147942512.</p></dd>
 <dd><p>We will discuss later how such error codes can be interpreted, but for the time being, trust us that it actually means <em>Not enough space available on the disk</em>! When you do specify the <em>Start in</em> parameter it runs just fine.</p></dd>
@@ -433,8 +433,8 @@ The process cannot access the file because it is being used by another process.<
 </a>
 </div>
 <p>If the Task Scheduler itself throws an error you will find the error codes of little value – at first sight.</p>
-<p>You can provoke such an error quite easily: edit the task we’ve created and change the contents of the <em>Program/script</em> field in the <em>Edit action</em> dialog to something that does not exist, so the Task Scheduler won’t find such a program to run. Then issue the <em>Run</em> command from the context menu.</p>
-<p>Update the GUI by pressing F5 and you will see that errors are reported. The row that reads <code>Task Start Failed</code> in the <em>Task Category</em> columns and <code>Launch Failure</code> in the <em>Operational Code</em> columns is the one we are interested in. When you click at this row you will find that it reports an <code>Error Value 2147942402</code>. What exactly does this mean?</p>
+<p>You can provoke such an error quite easily: edit the task we’ve created and changed the contents of the <em>Program/script</em> field in the <em>Edit action</em> dialog to something that does not exist, so the Task Scheduler won’t find such a program to run. Then issue the <em>Run</em> command from the context menu.</p>
+<p>Update the GUI by pressing F5 and you will see that errors are reported. The row that reads <code>Task Start Failed</code> in the <em>Task Category</em> columns and <code>Launch Failure</code> in the <em>Operational Code</em> columns is the one we are interested in. When you click on this row you will find that it reports an <code>Error Value 2147942402</code>. What exactly does this mean?</p>
 <p>One way to find out is to google for 2147942402. For this particular error this will certainly do, but sometimes you will have to go through plenty of pages when people managed to produce the same error code in very different circumstances, and it can be quite time-consuming to find a page that carries useful information for <em>your</em> circumstances.</p>
 <p>Instead we use the user command [<a href="#fnref3" class="footnote_link"><sup>3</sup></a>] <code>Int2Hex</code>, based on code written and contributed by Phil Last [<a href="#fnref2" class="footnote_link"><sup>2</sup></a>]. With this user command we can convert the value 2147942402 into a hex value:</p>
 <pre><code>      ]Int2Hex 2147942402
@@ -448,7 +448,7 @@ The process cannot access the file because it is being used by another process.<
 <p>The first four digits, 8007, mean that what follows is a Win32 status code. The last 4 are the status code. This is a number that needs to be converted into decimal:</p>
 <pre><code>      ]Hex2Int 0002</code></pre>
 <p>but in our case that is of course not necessary because the number is so small that there is no difference between hex and integer anyway, so we can convert it into an error message straight away.</p>
-<p>Again we use a user command that is not part of a standard Dyalog installation but because it is so useful we strongly recommend install it [<a href="#fnref4" class="footnote_link"><sup>4</sup></a>]. It translates a Windows error code into meaningful text.</p>
+<p>Again we use a user command that is not part of a standard Dyalog installation but because it is so useful we strongly recommend installing it [<a href="#fnref4" class="footnote_link"><sup>4</sup></a>]. It translates a Windows error code into meaningful text.</p>
 <pre><code>      ]GetMsgFrom
 The system cannot find the file specified.</code></pre>
 <p>And that’s why it failed.</p>

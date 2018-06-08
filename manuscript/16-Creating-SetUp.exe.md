@@ -21,7 +21,7 @@ There are other things an installer might do, but these are the essential tasks.
 Which tool
 ----------
 
-There are quite a number of tools available to write installers. Wix[^wix] is popular, and a good candidate if you need to install your application in a large corporations.
+There are quite a number of tools available to write installers. Wix[^wix] is popular, and a good candidate if you need to install your application in large corporations.
 
 Wix is very powerful, but its power has a price: complexity. We reckon your first customers are unlikely to have the complex installation requirements of a large corporation. You can start with something simpler. 
 
@@ -35,7 +35,7 @@ It also comes with an encrypting DLL – although we don't see the point of encr
 
 The Script Studio not only makes it easier to use Inno, it also comes with a  very helpful debugger.
 
-At the time of writing both packages are free, even for commercial usage. We encourage you to donate to both Inno and Script Studio as soon as you start to make money with your software.
+At the time of writing, both packages are free, even for commercial usage. We encourage you to donate to both Inno and Script Studio as soon as you start to make money with your software.
 
 
 Inno and Script Studio
@@ -47,7 +47,7 @@ The easiest way to start with Inno is to take an existing script and study it. T
 Sources of information
 ----------------------
 
-When you run into an issue or badly need a particular feature, then Googling for it is of course a good idea, and can be even better than referring to Inno's help. The help is excellent as a reference – you just type a term you need help with and press F1 – but if you don't know exactly what to search for, Google is your friend. 
+When you run into an issue or badly need a particular feature, then Googling for it is, of course, a good idea, and can be even better than referring to Inno's help. The help is excellent as a reference – you just type a term you need help with and press F1 – but if you don't know exactly what to search for, Google is your friend. 
 
 Often enough Google points you to Inno's help anyway, getting you straight to the right page. In For example, Google does an excellent job when you search for something like _Inno src_.
 
@@ -59,7 +59,7 @@ Considerations
 
 An installer needs admin rights. Installing a program is a potentially dangerous thing. 
 
-I> It is rare these days to install an application in, say, `C:\MyFolder`. Under such rare circumstances it might be possible to install an application without admin rights.
+I> It is rare these days to install an application in, say, `C:\MyFolder`. Under such rare circumstances, it might be possible to install an application without admin rights.
 I>
 I> However, even installing a font requires admin rights.
 
@@ -87,7 +87,7 @@ The `Roaming` folder is the right choice if a user wants the application to be a
 A> # About C:\ProgramData
 A> There is only one difference between the _AppData_ and the _ProgramData_ folders: every user has her own _AppData_ folder but there is only a single _ProgramData_ folder, shared by all users.
 A>
-A> The folder `C:\ProgramData` is hidden by default, so you will see it only when you tick the _Hidden items_ check box on the _View_ tab of the Windows Explorer.
+A> The folder `C:\ProgramData` is hidden by default, so you will see it only when you tick the _Hidden items_ checkbox on the _View_ tab of the Windows Explorer.
 
 Of course you can put that folder in any place you want --- provided you have the necessary rights --- but by choosing one of these two locations you stick to what's usual under Windows.
 
@@ -158,7 +158,7 @@ Run
 : Other programs to be run, either during installation or afterwards
 
 Tasks
-: Check boxes or radio buttons for the installation wizard's windows so that the user can decide whether those tasks should be performed
+: Checkboxes or radio buttons for the installation wizard's windows so that the user can decide whether those tasks should be performed
 
 Code
 : Defines programs (in a scripting language similar to Pascal) for doing more complex things
@@ -217,7 +217,7 @@ UninstallDisplayIcon={app}\{#MyAppIcoName}
 ~~~
 
 The meaning of much of the above is pretty obvious. 
-All those names _must_ be be defined, however: Inno needs them.
+All those names _must_ be defined, however: Inno needs them.
 
 Notes:
 
@@ -231,7 +231,7 @@ Notes:
 
    If you are packaging a 64-bit application, use `pf64` instead. Don't use `pf`. Although this does have a default and might work it's just not obvious: better to avoid this and be explicit.
 
-* `AllowNoIcons←1` will add a check box _Don't create a Start Menu folder_ to the installer. That leaves it up to the user whether the installer should create such a folder, and under which name.
+* `AllowNoIcons←1` will add a checkbox _Don't create a Start Menu folder_ to the installer. That leaves it up to the user whether the installer should create such a folder, and under which name.
 
 * `app` is a constant that points to the folder where the user wants to install the application. It defaults to `DefaultDirName`: that is just a suggestion the user might or might not accept. 
 
@@ -256,7 +256,7 @@ While the two parameters `Name` and `MessageFile` are required, the other three 
 * `InfoBeforeFile`
 * `InfoAfterFile`
 
-When we execute `Setup.exe` you will see when exactly their content is displayed. If `LicenseFile` is defined the user must accept the conditions before installation completes.
+When we execute `Setup.exe` you will see when exactly their content is displayed. If `LicenseFile` is defined the user must accept the conditions before the installation completes.
 
 
 ### The section [Registry]{#registry}
@@ -289,7 +289,7 @@ Notes:
    * binary
 
   For details refer to the Inno help regarding the `[Registry]` setting.
-* The keyword `uninsdeletekey` tells Inno that to delete the Registry key when the application is uninstalled. Without that keyword Inno would _not_ delete any Registry keys and values when the application is uninstalled.
+* The keyword `uninsdeletekey` tells Inno that to delete the Registry key when the application is uninstalled. Without that keyword, Inno would _not_ delete any Registry keys and values when the application is uninstalled.
 * The `uninsdeletekeyifempty` keyword is similar but let Inno delete the Registry key only when it is empty. 
 
   This comes in handy when you use the Registry for saving user preferences: as long as the user has not defined any preferences the key can be deleted safely. 
@@ -346,14 +346,14 @@ We have included here a number of files quite common in any APL application:
 * The EXE of course
 * `foo.ini.remove_me`, to be renamed to `foo.ini` if one does not already exist
 
-  This way you ensure no existing INI file is overwritten. This is importantif the user installs a better version over an earlier one.
+  This way you ensure no existing INI file is overwritten. This is important if the user installs a better version over an earlier one.
 * With `{#MyAppIcoName}; DestDir: "{app}";` you make sure that a folder, etc., is inserted into the Start menu. However, you may give the user a say in this; see `AllowNoIcons` in the [The section [SetUp]](#setup).
 * We include the font `APL385 Unicode` if it does not already exist (`onlyifdoesntexist`) and we ensure the font is not uninstalled, even if the application is (`uninsneveruninstall`).
 * If you want to Ride into your application you also need the Conga DLLs. Usually this would be done only while the application is still under development or being tested.
 
 W> # .NET 
 W>
-W> If your applications calls any .NET methods make sure you include the Dyalog .NET bridge files!
+W> If your applications call any .NET methods make sure you include the Dyalog .NET bridge files!
 
 
 ### The section [Icons]{#icons}
@@ -383,7 +383,7 @@ Notes:
 
 * The second entry offers to launch the application after the installation (`postinstall`) but only if neither `silent` nor `verysilent` were specified (`skipifsilent`) and Inno is not waiting for the application (`nowait`).
 
-* Both entries are offered as check boxes ticked by default; the user may clear them to prevent the associated action from being carried out.
+* Both entries are offered as checkboxes ticked by default; the user may clear them to prevent the associated action from being carried out.
 
 
 ### The section [Tasks]{#tasks}
@@ -395,7 +395,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 From the Inno help:
 
-> This section is optional. It defines all of the user-customizable tasks Setup will perform during installation. These tasks appear as check boxes and radio buttons on the Select Additional Tasks wizard page.
+> This section is optional. It defines all of the user-customizable tasks Setup will perform during installation. These tasks appear as checkboxes and radio buttons on the Select Additional Tasks wizard page.
 
 In our example we specify only one task, and it's linked to `desktopicon` (see the [Icons] section).
 
@@ -409,7 +409,7 @@ or any combination of them.
 
 To achieve that you need to add the (optional) section `[Components]` and list all the files involved there. You can then create additional lines in the `[Task]` section that link to those lines in `[Components]`. 
 
-The user is then presented with a list of check boxes that allow her to select the options she's after.
+The user is then presented with a list of checkboxes that allow her to select the options she's after.
 
 Note that `cm:CreateDesktopIcon` refers to a message `CreateDesktopIcon` which can be modified if you wish. The `cm` stands for _Custom Message_. For that, you would insert the (optional) section `[CustomMessages]` like this:
 
@@ -432,7 +432,7 @@ Potential problems
 
 ### Updating an already installed version
 
-There is no need to take action - Inno will handle this automatically for you. There is however one exception and one pitfall:
+There is no need to take action - Inno will handle this automatically for you. There is, however, one exception and one pitfall:
 
 
 #### Files that are not needed any longer
@@ -450,7 +450,7 @@ Although wildcards are supported they should never be used because you may well 
 
 #### The EXE
 
-When an EXE is part of the installation Inno compares the "FileVersion" of what's already installed with the one that is about to be installed. It they match Inno won't take any action. That means that if you forget to set the "FileVersion" (see [chapter 10: "Make: Export"](./10-Make.html#Exporting)) when creating the stand-alone EXE then it will always be 0.0.0.0, so they won't ever differ, and the first installed EXE will never be replaced!
+When an EXE is part of the installation Inno compares the "FileVersion" of what's already installed with the one that is about to be installed. If they match Inno won't take any action. That means that if you forget to set the "FileVersion" (see [chapter 10: "Make: Export"](./10-Make.html#Exporting)) when creating the stand-alone EXE then it will always be 0.0.0.0, so they won't ever differ, and the first installed EXE will never be replaced!
 
 
 ### Analyzing problems
@@ -491,7 +491,7 @@ About GUIDs
 *[INI]: File with the extension 'ini' containing configuration data
 *[DYAPP]: File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application
 *[EXE]: Executable file with the extension 'exe'
-*[BAT]: Executeabe file that contains batch commands
+*[BAT]: Executable file that contains batch commands
 *[CSS]: File that contains layout definitions (Cascading Style Sheet)
 *[MD]: File with the extension 'md' that contains markdown
 *[CHM]: Executable file with the extension 'chm' that contains Windows Help(Compiled Help) 

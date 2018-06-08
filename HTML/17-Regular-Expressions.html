@@ -81,14 +81,14 @@
 <li><a href="#The--can-be-dangerous">The + can be dangerous!</a></li>
 <li><a href="#Negate">Negate</a></li>
 <li><a href="#Garbage-in-garbage-out">Garbage in, garbage out</a></li>
-<li><a href="#Meta-chracters-the-full-list">Meta chracters: the full list</a></li>
+<li><a href="#Metacharacters-the-full-list">Metacharacters: the full list</a></li>
 <li><a href="#Search-digits-in-a-string">Search digits in a string</a></li>
 <li><a href="#The-escape-character">The escape character: \</a></li>
 <li><a href="#Negate-with-digits-and-dots">Negate with digits and dots</a></li>
-<li><a href="#Meta-characters-within-a-character-class">Meta characters within a character class</a></li>
+<li><a href="#Metacharacters-within-a-character-class">Metacharacters within a character class</a></li>
 <li><a href="#Searching-for-whitespace-characters">Searching for whitespace characters</a></li>
 <li><a href="#The-options-DotAll-and-Mode">The options DotAll and Mode</a></li>
-<li><a href="#The-meta-character-N">The meta character <code>\N</code></a></li>
+<li><a href="#The-metacharacter-N">The metacharacter <code>\N</code></a></li>
 <li><a href="#Analyzing-APL-code-Replace">Analyzing APL code: Replace</a></li>
 <li><a href="#Regular-expressions-and-scalar-extension">Regular expressions and scalar extension</a></li>
 <li><a href="#Analysing-APL-code-Search">Analysing APL code: Search</a></li>
@@ -198,13 +198,13 @@ cat sat on the medallion</code></pre>
 <pre><code>      '"' ⎕S 0 ⊣ 'He said "Yes"'
  8 12</code></pre>
 <p>That gives us the offset of the two double quotes, but what if we want to have the offset and the length of any string found <em>between</em> — and including — the double quotes?</p>
-<p>For that we need to introduce the <em>meta character</em> dot (<code>.</code>), which has a special meaning in a regular expression: it represents <em>any</em> character. (Not quite: we will soon discuss the one and only exception, the NewLine character).</p>
+<p>For that we need to introduce the <em>metacharacter</em> dot (<code>.</code>), which has a special meaning in a regular expression: it represents <em>any</em> character. (Not quite: we will soon discuss the one and only exception, the NewLine character).</p>
 
 <div class="leanpub_A">
-<h3>Meta Characters</h3>
-<p>Meta characters, sometimes called special characters, are characters with a special meaning in a regular expression.</p>
-<p>To specify a character that serves as a meta character, we <em>escape</em> it with a backslash. So, yes, backslash is another meta character. To represent a dot followed by a backslash we would write <code>\.\\</code></p>
-<p>We’ll encounter more meta characters as we go.</p>
+<h3>Metacharacters</h3>
+<p>Metacharacters, sometimes called special characters, are characters with a special meaning in a regular expression.</p>
+<p>To specify a character that serves as a metacharacter, we <em>escape</em> it with a backslash. So, yes, backslash is another metacharacter. To represent a dot followed by a backslash we would write <code>\.\\</code></p>
+<p>We’ll encounter more metacharacters as we go.</p>
 </div>
 
 <p>So we try:</p>
@@ -212,7 +212,7 @@ cat sat on the medallion</code></pre>
 </code></pre>
 <p>Oops - no hit. To understand this we have to know <em>exactly</em> what the regular expression engine did:</p>
 <ol start="1">
-<li>It starts at the beginning of the string; that is actually one to the left of the “H”! That position can only be matched by the meta character <code>^</code> which represents the <em>start of a line</em>.</li>
+<li>It starts at the beginning of the string; that is actually one to the left of the “H”! That position can only be matched by the metacharacter <code>^</code> which represents the <em>start of a line</em>.</li>
 <li>Since we did not specify a leading <code>^</code> the RegEx engine moves to the first character.</li>
 <li>It then tries to match <code>"</code> to <code>H</code>. Since there is no match…</li>
 <li>It carries on until it arrives at the <code>"</code>; this is called “consuming a character”. Now there is a match!</li>
@@ -242,7 +242,7 @@ _one⍈two⍈three⍈_four</code></pre>
 <p><code>⎕R</code> takes one or more replace strings as the right operand – <em>or</em> a user defined function, discussed later. You cannot mix replace strings with user defined functions.</p>
 </div>
 
-<p>What's between the curly braces (<code>{}</code>) – those are meta characters as well – defines how many instances are required: minimum and maximum. This is called a quantifier.</p>
+<p>What's between the curly braces (<code>{}</code>) – those are metacharacters as well – defines how many instances are required: minimum and maximum. This is called a quantifier.</p>
 <ul>
 <li><code>{x,y}</code> means at least <code>x</code> and no more than <code>y</code>.</li>
 <li><code>{,y}</code> is the same as <code>{0,y}</code>.</li>
@@ -269,7 +269,7 @@ He said ⍈!</code></pre>
 <p>By default the engine is <em>greedy</em> as opposed to <em>lazy</em>:</p>
 <ol start="1">
 <li>First it tries to match the <code>.</code> against as many characters as it can.
-<p>That means it will stop only at the end of the line, because the dot will match everything but the end-of-line. as the asterisk repeats it over and and over again.</p></li>
+<p>That means it will stop only at the end of the line, because the dot will match everything but the end-of-line. as the asterisk repeats it over and over again.</p></li>
 <li>Then the RegEx engine will <em>backtrack</em> and try to find a double quote, coming from the right; once it finds one it's done the job.</li>
 </ol>
 <p>The same is true for the <code>{x,y}</code> quantifiers: by default they are all <em>greedy</em> rather than <em>lazy</em>, so repeating <code>y</code> times is done first before reducing the repetition to <code>x</code> times.</p>
@@ -290,7 +290,7 @@ He said ⍈ and ⍈!</code></pre>
 <p>Note that if you use Classic Dyalog, or just want to ensure your code runs in a classic interpreter, <code>⎕OPT</code> is a synonym for <code>⍠</code>.</p>
 <p>Between the right operand and the right argument you may specify options. They are marked by the <code>⍠</code> operator. These are the options available:</p>
 <p>IC, Mode, DotAll, EOL, ML, Greedy, OM, InEnc, OutEnc, Enc, ResultText, UCP</p>
-<p>IC – ignore case – is the principle option. That means that if no other option needs to be specified you can omit the <code>'IC'</code>.</p>
+<p>IC – ignore case – is the principal option. That means that if no other option needs to be specified you can omit the <code>'IC'</code>.</p>
 <p>So this would do: <code>⎕S 0 ⍠ 1 ⊢ 'whatever'</code>. A 1 would make a search pattern case insensitive. The default is 0.</p>
 <p>In this chapter we’ll discuss Mode, DotAll, Greedy and UCP: these are the most important options. For the others refer to <code>⎕R</code>'s help page.</p>
 </div>
@@ -315,7 +315,7 @@ He said ⍈ and ⍈!</code></pre>
 <h3>The + can be dangerous!</h3>
 </a>
 </div>
-<p>But wouldn't it be better to use <code>+</code> rather than <code>*</code> here? After all we are not interested in <code>""</code> because there is nothing between the two double quotes? Good point except that it does not work:</p>
+<p>But wouldn't it be better to use <code>+</code> rather than <code>*</code> here? After all, we are not interested in <code>""</code> because there is nothing between the two double quotes? Good point except that it does not work:</p>
 <pre><code>      '".+"' ⎕R '⍈' ⍠('Greedy' 0) ⊣ 'He said "" and ""'
 He said ⍈"</code></pre>
 <p>That's because the engine would perform the following steps:</p>
@@ -332,7 +332,7 @@ He said ⍈"</code></pre>
 <h3>Negate</h3>
 </a>
 </div>
-<p>Hhere is another — and better — way to solve our problem:</p>
+<p>Here is another — and better — way to solve our problem:</p>
 <pre><code>      '"[^"]*"'⎕R'⍈'⊣'He said "" and ""'</code></pre>
 <ul>
 <li>The engine carries on until it finds a <code>"</code>.</li>
@@ -368,16 +368,16 @@ He said ⍈"</code></pre>
 </div>
 
 <div class="h_tag">
-<a href="#Meta-chracters-the-full-list" id="Meta-chracters-the-full-list" class="autoheader_anchor">
-<h3>Meta chracters: the full list</h3>
+<a href="#Metacharacters-the-full-list" id="Metacharacters-the-full-list" class="autoheader_anchor">
+<h3>Metacharacters: the full list</h3>
 </a>
 </div>
-<p>By now we've met quite a number of meta characters; how many do we have to deal with? Well, quite a lot:</p>
+<p>By now we've met quite a number of metacharacters; how many do we have to deal with? Well, quite a lot:</p>
 <table>
 <thead>
 <tr>
 <th style="text-align: right;">   </th>
-<th style="text-align: left;"> Meta character               </th>
+<th style="text-align: left;"> Metacharacter               </th>
 <th style="text-align: left;"> Symbol </th>
 <th style="text-align: left;"> </th>
 <th style="text-align: left;">Meaning</th>
@@ -471,7 +471,7 @@ He said ⍈"</code></pre>
 </tbody>
 </table>
 <p>By now we have already discussed six of them; they carry a check mark.</p>
-<p>Note that both <code>}</code> and <code>]</code> are considered meta characters only after an opening <code>{</code> or <code>[</code>. Without the opening counterpart they are taken literally; that's why they did not make it onto the list of meta characters.</p>
+<p>Note that both <code>}</code> and <code>]</code> are considered metacharacters only after an opening <code>{</code> or <code>[</code>. Without the opening counterpart they are taken literally; that's why they did not make it onto the list of metacharacters.</p>
 <div class="h_tag">
 <a href="#Search-digits-in-a-string" id="Search-digits-in-a-string" class="autoheader_anchor">
 <h3>Search digits in a string</h3>
@@ -480,11 +480,11 @@ He said ⍈"</code></pre>
 <p>Let's suppose we want to match all digits in a string:</p>
 <pre><code>      '[0123456789]'⎕R '⍈' ⊣ 'It''s 23.45 plus 99.12.'
 It's ⍈⍈.⍈⍈ plus ⍈⍈.⍈⍈.</code></pre>
-<p>Everything between the <code>[</code> and the <code>]</code> is treated as a simple character - with a few exceptions we'll soon discuss. That makes both <code>[</code> and <code>]</code> meta characters.</p>
+<p>Everything between the <code>[</code> and the <code>]</code> is treated as a simple character - with a few exceptions we'll soon discuss. That makes both <code>[</code> and <code>]</code> metacharacters.</p>
 <p>The same but shorter:</p>
 <pre><code>      '[0-9]'⎕R '⍈' ⊣ 'It''s 23.45 plus 99.12.'
 It's ⍈⍈.⍈⍈ plus ⍈⍈.⍈⍈.</code></pre>
-<p>The minus is treated as a meta character here: it means “all digits from 0 to 9”.</p>
+<p>The minus is treated as a metacharacter here: it means “all digits from 0 to 9”.</p>
 <div class="h_tag">
 <a href="#The-escape-character" id="The-escape-character" class="autoheader_anchor">
 <h3>The escape character: \</h3>
@@ -493,19 +493,19 @@ It's ⍈⍈.⍈⍈ plus ⍈⍈.⍈⍈.</code></pre>
 <p>Even shorter:</p>
 <pre><code>      '\d'⎕R '⍈' ⊣ 'It''s 23.45 plus 99.12.'
 It's ⍈⍈.⍈⍈ plus ⍈⍈.⍈⍈.</code></pre>
-<p>Note that the meta character backslash (<code>\</code> ) is used for two different purposes:</p>
+<p>Note that the metacharacter backslash (<code>\</code> ) is used for two different purposes:</p>
 <ul>
-<li>To escape any of the RegEx meta characters so that they are stripped of their special meaning and taken literally.</li>
+<li>To escape any of the RegEx metacharacters so that they are stripped of their special meaning and taken literally.</li>
 <li>To give the next character a special meaning if it is an ordinary ASCII letter.</li>
 </ul>
 <p>So <code>\*</code> takes away the special meaning from the <code>*</code> while <code>\d</code> gives the <code>d</code> the special meaning: all digits.</p>
 <p>We take the opportunity to add the dot (<code>.</code>) and the minus (<code>-</code>) to the character class.</p>
 <p>Note that the minus is not escaped; from the context the regular expression engine can work out that here the minus cannot mean from-to, so it is taken literally.</p>
-<p>Note also that the <code>.</code> is not escaped either: inside the pair of <code>[]</code> the <code>.</code> is <em>not</em> a meta character.</p>
+<p>Note also that the <code>.</code> is not escaped either: inside the pair of <code>[]</code> the <code>.</code> is <em>not</em> a metacharacter.</p>
 
 <div class="leanpub_A">
 <h3>Escaping several characters</h3>
-<p>Say you need to escape all the meta characters because you want to search them. Escaping every single one of them with a backslash is laborious and decreases readability, but there is a better way:</p>
+<p>Say you need to escape all the metacharacters because you want to search them. Escaping every single one of them with a backslash is laborious and decreases readability, but there is a better way:</p>
 <pre><code>      '\Q\^$.|?*+()[{\E'</code></pre>
 <p>This escapes all characters between the <code>\Q</code> and the <code>\E</code>.</p>
 </div>
@@ -541,15 +541,15 @@ It⍈s⍈⍈⍈⍈⍈⍈⍈plus⍈⍈⍈⍈⍈⍈⍈</code></pre>
       'gr[ae]y'⎕R '⍈' ⊣'Americans spell it "gray" and Brits "grey".'
 Americans spell it "⍈" and Brits "⍈".</code></pre>
 <div class="h_tag">
-<a href="#Meta-characters-within-a-character-class" id="Meta-characters-within-a-character-class" class="autoheader_anchor">
-<h3>Meta characters within a character class</h3>
+<a href="#Metacharacters-within-a-character-class" id="Metacharacters-within-a-character-class" class="autoheader_anchor">
+<h3>Metacharacters within a character class</h3>
 </a>
 </div>
-<p>Note that there are only a few meta characters inside character classes:</p>
+<p>Note that there are only a few metacharacters inside character classes:</p>
 <table>
 <thead>
 <tr>
-<th style="text-align: left;"> Meta character    </th>
+<th style="text-align: left;"> Metacharacter    </th>
 <th style="text-align: left;"> Symbol </th>
 <th style="text-align: left;"> Meaning                    </th>
 </tr>
@@ -578,7 +578,7 @@ Americans spell it "⍈" and Brits "⍈".</code></pre>
 </tbody>
 </table>
 <p>We already worked out the engine is smart enough to take a minus literally when it makes an appearance somewhere where it cannot mean from-to: the beginning and the end of a character class.</p>
-<p>Similarly the caret (<code>^</code>) character can only negate a character class as a whole, when it follows the opening square bracket (<code>[^</code>). If the caret is specified elsewhere it is taken literally.</p>
+<p>Similarly, the caret (<code>^</code>) character can only negate a character class as a whole when it follows the opening square bracket (<code>[^</code>). If the caret is specified elsewhere it is taken literally.</p>
 <p>Therefore the expression <code>[0-9^1]</code> does <em>not</em> mean “all digits but 1”, it means “all digits and the caret character and a 1”.</p>
 <div class="h_tag">
 <a href="#Searching-for-whitespace-characters" id="Searching-for-whitespace-characters" class="autoheader_anchor">
@@ -619,11 +619,11 @@ Americans spell it "⍈" and Brits "⍈".</code></pre>
 <p>It is important to understand the different modes and their influence on <code>^</code> (start of document or line), <code>$</code> (end of document or line) and <code>DotAll</code> see <a href="#Document-mode" class="bookmark_link">Document mode</a> for details.</p>
 <p>It's not difficult to imagine a situation where you have a single search pattern but in one part you want the <code>.</code> to match end-of-line and in others you won't.</p>
 <div class="h_tag">
-<a href="#The-meta-character-N" id="The-meta-character-N" class="autoheader_anchor">
-<h3>The meta character <code>\N</code></h3>
+<a href="#The-metacharacter-N" id="The-metacharacter-N" class="autoheader_anchor">
+<h3>The metacharacter <code>\N</code></h3>
 </a>
 </div>
-<p><code>\N</code> has almost the same meaning as the <code>.</code> except that it never matches the end of a line. That means it's independent from the setting of DotAll:</p>
+<p><code>\N</code> has almost the same meaning as the <code>.</code> except that it never matches the end of a line. That means it's independent of the setting of DotAll:</p>
 <pre><code>      '"\N*"'⎕R'⍈'⍠('DotAll' 1)('Mode' 'D')⊣'"Foo' 'Goo "'
  "Foo  Goo "</code></pre>
 <p>Note that <code>\N</code> and <code>\n</code> are different: <code>\n</code> stands for a newline character.</p>
@@ -645,7 +645,7 @@ a←1 ⋄ ⍈←1 2 ⋄ txt←'The ⍝ marks a comment; foo' ⍝ set up vars a, 
 <ol start="1">
 <li><code>\N</code> is the same as a <code>.</code>: it matches all characters but the end-of-line character.
 <p>Setting <code>('DotAll' 1)</code> might make sense for the third search pattern (<code>foo</code>) but it would under certain circumstances prevent the first two search patterns from working, therefore we <em>must</em> use the <code>\N</code> syntax for those patterns.</p></li>
-<li><code>'''\N*'''</code> catches all text — that is everything between quotes — and for that text <code>&amp;</code> is specified as replacement.
+<li><code>'''\N*'''</code> catches all text — that is everything between quotes — and for that text <code>&amp;</code> is specified as a replacement.
 <p>Now <code>&amp;</code> stands for the matching text, therefore nothing will change at all but the matching text <em>won't participate in any further actions!</em> In other words: everything between quotes is left alone.</p></li>
 <li><code>'⍝\N*$'</code> catches everything from a lamp (<code>⍝</code>) to the end of the line (<code>$</code>) and replaces it by itself (<code>&amp;</code>). Again nothing changes but the comment will not be affected by anything that follows.
 <p>Since the first expression has already masked everything within (and including) quotes the first <code>⍝</code> does not cause problems; it is ignored at this stage anyway.</p></li>
@@ -687,7 +687,7 @@ a←1 ⋄ ⍈←1 2 ⋄ txt←'The ⍝ marks a comment; foo' ⍝ set up vars a, 
 <h3>Greedy and lazy</h3>
 <p>Using the option <code>⍠('Greedy' 0)</code> has a disadvantage: it makes <em>all</em> search patterns lazy.</p>
 <p>There will be cases when you want only a part of your search pattern to be lazy and other parts greedy.</p>
-<p>Luckily this can be achieved with the meta character question mark (<code>?</code>):</p>
+<p>Luckily this can be achieved with the metacharacter question mark (<code>?</code>):</p>
 <pre><code>      '"\N*?"'⎕R '⍈' ⊣ is
 He said ⍈ and ⍈</code></pre>
 <p>Since the engine is greedy by default, you need specify the <code>?</code> only for those parts of your search pattern you want to be lazy.</p>
@@ -776,7 +776,7 @@ It's ⍈ plus ⍈.
       '\d+(?&lt;=\d).(?=\d)\d+' ⎕S 0 1 ⊣ 'It''s 23.45 plus 99.12.'
  5 5  16 5</code></pre>
 <p>That's better.</p>
-<p>As mentioned earlier a look-ahead as well as a look-behind can be negated by using a <code>!</code> rather than a <code>=</code></p>
+<p>As mentioned earlier a look-ahead, as well as a look-behind, can be negated by using a <code>!</code> rather than a <code>=</code></p>
 <p>Lets' try this. Assuming we look for <code>x</code> and <code>y</code>:</p>
 <pre><code>      'x(?&lt;=y)' ⎕R'⍈' ⊣ 'abxycxd' ⍝ Exchange all "x" when followed by a "y"
 ab⍈ycxd
@@ -906,7 +906,7 @@ abxyc⍈d</code></pre>
 <h3>Document mode</h3>
 </a>
 </div>
-<p>So far we have specified just a simple string as input. We can however pass a vector of strings as well. Look at this example:</p>
+<p>So far we have specified just a simple string as input. We can, however, pass a vector of strings as well. Look at this example:</p>
 <pre><code>      input←'He said: "Yes, that might' 'well be right." She answered: "So be it!"'</code></pre>
 <p>It's not a bad idea to think of the two elements of the input vector as ‘blocks’. Note that the first reported speech straddles the blocks.</p>
 <p>By default the search engine operates in Line mode. That means each block is processed independently by the engine. You cannot search for <code>\r</code> (carriage return) in Line mode: the search engine will never see them.</p>
@@ -961,7 +961,7 @@ donkey, bird, ⍈, rat, dog, ⍈</code></pre>
 <h3>Extract what's between HTML tags</h3>
 </a>
 </div>
-<p>Suppose we have a piece of <abbr title="Hyper Text Mark-up language">HTML</abbr> code, and are interested in any text between anchor tags (<code>&lt;a&gt;</code>). Suppose also we know there is no other tag inside the <code>&lt;a&gt;</code>, just simple text.</p>
+<p>Suppose we have a piece of <abbr title="Hyper Text Mark-up language">HTML</abbr> code and are interested in any text between anchor tags (<code>&lt;a&gt;</code>). Suppose also we know there is no other tag inside the <code>&lt;a&gt;</code>, just simple text.</p>
 <p>Now an <code>&lt;a&gt;</code> tag has always either an <code>href="..."</code> or an <code>id="..."</code> because otherwise it has no purpose. &lt;!– FIXME or <code>name=</code> –&gt;</p>
 <p>So it should be safe to say:</p>
 <pre><code>      '&lt;a.*&gt;.*&lt;'⎕R'⍈'⊣'This &lt;a href="http://aplwiki.com"&gt;is a link&lt;/a&gt;, really!'
@@ -1025,7 +1025,7 @@ This ⍈; more: ⍈</code></pre>
 <p>One of the greatest problems in programming is making assumptions and not document them. Or worse, not even being aware of your assumptions.</p>
 <p>The above is an example. Imagine these two different scenarios:</p>
 <ol start="1">
-<li>You want to extract everything from a log file that's a date. You know that every record, if it carries a date at all, will start with the date, and you can savely assume that the dates are correctly saved in international date format.</li>
+<li>You want to extract everything from a log file that's a date. You know that every record, if it carries a date at all, will start with the date, and you can safely assume that the dates are correctly saved in international date format.</li>
 <li>You allow the user to enter her date of birth in a dialog box.</li>
 </ol>
 <p>In the first case you can take a relaxed approach because you know all dates are valid and follow precise rules while in the second you have to be meticulous because otherwise you will accept and save rubbish sooner rather than later.</p>
@@ -1043,7 +1043,7 @@ This ⍈; more: ⍈</code></pre>
 │ │ │ │A paragraph.      │ │
 │ └─┘ └──────────────────┘ │
 └∊─────────────────────────┘</code></pre>
-<p>This is because the three-element vector is transformed into a single document <code>&lt;CRLF&gt;A paragraph.&lt;CRLF&gt;</code> which is then passed in its entirety to PCRE, the underlying RegEx engine. PCRE has only generated two lines of output from this so the result is a two element vector.</p>
+<p>This is because the three-element vector is transformed into a single document <code>&lt;CRLF&gt;A paragraph.&lt;CRLF&gt;</code> which is then passed in its entirety to PCRE, the underlying RegEx engine. PCRE has only generated two lines of output from this so the result is a two-element vector.</p>
 <p>If you want a stricter correspondence between input and output you need to process the elements separately, e.g.:</p>
 <pre><code>      ]display '\t'⎕R(4⍴' ')⍠('Mode' 'M')¨v
 ┌→─────────────────────────────┐
@@ -1081,8 +1081,8 @@ This ⍈; more: ⍈</code></pre>
 </a>
 </div>
 <dl>
-<dt>Online Tutotrial</dt>
-<dd><p class="first_dd">A web site that explores Regular Expressions in detail:</p></dd>
+<dt>Online Tutorial</dt>
+<dd><p class="first_dd">A website that explores Regular Expressions in detail:</p></dd>
 <dd><p><a href="https://www.regular-expressions.info/tutorial.html" class="external_link">https://www.regular-expressions.info/tutorial.html</a></p></dd>
 <dd><p>From the author of RegExBuddy.</p></dd>
 <dt>RegexBuddy</dt>

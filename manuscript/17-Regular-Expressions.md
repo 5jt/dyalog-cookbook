@@ -95,15 +95,15 @@ Let's look at another example: find out what's between double quotes. First atte
 
 That gives us the offset of the two double quotes, but what if we want to have the offset and the length of any string found _between_ --- and including --- the double quotes? 
 
-For that we need to introduce the _meta character_ dot (`.`), which has a special meaning in a regular expression: it represents _any_ character. (Not quite: we will soon discuss the one and only exception, the NewLine character). 
+For that we need to introduce the _metacharacter_ dot (`.`), which has a special meaning in a regular expression: it represents _any_ character. (Not quite: we will soon discuss the one and only exception, the NewLine character). 
 
-A> # Meta Characters
+A> # Metacharacters
 A>
-A> Meta characters, sometimes called special characters, are characters with a special meaning in a regular expression. 
+A> Metacharacters, sometimes called special characters, are characters with a special meaning in a regular expression. 
 A>
-A> To specify a character that serves as a meta character, we _escape_ it with a backslash. So, yes, backslash is another meta character. To represent a dot followed by a backslash we would write `\.\\`
+A> To specify a character that serves as a metacharacter, we _escape_ it with a backslash. So, yes, backslash is another metacharacter. To represent a dot followed by a backslash we would write `\.\\`
 A> 
-A> We’ll encounter more meta characters as we go.
+A> We’ll encounter more metacharacters as we go.
 
 So we try:
 
@@ -114,7 +114,7 @@ So we try:
 
 Oops - no hit. To understand this we have to know _exactly_ what the regular expression engine did:
 
-1. It starts at the beginning of the string; that is actually one to the left of the "H"! That position can only be matched by the meta character `^` which represents the _start of a line_. 
+1. It starts at the beginning of the string; that is actually one to the left of the "H"! That position can only be matched by the metacharacter `^` which represents the _start of a line_. 
 
 1. Since we did not specify a leading `^` the RegEx engine moves to the first character.
 
@@ -157,7 +157,7 @@ A> ### The right operand of ⎕R
 A>
 A> `⎕R` takes one or more replace strings as the right operand – _or_ a user defined function, discussed later. You cannot mix replace strings with user defined functions.
 
-What's between the curly braces (`{}`) -- those are meta characters as well -- defines how many instances are required: minimum and maximum. This is called a quantifier.
+What's between the curly braces (`{}`) -- those are metacharacters as well -- defines how many instances are required: minimum and maximum. This is called a quantifier.
 
 * `{x,y}` means at least `x` and no more than `y`.
 * `{,y}` is the same as `{0,y}`.
@@ -192,7 +192,7 @@ By default the engine is _greedy_ as opposed to _lazy_:
 
 1. First it tries to match the `.` against as many characters as it can. 
 
-   That means it will stop only at the end of the line, because the dot will match everything but the end-of-line. as the asterisk repeats it over and and over again.
+   That means it will stop only at the end of the line, because the dot will match everything but the end-of-line. as the asterisk repeats it over and over again.
 
 2. Then the RegEx engine will _backtrack_ and try to find a double quote, coming from the right; once it finds one it's done the job.
 
@@ -226,7 +226,7 @@ A> Between the right operand and the right argument you may specify options. The
 A>
 A> IC, Mode, DotAll, EOL, ML, Greedy, OM, InEnc, OutEnc, Enc, ResultText, UCP
 A>  
-A> IC – ignore case – is the principle option. That means that if no other option needs to be specified you can omit the `'IC'`.
+A> IC – ignore case – is the principal option. That means that if no other option needs to be specified you can omit the `'IC'`.
 A> 
 A> So this would do: `⎕S 0 ⍠ 1 ⊢ 'whatever'`. A 1 would make a search pattern case insensitive. The default is 0.
 A> 
@@ -252,7 +252,7 @@ The quantifiers we discussed earlier are all greedy, but you can make them lazy 
 
 ### The + can be dangerous!
 
-But wouldn't it be better to use `+` rather than `*` here? After all we are not interested in `""` because there is nothing between the two double quotes? Good point except that it does not work:
+But wouldn't it be better to use `+` rather than `*` here? After all, we are not interested in `""` because there is nothing between the two double quotes? Good point except that it does not work:
 
 ~~~
       '".+"' ⎕R '⍈' ⍠('Greedy' 0) ⊣ 'He said "" and ""'
@@ -276,7 +276,7 @@ If we want to ignore any `""` pairs then we need to use a look-ahead, something 
 
 ### Negate 
 
-Hhere is another --- and better --- way to solve our problem:
+Here is another --- and better --- way to solve our problem:
 
 ~~~
       '"[^"]*"'⎕R'⍈'⊣'He said "" and ""'
@@ -321,11 +321,11 @@ A> * It is wrong because today's regular expression engines come with features (
 A> * It is misleading because it ignores that regular expression engines are perfectly capable of processing small pieces of HTML that are known to be syntactically correct.
 
 
-### Meta chracters: the full list
+### Metacharacters: the full list
 
-By now we've met quite a number of meta characters; how many do we have to deal with? Well, quite a lot:
+By now we've met quite a number of metacharacters; how many do we have to deal with? Well, quite a lot:
 
-|   | Meta character               | Symbol | |Meaning
+|   | Metacharacter               | Symbol | |Meaning
 |---|------------------------------|--------|-|-----------------------------
 |1. | Backslash                    | `\`    |✔| Escape character
 |2. | Caret                        | `^`    |✔| Start of line
@@ -342,7 +342,7 @@ By now we've met quite a number of meta characters; how many do we have to deal 
 
 By now we have already discussed six of them; they carry a check mark.
 
-Note that both `}` and `]` are considered meta characters only after an opening `{` or `[`. Without the opening counterpart they are taken literally; that's why they did not make it onto the list of meta characters.
+Note that both `}` and `]` are considered metacharacters only after an opening `{` or `[`. Without the opening counterpart they are taken literally; that's why they did not make it onto the list of metacharacters.
 
 
 ### Search digits in a string
@@ -354,7 +354,7 @@ Let's suppose we want to match all digits in a string:
 It's ⍈⍈.⍈⍈ plus ⍈⍈.⍈⍈.
 ~~~
 
-Everything between the `[` and the `]` is treated as a simple character - with a few exceptions we'll soon discuss. That makes both `[` and `]` meta characters.
+Everything between the `[` and the `]` is treated as a simple character - with a few exceptions we'll soon discuss. That makes both `[` and `]` metacharacters.
 
 The same but shorter:
 
@@ -363,7 +363,7 @@ The same but shorter:
 It's ⍈⍈.⍈⍈ plus ⍈⍈.⍈⍈.
 ~~~
 
-The minus is treated as a meta character here: it means "all digits from 0 to 9".
+The minus is treated as a metacharacter here: it means "all digits from 0 to 9".
 
 
 ### The escape character: \
@@ -375,9 +375,9 @@ Even shorter:
 It's ⍈⍈.⍈⍈ plus ⍈⍈.⍈⍈.
 ~~~
 
-Note that the meta character backslash (`\` ) is used for two different purposes:
+Note that the metacharacter backslash (`\` ) is used for two different purposes:
 
-* To escape any of the RegEx meta characters so that they are stripped of their special meaning and taken literally.
+* To escape any of the RegEx metacharacters so that they are stripped of their special meaning and taken literally.
 * To give the next character a special meaning if it is an ordinary ASCII letter.
 
 So `\*` takes away the special meaning from the `*` while `\d` gives the `d` the special meaning: all digits.
@@ -386,11 +386,11 @@ We take the opportunity to add the dot (`.`) and the minus (`-`) to the characte
 
 Note that the minus is not escaped; from the context the regular expression engine can work out that here the minus cannot mean from-to, so it is taken literally.
 
-Note also that the `.` is not escaped either: inside the pair of `[]` the `.` is _not_ a meta character.
+Note also that the `.` is not escaped either: inside the pair of `[]` the `.` is _not_ a metacharacter.
 
 A> # Escaping several characters
 A>
-A> Say you need to escape all the meta characters because you want to search them. Escaping every single one of them with a backslash is laborious and decreases readability, but there is a better way:
+A> Say you need to escape all the metacharacters because you want to search them. Escaping every single one of them with a backslash is laborious and decreases readability, but there is a better way:
 A> ~~~
 A>       '\Q\^$.|?*+()[{\E'
 A> ~~~
@@ -448,11 +448,11 @@ Americans spell it "⍈" and Brits "⍈".
 ~~~
 
 
-### Meta characters within a character class
+### Metacharacters within a character class
 
-Note that there are only a few meta characters inside character classes:
+Note that there are only a few metacharacters inside character classes:
 
-| Meta character    | Symbol | Meaning                    |
+| Metacharacter    | Symbol | Meaning                    |
 |-------------------|--------|----------------------------|
 | Closing bracket   | `]`    |                            |
 | Backslash         | `\`    | Escape next character      |
@@ -461,7 +461,7 @@ Note that there are only a few meta characters inside character classes:
 
 We already worked out the engine is smart enough to take a minus literally when it makes an appearance somewhere where it cannot mean from-to: the beginning and the end of a character class. 
 
-Similarly the caret (`^`) character can only negate a character class as a whole, when it follows the opening square bracket (`[^`). If the caret is specified elsewhere it is taken literally. 
+Similarly, the caret (`^`) character can only negate a character class as a whole when it follows the opening square bracket (`[^`). If the caret is specified elsewhere it is taken literally. 
 
 Therefore the expression `[0-9^1]` does _not_ mean "all digits but 1", it means "all digits and the caret character and a 1".
 
@@ -512,9 +512,9 @@ It is important to understand the different modes and their influence on `^` (st
 It's not difficult to imagine a situation where you have a single search pattern but in one part you want the `.` to match end-of-line and in others you won't.
 
 
-### The meta character `\N`
+### The metacharacter `\N`
 
-`\N` has almost the same meaning as the `.` except that it never matches the end of a line. That means it's independent from the setting of DotAll:
+`\N` has almost the same meaning as the `.` except that it never matches the end of a line. That means it's independent of the setting of DotAll:
 
 ~~~
       '"\N*"'⎕R'⍈'⍠('DotAll' 1)('Mode' 'D')⊣'"Foo' 'Goo "'
@@ -554,7 +554,7 @@ This needs some explanation:
 
    Setting `('DotAll' 1)` might make sense for the third search pattern (`foo`) but it would under certain circumstances prevent the first two search patterns from working, therefore we _must_ use the `\N` syntax for those patterns.
 
-1. `'''\N*'''` catches all text --- that is everything between quotes --- and for that text `&` is specified as replacement. 
+1. `'''\N*'''` catches all text --- that is everything between quotes --- and for that text `&` is specified as a replacement. 
 
    Now `&` stands for the matching text, therefore nothing will change at all but the matching text _won't participate in any further actions!_ In other words: everything between quotes is left alone.
 
@@ -616,7 +616,7 @@ A> Using the option `⍠('Greedy' 0)` has a disadvantage: it makes _all_ search 
 A>
 A> There will be cases when you want only a part of your search pattern to be lazy and other parts greedy.
 A>
-A> Luckily this can be achieved with the meta character question mark (`?`):
+A> Luckily this can be achieved with the metacharacter question mark (`?`):
 A> 
 A>  ~~~
 A>       '"\N*?"'⎕R '⍈' ⊣ is
@@ -748,7 +748,7 @@ It's ⍈ plus ⍈.
 
 That's better.
 
-As mentioned earlier a look-ahead as well as a look-behind can be negated by using a `!` rather than a `=`
+As mentioned earlier a look-ahead, as well as a look-behind, can be negated by using a `!` rather than a `=`
 
 Lets' try this. Assuming we look for `x` and `y`:
 
@@ -925,7 +925,7 @@ Transformation functions give you enormous power: you can do whatever you like.
 
 ### Document mode
 
-So far we have specified just a simple string as input. We can however pass a vector of strings as well. Look at this example:
+So far we have specified just a simple string as input. We can, however, pass a vector of strings as well. Look at this example:
 
 ~~~
       input←'He said: "Yes, that might' 'well be right." She answered: "So be it!"'
@@ -1016,7 +1016,7 @@ For plurals:
 
 ### Extract what's between HTML tags
 
-Suppose we have a piece of HTML code, and are interested in any text between anchor tags (`<a>`). Suppose also we know there is no other tag inside the `<a>`, just simple text.
+Suppose we have a piece of HTML code and are interested in any text between anchor tags (`<a>`). Suppose also we know there is no other tag inside the `<a>`, just simple text.
 
 Now an `<a>` tag has always either an `href="..."` or an `id="..."` because otherwise it has no purpose. <!-- FIXME or `name=` -->
 
@@ -1122,7 +1122,7 @@ One of the greatest problems in programming is making assumptions and not docume
 
 The above is an example. Imagine these two different scenarios:
 
-1. You want to extract everything from a log file that's a date. You know that every record, if it carries a date at all, will start with the date, and you can savely assume that the dates are correctly saved in international date format.
+1. You want to extract everything from a log file that's a date. You know that every record, if it carries a date at all, will start with the date, and you can safely assume that the dates are correctly saved in international date format.
 
 1. You allow the user to enter her date of birth in a dialog box.
 
@@ -1148,7 +1148,7 @@ This should not change anything because it just attempts to replace any <TAB> ch
 └∊─────────────────────────┘
 ~~~
 
-This is because the three-element vector is transformed into a single document `<CRLF>A paragraph.<CRLF>` which is then passed in its entirety to PCRE, the underlying RegEx engine. PCRE has only generated two lines of output from this so the result is a two element vector.
+This is because the three-element vector is transformed into a single document `<CRLF>A paragraph.<CRLF>` which is then passed in its entirety to PCRE, the underlying RegEx engine. PCRE has only generated two lines of output from this so the result is a two-element vector.
 
 If you want a stricter correspondence between input and output you need to process the elements separately, e.g.:
 
@@ -1187,9 +1187,9 @@ However, many regular expressions, like finding a simple string in another simpl
 
 ### Helpful stuff
 
-Online Tutotrial
+Online Tutorial
 
-: A web site that explores Regular Expressions in detail:
+: A website that explores Regular Expressions in detail:
 : <https://www.regular-expressions.info/tutorial.html>
 : From the author of RegExBuddy.
 
@@ -1211,7 +1211,7 @@ Book reviews
 *[INI]: File with the extension 'ini' containing configuration data
 *[DYAPP]: File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application
 *[EXE]: Executable file with the extension 'exe'
-*[BAT]: Executeabe file that contains batch commands
+*[BAT]: Executable file that contains batch commands
 *[CSS]: File that contains layout definitions (Cascading Style Sheet)
 *[MD]: File with the extension 'md' that contains markdown
 *[CHM]: Executable file with the extension 'chm' that contains Windows Help(Compiled Help) 

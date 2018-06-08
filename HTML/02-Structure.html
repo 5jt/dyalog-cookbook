@@ -111,7 +111,7 @@
 
 <div class="leanpub_A">
 <h3>Corrupted workspaces</h3>
-<p>The <em>workspace</em> (<abbr title="Short for Workspaces">WS</abbr>) is where the APL interpreter manages all code and all data in memory. The Dyalog tracer / debugger has extensive edit-and-continue capabilities; the downside is that these have been known to corrupt the workspace occasionally.</p>
+<p>The <em>workspace</em> (<abbr title="Short for Workspaces">WS</abbr>) is where the APL interpreter manages all code and all data in memory. The Dyalog tracer/debugger has extensive edit-and-continue capabilities; the downside is that these have been known to corrupt the workspace occasionally.</p>
 <p>The interpreter checks <abbr title="Short for Workspaces">WS</abbr> integrity every now and then; how often can be influenced by setting certain debug flags; see the “<a href="./52 Appendix 3 — aplcores and WS integrity.html" class="external_link">Appendix 3 — aplcores and WS integrity</a>” for details. More details regarding aplcores are available in the appendix “Aplcores”.</p>
 </div>
 
@@ -129,11 +129,11 @@
 
 <div class="leanpub_A">
 <h3>Crash workspaces</h3>
-<p>A crash workspace is a workspace that was saved by a function that was initiated by error trapping, typically by a setting of <code>⎕TRAP</code>. It’s a snapshot of the workspace at the moment an unforeseen problem triggered error trapping to take over. It’s usually very useful to analyse such problems.</p>
+<p>A crash workspace is a workspace that was saved by a function that was initiated by error trapping, typically by setting <code>⎕TRAP</code>. It’s a snapshot of the workspace at the moment an unforeseen problem triggered error trapping to take over. It’s usually very useful to analyse such problems.</p>
 <p>Note that a workspace cannot be saved when more than one thread is running.</p>
 </div>
 
-<p>If she doesn’t have an interpreter, and you are not worried about her someday getting one and reading your code, and you have a Run-Time Agreement with Dyalog, you can send her the Dyalog Run-Time interpreter with the workspace. The Run-Time interpreter will not allow the program to suspend, so when the program breaks the task will vanish, and your user won’t see your code. All right so far. But she will also not have a crash workspace to send you.</p>
+<p>If she doesn’t have an interpreter and you are not worried about her someday getting one and reading your code, and you have a Run-Time Agreement with Dyalog, you can send her the Dyalog Run-Time interpreter with the workspace. The Run-Time interpreter will not allow the program to suspend, so when the program breaks the task will vanish, and your user won’t see your code. All right so far. But she will also not have a crash workspace to send you.</p>
 <p>If your application uses multiple threads, the thread states can’t be saved in a crash workspace anyway.</p>
 <p>You need your program to catch and report any errors before it dies, something we will discuss in the chapter <a href="./07 Handling errors.html" class="external_link">Handling errors</a>.</p>
 <div class="h_tag">
@@ -141,7 +141,7 @@
 <h3>Send an executable file (EXE)</h3>
 </a>
 </div>
-<p>This is the simplest form of the program to install, because there is nothing else it needs to run: everything is embedded within the <abbr title="Executable file with the extension 'exe'">EXE</abbr>. You export the workspace as an <abbr title="Executable file with the extension 'exe'">EXE</abbr>, which can have the Dyalog Run-Time interpreter bound into it. The code cannot be read. As with the workspace-based runtime above, your program cannot suspend, so you need it to catch and report any errors before dying.</p>
+<p>This is the simplest form of the program to install because there is nothing else it needs to run: everything is embedded within the <abbr title="Executable file with the extension 'exe'">EXE</abbr>. You export the workspace as an <abbr title="Executable file with the extension 'exe'">EXE</abbr>, which can have the Dyalog Run-Time interpreter bound into it. The code cannot be read. As with the workspace-based runtime above, your program cannot suspend, so you need it to catch and report any errors before dying.</p>
 <p>We’ll do that!</p>
 <div class="h_tag">
 <a href="#Where-should-you-keep-the-code" id="Where-should-you-keep-the-code" class="autoheader_anchor">
@@ -150,10 +150,10 @@
 </div>
 <p>Let’s start by considering the workspace you will export as an <abbr title="Executable file with the extension 'exe'">EXE</abbr>.</p>
 <p>The first point is: PCs have a lot of memory relative to your application code volume. So all your Dyalog code will be in the workspace. That’s probably where you have it right now anyway.</p>
-<p>Your workspace is like your desk top – a great place to get work done, but a poor place to store things. In particular it does nothing to help you track changes and revert to an earlier version.</p>
+<p>Your workspace is like your desktop – a great place to get work done, but a poor place to store things. In particular it does nothing to help you track changes and revert to an earlier version.</p>
 <p>Sometimes a code change turns out to be for the worse, and you need to undo it. Perhaps the change you need to undo is not the most recent change.</p>
 <p>We’ll keep the program in manageable pieces – ‘modules’ – and keep those pieces in text files under version control.</p>
-<p>For this there are many <em>source-control management</em> (SCM) systems and repositories available. Subversion, Git and Mercurial are presently popular. These SCMs support multiple programmers working on the same program, and have sophisticated features to help resolve conflicts between them.</p>
+<p>For this, there are many <em>source-control management</em> (SCM) systems and repositories available. Subversion, Git and Mercurial are presently popular. These SCMs support multiple programmers working on the same program, and have sophisticated features to help resolve conflicts between them.</p>
 
 <div class="leanpub_A">
 <h3>Source code management with acre Desktop</h3>
@@ -184,7 +184,7 @@
 <h2>Versions</h2>
 </a>
 </div>
-<p>In real life you will produce successive versions of your program, each better than the last. In an ideal world, all your users will have and use the current version. In that ideal world, you have only one version to maintain: the latest.</p>
+<p>In real life, you will produce successive versions of your program, each better than the last. In an ideal world, all your users will have and use the current version. In that ideal world, you have only one version to maintain: the latest.</p>
 <p>In the real world, your users will have and use multiple versions. If you charge for upgrading to a newer version, this will surely happen. And even in your ideal world, you have to maintain at least two versions: the current and the next.</p>
 <p>What does it mean to maintain a version? At the very minimum, you keep the source code for it, so you could recreate its <abbr title="Executable file with the extension 'exe'">EXE</abbr> from scratch, exactly as it was distributed. There will be things you want to improve, and perhaps bugs you must fix. Those will all go into the next version, of course. But some you may need to put into the released version and re-issue it to current users as a patch.</p>
 <p>So in <em>The Dyalog Cookbook</em> we shall develop in successive versions until we manage to create an installer that is capable of installing the application on any machine running Windows 10. What’s needed to achieve that is discussed in the chapters 1-16. Later chapters are independent.</p>
@@ -231,8 +231,8 @@ Y 1</code></pre>
 <pre><code>      Accents
 ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝ
 AAAAAACDEEEEIIIINOOOOOOUUUUY</code></pre>
-<p>That amounts to five functions. Two of them are specific to the application: <code>TxtToCsv</code> and <code>CountLetters</code>. The other three – <code>toUppercase</code>, <code>join</code> and <code>map</code> are utilities, of general use.</p>
-<p>Note that we have some functions that start with lowercase characters while others start with uppercase characters. In a larger application you might want to be able to tell data from calls to functions and operators by introducing consistent naming conventions. Which one you settle for is less important then choosing something consistent. And remmeber to put it into a document any programmer joining the team can read.</p>
+<p>That amounts to five functions. Two of them are specific to the application: <code>TxtToCsv</code> and <code>CountLetters</code>. The other three –– <code>toUppercase</code>, <code>join</code> and <code>map</code> — are utilities of general use.</p>
+<p>Note that we have some functions that start with lowercase characters while others start with uppercase characters. In a larger application you might want to be able to tell data from calls to functions and operators by introducing consistent naming conventions. Which one you settle for is less important than choosing something consistent. And remember to put it into a document any programmer joining the team can read.</p>
 <p><code>toUppercase</code> uses the fast case-folding I-beam introduced in Dyalog 15.0 (also available in 14.0 &amp; 14.1 from revision 27141 onwards).</p>
 <p><code>TxtToCsv</code> uses the file-system primitives <code>⎕NINFO</code>, <code>⎕NGET</code>, and <code>⎕NPUT</code> introduced in Dyalog 15.0.</p>
 <div class="h_tag">
@@ -324,7 +324,7 @@ AAAAAACDEEEEIIIINOOOOOOUUUUY</code></pre>
 </a>
 </div>
 <pre><code>status←(bar&gt;3) U.means 'ok' U.else 'error'</code></pre>
-<p>In this approach two user defined functions are called. Not much overhead but don’t go for this if the line is, say, executed thousands of times within a loop.</p>
+<p>In this approach two user-defined functions are called. Not much overhead but don’t go for this if the line is, say, executed thousands of times within a loop.</p>
 <div class="h_tag">
 <a href="#Keep-the-end-user-in-mind" id="Keep-the-end-user-in-mind" class="autoheader_anchor">
 <h4>Keep the end user in mind</h4>
@@ -332,7 +332,7 @@ AAAAAACDEEEEIIIINOOOOOOUUUUY</code></pre>
 </div>
 <p>The authors have done pair programming for years with end users being the second party. For a user a statement like:</p>
 <pre><code>taxfree←(dob&gt;19491231) U.means 35000 U.else 50000</code></pre>
-<p>is easily readable despite it being formed of APL primitives and user defined functions. This can be a big advantage in an agile environment where the end user reviews business logic with the implementors.</p>
+<p>is easily readable despite it being formed of APL primitives and user-defined functions. This can be a big advantage in an agile environment where the end user reviews business logic with the implementors.</p>
 <p>For classes, however, there is another way to do this: include the namespace <code>#.Utilities</code>. In order to illustrate this let’s assume for a moment that <code>MyApp</code> is not a namespace but a class.</p>
 <pre><code>:Class MyApp
 :Include Utilities
@@ -399,7 +399,7 @@ copied...</code></pre>
 <li>You <em>cannot</em> trace into a one-line dfn. This can be quite useful. For example, this function:
 <pre><code>OnConfigure←{(4↑⍵),((⊃⍺){(0∊⍴⍺):⍵ ⋄ ⍺⌈⍵}⍵[4]),((⊃⌽⍺){(0∊⍴⍺):⍵ ⋄ ⍺⌈⍵}⍵[5])}</code></pre>
 <p>ensures a GUI Form (window) does not shrink below a minimum size defined by <code>⍺</code>.</p>
-<p>You don’t want to have a multi-line dfn here: you want be able to trace into any <code>⎕DQ</code> (or <code>Wait</code>) statement; and the number of configuration events is simply overwhelming. Thanks to the <code>⋄</code> we can solve the task on a single line and prevent the Tracer from ever entering the dfn.</p></li>
+<p>You don’t want to have a multi-line dfn here: you want to be able to trace into any <code>⎕DQ</code> (or <code>Wait</code>) statement; and the number of configuration events is simply overwhelming. Thanks to the <code>⋄</code> we can solve the task on a single line and prevent the Tracer from ever entering the dfn.</p></li>
 </ul>
 </div>
 
@@ -410,7 +410,7 @@ copied...</code></pre>
 </div>
 <p><code>⎕PATH</code> tempts us. We could set <code>⎕PATH←'#.Utilities'</code>. The expression above could then take its most readable form:</p>
 <pre><code>status←(bar&gt;3) means 'ok' else 'error'</code></pre>
-<p>Trying to resolve the names <code>means</code> and <code>else</code>, the interpreter would consult <code>⎕PATH</code> and find them in <code>#.Utilities</code>. So far so good: this is what <code>⎕PATH</code> is designed for. It works just fine in simple cases, but quickly leads to confusion about which functions are called or edited, and where new names are created. Avoid <code>⎕PATH</code> if reasonable alternatives are available.</p>
+<p>Trying to resolve the names <code>means</code> and <code>else</code>, the interpreter would consult <code>⎕PATH</code> and find them in <code>#.Utilities</code>. So far so good: this is what <code>⎕PATH</code> is designed for. It works just fine in simple cases but quickly leads to confusion about which functions are called or edited, and where new names are created. Avoid <code>⎕PATH</code> if reasonable alternatives are available.</p>
 <div class="h_tag">
 <a href="#Convert-the-WS-LetterCount-into-a-single-scripted-namespace" id="Convert-the-WS-LetterCount-into-a-single-scripted-namespace" class="autoheader_anchor">
 <h3>Convert the WS LetterCount into a single scripted namespace.</h3>
@@ -522,7 +522,7 @@ z:/texts/en/wizardoz.txt</code></pre>
 <p>You can even ensure Windows calls Notepad++ when you enter <code>notepad.exe</code> into a console window or double-click a <abbr title="File with the extension 'txt' containing text">TXT</abbr> icon: Google for “notepad replacer”.</p>
 </div>
 
-<p>Here’s how the object tree will look:</p>
+<p>Here’s how the object tree will look like:</p>
 <pre><code>#
 |-⍟Constants
 |-⍟Utilities
@@ -642,8 +642,8 @@ Load MyApp</code></pre>
 <p>This version comes with a number of improvements. Let’s discuss them in detail:</p>
 <ul>
 <li>We prefix <code>Utilities</code> as well as <code>Constants</code> with <code>##.</code>: that works as long as they are siblings of <code>MyApp</code>. A prefix of <code>#.</code> would of course work as well but is inferior. For example, one day you might want to convert this application into a user command; then <code>##.</code> will continue to work while <code>#.</code> might or might not work, depending on what happens to be in the workspace at the time of execution. The same would be true if making it a ASP.NET application: those have no concept of a ‘root’ at all.</li>
-<li>We have changed the assignment of the <code>Accents</code> variable so that we don’t need to know the length of it any more.</li>
-<li>It is good programming practice to <em>not</em> use any numeric constants in your code. <code>TxtToCsv</code> tried to avoid this to some extend by assigning descriptive names at the start and using those. That’s not too bad, but if every function did the same, we risk multiple definitions of the same constant, breaching the <a href="https://en.wikipedia.org/wiki/Don't_repeat_yourself" class="external_link">DRY principle</a> – don’t repeat yourself. (And open to errors: <em>A man with two watches never knows what time it is.</em>)
+<li>We have changed the assignment of the <code>Accents</code> variable so that we don’t need to know the length of it anymore.</li>
+<li>It is good programming practice to <em>not</em> use any numeric constants in your code. <code>TxtToCsv</code> tried to avoid this to some extent by assigning descriptive names at the start and using those. That’s not too bad, but if every function did the same, we risk multiple definitions of the same constant, breaching the <a href="https://en.wikipedia.org/wiki/Don't_repeat_yourself" class="external_link">DRY principle</a> – don’t repeat yourself. (And open to errors: <em>A man with two watches never knows what time it is.</em>)
 <p>We can do better by defining all the Dyalog constants we want to use in a single namespace in <code>#</code>. We have also replaced the remaining integers in the <code>:Case</code> statements by references to symbolic variables in <code>Constants.NINFO.Type</code>.</p></li>
 <li>We have replaced the line <code>(txt enc nl)←{(⊃,/1⊃¨⍵)(1 2⊃⍵)(1 3⊃⍵)}⎕NGET¨files</code> by a <code>:For</code> loop and moved the code into <code>ProcessFiles</code>. Why?
 <ul>
@@ -656,10 +656,10 @@ Load MyApp</code></pre>
 </ul></li>
 <li><code>ProcessFile</code> is an operator, not a function. Currently it takes the function <code>CountLetters</code> as operand, but it could be any other function that works with the contents of those files. Making <code>ProcessFiles</code> an operator is more general.</li>
 <li>Because of <code>enc</code> and <code>nl</code> we have to have two lines anyway, but if we weren't interested in <code>enc</code> and <code>nl</code> a one-liner would do: <code>tbl⍪←CountLetters ⊃⎕NGET file</code>. Not a good idea?
-<p>No. If you have to inspect what comes from several files because one (or more) of them contains something unexpected, you’ll want to check what you’ve got, file by file. By separating it on two lines you can open an edit window on <code>txt</code>, put a stop vector on line 5, and easily review the content of each file.</p></li>
+<p>No. If you have to inspect what comes from several files because some of them might contain something unexpected, you’ll want to check what you’ve got, file by file. By separating it on two lines you can open an edit window on <code>txt</code>, put a stop vector on line 5, and easily review the content of each file.</p></li>
 <li>The system settings are made in <code>MyApp</code>, but that’s not exactly ideal. These should be set for everything in the <abbr title="Short for Workspaces">WS</abbr>, in particular <code>#</code>.
 <p>This is important for the <code>Utilities</code> script because as soon as we introduce a function into it that depends on either <code>⎕IO</code> or <code>⎕ML</code> we might or might not be in trouble.</p>
-<p>But there is more to it: when we execute a statement like <code>ref←#.⎕NS ''</code> (note the <code>#.</code>!) then the (unnamed) namespace created by this statement would inherit all the system settings from its parent <code>#</code>. While you have configured your session according to your needs, when you start the app with a double-click on the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> on a different machine with different settings you have no idea what you are going to get.</p>
+<p>But there is more to it: when we execute a statement like <code>ref←#.⎕NS ''</code> (note the <code>#.</code>!) then the (unnamed) namespace created by this statement would inherit all the system settings from its parent <code>#</code>. While you have configured your session according to your needs when you start the app with a double-click on the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> on a different machine with different settings you have no idea what you are going to get.</p>
 <p>It is therefore safer – and strongly recommended – to ensure the setting is well-defined. We will come back to this later.</p></li>
 </ul>
 <div class="leanpub">

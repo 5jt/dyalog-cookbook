@@ -126,7 +126,7 @@ MyApp.exe Z:\texts\does_not_exist
 
 echo Exit Code is %errorlevel%
 Exit Code is 101</code></pre>
-<p>but only if you ticked the check box <em>Console application</em> in the <em>Export</em> dialog box. We don’t want to do this if we can help it, because we cannot ride into an application with this option active. Therefore we are going to execute our stand-alone <abbr title="Executable file with the extension 'exe'">EXE</abbr> from now on with the help of the APLTree class <code>Execute</code>.</p>
+<p>but only if you ticked the checkbox <em>Console application</em> in the <em>Export</em> dialog box. We don’t want to do this if we can help it, because we cannot ride into an application with this option active. Therefore we are going to execute our stand-alone <abbr title="Executable file with the extension 'exe'">EXE</abbr> from now on with the help of the APLTree class <code>Execute</code>.</p>
 <p>Copy <code>Z:\code\v06</code> to <code>Z:\code\v07</code>.</p>
 <p>For the implementation of global error handling we need APLTree's <code>HandleError</code> class. For calling the exported <abbr title="Executable file with the extension 'exe'">EXE</abbr> we need the <code>Execute</code> class. Therefore we add both to the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>. Edit <code>Z:\code\v07\MyApp.dyapp</code>:</p>
 <pre><code>Target #
@@ -324,7 +324,7 @@ HOLD_ERROR  FILE_TIE_ERROR  FILE_INDEX_ERROR  FILE_FULL  FILE_NAME_ERROR...</cod
 <p>Back to <code>ProcessFiles</code>. Note that in this context the <code>:Trap</code> structure has an advantage over <code>⎕TRAP</code>. When it fires, and control advances to its <code>:Else</code> fork, the trap is immediately cleared.</p>
 <p>This neatly avoids the following pitfall: a trap fires and invokes a handling expression. But the handling expression also breaks, re-invoking the trap in what now becomes an open loop.</p>
 <p>So with <code>:Trap</code> there is no need to reset the trap to avoid an open loop. But you must still consider what might happen if you call other functions in the <code>:Else</code> fork: if they crash the <code>:Trap</code> would fire again!</p>
-<p>The handling of error codes and messages can easily obscure the rest of the logic. Clarity is not always easy to find, but is worth striving for. This is particularly true where there is no convenient test for an error, only a trap for when it is encountered.</p>
+<p>The handling of error codes and messages can easily obscure the rest of the logic. Clarity is not always easy to find but is worth striving for. This is particularly true where there is no convenient test for an error, only a trap for when it is encountered.</p>
 <p>Note that here for the first time we take advantage of the <code>[Config]Trap</code> flag defined in the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file, which translates to <code>Config.Trap</code> at this stage. With this flag we can switch off all ‘local’ error trapping, a measure we sometimes need to take to get to the bottom of a problem.</p>
 <p>Finally we need to amend <code>TxtToCsv</code>:</p>
 <pre><code>    ∇ exit←TxtToCsv fullfilepath;∆;isDev;Log;LogError;files;target;success
@@ -412,7 +412,7 @@ HOLD_ERROR  FILE_TIE_ERROR  FILE_INDEX_ERROR  FILE_FULL  FILE_NAME_ERROR...</cod
 <h3>Trap parameters</h3>
 </a>
 </div>
-<p>We set <code>⎕TRAP</code> by assigning the result of <code>SetTrap</code>, so we we need to create that function now:</p>
+<p>We set <code>⎕TRAP</code> by assigning the result of <code>SetTrap</code>, so we need to create that function now:</p>
 <pre><code>∇ trap←{force}SetTrap Config
 ⍝ Returns a nested array that can be assigned to `⎕TRAP`.
   force←{0&lt;⎕NC ⍵:⍎⍵ ⋄ 0}'force'
@@ -433,7 +433,7 @@ HOLD_ERROR  FILE_TIE_ERROR  FILE_INDEX_ERROR  FILE_FULL  FILE_NAME_ERROR...</cod
 <li>The return code</li>
 <li>What function to use for logging purposes</li>
 <li>Name of the source to be used when reporting the problem to the Windows Event Log (empty=no reporting at all)</li>
-<li>Additional message to be added to the report send to the Windows Event Log: see the chapter on the Windows Event Log</li>
+<li>Additional message to be added to the report sent to the Windows Event Log: see the chapter on the Windows Event Log</li>
 </ul></li>
 <li>We specify <code>ErrorParms</code> as a global named namespace for two reasons:
 <ul>
@@ -473,7 +473,7 @@ HOLD_ERROR  FILE_TIE_ERROR  FILE_INDEX_ERROR  FILE_FULL  FILE_NAME_ERROR...</cod
 </a>
 </div>
 <p>We can test this by inserting a line with a full stop[<a href="#fnref1" class="footnote_link"><sup>1</sup></a>] into, say, <code>CountLettersIn</code>.</p>
-<p>But that would be awkward. We don’t really want to change our source code in order to test error trapping. (Many an application crashed in production because a programmer forgot to remove a break point before going live.) So we put another setting in the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file:</p>
+<p>But that would be awkward. We don’t really want to change our source code in order to test error trapping. (Many an application crashed in production because a programmer forgot to remove a breakpoint before going live.) So we put another setting in the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file:</p>
 <pre><code>[Config]
 Debug       = ¯1    ; 0=enfore error trapping; 1=prevent error trapping;
 Trap        = 1     ; 0 disables any :Trap statements (local traps)
@@ -517,7 +517,7 @@ HandleError.Process caught SYNTAX ERROR</code></pre>
 </ul>
 
 <div class="leanpub_A">
-<p>This is not strictly true. When <code>HandleError</code> detects multiple threads it tries to kill all of them. By definition that won’t work because (a) it cannot kill the main thread (0); and (b) it cannot kill its own thread.</p>
+<p>This is not strictly true. When <code>HandleError</code> detects multiple threads it tries to kill all of them. By definition that won’t work because (a) it cannot kill the main thread (0) and (b) it cannot kill its own thread.</p>
 <p>However, if it happens to run in the main thread at that very moment it will get rid of all other running threads and be able to save a crash workspace afterwards as a result.</p>
 </div>
 
@@ -654,13 +654,13 @@ C:\Users\kai\AppData\Local\MyApp\Log\MyApp_20170309.log</code></pre>
 <span class="leanpub_code">  #.⎕SHADOW'ErrorParms'
 </span>  ⎕WSID←'MyApp'
 ....</code></pre>
-<p>Note that we put <code>#.</code> in front of <code>⎕SHADOW</code>; that is effectlively the same as having a header <code>StartFromCmdLine;#.ErrorParms</code> – but that is syntactically impossible to do. With <code>#.⎕SHADOW</code> it works. When you now try a double-click on the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> and call <code>#.MyApp.StartFromCmdLine</code> you will find that no file is tied any more, and that <code>#.ErrorParms</code> is not hanging around either.</p>
+<p>Note that we put <code>#.</code> in front of <code>⎕SHADOW</code>; that is effectively the same as having a header <code>StartFromCmdLine;#.ErrorParms</code> – but that is syntactically impossible to do. With <code>#.⎕SHADOW</code> it works. When you now try a double-click on the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> and call <code>#.MyApp.StartFromCmdLine</code> you will find that no file is tied anymore, and that <code>#.ErrorParms</code> is not hanging around either.</p>
 <div class="h_tag">
 <a href="#Very-early-errors" id="Very-early-errors" class="autoheader_anchor">
 <h3>Very early errors</h3>
 </a>
 </div>
-<p>Tthere is a possibility of <code>MyApp</code> crashing without the global trap catching it. This is because we establish the global trap only <em>after</em> instantiating the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file. Only then do we know where to write the crash files, how to log the error, etc.</p>
+<p>There is a possibility of <code>MyApp</code> crashing without the global trap catching it. This is because we establish the global trap only <em>after</em> instantiating the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file. Only then do we know where to write the crash files, how to log the error, etc.</p>
 <p>But an error might occur before that!</p>
 <p>Naturally there is no perfect solution available here but we can at least try to catch such errors.</p>
 <p>For this we establish a <code>⎕TRAP</code> with default settings very early, and we make sure that <code>⎕WSID</code> is set even earlier, otherwise any attempt to save the crash <abbr title="Short for Workspaces">WS</abbr> will fail.</p>
@@ -694,9 +694,9 @@ SYNTAX ERROR
 0</code></pre>
 </div>
 
-<p>For testing purposes we have provided a <code>1</code> as left argument, which enforces error trapping even in a development environment. In the following line we break the program with a full stop.</p>
+<p>For testing purposes we have provided a <code>1</code> as the left argument, which enforces error trapping even in a development environment. In the following line we break the program with a full stop.</p>
 <p>When you now call <code>#.MyApp.StartFromCmdLine ''</code> the error is caught. Of course no logging will take place but it will still try to save the crash files. Since no better place is known it will try to create a folder <code>MyApp\Errors</code> in <code>%LOCALAPPDATA%</code>.</p>
-<p>You can try this now but make sure that when you are ready you remove the line with the full stop from <code>MyApp.StartFromCmdLine</code> and also remove the <code>1</code> provided as left argument to <code>HandleError.SetTrap</code>.</p>
+<p>You can try this now but make sure that when you are ready you remove the line with the full stop from <code>MyApp.StartFromCmdLine</code> and also remove the <code>1</code> provided as the left argument to <code>HandleError.SetTrap</code>.</p>
 <div class="h_tag">
 <a href="#HandleError-in-detail" id="HandleError-in-detail" class="autoheader_anchor">
 <h2>HandleError in detail</h2>
@@ -729,7 +729,7 @@ windowsEventSource</code></pre>
 <dt><code>trapInternalErrors</code></dt>
 <dd>This flag allows you to switch off any error trapping <em>within</em> <code>HandleError</code>. This can be useful in case something goes wrong. It can be useful when working on or debugging <code>HandleError</code> itself.</dd>
 <dt><code>saveCrash</code>, <code>saveErrorWS</code> and <code>saveVars</code></dt>
-<dd>While <code>saveCrash</code> and <code>saveVars</code> are probably always 1, setting <code>saveErrorWS</code> to 0 is perfectly reasonable if you know any attempt to save the error <abbr title="Short for Workspaces">WS</abbr> will fail, for example because your application is multi-threaded. (Another good reason to not save a workspace is to keep your code from spying eyes.)</dd>
+<dd>While <code>saveCrash</code> and <code>saveVars</code> are probably always 1, setting <code>saveErrorWS</code> to 0 is perfectly reasonable if you know any attempt to save the error <abbr title="Short for Workspaces">WS</abbr> will fail, for example, because your application is multi-threaded. (Another good reason to not save a workspace is to keep your code from spying eyes.)</dd>
 <dt><code>customFns</code> and <code>customFnsParent</code></dt>
 <dd>This allows you to have <code>HandleError</code> call a function of your choice. For example, you can use this to send an email or a text to a certain address.</dd>
 <dt><code>windowsEventSource</code></dt>
@@ -739,7 +739,7 @@ windowsEventSource</code></pre>
 <hr>
 <p><strong>Footnotes</strong></p>
 <ol>
-<li id="fnref1"><p>The English poets among us love that the tersest way to bring a function to a full stop is to type one. (American poets will of course have typed a period and will think of it as calling time out.)</p><a href="#fnref1" class="footnote_anchor"></a>
+<li id="fnref1"><p>The English poets among us love that the tersest way to bring a function to a full stop is to type one. (American poets will of course have typed a period and will think of it as calling timeout.)</p><a href="#fnref1" class="footnote_anchor"></a>
 </ol>
 </div>
 </div>

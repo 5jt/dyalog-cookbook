@@ -39,7 +39,7 @@ A> Notes:
 A>
 A> * Avoid the `⎕se.onSessionPrint←'#.Catch'` syntax with `⎕SE`; just stick with `⎕WS` as in the above example.
 A> 
-A> * Remmeber to clear the stack after `Catch` crashed. If you don’t, and instead call `test` again, it will behave as if there were no handler associated with the `SessionPrint` event.
+A> * Remember to clear the stack after `Catch` crashed. If you don’t, and instead call `test` again, it will behave as if there were no handler associated with the `SessionPrint` event.
 
 `TxtToCsv` has a shy result, so it won't write its result to the session. That’s fine. 
 
@@ -219,7 +219,7 @@ Looking in Windows Explorer at `Z:\texts\en.csv`, we see its timestamp just chan
 *[INI]: File with the extension 'ini' containing configuration data
 *[DYAPP]: File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application
 *[EXE]: Executable file with the extension 'exe'
-*[BAT]: Executeabe file that contains batch commands
+*[BAT]: Executable file that contains batch commands
 *[CSS]: File that contains layout definitions (Cascading Style Sheet)
 *[MD]: File with the extension 'md' that contains markdown
 *[CHM]: Executable file with the extension 'chm' that contains Windows Help(Compiled Help) 

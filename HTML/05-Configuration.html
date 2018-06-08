@@ -98,8 +98,8 @@
 </a>
 </div>
 <p>The Windows Registry is held in memory, so it is fast to read. It has been widely used to store configuration settings. Some would say, abused. However, for quite some time it was considered bad practice to have application-specific config files.</p>
-<p>Everything was expected to go into the Windows Registry. The pendulum started to swing back the other way now for several years, and application-specific config files become ever more common. We follow a consensus opinion that it is best to minimise use of the Registry.</p>
-<p>Settings needed by Windows itself <em>have</em> to be stored in the Registry. For example, associating a file extension with your application, so that double clicking on its icon launches your application.</p>
+<p>Everything was expected to go into the Windows Registry. The pendulum started to swing back the other way now for several years, and application-specific config files become ever more common. We follow a consensus opinion that it is best to minimise the use of the Registry.</p>
+<p>Settings needed by Windows itself <em>have</em> to be stored in the Registry. For example, associating a file extension with your application, so that double-clicking on its icon launches your application.</p>
 <p>The APLTree classes <a href="http://aplwiki.com/WinReg" class="external_link">WinRegSimple</a> and <a href="http://aplwiki.com/WinReg" class="external_link">WinReg</a> provide methods for handling the Windows Registry. We will discuss them in their own chapter.</p>
 <p>MyApp doesn’t need the Windows Registry at this point. We’ll store its configurations in configuration files.</p>
 
@@ -124,7 +124,7 @@
 <li>Data types: a key can carry either a text vector or a number.</li>
 <li>Nested vectors: a key can carry a vector of text vectors.</li>
 <li>Merge <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> files: specify more than one <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file.</li>
-<li>Local variables (place holders).</li>
+<li>Local variables (placeholders).</li>
 </ul>
 <p>We will discuss these features as we go along.</p>
 <div class="h_tag">
@@ -164,7 +164,7 @@
 <li>Defaults in the program code</li>
 <li>Overwrite from ALLUSERSPROFILE if any</li>
 <li>Overwrite from USERPROFILE</li>
-<li>Overwrite from an <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> specified in command line, if any</li>
+<li>Overwrite from an <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> specified on the command line</li>
 <li>Overwrite with the command line</li>
 </ol>
 <p>However, for the Cookbook we keep things simple: we look for an <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file that is a sibling of the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> or the <abbr title="Executable file with the extension 'exe'">EXE</abbr> for now but will allow this to be overwritten via the command line with something like <code>INI='C:\MyAppService\MyApp.ini</code>.</p>
@@ -212,7 +212,7 @@ Errors      = '{localhome}\Errors'</code></pre>
 <li><code>IniFiles</code> supports two data types: character and number. Everything between two quotes is character, everything else is assumed to be a number.</li>
 <li><code>Debug</code> is set to ¯1 – it is indeed going to be a numeric value because there are no quotes involved. <code>debug</code> defines whether the application runs in debug mode or not.
 <p>Most importantly <code>debug←1</code> will switch off global error trapping, something we will soon introduce. <code>¯1</code> means that the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file does not set the flag.</p>
-<p>Therefore it will later in the application default to 1 in a development environment and to 0 in a runtime evenvironment. By setting this to either 1 or 0 in the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file you can force it to be a particular value.</p></li>
+<p>Therefore it will later in the application default to 1 in a development environment and to 0 in a runtime environment. By setting this to either 1 or 0 in the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file you can force it to be a particular value.</p></li>
 <li><code>Trap</code> can be used to switch off error trapping globally. It will be used in statements like <code>:Trap Config.Traps/0</code>. We will discuss in a minute what <code>Config</code> is.</li>
 <li><code>Accents</code> is initialized as an empty vector but then values are added with <code>,=</code>. That means that <code>Accents</code> will be a vtv: a vector of text vectors. Since we define the default to be the same as what the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file contains anyway it makes not too much sense but it illustrates a second and better way of defining it.</li>
 <li><code>Logs</code> specifies the folder in which MyApp will write log files.</li>
@@ -254,7 +254,7 @@ Errors      = '{localhome}\Errors'</code></pre>
 </ul>
 <p>Notes:</p>
 <ul>
-<li>The <code>Get</code> function requires a section and a key as right argument. They can be provided either as a two-item vector as in <code>'Config' 'debug'</code> or as a text vector with section and key separated by a colon as in <code>'Config:debug'</code>.</li>
+<li>The <code>Get</code> function requires a section and a key as the right argument. They can be provided either as a two-item vector as in <code>'Config' 'debug'</code> or as a text vector with section and key separated by a colon as in <code>'Config:debug'</code>.</li>
 <li><code>Get</code> requires a given section to exist, otherwise it will throw an error.
 <p>An optional left argument specifies a default value to be returned if the required key is not found.</p>
 <p>If the key is not found <em>and</em> no left argument was specified an error is thrown.</p></li>
@@ -290,7 +290,7 @@ Errors      = '{localhome}\Errors'</code></pre>
 <span class="leanpub_code">  (Config MyLogger)←Initial ⍬
 </span>  r←TxtToCsv arg~''''
 ∇</code></pre>
-<p>Although both <code>MyLogger</code> and <code>Config</code> are global and not passed as arguments, it’s good practice to assign them this way rather then bury their creation somewhere down the stack. This way it’s easy to see where they are set.</p>
+<p>Although both <code>MyLogger</code> and <code>Config</code> are global and not passed as arguments, it’s good practice to assign them this way rather than bury their creation somewhere down the stack. This way it’s easy to see where they are set.</p>
 
 <div class="leanpub_A">
 <h3>Specifying an <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file on the command line</h3>
@@ -321,7 +321,7 @@ Errors      = '{localhome}\Errors'</code></pre>
 <p>One of the main reasons why globals should be used with great care is that they can easily be confused with local variables with similar or – worse – the same name.</p>
 <p>If you need to have global variables then we suggest encapsulating them in a dedicated namespace <code>Globals</code>. With a proper search tool like Fire [<a href="#fnref3" class="footnote_link"><sup>3</sup></a>] it is easy to get a report on all lines referring to anything in <code>Globals</code>.</p>
 <p>Sometimes it’s only after writing many lines of code that it becomes apparent that a different choice would have been better.</p>
-<p>And sometimes it becomes apparent that the other choice would be so much better that it’s worth unwinding and rewriting a good deal of what you’ve done. (Then rejoice that you’re writing in a terse language.)</p>
+<p>And sometimes it becomes apparent that the other choice would be so much better than it’s worth unwinding and rewriting a good deal of what you’ve done. (Then rejoice that you’re writing in a terse language.)</p>
 <p>We share these musings here so you can see what we think about when we think about encapsulating state; and also that there is often no clear right answer.</p>
 <p>Think hard, make your best choices, and be ready to unwind and remake them later if necessary.</p>
 <div class="h_tag">

@@ -101,7 +101,7 @@
 <h1>9. Documentation — the Doc is in</h1>
 </a>
 </div>
-<p>Documentation is the bad mother of software. Programmers learn early that we depend on it but must not trust it. On the one hand we need it for the software we use. On the other we learn a great wariness of it for the software we develop. Understanding why this is so will help us see what to do about documenting <code>MyApp</code>.</p>
+<p>Documentation is the bad mother of software. Programmers learn early that we depend on it but must not trust it. On the one hand we need it for the software we use; on the other hand we learn a great wariness of it for the software we develop. Understanding why this is so will help us see what to do about documenting <code>MyApp</code>.</p>
 <p>It helps to distinguish three quite different things people refer to as <em>documentation</em>.</p>
 <ul>
 <li>instructions on how to use the application</li>
@@ -114,14 +114,14 @@
 </a>
 </div>
 <p>Unless you are writing a tool or components for other developers to use, all software is operated through a graphical user interface. Users know the common conventions of UIs in various contexts. The standard for UIs is relatively demanding.</p>
-<p>If you know what the application is for, it should be obvious how to use its basic features. The application might help you with wizards (dialogue sequences) to accomplish complex tasks. A user might supplement this by consulting what the Help menu offers. She might search the Web for advice. The last thing she is likely to do is go looking for a printed manual.</p>
+<p>If you know what the application is for, it should be obvious how to use its basic features. The application might help you with wizards (dialogue sequences) to accomplish complex tasks. A user might supplement this by consulting what the Help menu offers. She might search the Web for advice. The last thing she is likely to do is to go looking for a printed manual.</p>
 <p>We’ll come in a later chapter to how to offer online help from a Help menu. For now, we mention Help to exclude it from what we mean by <em>documentation</em>.</p>
 <div class="h_tag">
 <a href="#A-description-of-what-the-application-does" id="A-description-of-what-the-application-does" class="autoheader_anchor">
 <h2>A description of what the application does</h2>
 </a>
 </div>
-<p>This is a useful thing to have, perhaps as a sales document. One or two pages suffices. Including limitations is important: files in certain formats, up to certain sizes. Perhaps a list of Frequently Asked Questions [<a href="#fnref1" class="footnote_link"><sup>1</sup></a>] and their answers.</p>
+<p>This is a useful thing to have, perhaps as a sales document. One or two pages suffice. Including limitations is important: files in certain formats, up to certain sizes. Perhaps a list of Frequently Asked Questions [<a href="#fnref1" class="footnote_link"><sup>1</sup></a>] and their answers.</p>
 <p>Beyond that, you have the formal tests. This is what you <em>know</em> the system does. It passes its tests. Especially if you’re supporting your application on multiple versions of Windows, you’ll want those tests to be extensive.</p>
 <div class="h_tag">
 <a href="#A-description-of-how-the-application-works" id="A-description-of-how-the-application-works" class="autoheader_anchor">
@@ -140,7 +140,7 @@
 </a>
 </div>
 <p>We write software for people and people press us for results, which rarely include documentation. No one is pressing us for documentation.</p>
-<p>Documentation is for those who come after us, inclusing our future selves. Since 80% of the lifetime costs of software are spent on maintenance, documentation is a good investment. If the software is ours, we’re more likely to make that investment. But there will be constant pressure to defer writing it.</p>
+<p>Documentation is for those who come after us, including our future selves. Since 80% of the lifetime costs of software are spent on maintenance, documentation is a good investment. If the software is ours, we’re more likely to make that investment. But there will be constant pressure to defer writing it.</p>
 <p>The common result of this pressure is that application code has either no documentation, or its documentation is not up to date. Out-of-date documentation is worse than having none. If you have no documentation you have no help with the code. You have to read it and run it to understand what it does.</p>
 <p>But however difficult that is, it is utterly reliable. Out-of-date documentation is worse: it will mislead you and waste your time before sending you back to the code. Even if the relevant part of it is accurate, once you learn to distrust it, its value is mostly gone.</p>
 <p>The only place worth writing documentation is in the code itself. Maintaining documentation separately adds the uncertainty of matching versions. Writing the documentation as comments in the code encourages you to keep it in step with changes to the code. We write comments in three ways, serving slightly different purposes.</p>
@@ -170,7 +170,7 @@
 </a>
 </div>
 <p>ADoc is an acronym for <em>automatic documentation</em> generation. It works on classes and namespaces.</p>
-<p>In its most basic function, it lists methods, properties and fields (functions, operators and variableas) and requires no comments in the code.</p>
+<p>In its most basic function, it lists methods, properties and fields (functions, operators and variables) and requires no comments in the code.</p>
 <p>In its more powerful function, it composes an <abbr title="Hyper Text Mark-up language">HTML</abbr> page from header comments in the code. Honouring Markdown conventions, it provides all the typographical features you need for documentation.</p>
 <p>If Markdown is new to you, see the Markdown article on Wikipedia [<a href="#fnref4" class="footnote_link"><sup>4</sup></a>] and <code>Markdown2Help</code>’s own help file. Your time will be well spent: these days Markdown is used very widely.</p>
 <p>Previously only found as a class in the APLTree library, ADoc is now shipped in Dyalog Version 16.0 as a user command.</p>
@@ -236,7 +236,7 @@
 <h3>Public interface</h3>
 </a>
 </div>
-<p>Next we specify which functions we want included in the document: not all but just those designed to be called from the outside. In a class those are called the <em>public interface</em>, and it’s easy to see why.</p>
+<p>Next we specify which functions we want to be included in the document: not all but just those designed to be called from the outside. In a class those are called the <em>public interface</em>, and it’s easy to see why.</p>
 <p>For classes ADoc can work out what’s public and what isn’t using the <code>Public Access</code> statements. For namespaces there is no such mechanism.</p>
 <p>By default, ADoc considers all functions, operators and variables to be public; it also offers a mechanism to restrict this to what’s really public. For that, ADoc looks for a function <code>Public</code>. It may return an empty vector (nothing is public at all) or a list of names. This list would define what is public.</p>
 <p>Let’s define the public functions at the bottom of the script:</p>
@@ -268,14 +268,14 @@
 <h4><code>Copyright</code></h4>
 </a>
 </div>
-<p>If <code>Copyright</code> is niladic and returns either a simple text vector or a vector of text vectors then the copyright declararion is integrated into the document.</p>
+<p>If <code>Copyright</code> is niladic and returns either a simple text vector or a vector of text vectors then the copyright declaration is integrated into the document.</p>
 <div class="h_tag">
 <a href="#History" id="History" class="autoheader_anchor">
 <h4><code>History</code></h4>
 </a>
 </div>
 <p><code>History</code> is expected to be a niladic function that does not return a result. Instead it should carry comments with information about the history of the script.</p>
-<p>MyApp already had a function <code>Version</code> in place. So far we’ve added comments regarding the different versions to it. Those should go into <code>History</code> instead. So we replace the existing <code>Version</code> function by these three functions:</p>
+<p>MyApp already had a function <code>Version</code> in place. So far we’ve added comments to it regarding the different versions. Those should go into <code>History</code> instead. So we replace the existing <code>Version</code> function by these three functions:</p>
 <pre><code>∇ Z←Copyright
   Z←'The Dyalog Cookbook, Kai Jaeger &amp; Stephen Taylor 2017'
 ∇
@@ -326,7 +326,7 @@
 <ol>
 <li id="fnref1"><p>Compile those from questions actually asked by users. It's a common mistake to put together “Question we would like our users to ask”.</p><a href="#fnref1" class="footnote_anchor"></a>
 <li id="fnref2"><p>Thanks to Roger Hui for this term.</p><a href="#fnref2" class="footnote_anchor"></a>
-<li id="fnref3"><p>Be it <code>⍝FIXME⍝</code> or <code>⍝CHECKME⍝</code> or <code>⍝TODO⍝</code> - what matters is that you keep it consistent and searchable. That implies that the search term cannot be mistaken as something else by accident. For that reason <code>⍝TODO⍝</code> is slighty better better than <code>TODO</code>.</p><a href="#fnref3" class="footnote_anchor"></a>
+<li id="fnref3"><p>Be it <code>⍝FIXME⍝</code> or <code>⍝CHECKME⍝</code> or <code>⍝TODO⍝</code> - what matters is that you keep it consistent and searchable. That implies that the search term cannot be mistaken as something else by accident. For that reason, <code>⍝TODO⍝</code> is slighty better than <code>TODO</code>.</p><a href="#fnref3" class="footnote_anchor"></a>
 <li id="fnref4"><p><a href="https://en.wikipedia.org/wiki/Markdown" class="external_link">https://en.wikipedia.org/wiki/Markdown</a></p><a href="#fnref4" class="footnote_anchor"></a>
 </ol>
 </div>

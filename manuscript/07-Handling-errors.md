@@ -40,7 +40,7 @@ echo Exit Code is %errorlevel%
 Exit Code is 101
 ~~~
 
-but only if you ticked the check box _Console application_ in the _Export_ dialog box. We don’t want to do this if we can help it, because we cannot ride into an application with this option active. Therefore we are going to execute our stand-alone EXE from now on with the help of the APLTree class `Execute`.
+but only if you ticked the checkbox _Console application_ in the _Export_ dialog box. We don’t want to do this if we can help it, because we cannot ride into an application with this option active. Therefore we are going to execute our stand-alone EXE from now on with the help of the APLTree class `Execute`.
 
 Copy `Z:\code\v06` to `Z:\code\v07`.
 
@@ -306,9 +306,9 @@ This neatly avoids the following pitfall: a trap fires and invokes a handling ex
 
 So with `:Trap` there is no need to reset the trap to avoid an open loop. But you must still consider what might happen if you call other functions in the `:Else` fork: if they crash the `:Trap` would fire again!
 
-The handling of error codes and messages can easily obscure the rest of the logic. Clarity is not always easy to find, but is worth striving for. This is particularly true where there is no convenient test for an error, only a trap for when it is encountered. 
+The handling of error codes and messages can easily obscure the rest of the logic. Clarity is not always easy to find but is worth striving for. This is particularly true where there is no convenient test for an error, only a trap for when it is encountered. 
 
-Note that here for the first time we take advantage of the `[Config]Trap` flag defined in the INI file, which translates to `Config.Trap` at this stage. With this flag we can switch off all ‘local’ error trapping, a measure we  sometimes need to take to get to the bottom of a problem.
+Note that here for the first time we take advantage of the `[Config]Trap` flag defined in the INI file, which translates to `Config.Trap` at this stage. With this flag we can switch off all ‘local’ error trapping, a measure we sometimes need to take to get to the bottom of a problem.
 
 Finally we need to amend `TxtToCsv`:
 
@@ -410,7 +410,7 @@ We need to set `⎕WSID` because the global trap will attempt to save a workspac
 
 ### Trap parameters
 
-We set `⎕TRAP` by assigning the result of `SetTrap`, so we we need to create that function now:
+We set `⎕TRAP` by assigning the result of `SetTrap`, so we need to create that function now:
 
 ~~~
 ∇ trap←{force}SetTrap Config
@@ -434,7 +434,7 @@ Notes:
   * The return code
   * What function to use for logging purposes
   * Name of the source to be used when reporting the problem to the Windows Event Log (empty=no reporting at all)
-  * Additional message to be added to the report send to the Windows Event Log: see the chapter on the Windows Event Log
+  * Additional message to be added to the report sent to the Windows Event Log: see the chapter on the Windows Event Log
 * We specify `ErrorParms` as a global named namespace for two reasons:
   * Any function might crash, and we need to ‘see’ the namespace with the parameters needed in case of a crash, so it has to be a global in `#`.
   * The `⎕TRAP` statement allows us to call a function and to pass parameters except references, so it has to be a named namespace.
@@ -474,7 +474,7 @@ Let’s investigate how this will work; trace into `#.MyApp.StartFromCmdLine ''`
 
 We can test this by inserting a line with a full stop[^stop] into, say, `CountLettersIn`. 
 
-But that would be awkward. We don’t really want to change our source code in order to test error trapping. (Many an application crashed in production because a programmer forgot to remove a break point before going live.) So we put another setting in the INI file:
+But that would be awkward. We don’t really want to change our source code in order to test error trapping. (Many an application crashed in production because a programmer forgot to remove a breakpoint before going live.) So we put another setting in the INI file:
 
 ~~~
 [Config]
@@ -548,7 +548,7 @@ The reason is: with the Tracer active the current workspace cannot be saved. Gen
 * More than one thread running at the moment of the crash
 
 
-A> This is not strictly true. When `HandleError` detects multiple threads it tries to kill all of them. By definition that won’t work because (a) it cannot kill the main thread (0); and (b) it cannot kill its own thread.
+A> This is not strictly true. When `HandleError` detects multiple threads it tries to kill all of them. By definition that won’t work because (a) it cannot kill the main thread (0) and (b) it cannot kill its own thread.
 A>
 A> However, if it happens to run in the main thread at that very moment it will get rid of all other running threads and be able to save a crash workspace afterwards as a result.
 
@@ -588,21 +588,21 @@ The HTM contains a report of the crash and some key system variables:
 MyApp_20170307111141
 
 Version:   Windows-64 16.0 W Development
-⎕WSID:	   MyApp
-⎕IO:	   1
-⎕ML:	   1
-⎕WA:	   62722168
-⎕TNUMS:	   0
-Category:	
-EM:	       SYNTAX ERROR
-HelpURL:	
-EN:	       2
-ENX:	   0
-InternalLocation:	parse.c 1739
-Message:	
+⎕WSID:       MyApp
+⎕IO:       1
+⎕ML:       1
+⎕WA:       62722168
+⎕TNUMS:       0
+Category:    
+EM:           SYNTAX ERROR
+HelpURL:    
+EN:           2
+ENX:       0
+InternalLocation:    parse.c 1739
+Message:    
 OSError:   0 0
-Current Dir:	...code\v07
-Command line:	"...\Dyalog\...\dyalog.exe" DYAPP="...code\v07\MyApp.dyapp"
+Current Dir:    ...code\v07
+Command line:    "...\Dyalog\...\dyalog.exe" DYAPP="...code\v07\MyApp.dyapp"
 Stack:
 
 #.HandleError.Process[22]
@@ -743,12 +743,12 @@ leanpub-end-insert
 ....
 ~~~
 
-Note that we put `#.` in front of `⎕SHADOW`; that is effectlively the same as having a header `StartFromCmdLine;#.ErrorParms` – but that is syntactically impossible to do. With `#.⎕SHADOW` it works. When you now try a double-click on the DYAPP and call `#.MyApp.StartFromCmdLine` you will find that no file is tied any more, and that `#.ErrorParms` is not hanging around either.
+Note that we put `#.` in front of `⎕SHADOW`; that is effectively the same as having a header `StartFromCmdLine;#.ErrorParms` – but that is syntactically impossible to do. With `#.⎕SHADOW` it works. When you now try a double-click on the DYAPP and call `#.MyApp.StartFromCmdLine` you will find that no file is tied anymore, and that `#.ErrorParms` is not hanging around either.
 
 
 ### Very early errors
 
-Tthere is a possibility of `MyApp` crashing without the global trap catching it. This is because we establish the global trap only _after_ instantiating the INI file. Only then do we know where to write the crash files, how to log the error, etc. 
+There is a possibility of `MyApp` crashing without the global trap catching it. This is because we establish the global trap only _after_ instantiating the INI file. Only then do we know where to write the crash files, how to log the error, etc. 
 
 But an error might occur before that!
 
@@ -792,11 +792,11 @@ A>      ⎕EN
 A> 0
 A> ~~~
 
-For testing purposes we have provided a `1` as left argument, which enforces error trapping even in a development environment. In the following line we break the program with a full stop.
+For testing purposes we have provided a `1` as the left argument, which enforces error trapping even in a development environment. In the following line we break the program with a full stop.
 
 When you now call `#.MyApp.StartFromCmdLine ''` the error is caught. Of course no logging will take place but it will still try to save the crash files. Since no better place is known it will try to create a folder `MyApp\Errors` in `%LOCALAPPDATA%`.
 
-You can try this now but make sure that when you are ready you remove the line with the full stop from `MyApp.StartFromCmdLine` and also remove the `1` provided as left argument to `HandleError.SetTrap`.
+You can try this now but make sure that when you are ready you remove the line with the full stop from `MyApp.StartFromCmdLine` and also remove the `1` provided as the left argument to `HandleError.SetTrap`.
 
 
 ## HandleError in detail
@@ -834,7 +834,7 @@ windowsEventSource
 : This flag allows you to switch off any error trapping _within_ `HandleError`. This can be useful in case something goes wrong. It can be useful when working on or debugging `HandleError` itself.
  
 `saveCrash`, `saveErrorWS` and `saveVars`
-: While `saveCrash` and `saveVars` are probably always 1, setting `saveErrorWS` to 0 is perfectly reasonable if you know any attempt to save the error WS will fail, for example because your application is multi-threaded. (Another good reason to not save a workspace is to keep your code from spying eyes.)
+: While `saveCrash` and `saveVars` are probably always 1, setting `saveErrorWS` to 0 is perfectly reasonable if you know any attempt to save the error WS will fail, for example, because your application is multi-threaded. (Another good reason to not save a workspace is to keep your code from spying eyes.)
 
 `customFns` and `customFnsParent`
 : This allows you to have `HandleError` call a function of your choice. For example, you can use this to send an email or a text to a certain address.
@@ -842,7 +842,7 @@ windowsEventSource
 `windowsEventSource`
 : This defaults to an empty vector, meaning that `HandleError` does not attempt to write to the Windows Event Log. Writing to the Windows Event Log is discussed in its own chapter. 
 
-[^stop]: The English poets among us love that the tersest way to bring a function to a full stop is to type one. (American poets will of course have typed a period and will think of it as calling time out.)
+[^stop]: The English poets among us love that the tersest way to bring a function to a full stop is to type one. (American poets will of course have typed a period and will think of it as calling timeout.)
 
 
 *[HTML]: Hyper Text Mark-up language
@@ -851,7 +851,7 @@ windowsEventSource
 *[INI]: File with the extension 'ini' containing configuration data
 *[DYAPP]: File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application
 *[EXE]: Executable file with the extension 'exe'
-*[BAT]: Executeabe file that contains batch commands
+*[BAT]: Executable file that contains batch commands
 *[CSS]: File that contains layout definitions (Cascading Style Sheet)
 *[MD]: File with the extension 'md' that contains markdown
 *[CHM]: Executable file with the extension 'chm' that contains Windows Help(Compiled Help) 

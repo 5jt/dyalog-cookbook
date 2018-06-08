@@ -69,7 +69,7 @@
 <ul>
 <li><a href="#What-is-it-actually">What is it, actually?</a></li>
 <li><a href="#Terminology">Terminology</a></li>
-<li><a href="#Data-types">Data types</a></li>
+<li><a href="#Datatypes">Datatypes</a></li>
 <li><a href="#Root-keys">Root keys</a>
 <ul>
 <li><a href="#3264-bit-nightmares">32/64-bit nightmares</a></li>
@@ -126,7 +126,7 @@ HKCU\Software\MyApplication\MainForm\Size</code></pre>
 <pre><code>HKCU\Software\Dyalog\Dyalog APL/W-64 16.0 Unicode\maxws</code></pre>
 <p>That looks pretty much like a file path, doesn't it? So what about calling the different parts to the left of <code>maxws</code> <em>folders</em>?</p>
 <p>Well, that might be logical, but Microsoft did not do that. Instead they call <code>HKCU</code> a <em>key</em>. The top-level parts are sometimes called <em>root keys</em>. The other parts except <code>maxws</code> are called <em>subkeys</em>; sometimes just <em>keys</em>.</p>
-<p>So what's <code>maxws</code>? Well it holds a value, so why not call it <em>key</em>? Oops, that's already taken. Maybe <em>name</em> or <em>ID</em>? Well, Microsoft calls it a <em>value</em>. That's a strange name because is <em>has</em> an associated value, in our example, the string <code>'64000'</code>.</p>
+<p>So what's <code>maxws</code>? Well, it holds a value, so why not call it <em>key</em>? Oops, that's already taken. Maybe <em>name</em> or <em>ID</em>? Well, Microsoft calls it a <em>value</em>. That's a strange name because is <em>has</em> an associated value, in our example, the string <code>'64000'</code>.</p>
 <p>To repeat: any given path to a particular piece of data in the Windows Registry consists of a <em>key</em>, one or more <em>subkeys</em> and a <em>value</em> that is associated with <em>data</em>:</p>
 <pre><code>root key\subkey\subkey\subkey\value = data</code></pre>
 <p>Some other things you should know:</p>
@@ -138,24 +138,24 @@ HKCU\Software\MyApplication\MainForm\Size</code></pre>
 <li>Key names are not localised into other languages, although values may be.</li>
 </ul>
 <div class="h_tag">
-<a href="#Data-types" id="Data-types" class="autoheader_anchor">
-<h2>Data types</h2>
+<a href="#Datatypes" id="Datatypes" class="autoheader_anchor">
+<h2>Datatypes</h2>
 </a>
 </div>
-<p>These days the Windows Registry offers quite a range of data types, but most of the time you can manage with just these:</p>
+<p>These days the Windows Registry offers quite a range of datatypes, but most of the time you can manage with just these:</p>
 <dl>
 <dt>REG_SZ</dt>
-<dd>The string data type. APLers call this a text vector. Both <code>WinReg</code> as well as <code>WinRegSimple</code> write text vectors as Unicode strings.</dd>
+<dd>The string datatype. APLers call this a text vector. Both <code>WinReg</code> as well as <code>WinRegSimple</code> write text vectors as Unicode strings.</dd>
 <dt>REG_DWORD</dt>
 <dd>A 32-bit number.</dd>
 <dt>REG_BINARY</dt>
 <dd>Binary data in any form.</dd>
 <dt>REG_MULTI_SZ</dt>
-<dd>For an APLer this is a vector of text vectors. This data type was not available in the early days of the Windows Registry which is probably why it is not as widely used as you would expect.</dd>
+<dd>For an APLer this is a vector of text vectors. This datatype was not available in the early days of the Windows Registry which is probably why it is not as widely used as you would expect.</dd>
 <dt>REG_QWORD</dt>
 <dd>A 64-bit number</dd>
 </dl>
-<p>There are more data types available, but they are less common.</p>
+<p>There are more datatypes available, but they are less common.</p>
 <div class="h_tag">
 <a href="#Root-keys" id="Root-keys" class="autoheader_anchor">
 <h2>Root keys</h2>
@@ -192,7 +192,7 @@ HKCU\Software\MyApplication\MainForm\Size</code></pre>
 </tr>
 </tbody>
 </table>
-<p>From an application programmer’s point of view the HKCU and the HKLM are the most important ones, and usually the only ones to write to.</p>
+<p>From an application programmer’s point of view, the HKCU and the HKLM are the most important ones, and usually the only ones to write to.</p>
 <div class="h_tag">
 <a href="#3264-bit-nightmares" id="3264-bit-nightmares" class="autoheader_anchor">
 <h3>32/64-bit nightmares</h3>
@@ -217,7 +217,7 @@ HKCU\Software\MyApplication\MainForm\Size</code></pre>
 <li><code>Write</code></li>
 <li><code>Delete</code></li>
 </ul>
-<p>It is also limited to the two data types <code>REG_SZ</code> and <code>REG_DWORD</code>.</p>
+<p>It is also limited to the two datatypes <code>REG_SZ</code> and <code>REG_DWORD</code>.</p>
 <p>The class uses the Windows Scripting Host (<abbr title="Short for Workspaces">WS</abbr>H) [<a href="#fnref4" class="footnote_link"><sup>4</sup></a>]. It is available on all Windows systems although it can be switched off by group policies, though we have never seen this in the wild.</p>
 <p>If you want to read just a certain value then this – very small – class might suffice. For example, to read the aforementioned <code>maxws</code> value:</p>
 <pre><code>      #.WinRegSimple.Read 'HKCU\Software\Dyalog\Dyalog APL/W-64 16.0 Unicode\maxws'
@@ -242,7 +242,7 @@ Unable to open registry key "HKCU\Software\Cookbooktests\MyValue" for reading.
       #.WinRegSimple.Read 'HKCU\Software\Cookbooktests\'
 APL is great</code></pre>
 <p><img src="Images/WinReg_DefaultValue.png" alt="Default values" title="Default values"></p>
-<p>Whether <code>Write</code> writes a REG_SZ or a REG_DWORD depends on the data: a text vector becomes “REG_SZ” while a 32-bit integer becomes “REG_DWORD” though booleans as well as smaller integers are converted to a 32-bit integer. Other data types are rejected.</p>
+<p>Whether <code>Write</code> writes a REG_SZ or a REG_DWORD depends on the data: a text vector becomes “REG_SZ” while a 32-bit integer becomes “REG_DWORD” though booleans, as well as smaller integers, are converted to a 32-bit integer. Other datatypes are rejected.</p>
 <p>If the <code>WinRegSimple</code> class does not suit your needs then have a look at the <code>WinReg</code> class. This class is much larger but has virtually no limitations at all.</p>
 <p>To give you idea here the list of methods:</p>
 <pre><code>]adoc WinReg -summary
@@ -292,7 +292,7 @@ Shared Methods:
 <li>Add a specific folder holding user commands to all versions of Dyalog APL installed on the current machine.</li>
 <li>Add pieces of information to the caption definitions for all dialog boxes of all versions of Dyalog APL installed on the current machine.</li>
 </ul>
-<p>The functions we develop along the way as well as the variables we need can be found in the workspace <code>WinReg</code> in the folder <code>Z:\code\Workspaces\</code>.</p>
+<p>The functions we develop along the way, as well as the variables we need, can be found in the workspace <code>WinReg</code> in the folder <code>Z:\code\Workspaces\</code>.</p>
 <div class="h_tag">
 <a href="#Add-user-command-folder" id="Add-user-command-folder" class="autoheader_anchor">
 <h3>Add user command folder</h3>

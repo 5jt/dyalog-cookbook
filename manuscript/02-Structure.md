@@ -21,7 +21,7 @@ Finally, you don’t need to worry about crashes in your code or externally call
 
 A> # Corrupted workspaces
 A> 
-A> The _workspace_ (WS) is where the APL interpreter manages all code and all data in memory. The Dyalog tracer / debugger has extensive edit-and-continue capabilities; the downside is that these have been known to corrupt the workspace occasionally.
+A> The _workspace_ (WS) is where the APL interpreter manages all code and all data in memory. The Dyalog tracer/debugger has extensive edit-and-continue capabilities; the downside is that these have been known to corrupt the workspace occasionally.
 A> 
 A> The interpreter checks WS integrity every now and then; how often can be influenced by setting certain debug flags; see the "[Appendix 3 — aplcores and WS integrity](./52 Appendix 3 — aplcores and WS integrity.html)" for details. More details regarding aplcores are available in the appendix "Aplcores".
 
@@ -35,11 +35,11 @@ Could not be simpler. If your user has a Dyalog interpreter, she can also save a
 
 A> # Crash workspaces
 A>
-A> A crash workspace is a workspace that was saved by a function that was initiated by error trapping, typically by a setting of `⎕TRAP`. It’s a snapshot of the workspace at the moment an unforeseen problem triggered error trapping to take over. It’s usually very useful to analyse such problems.
+A> A crash workspace is a workspace that was saved by a function that was initiated by error trapping, typically by setting `⎕TRAP`. It’s a snapshot of the workspace at the moment an unforeseen problem triggered error trapping to take over. It’s usually very useful to analyse such problems.
 A>
 A> Note that a workspace cannot be saved when more than one thread is running.
 
-If she doesn’t have an interpreter, and you are not worried about her someday getting one and reading your code, and you have a Run-Time Agreement with Dyalog, you can send her the Dyalog Run-Time interpreter with the workspace. The Run-Time interpreter will not allow the program to suspend, so when the program breaks the task will vanish, and your user won’t see your code. All right so far. But she will also not have a crash workspace to send you. 
+If she doesn’t have an interpreter and you are not worried about her someday getting one and reading your code, and you have a Run-Time Agreement with Dyalog, you can send her the Dyalog Run-Time interpreter with the workspace. The Run-Time interpreter will not allow the program to suspend, so when the program breaks the task will vanish, and your user won’t see your code. All right so far. But she will also not have a crash workspace to send you. 
 
 If your application uses multiple threads, the thread states can’t be saved in a crash workspace anyway. 
 
@@ -48,7 +48,7 @@ You need your program to catch and report any errors before it dies, something w
 
 ### Send an executable file (EXE)
 
-This is the simplest form of the program to install, because there is nothing else it needs to run: everything is embedded within the EXE. You export the workspace as an EXE, which can have the Dyalog Run-Time interpreter bound into it. The code cannot be read. As with the workspace-based runtime above, your program cannot suspend, so you need it to catch and report any errors before dying. 
+This is the simplest form of the program to install because there is nothing else it needs to run: everything is embedded within the EXE. You export the workspace as an EXE, which can have the Dyalog Run-Time interpreter bound into it. The code cannot be read. As with the workspace-based runtime above, your program cannot suspend, so you need it to catch and report any errors before dying. 
 
 We’ll do that! 
 
@@ -59,13 +59,13 @@ Let’s start by considering the workspace you will export as an EXE.
 
 The first point is: PCs have a lot of memory relative to your application code volume. So all your Dyalog code will be in the workspace. That’s probably where you have it right now anyway. 
 
-Your workspace is like your desk top – a great place to get work done, but a poor place to store things. In particular it does nothing to help you track changes and revert to an earlier version. 
+Your workspace is like your desktop – a great place to get work done, but a poor place to store things. In particular it does nothing to help you track changes and revert to an earlier version. 
 
 Sometimes a code change turns out to be for the worse, and you need to undo it. Perhaps the change you need to undo is not the most recent change. 
 
 We’ll keep the program in manageable pieces – ‘modules’ – and keep those pieces in text files under version control. 
 
-For this there are many _source-control management_ (SCM) systems and repositories available. Subversion, Git and Mercurial are presently popular. These SCMs support multiple programmers working on the same program, and have sophisticated features to help resolve conflicts between them. 
+For this, there are many _source-control management_ (SCM) systems and repositories available. Subversion, Git and Mercurial are presently popular. These SCMs support multiple programmers working on the same program, and have sophisticated features to help resolve conflicts between them. 
 
 A> # Source code management with acre Desktop
 A> Some members of the APL community prefer to use a source-code management system that is tailored to solve the needs of an APL programmer, or a team of APL programmers: acre Desktop. 
@@ -97,7 +97,7 @@ A> We recommend _The Code Book: The secret history of codes & code-breaking_ by 
 
 ## Versions
 
-In real life you will produce successive versions of your program, each better than the last. In an ideal world, all your users will have and use the current version. In that ideal world, you have only one version to maintain: the latest. 
+In real life, you will produce successive versions of your program, each better than the last. In an ideal world, all your users will have and use the current version. In that ideal world, you have only one version to maintain: the latest. 
 
 In the real world, your users will have and use multiple versions. If you charge for upgrading to a newer version, this will surely happen. And even in your ideal world, you have to maintain at least two versions: the current and the next. 
 
@@ -153,9 +153,9 @@ I> Note that we use a variable `∆` here. Not exactly a memorable or self-expla
 AAAAAACDEEEEIIIINOOOOOOUUUUY
 ~~~   
 
-That amounts to five functions. Two of them are specific to the application: `TxtToCsv` and `CountLetters`. The other three – `toUppercase`, `join` and `map` are utilities, of general use. 
+That amounts to five functions. Two of them are specific to the application: `TxtToCsv` and `CountLetters`. The other three --– `toUppercase`, `join` and `map` --- are utilities of general use. 
 
-Note that we have some functions that start with lowercase characters while others start with uppercase characters. In a larger application you might want to be able to tell data from calls to functions and operators by introducing consistent naming conventions. Which one you settle for is less important then choosing something consistent. And remmeber to put it into a document any programmer joining the team can read. 
+Note that we have some functions that start with lowercase characters while others start with uppercase characters. In a larger application you might want to be able to tell data from calls to functions and operators by introducing consistent naming conventions. Which one you settle for is less important than choosing something consistent. And remember to put it into a document any programmer joining the team can read. 
 
 `toUppercase` uses the fast case-folding I-beam introduced in Dyalog 15.0 (also available in 14.0 & 14.1 from revision 27141 onwards).
 
@@ -287,7 +287,7 @@ What style you prefer is mainly a matter of personal taste, and indeed even the 
 status←(bar>3) U.means 'ok' U.else 'error'
 ~~~
 
-In this approach two user defined functions are called. Not much overhead but don’t go for this if the line is, say, executed thousands of times within a loop.
+In this approach two user-defined functions are called. Not much overhead but don’t go for this if the line is, say, executed thousands of times within a loop.
 
 #### Keep the end user in mind
 
@@ -297,7 +297,7 @@ The authors have done pair programming for years with end users being the second
 taxfree←(dob>19491231) U.means 35000 U.else 50000
 ~~~
 
-is easily readable despite it being formed of APL primitives and user defined functions. This can be a big advantage in an agile environment where the end user reviews business logic with the implementors.
+is easily readable despite it being formed of APL primitives and user-defined functions. This can be a big advantage in an agile environment where the end user reviews business logic with the implementors.
 
 For classes, however, there is another way to do this: include the namespace `#.Utilities`. In order to illustrate this let’s assume for a moment that `MyApp` is not a namespace but a class.
 
@@ -398,7 +398,7 @@ A>   ~~~
 A>
 A>   ensures a GUI Form (window) does not shrink below a minimum size defined by `⍺`.
 A>  
-A>   You don’t want to have a multi-line dfn here: you want be able to trace into any `⎕DQ` (or `Wait`) statement; and the number of configuration events is simply overwhelming. Thanks to the `⋄` we can solve the task on a single line and prevent the Tracer from ever entering the dfn.
+A>   You don’t want to have a multi-line dfn here: you want to be able to trace into any `⎕DQ` (or `Wait`) statement; and the number of configuration events is simply overwhelming. Thanks to the `⋄` we can solve the task on a single line and prevent the Tracer from ever entering the dfn.
 
 
 #### Why not use `⎕PATH`?
@@ -409,7 +409,7 @@ A>   You don’t want to have a multi-line dfn here: you want be able to trace i
 status←(bar>3) means 'ok' else 'error'
 ~~~
 
-Trying to resolve the names `means` and `else`, the interpreter would consult `⎕PATH` and find them in `#.Utilities`. So far so good: this is what `⎕PATH` is designed for. It works just fine in simple cases, but quickly leads to confusion about which functions are called or edited, and where new names are created. Avoid `⎕PATH` if reasonable alternatives are available.
+Trying to resolve the names `means` and `else`, the interpreter would consult `⎕PATH` and find them in `#.Utilities`. So far so good: this is what `⎕PATH` is designed for. It works just fine in simple cases but quickly leads to confusion about which functions are called or edited, and where new names are created. Avoid `⎕PATH` if reasonable alternatives are available.
 
 
 ### Convert the WS LetterCount into a single scripted namespace.
@@ -532,7 +532,7 @@ A> For a full-strength multifile text editor [Notepad++](https://notepad-plus-pl
 A>
 A> You can even ensure Windows calls Notepad++ when you enter `notepad.exe` into a console window or double-click a TXT icon: Google for “notepad replacer”.
 
-Here’s how the object tree will look:
+Here’s how the object tree will look like:
 
 ~~~
 #
@@ -673,9 +673,9 @@ This version comes with a number of improvements. Let’s discuss them in detail
 
 * We prefix `Utilities` as well as `Constants` with `##.`: that works as long as they are siblings of `MyApp`. A prefix of `#.` would of course work as well but is inferior. For example, one day you might want to convert this application into a user command; then `##.` will continue to work while `#.` might or might not work, depending on what happens to be in the workspace at the time of execution. The same would be true if making it a ASP.NET application: those have no concept of a ‘root’ at all.
 
-* We have changed the assignment of the `Accents` variable so that we don’t need to know the length of it any more.     
+* We have changed the assignment of the `Accents` variable so that we don’t need to know the length of it anymore.     
 
-* It is good programming practice to _not_ use any numeric constants in your code. `TxtToCsv` tried to avoid this to some extend by assigning descriptive names at the start and using those. That’s not too bad, but if every function did the same, we risk multiple definitions of the same constant, breaching the [DRY principle](https://en.wikipedia.org/wiki/Don't_repeat_yourself) – don’t repeat yourself. (And open to errors: _A man with two watches never knows what time it is._) 
+* It is good programming practice to _not_ use any numeric constants in your code. `TxtToCsv` tried to avoid this to some extent by assigning descriptive names at the start and using those. That’s not too bad, but if every function did the same, we risk multiple definitions of the same constant, breaching the [DRY principle](https://en.wikipedia.org/wiki/Don't_repeat_yourself) – don’t repeat yourself. (And open to errors: _A man with two watches never knows what time it is._) 
 
   We can do better by defining all the Dyalog constants we want to use in a single namespace in `#`. We have also replaced the remaining integers in the `:Case` statements by references to symbolic variables in `Constants.NINFO.Type`.
 
@@ -694,13 +694,13 @@ This version comes with a number of improvements. Let’s discuss them in detail
   
 * Because of `enc` and `nl` we have to have two lines anyway, but if we weren't interested in `enc` and `nl` a one-liner would do: `tbl⍪←CountLetters ⊃⎕NGET file`. Not a good idea?
 
-  No. If you have to inspect what comes from several files because one (or more) of them contains something unexpected, you’ll want to check what you’ve got, file by file. By separating it on two lines you can open an edit window on `txt`, put a stop vector on line 5, and easily review the content of each file.
+  No. If you have to inspect what comes from several files because some of them might contain something unexpected, you’ll want to check what you’ve got, file by file. By separating it on two lines you can open an edit window on `txt`, put a stop vector on line 5, and easily review the content of each file.
 
 * The system settings are made in `MyApp`, but that’s not exactly ideal. These should be set for everything in the WS, in particular `#`.   
 
   This is important for the `Utilities` script because as soon as we introduce a function into it that depends on either `⎕IO` or `⎕ML` we might or might not be in trouble.
 
-  But there is more to it: when we execute a statement like `ref←#.⎕NS ''` (note the `#.`!) then the (unnamed) namespace created by this statement would inherit all the system settings from its parent `#`. While you have configured your session according to your needs, when you start the app with a double-click on the DYAPP on a different machine with different settings you have no idea what you are going to get.
+  But there is more to it: when we execute a statement like `ref←#.⎕NS ''` (note the `#.`!) then the (unnamed) namespace created by this statement would inherit all the system settings from its parent `#`. While you have configured your session according to your needs when you start the app with a double-click on the DYAPP on a different machine with different settings you have no idea what you are going to get.
   
   It is therefore safer – and strongly recommended – to ensure the setting is well-defined. We will come back to this later.
 
@@ -751,7 +751,7 @@ We have reached our goal:
 *[INI]: File with the extension 'ini' containing configuration data
 *[DYAPP]: File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application
 *[EXE]: Executable file with the extension 'exe'
-*[BAT]: Executeabe file that contains batch commands
+*[BAT]: Executable file that contains batch commands
 *[CSS]: File that contains layout definitions (Cascading Style Sheet)
 *[MD]: File with the extension 'md' that contains markdown
 *[CHM]: Executable file with the extension 'chm' that contains Windows Help(Compiled Help) 

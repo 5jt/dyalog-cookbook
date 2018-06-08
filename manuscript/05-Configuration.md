@@ -13,9 +13,9 @@ Several mechanisms are available for storing configuration settings. Microsoft W
 
 The Windows Registry is held in memory, so it is fast to read. It has been widely used to store configuration settings. Some would say, abused. However, for quite some time it was considered bad practice to have application-specific config files. 
 
-Everything was expected to go into the Windows Registry. The pendulum started to swing back the other way now for several years, and application-specific config files become ever more common. We follow a consensus opinion that it is best to minimise use of the Registry. 
+Everything was expected to go into the Windows Registry. The pendulum started to swing back the other way now for several years, and application-specific config files become ever more common. We follow a consensus opinion that it is best to minimise the use of the Registry. 
 
-Settings needed by Windows itself _have_ to be stored in the Registry. For example, associating a file extension with your application, so that double clicking on its icon launches your application. 
+Settings needed by Windows itself _have_ to be stored in the Registry. For example, associating a file extension with your application, so that double-clicking on its icon launches your application. 
 
 The APLTree classes [WinRegSimple](http://aplwiki.com/WinReg) and [WinReg](http://aplwiki.com/WinReg) provide methods for handling the Windows Registry.  We will discuss them in their own chapter.
 
@@ -39,7 +39,7 @@ By using the APLTree class `IniFiles` we get as a bonus additional features:
 * Data types: a key can carry either a text vector or a number.
 * Nested vectors: a key can carry a vector of text vectors.
 * Merge INI files: specify more than one INI file.
-* Local variables (place holders).
+* Local variables (placeholders).
 
 We will discuss these features as we go along.
 
@@ -77,7 +77,7 @@ From the above we get a general pattern for configuration settings:
 1. Defaults in the program code
 2. Overwrite from ALLUSERSPROFILE if any
 3. Overwrite from USERPROFILE 
-4. Overwrite from an INI specified in command line, if any
+4. Overwrite from an INI specified on the command line
 5. Overwrite with the command line
 
 However, for the Cookbook we keep things simple: we look for an INI file that is a sibling of the DYAPP or the EXE for now but will allow this to be overwritten via the command line with something like `INI='C:\MyAppService\MyApp.ini`. 
@@ -140,7 +140,7 @@ Notes:
 
   Most importantly `debug←1` will switch off global error trapping, something we will soon introduce. `¯1` means that the INI file does not set the flag. 
 
-  Therefore it will later in the application default to 1 in a development environment and to 0 in a runtime evenvironment. By setting this to either 1 or 0 in the INI file you can force it to be a particular value.
+  Therefore it will later in the application default to 1 in a development environment and to 0 in a runtime environment. By setting this to either 1 or 0 in the INI file you can force it to be a particular value.
 
 * `Trap` can be used to switch off error trapping globally. It will be used in statements like `:Trap Config.Traps/0`. We will discuss in a minute what `Config` is.
 
@@ -188,7 +188,7 @@ What the function does:
 
 Notes:
 
-* The `Get` function requires a section and a key as right argument. They can be provided either as a two-item vector as in `'Config' 'debug'` or as a text vector with section and key separated by a colon as in `'Config:debug'`.
+* The `Get` function requires a section and a key as the right argument. They can be provided either as a two-item vector as in `'Config' 'debug'` or as a text vector with section and key separated by a colon as in `'Config:debug'`.
 
 * `Get` requires a given section to exist, otherwise it will throw an error. 
 
@@ -253,7 +253,7 @@ leanpub-end-insert
 ∇
 ~~~
 
-Although both `MyLogger` and `Config` are global and not passed as arguments, it’s good practice to assign them this way rather then bury their creation somewhere down the stack. This way it’s easy to see where they are set. 
+Although both `MyLogger` and `Config` are global and not passed as arguments, it’s good practice to assign them this way rather than bury their creation somewhere down the stack. This way it’s easy to see where they are set. 
 
 A> # Specifying an INI file on the command line
 A>
@@ -300,7 +300,7 @@ If you need to have global variables then we suggest encapsulating them in a ded
 
 Sometimes it’s only after writing many lines of code that it becomes apparent that a different choice would have been better. 
 
-And sometimes it becomes apparent that the other choice would be so much better that it’s worth unwinding and rewriting a good deal of what you’ve done. (Then rejoice that you’re writing in a terse language.) 
+And sometimes it becomes apparent that the other choice would be so much better than it’s worth unwinding and rewriting a good deal of what you’ve done. (Then rejoice that you’re writing in a terse language.) 
 
 We share these musings here so you can see what we think about when we think about encapsulating state; and also that there is often no clear right answer. 
 
@@ -405,7 +405,7 @@ And finally we create a new standalone EXE as before and run it to make sure tha
 *[INI]: File with the extension 'ini' containing configuration data
 *[DYAPP]: File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application
 *[EXE]: Executable file with the extension 'exe'
-*[BAT]: Executeabe file that contains batch commands
+*[BAT]: Executable file that contains batch commands
 *[CSS]: File that contains layout definitions (Cascading Style Sheet)
 *[MD]: File with the extension 'md' that contains markdown
 *[CHM]: Executable file with the extension 'chm' that contains Windows Help(Compiled Help) 

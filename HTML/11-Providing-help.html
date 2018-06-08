@@ -167,7 +167,7 @@ parms #.Markdown2Help.CreateStub '#.MyHelp'</code></pre>
 </div>
 <p>In the workspace all nodes (in our case <code>MyHelp</code> and <code>Sub</code>) are ordinary namespaces, while the pages are variables. You can check with the Workspace Explorer:</p>
 <p><img src="Images/Structure.png" alt="The help system in the Workspace Explorer" title="The help system in the Workspace Explorer"></p>
-<p>This is the why the names of nodes and pages must be valid APL names. Those names appear in the Help tree as topics by default, but we can of course improve on that. We’ll come back to this soon.</p>
+<p>This is why the names of nodes and pages must be valid APL names. Those names appear in the Help tree as topics by default, but we can of course improve on that. We’ll come back to this soon.</p>
 <div class="h_tag">
 <a href="#Editing-a-page" id="Editing-a-page" class="autoheader_anchor">
 <h2>Editing a page</h2>
@@ -199,7 +199,7 @@ parms #.Markdown2Help.CreateStub '#.MyHelp'</code></pre>
 ⍝ You can edit this function from the Markdown2Help GUI via the context menu.
 ⍝ *** NOTE:
 ⍝     Make only changes to this function that affect the explicit result.
-⍝     Any other changes will eventually disappear because these functions are rebuild
+⍝     Any other changes will eventually disappear because these functions are rebuilt
 ⍝     under program control from their explicit result under certain circumstances.
 ⍝        This is also the reason why you should use the `active` flag to hide a topic
 ⍝     temporarily because although just putting a `⍝` symbol in front of its line
@@ -251,8 +251,8 @@ parms #.Markdown2Help.CreateStub '#.MyHelp'</code></pre>
 <li>the additional rules defined by any <code>∆TopicProperties</code> function</li>
 </ul>
 <p>into a single component file (DCF) containing the <abbr title="Hyper Text Mark-up language">HTML</abbr> generated from the Markdown, plus some more pieces of information.</p>
-<p>It’s more than just converting Markdown to <abbr title="Hyper Text Mark-up language">HTML</abbr>. For example, the words of all the pages are extracted, ‘dead’ words like <em>and</em>, <em>then</em>, <em>it</em>, etc. are removed (because searching for them does not make too much sense) and the index, together with pointers to the pages they apear on, are saved in a component.</p>
-<p>This allows <code>Markdown2Help</code> to provide a very fast Search function. Actually the list is saved in two forms, ‘as is’ and with all words lowercased to speed up any case-insensitive search operations.</p>
+<p>It’s more than just converting Markdown to <abbr title="Hyper Text Mark-up language">HTML</abbr>. For example, the words of all the pages are extracted, ‘dead’ words like <em>and</em>, <em>then</em>, <em>it</em>, etc. are removed (because searching for them does not make too much sense) and the index, together with pointers to the pages they appear on, are saved in a component.</p>
+<p>This allows <code>Markdown2Help</code> to provide a very fast Search function. The list is actually saved in two forms, ‘as is’ and with all words lowercased to speed up any case-insensitive search operations.</p>
 <p>Without specifying a particular folder, <code>Markdown2Help</code> would create a temporary folder and compile into that folder. It is better to define a permanent location, which avoids having the Help system compile the Markdown into <abbr title="Hyper Text Mark-up language">HTML</abbr> whenever it is called.</p>
 <p>Such a permanent location is also the precondition for using the Help system with the external viewer, necessary if your Help system tells how to <em>install</em> your application.</p>
 <p>For converting the Markdown to <abbr title="Hyper Text Mark-up language">HTML</abbr>, <code>Markdown2Help</code> needs the <code>MarkAPL</code> class, but once the Help system has been compiled this class is no longer needed. The final version of your application does not need <code>MarkAPL</code>. As <code>MarkAPL</code> comprises roughly 3,000 lines of code, this is good news.</p>
@@ -261,8 +261,8 @@ parms #.Markdown2Help.CreateStub '#.MyHelp'</code></pre>
 <h2>Editing the Help system directly</h2>
 </a>
 </div>
-<p>Besides editing a variable with a double-click in the Workspace Explorer, you could also also edit it from the session with <code>)ED</code>. Our advice: <strong>don't!</strong></p>
-<p>The reason is simple: when you change a Help system via the context menu then other important steps are performed. An example is when you have a <code>∆TopicProperties</code> function in a perticular node and you want to add a new help page to that node.</p>
+<p>Besides editing a variable with a double-click in the Workspace Explorer, you could also edit it from the session with <code>)ED</code>. Our advice: <strong>don't!</strong></p>
+<p>The reason is simple: when you change a Help system via the context menu then other important steps are performed. An example is when you have a <code>∆TopicProperties</code> function in a particular node and you want to add a new help page to that node.</p>
 <p>You have to right-click on a page and select the <em>Inject new help page (stub)</em> command from the context menu. You will then be prompted for a valid name and finally the new help page is injected after the page you have clicked at.</p>
 <p>But there is more to it than just that: the page is also added to the <code>∆TopicProperties</code> function. That’s one reason why you should perform all changes via the context menu rather than manipulating the Help system directly.</p>
 <p>Maybe even more important: <code>Markdown2Help</code> also executes the necessary steps in order to keep the files and folders in <code>saltFolder</code> in sync with the Help system <em>and</em> automatically recompiles the Help system for you.</p>
@@ -351,7 +351,7 @@ parms #.Markdown2Help.CreateStub '#.MyHelp'</code></pre>
 </div>
 
 <p>This function requires the Help system to be available in the workspace.</p>
-<p>Strictly speaking only the <code>source</code> parameter needs to be specified to get it to work, but best to specify the other parameters too, before a client sets eyes on your Help system.</p>
+<p>Strictly speaking, only the <code>source</code> parameter needs to be specified to get it to work, but best to specify the other parameters too before a client sets eyes on your Help system.</p>
 <p>Most of the parameters should explain themselves, but if in doubt you can always start <code>Markdown2Help</code>’s own Help system with <code>#.Markdown2Help.Selfie ⍬</code> and read the pages under the <code>Parameters</code> node. Here’s what you should see:</p>
 <p><img src="Images/HelpParameters.png" alt="The context menu" title="The context menu"></p>
 <p>You can request a list of all parameters with their default values with this statement:</p>
@@ -440,7 +440,7 @@ Run #.MyApp.SetLX ⍬
 
 Load Make
 Run #.Make.Run 1</code></pre>
-<p>Finally we ensure the compiled Help system is copied over together with the standalone Help viewer:</p>
+<p>Finally we ensure the compiled Help system is copied over together with the standalone Help Viewer:</p>
 <pre><code>:Class Make
 ...
 <span class="leanpub_code">⍝ 5. Creates `MyApp.exe` within `DESTINATION\`

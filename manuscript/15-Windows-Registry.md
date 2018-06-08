@@ -61,7 +61,7 @@ That looks pretty much like a file path, doesn't it? So what about calling the d
 
 Well, that might be logical, but Microsoft did not do that. Instead they call `HKCU` a _key_. The top-level parts are sometimes called _root keys_. The other parts except `maxws` are called _subkeys_; sometimes just _keys_.
 
-So what's `maxws`? Well it holds a value, so why not call it _key_? Oops, that's already taken. Maybe _name_ or _ID_? Well, Microsoft calls it a _value_. That's a strange name because is _has_ an associated value, in our example, the string `'64000'`.
+So what's `maxws`? Well, it holds a value, so why not call it _key_? Oops, that's already taken. Maybe _name_ or _ID_? Well, Microsoft calls it a _value_. That's a strange name because is _has_ an associated value, in our example, the string `'64000'`.
 
 To repeat: any given path to a particular piece of data in the Windows Registry consists of a _key_, one or more _subkeys_ and a _value_ that is associated with _data_:
 ~~~
@@ -77,12 +77,12 @@ Some other things you should know:
 * Key names are not localised into other languages, although values may be.
 
 
-## Data types
+## Datatypes
 
-These days the Windows Registry offers quite a range of data types, but most of the time you can manage with just these:
+These days the Windows Registry offers quite a range of datatypes, but most of the time you can manage with just these:
 
 REG_SZ
-: The string data type. APLers call this a text vector. Both `WinReg` as well as `WinRegSimple` write text vectors as Unicode strings.
+: The string datatype. APLers call this a text vector. Both `WinReg` as well as `WinRegSimple` write text vectors as Unicode strings.
 
 REG_DWORD
 : A 32-bit number.
@@ -91,12 +91,12 @@ REG_BINARY
 : Binary data in any form.
 
 REG_MULTI_SZ
-: For an APLer this is a vector of text vectors. This data type was not available in the early days of the Windows Registry which is probably why it is not as widely used as you would expect.
+: For an APLer this is a vector of text vectors. This datatype was not available in the early days of the Windows Registry which is probably why it is not as widely used as you would expect.
 
 REG_QWORD
 : A 64-bit number
 
-There are more data types available, but they are less common.
+There are more datatypes available, but they are less common.
 
 
 ## Root keys
@@ -111,7 +111,7 @@ A Windows Registry has just 5 root keys:
 | HKEY_USERS          | HKU      |
 | HKEY_CURRENT_CONFIG | HKCC    |
 
-From an application programmer’s point of view the HKCU and the HKLM are the most important ones, and usually the only ones to write to.
+From an application programmer’s point of view, the HKCU and the HKLM are the most important ones, and usually the only ones to write to.
 
 
 ### 32/64-bit nightmares
@@ -137,7 +137,7 @@ The APLTree class `WinRegSimple` is a very simple class that offers just three m
 * `Write`
 * `Delete`
 
-It is also limited to the two data types `REG_SZ` and `REG_DWORD`.
+It is also limited to the two datatypes `REG_SZ` and `REG_DWORD`.
 
 The class uses the Windows Scripting Host (WSH) [^wsh]. It is available on all Windows systems although it can be switched off by group policies, though we have never seen this in the wild.
 
@@ -183,7 +183,7 @@ APL is great
 
 ![Default values](Images/WinReg_DefaultValue.png)
 
-Whether `Write` writes a REG_SZ or a REG_DWORD depends on the data: a text vector becomes "REG_SZ" while a 32-bit integer becomes "REG_DWORD" though booleans as well as smaller integers are converted to a 32-bit integer. Other data types are rejected.
+Whether `Write` writes a REG_SZ or a REG_DWORD depends on the data: a text vector becomes "REG_SZ" while a 32-bit integer becomes "REG_DWORD" though booleans, as well as smaller integers, are converted to a 32-bit integer. Other datatypes are rejected.
 
 If the `WinRegSimple` class does not suit your needs then have a look at the `WinReg` class. This class is much larger but has virtually no limitations at all.
 
@@ -237,7 +237,7 @@ We will use both the `WinReg` class and the `WinRegSimple` class for two tasks:
 * Add a specific folder holding user commands to all versions of Dyalog APL installed on the current machine.
 * Add pieces of information to the caption definitions for all dialog boxes of all versions of Dyalog APL installed on the current machine.
 
-The functions we develop along the way as well as the variables we need can be found in the workspace `WinReg` in the folder `Z:\code\Workspaces\`.
+The functions we develop along the way, as well as the variables we need, can be found in the workspace `WinReg` in the folder `Z:\code\Workspaces\`.
 
 
 ### Add user command folder
@@ -417,7 +417,7 @@ We can now write `captionValues` to all versions:
 *[INI]: File with the extension 'ini' containing configuration data
 *[DYAPP]: File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application
 *[EXE]: Executable file with the extension 'exe'
-*[BAT]: Executeabe file that contains batch commands
+*[BAT]: Executable file that contains batch commands
 *[CSS]: File that contains layout definitions (Cascading Style Sheet)
 *[MD]: File with the extension 'md' that contains markdown
 *[CHM]: Executable file with the extension 'chm' that contains Windows Help(Compiled Help) 

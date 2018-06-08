@@ -87,7 +87,7 @@
 </a>
 </div>
 <p>Imagine the following situation: MyApp is started with a double-click on the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> and, when tested, everything works just fine. Then you create a stand-alone <abbr title="Executable file with the extension 'exe'">EXE</abbr> from the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> and execute it with some appropriate parameter, but it does not create the CSV files.</p>
-<p>In this situation obviously you need to debug the <abbr title="Executable file with the extension 'exe'">EXE</abbr>. In this chapter we’ll discuss how to achieve that. In addition we will make <code>MyApp.exe</code> return an exit code.</p>
+<p>In this situation, obviously you need to debug the <abbr title="Executable file with the extension 'exe'">EXE</abbr>. In this chapter we’ll discuss how to achieve that. In addition we will make <code>MyApp.exe</code> return an exit code.</p>
 <p>For debugging we are going to use Ride. (See the Dyalog manuals for information about Ride.) If enabled, you can use Ride to hook into a running interpreter, interrupt any running code, investigate, and even change that code.</p>
 <div class="h_tag">
 <a href="#Going-for-a-ride" id="Going-for-a-ride" class="autoheader_anchor">
@@ -204,7 +204,7 @@ Wait        = 1</code></pre>
 <ul>
 <li><code>ridePort</code> will be either the port to be used for communicating with Ride, or 0 if no Ride is required.</li>
 <li>The optional left argument defaults to 0. If it is 1 then the function waits for Ride to hook on.</li>
-<li>In this specific case we pass a reference to <code>Config</code> as argument to <code>CheckForRide</code>. For two reasons:
+<li>In this specific case we pass a reference to <code>Config</code> as an argument to <code>CheckForRide</code>. For two reasons:
 <ul>
 <li><code>CheckForRide</code> really needs <code>Config</code>.</li>
 <li>We have nothing else to pass but we don’t want niladic functions around (except in very special circumstances).</li>

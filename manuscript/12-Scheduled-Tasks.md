@@ -183,7 +183,7 @@ In our specific case it was actually a problem in the test cases, _not_ in `MyAp
 
 A> # Shuffle test cases
 A>
-A> At the time of writing (2017-07) the sequence of the test cases relies on alphabetical order and is therefore predictable. On the to-do list for the `Tester` class is a topic: Add option that makes the test framework shuffle the test cases so that the order of execution is not predictable anymore.
+A> At the time of writing (2017-07) the sequence of the test cases relies on alphabetical order and is therefore predictable. On the to-do list for the `Tester` class is a topic: Add an option that makes the test framework shuffle the test cases so that the order of execution is not predictable anymore.
 
 
 ## Create a Scheduled Task
@@ -210,16 +210,16 @@ _Name_
 _Description_
 : Shown in the list presented by the Task Scheduler. Keep it concise.
 
-_Run only when user is logged on_
-: You will almost certainly change this to _Run whether user is logged on or not_.
+_Run only when the user is logged on_
+: You will almost certainly change this to _Run whether the user is logged on or not_.
 
-_Do not store password_
+_Do not store a password_
 : The password is stored safely, so there is no reason not to provide it.
 
 _Running with highest privileges_
 : Unfortunately this check box is offered whether your user account has admin rights or not. If it does not, then ticking the box won’t have any effect.
 
-  : If your user account has no admin rights but your Scheduled Task needs to run with highest privileges then you need to specify a different user id / password after clicking the _Change user or group_ button.
+  : If your user account has no admin rights but your Scheduled Task needs to run with highest privileges then you need to specify a different user id/password after clicking the _Change user or group_ button.
 
   : Whether your application needs to run with highest privileges or not is impossible to say. Experience shows that sometimes a process that fails when – and only when – the application runs as a Scheduled Task will work fine if run as a Schedule Task with highest privileges, although it is by no means clear what those rights are required for.
 
@@ -253,7 +253,7 @@ After clicking _New_ this is what you get:
 Make sure you use the _Browse_ button to navigate to the EXE/BAT/whatever you want to run as a Scheduled Task. This avoids typos.
 
 _Add arguments_
-: allows you specify something like `MAXWS=345M` or the name of a workspace in case _Program_ is not an EXE but a Dyalog interpreter. In particular, you should add `DYALOG_NOPOPUPS=1`. This prevents any dialogs from popping up (aplcore, WS FULL, etc.). You don’t want them when Dyalog is running in the background because there's nobody around to click the _OK_ button…
+: allows you to specify something like `MAXWS=345M` or the name of a workspace in case _Program_ is not an EXE but a Dyalog interpreter. In particular, you should add `DYALOG_NOPOPUPS=1`. This prevents any dialogs from popping up (aplcore, WS FULL, etc.). You don’t want them when Dyalog is running in the background because there's nobody around to click the _OK_ button…
 
 _Start in_
 : is useful for specifying what will become the current (or working) directory for the running program. We recommend setting the current directory in your code as early as possible, so you don’t really need to set this here except that when you don’t you might well get an error code 2147942512. 
@@ -374,9 +374,9 @@ That tells you task did not run at all. You won’t find either a log file or a 
 
 If the Task Scheduler itself throws an error you will find the error codes of little value – at first sight. 
 
-You can provoke such an error quite easily: edit the task we’ve created and change the contents of the _Program/script_ field in the _Edit action_ dialog to something that does not exist, so the Task Scheduler won’t find such a program to run. Then issue the _Run_ command from the context menu.
+You can provoke such an error quite easily: edit the task we’ve created and changed the contents of the _Program/script_ field in the _Edit action_ dialog to something that does not exist, so the Task Scheduler won’t find such a program to run. Then issue the _Run_ command from the context menu.
 
-Update the GUI by pressing F5 and you will see that errors are reported. The row that reads `Task Start Failed` in the _Task Category_ columns and `Launch Failure` in the _Operational Code_ columns is the one we are interested in. When you click at this row you will find that it reports an `Error Value 2147942402`. What exactly does this mean?
+Update the GUI by pressing F5 and you will see that errors are reported. The row that reads `Task Start Failed` in the _Task Category_ columns and `Launch Failure` in the _Operational Code_ columns is the one we are interested in. When you click on this row you will find that it reports an `Error Value 2147942402`. What exactly does this mean?
 
 One way to find out is to google for 2147942402. For this particular error this will certainly do, but sometimes you will have to go through plenty of pages when people managed to produce the same error code in very different circumstances, and it can be quite time-consuming to find a page that carries useful information for _your_ circumstances.
 
@@ -399,7 +399,7 @@ The first four digits, 8007, mean that what follows is a Win32 status code. The 
 
 but in our case that is of course not necessary because the number is so small that there is no difference between hex and integer anyway, so we can convert it into an error message straight away. 
 
-Again we use a user command that is not part of a standard Dyalog installation but because it is so useful we strongly recommend install it [^getmsg]. It translates a Windows error code into meaningful text.
+Again we use a user command that is not part of a standard Dyalog installation but because it is so useful we strongly recommend installing it [^getmsg]. It translates a Windows error code into meaningful text.
 
 ~~~
       ]GetMsgFrom
@@ -433,7 +433,7 @@ for details.
 *[INI]: File with the extension 'ini' containing configuration data
 *[DYAPP]: File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application
 *[EXE]: Executable file with the extension 'exe'
-*[BAT]: Executeabe file that contains batch commands
+*[BAT]: Executable file that contains batch commands
 *[CSS]: File that contains layout definitions (Cascading Style Sheet)
 *[MD]: File with the extension 'md' that contains markdown
 *[CHM]: Executable file with the extension 'chm' that contains Windows Help(Compiled Help) 

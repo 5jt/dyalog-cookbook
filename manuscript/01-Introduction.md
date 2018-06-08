@@ -5,7 +5,7 @@
 
 You want to write a Windows [^win] application in Dyalog APL. You have already learned enough of the language to put some of your specialist knowledge into functions you can use in your work. The code works for you. Now you want to turn it into an application others can use. Perhaps even sell it. 
 
-This is where you need professional programming skills. How to install your code into an unknown computer. Have it catch, handle and log errors. Manage the different versions of your software as it evolves. Provide online help.
+This is where you need professional programming skills. How to install your code on an unknown computer. Have it catch, handle and log errors. Manage the different versions of your software as it evolves. Provide online help.
 
 You are not necessarily a professional programmer. Perhaps you don't have those skills. Perhaps you need a professional programmer to turn your code into an application. But you’ve come a long way already. Perhaps you can get there by yourself - with _The Dyalog Cookbook_. Alternatively, you might be a professional programmer wondering how to solve these familiar problems in Dyalog APL. 
 
@@ -15,7 +15,7 @@ You might continue as the sole developer of your application for a long time yet
 
 Not so long ago it was sufficient for an application to be packaged as an EXE that could be installed and run on other PCs. Nowadays many corporate clients run programs in terminal servers or in private clouds. So we’ll look at how to organise your program to run as tasks that communicate with each other. 
 
-Many applications written in Dyalog focus on some kind of numerical analysis, and can have CPU-intensive tasks. We'll look at how such tasks can be packaged to run either in background or on remote machines. 
+Many applications written in Dyalog focus on some kind of numerical analysis, and can have CPU-intensive tasks. We'll look at how such tasks can be packaged to run either in the background or on remote machines. 
 
 
 ## Method
@@ -26,7 +26,7 @@ But the development tools introduced by Dyalog in recent years are still finding
 
 Many of the issues addressed here are entangled with each other. We’ll arrive at our best solutions by way of interim solutions. Proposing some wickedly intricate ‘complete solution’ framework does little to illuminate the problems it solves. So we’ll add features -- INI files, error handling, and so on -- one at a time, and as we go we’ll find ourselves revisiting the code that embeds the earlier features. 
 
-We will also improve the code along the way, while explaining why exactly the changes are improvements.
+We will also improve the code along the way while explaining why exactly the changes are improvements.
 
 That is the method for chapters 1 – 14. Later chapters stand on their own.
 
@@ -56,7 +56,7 @@ Later on we’ll introduce some professional writing techniques that might make 
 
 * A good understanding of SALT, Dyalog’s built-in code-management system that allows you to load and save scripts either automatically in the background or at will.
   
-* Internet access. Not necessarily all the time, but probably most of the time. Not only because it gives you access to the [APL wiki](http://aplwiki.com) and the Dyalog forum (see below) but mainly for accessing the APLTree tools and this book’s web site: <https://cookbook.dyalog.com>.
+* Internet access. Not necessarily all the time, but probably most of the time. Not only because it gives you access to the [APL wiki](http://aplwiki.com) and the Dyalog forum (see below) but mainly for accessing the APLTree tools and this book’s website: <https://cookbook.dyalog.com>.
 
   However, we have also tried to write the book so that you can just read it – if that works better for you.
   
@@ -73,7 +73,7 @@ In case you still need help the [Dyalog Forum](http://forum.dyalog.com) provides
 
 ## Conventions
 
-I> Note that we assume `⎕IO←1` and `⎕ML←1`, not because  we are making a statement, but because that’s the Dyalog default. That keeps the Cookbook in sync with the Dyalog documentation.
+I> Note that we assume `⎕IO←1` and `⎕ML←1`, not because we are making a statement, but because that’s the Dyalog default. That keeps the Cookbook in sync with the Dyalog documentation.
 
 A> # Getting deeper
 A>
@@ -98,15 +98,15 @@ Kai Jaeger & Stephen Taylor
 
 [^win]: Perhaps one day you would like it to ship on multiple platforms. Perhaps one day we’ll write that book too. Meanwhile, Microsoft Windows. 
    
-  You will however find that whenever possible we keep the code platform independent. If we use platform-dependent utilities we mention it and explain why; we might also mention alternatives available on other platforms.
+  You will, however, find that whenever possible we keep the code platform independent. If we use platform-dependent utilities we mention it and explain why; we might also mention alternatives available on other platforms.
 
 
-[^apltree]: _APLTree_ is the name of an open-source library that offers robust, tested and well documented solutions to many everyday problems you  face when addressing the tasks discussed in this book.
+[^apltree]: _APLTree_ is the name of an open-source library that offers robust, tested and well-documented solutions to many everyday problems you face when addressing the tasks discussed in this book.
 
   We will use this library extensively and discuss it in detail. More at the source: <https://github.com/aplteam/apltree/wiki/Members>. You can also search for "apltree" on [GitHub](https://github.com).
   
   
-[^classes]: These days seasoned programmers often have strong opinions about whether to use an object-oriented approach or a functional approach, or to mix them both. 
+[^classes]: These days seasoned programmers often have strong opinions about whether to use an object-oriented approach or a functional approach or to mix them both. 
 
   We have seen friendships broken on these issues. In this book we take a mixed approach.
 
@@ -117,7 +117,7 @@ Kai Jaeger & Stephen Taylor
 *[INI]: File with the extension 'ini' containing configuration data
 *[DYAPP]: File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application
 *[EXE]: Executable file with the extension 'exe'
-*[BAT]: Executeabe file that contains batch commands
+*[BAT]: Executable file that contains batch commands
 *[CSS]: File that contains layout definitions (Cascading Style Sheet)
 *[MD]: File with the extension 'md' that contains markdown
 *[CHM]: Executable file with the extension 'chm' that contains Windows Help(Compiled Help) 

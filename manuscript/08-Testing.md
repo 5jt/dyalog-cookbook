@@ -55,11 +55,11 @@ If you are modifying an existing function, write new tests for the new things it
 
 ## Readability
 
-Reading and understanding APL code is more difficult than in other programming language due to the higher abstraction level and the power of APL’s primitives. However, as long as you have at least one example with correct arguments, it’s always possible to decipher the code. 
+Reading and understanding APL code is more difficult than in other programming languages due to the higher abstraction level and the power of APL’s primitives. However, as long as you have at least one example with correct arguments, it’s always possible to decipher the code. 
 
 Things can become very nasty indeed if an application crashes because inappropriate data arrives at your function. However, before you can figure out whether the data is appropriate or not you need to understand the code – a chicken-egg problem.
 
-That’s when test cases can be very useful as well, because they demonstrate which data a function is expected to process. It also emphasises why it is important to have test cases for all the different types of data (or parameters) a function is supposed to process. In this respect test cases should be exhaustive.
+That’s when test cases can be very useful as well because they demonstrate which data a function is expected to process. It also emphasises why it is important to have test cases for all the different types of data (or parameters) a function is supposed to process. In this respect test cases should be exhaustive.
 
 
 ### Write better 
@@ -195,7 +195,7 @@ RunThese
 
 The helpers can be categorized:
 
-* Those starting their names with a `∆` character are niladic functions that return a result. They act like constants in other programming languages. APL does not have constants, but they can be emulated with niladic functions. (Strictly speaking they are not helpers)
+* Those starting their names with a `∆` character are niladic functions that return a result. They act like constants in other programming languages. APL does not have constants, but they can be emulated with niladic functions. (Strictly speaking, they are not helpers)
 * Those starting their names with `Run` are used to run all or selected test cases in slightly different scenarios.
 * `FailsIf`, `PassesIf` and `GoToTidyUp` are used for flow control. 
 * Miscellaneous
@@ -357,7 +357,7 @@ A> There’s a difference between an ordinary namespace and a scripted namespace
 A>
 A> Now you change/add/delete test functions; that would have no effect on anything else in that namespace. In other words, the helpers would continue to exist.
 A>
-A> When you change a namespace script on the other hand the namespace is re-created from the script, and that means that our helpers will disappear because they are not a part of the `Tests` script.
+A> When you change a namespace script, on the other hand, the namespace is re-created from the script, and that means that our helpers will disappear because they are not a part of the `Tests` script.
 
 Let’s call our test case. We do this by running the `Run` method first:
 
@@ -419,7 +419,7 @@ SYNTAX ERROR
 #.Tests.RunDebug[3]
 ~~~
 
-It stopped in line 6. Obviously the call to `FailsIf` has something to do with this, and so has the `⎕TRAP` setting, because apparently that’s where the “Deliberate error” comes from. 
+It stopped in line 6. Obviously the call to `FailsIf` has something to do with this, and so has the `⎕TRAP` setting because apparently that’s where the “Deliberate error” comes from. 
 
 This is indeed the case. All three flow-control functions, `FailIf`, `PassesIf` and `GoToTidyUp` check whether they are running in debug mode; if so, rather than return a result that indicates a failing test case, they `⎕SIGNAL 999`, which is then caught by the `⎕TRAP`, which in turn first prints `⍝ Deliberate error` to the session and then hands over control to the user. 
 
@@ -641,7 +641,7 @@ leanpub-end-insert
 ...
 ~~~
 
-Note that now both `Config` and `MyLogger` exist within `MyApp`, not in `Tests`. Therefore we don't even have to keep them local within `Test_003`. They are however not part of the script, so will disapear as soon as the script `Tests` is fixed again, very much like the helpers. 
+Note that now both `Config` and `MyLogger` exist within `MyApp`, not in `Tests`. Therefore we don't even have to keep them local within `Test_003`. They are however not part of the script, so will disappear as soon as the script `Tests` is fixed again, very much like the helpers. 
 
 Let’s try again:
 
@@ -719,7 +719,7 @@ What to do in `Initial`, apart from creating the references:
 
 A> # Machine-dependent initialisation
 A> 
-A> What if you need to initialise something (say a database connection) but it is depends on the machine the tests are executed on  – its IP address, user-id, password…?
+A> What if you need to initialise something (say a database connection) but it depends on the machine the tests are executed on  – its IP address, user-id, password…?
 A>
 A> The test framework looks for two different INI files in the current directory:
 A> First it looks for `testcase.ini`. It then tries to find `testcase_{computername}.ini`. `computername` here is what you get when you execute `⊣ 2 ⎕nq # 'GetEnvironment' 'Computername'`.
@@ -891,7 +891,7 @@ TxtToCsv
 
 Whenever the test cases were executed `Tester` notifies the time on a global variable `TestCasesExecutedAt` in the hosting namespace. This can be used in order to find out whether part of the code has been changed since the last time the cases were executed.
 
-However, in order to do this you have to make sure that the variable is either saved somewhere or added to the script `Tests`. For example, it could be handled by a cover function that calls any of `Tester`s `Run*` functions and then handled that variable.
+However, in order to do this, you have to make sure that the variable is either saved somewhere or added to the script `Tests`. For example, it could be handled by a cover function that calls any of `Tester`s `Run*` functions and then handled that variable.
 
 
 ## Conclusion
@@ -926,7 +926,7 @@ The machine images are large, about 10 GB each. So you want several hundred giga
 
 ## Testing APLTree modules
 
-By now we are using quite a number of modules from the APLTree project. Shouldn’t we test them as well? After all if they break, our application will stop working! Well, there are pros and cons:
+By now we are using quite a number of modules from the APLTree project. Shouldn’t we test them as well? After all, if they break, our application will stop working! Well, there are pros and cons:
 
 Pro
 : The modules have their own unit tests, and those are exhaustive. An update is published only after all the test cases have passed.
@@ -971,7 +971,7 @@ If it’s not `0`:
 *[INI]: File with the extension 'ini' containing configuration data
 *[DYAPP]: File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application
 *[EXE]: Executable file with the extension 'exe'
-*[BAT]: Executeabe file that contains batch commands
+*[BAT]: Executable file that contains batch commands
 *[CSS]: File that contains layout definitions (Cascading Style Sheet)
 *[MD]: File with the extension 'md' that contains markdown
 *[CHM]: Executable file with the extension 'chm' that contains Windows Help(Compiled Help) 
