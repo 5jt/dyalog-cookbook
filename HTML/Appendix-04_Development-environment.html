@@ -97,7 +97,7 @@
 <div>
 <h3>Leave the Dyalog installation directory alone</h3>
 <p>Do <em>not</em> alter any files in the Dyalog installation directory, and don't add your own files there either: Dyalog may update files in there in any patch.</p>
-<p>Although this is not strictly true in 16.0 and earlier, Dyalog <em>may</em> start to issue .msp files which might change any file in the installation directory without warning!</p>
+<p>Although this is not strictly true in 17.0 and earlier, Dyalog <em>may</em> start to issue .msp files which might change any file in the installation directory without warning!</p>
 </div>
 </div>
 
@@ -133,7 +133,7 @@
 <pre><code>:Namespace Setup
 ⍝ Up to - and including - version 15.0 this script needs to go into:
 ⍝ "C:\Users\[username]\Documents\MyUCMDs"
-⍝ Under 16.0 that still works but the SALT workdir folders are scanned as well.
+⍝ Under 17.0 that still works but the SALT workdir folders are scanned as well.
   ⎕IO←1 ⋄ ⎕ML←1
 
 ∇ {r}←Setup arg;myStuff

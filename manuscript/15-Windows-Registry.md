@@ -48,13 +48,13 @@ Here’s an example. This is the definition of the MAXWS parameter for Dyalog 64
 The full path is:
 
 ~~~
-Computer\HKEY_CURRENT_USER\Software\Dyalog\Dyalog APL/W-64 16.0 Unicode\maxws
+Computer\HKEY_CURRENT_USER\Software\Dyalog\Dyalog APL/W-64 17.0 Unicode\maxws
 ~~~
 
 We can omit `Computer` if it is the local machine, and we can shorten "HKEY_CURRENT_USER" as "HKCU". That leaves us with:
 
 ~~~
-HKCU\Software\Dyalog\Dyalog APL/W-64 16.0 Unicode\maxws
+HKCU\Software\Dyalog\Dyalog APL/W-64 17.0 Unicode\maxws
 ~~~
 
 That looks pretty much like a file path, doesn't it? So what about calling the different parts to the left of `maxws` _folders_? 
@@ -144,7 +144,7 @@ The class uses the Windows Scripting Host (WSH) [^wsh]. It is available on all W
 If you want to read just a certain value then this -- very small -- class might suffice. For example, to read the aforementioned `maxws` value:
 
 ~~~
-      #.WinRegSimple.Read 'HKCU\Software\Dyalog\Dyalog APL/W-64 16.0 Unicode\maxws'
+      #.WinRegSimple.Read 'HKCU\Software\Dyalog\Dyalog APL/W-64 17.0 Unicode\maxws'
 64000
 ~~~
 
@@ -255,13 +255,13 @@ Let's assume we have a folder `C:\MyUserCommands`. We want to add this folder to
       ↑GetAllVersionsOfDyalog ⍬
 Dyalog APL/W 14.1 Unicode   
 Dyalog APL/W 15.0 Unicode   
-Dyalog APL/W 16.0 Unicode   
+Dyalog APL/W 17.0 Unicode   
 Dyalog APL/W-64 13.2 Unicode
 Dyalog APL/W-64 14.0 Unicode
 Dyalog APL/W-64 14.1 Unicode
 Dyalog APL/W-64 15.0        
 Dyalog APL/W-64 15.0 Unicode
-Dyalog APL/W-64 16.0 Unicode
+Dyalog APL/W-64 17.0 Unicode
 ~~~
 
 That's step one. In the next step we need to write a function that adds a folder to the list of user command folders:
@@ -286,19 +286,19 @@ Let's check the current status:
       ⍪{#.WinReg.GetValue 'HKCU\Software\Dyalog\',⍵,'\SALT\CommandFolder'}¨dyalogVersions
  C:\...\Dyalog APL 14.1 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\
  C:\...\Dyalog APL 15.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\
- C:\...\Dyalog APL 16.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\
+ C:\...\Dyalog APL 17.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\
 ... 
       'C:\MyUserCommands'∘Add¨dyalogVersions
       ⍪{#.WinReg.GetValue 'HKCU\Software\Dyalog\',⍵,'\SALT\CommandFolder'}¨dyalogVersions
       C:\..\Dyalog APL 14.1 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands
 C:\...\Dyalog APL 15.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands
-C:\...\Dyalog APL 16.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands
+C:\...\Dyalog APL 17.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands
 ...
       'C:\MyUserCommands'∘Add¨dyalogVersions
       ⍪{#.WinReg.GetValue 'HKCU\Software\Dyalog\',⍵,'\SALT\CommandFolder'}¨dyalogVersions
 C:\...\Dyalog APL 14.1 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands
 C:\...\Dyalog APL 15.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands
-C:\...\Dyalog APL 16.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands
+C:\...\Dyalog APL 17.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands
 ~~~
 
 Although we called `Add` twice, the folder `C:\MyUserCommands` appears only once. This is because we carefully removed it before adding it.
@@ -306,15 +306,15 @@ Although we called `Add` twice, the folder `C:\MyUserCommands` appears only once
 
 ### Configure Dyalog's window captions
 
-In [_Appendix 4 — The development environment_](./53 Appendix 4 — The development environment.html) we mention that if you run more than one instance of Dyalog in parallel then you want to be able to associate any dialog box to the instance that issued it. This can be achieved by adding certain pieces of information to certain entries in the Windows Registry. We talk about this subkey of, say, Dyalog APL/W-64 16.0 Unicode:
+In [_Appendix 4 — The development environment_](./53 Appendix 4 — The development environment.html) we mention that if you run more than one instance of Dyalog in parallel then you want to be able to associate any dialog box to the instance that issued it. This can be achieved by adding certain pieces of information to certain entries in the Windows Registry. We talk about this subkey of, say, Dyalog APL/W-64 17.0 Unicode:
 
 ~~~
-HKCU\Software\Dyalog\Dyalog APL/W-64 16.0 Unicode\Captions
+HKCU\Software\Dyalog\Dyalog APL/W-64 17.0 Unicode\Captions
 ~~~
 
 If that subkey exists (after an installation it doesn't) then it is supposed to contain particular values defining the captions for all dialog boxes that might make an appearance when running an instance of Dyalog. 
 
-So to configure all these window captions you have to add the subkey `Chapter` and the required values in one way or another. This is a list of values honoured by version 16.0:
+So to configure all these window captions you have to add the subkey `Chapter` and the required values in one way or another. This is a list of values honoured by version 17.0:
 
 | Editor |
 | Event_Viewer |
@@ -378,7 +378,7 @@ We can now write `captionValues` to all versions:
 ~~~
        captionValues∘WriteCaptionValues¨dyalogVersions
       ⍝ Let's check:
-      rk←'HKCU\Software\Dyalog\Dyalog APL/W-64 16.0 Unicode\Captions'
+      rk←'HKCU\Software\Dyalog\Dyalog APL/W-64 17.0 Unicode\Captions'
       #.WinReg.GetTreeWithValues rk
 0  HKCU\...\Captions\
 1  HKCU\...\Editor          {PID} {TITLE} {WSID}-{NSID} {Chars} {Ver_A}.{VER_B}.{VER_C} {BITS}

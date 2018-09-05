@@ -47,7 +47,7 @@
 </a>
 </div>
 <ul>
-<li>The Dyalog Version 16.0 Unicode interpreter or later.</li>
+<li>The Dyalog Version 17.0 Unicode interpreter or later.</li>
 <li>Microsoft Windows 10</li>
 <li>Good knowledge of APL – the Cookbook is by no means an introduction.</li>
 <li>To know how to use namespaces, classes and instances. The utility code in the Cookbook is packaged as namespaces and classes. This is the form in which it is easiest for you to slide the code into your app without name conflicts.
@@ -721,7 +721,7 @@ Load MyApp</code></pre>
 <hr>
 <p><strong>Footnotes</strong></p>
 <ol>
-<li id="fnref1"><p>With version 16.0 Dyalog has introduced a system function <code>⎕CSV</code> for both importing from and exporting to CSV files.</p><a href="#fnref1" class="footnote_anchor"></a>
+<li id="fnref1"><p>With version 17.0 Dyalog has introduced a system function <code>⎕CSV</code> for both importing from and exporting to CSV files.</p><a href="#fnref1" class="footnote_anchor"></a>
 </ol>
 </div>
 </article>
@@ -937,13 +937,13 @@ Run #.MyApp.SetLX ⍬</code></pre>
 
 <div class="leanpub_A">
 <h3>CONTINUE workspaces</h3>
-<p>Prior to version 16.0, as soon as you close the message box a CONTINUE workspace was created in the current directory. Such a CONTINUE <abbr title="Short for Workspaces">WS</abbr> can be loaded and investigated, making it easy to figure out what the problem is. (However, this is true only if it is a single-threaded application, since workspaces cannot be saved when more than one thread is running.)</p>
-<p>With version 16.0 you can still force the interpreter to drop a CONTINUE workspace by enabling the old behaviour with <code>2704⌶ 1</code>, while <code>2704⌶ 0</code> would disable it again.</p>
+<p>Prior to version 17.0, as soon as you close the message box a CONTINUE workspace was created in the current directory. Such a CONTINUE <abbr title="Short for Workspaces">WS</abbr> can be loaded and investigated, making it easy to figure out what the problem is. (However, this is true only if it is a single-threaded application, since workspaces cannot be saved when more than one thread is running.)</p>
+<p>With version 17.0 you can still force the interpreter to drop a CONTINUE workspace by enabling the old behaviour with <code>2704⌶ 1</code>, while <code>2704⌶ 0</code> would disable it again.</p>
 <p>For analysis, load a CONTINUE workspace in an already running Dyalog session – don’t double-click a CONTINUE! The reason is that <code>⎕DM</code> and <code>⎕DMX</code> are overwritten in the process of booting SALT, meaning that you lose the error message.</p>
 <p>You <em>might</em> recreate them by re-executing the failing line – but that has other dangers, or might fail in a new way.</p>
-<p>Note also that the CONTINUE is always saved in the current directory; in version 16.0 there is no way to tell the interpreter to save the CONTINUE workspace elsewhere.</p>
+<p>Note also that the CONTINUE is always saved in the current directory; in version 17.0 there is no way to tell the interpreter to save the CONTINUE workspace elsewhere.</p>
 <p>That is limiting, as it will fail for your own stand-alone <abbr title="Executable file with the extension 'exe'">EXE</abbr>s if they are installed in the standard folders for executables under Windows, <code>C:\Program Files</code> (64-bit programs) and <code>C:\Program Files (x86)</code> (32-bit programs): even as an admin you cannot write to those folders or subfolders.</p>
-<p>But Windows saves it anyway! If a program attempts to write to a banned location Windows tells them “Sure, no problem” but saves them in a e.g. <code>"C:\Users\kai\AppData\Local\VirtualStore\Program Files\Dyalog\Dyalog APL-64 16.0 Unicode\CONTINUE.dws"</code> where you are running Dyalog APL 64-bit Unicode version 16.0.</p>
+<p>But Windows saves it anyway! If a program attempts to write to a banned location Windows tells them “Sure, no problem” but saves them in a e.g. <code>"C:\Users\kai\AppData\Local\VirtualStore\Program Files\Dyalog\Dyalog APL-64 17.0 Unicode\CONTINUE.dws"</code> where you are running Dyalog APL 64-bit Unicode version 17.0.</p>
 </div>
 
 <p>The next version of <code>MyApp</code> will improve by logging what happens when it runs.</p>
@@ -1744,7 +1744,7 @@ Wait        = 1</code></pre>
 <h2>4. DLLs required by Ride</h2>
 </a>
 </div>
-<p>Prior to version 16.0 one had to copy these files :</p>
+<p>Prior to version 17.0 one had to copy these files :</p>
 <ul>
 <li><code>ride27_64.dll</code></li>
 <li><code>ride27ssl64.dll</code></li>
@@ -1754,7 +1754,7 @@ Wait        = 1</code></pre>
 <li><code>ride27_32.dll</code></li>
 <li><code>ride27ssl32.dll</code></li>
 </ul>
-<p>as siblings of the <abbr title="Executable file with the extension 'exe'">EXE</abbr>. From 16.0 onward you must copy the Conga DLLs instead.</p>
+<p>as siblings of the <abbr title="Executable file with the extension 'exe'">EXE</abbr>. From 17.0 onward you must copy the Conga DLLs instead.</p>
 <p>Neglecting that will make <code>3502⌶1</code> fail. Note that 2.7 refers to the version of Conga, not Ride.</p>
 <p>Prior to version 3.0 of Conga every application (interpreter, Ride, etc.) needed their own copy of the Conga DLLs, with a different name.</p>
 <p>Since 3.0 Conga can serve several applications in parallel. We suggest you copy the 32-bit and the 64-bit DLLs as siblings of your <abbr title="Executable file with the extension 'exe'">EXE</abbr>.</p>
@@ -2227,7 +2227,7 @@ HandleError.Process caught SYNTAX ERROR</code></pre>
 <p>The HTM contains a report of the crash and some key system variables:</p>
 <pre><code>MyApp_20170307111141
 
-Version:   Windows-64 16.0 W Development
+Version:   Windows-64 17.0 W Development
 ⎕WSID:       MyApp
 ⎕IO:       1
 ⎕ML:       1
@@ -3206,7 +3206,7 @@ TxtToCsv
 <li id="fnref2"><p>APL has no <em>string</em> datatype. We use the word as a casual synonym for <em>character vector</em>.</p><a href="#fnref2" class="footnote_anchor"></a>
 <li id="fnref3"><p>An expert in the domain of the application rather than an expert programmer, but who has learned enough programming to write the code.</p><a href="#fnref3" class="footnote_anchor"></a>
 <li id="fnref4"><p><em>Non sunt multiplicanda entia sine necessitate.</em></p><a href="#fnref4" class="footnote_anchor"></a>
-<li id="fnref5"><p>With version 16.0 the same can be achieved with the new primitive <code>⍸</code>.</p><a href="#fnref5" class="footnote_anchor"></a>
+<li id="fnref5"><p>With version 17.0 the same can be achieved with the new primitive <code>⍸</code>.</p><a href="#fnref5" class="footnote_anchor"></a>
 </ol>
 </div>
 </article>
@@ -3288,7 +3288,7 @@ TxtToCsv
 <p>In its most basic function, it lists methods, properties and fields (functions, operators and variables) and requires no comments in the code.</p>
 <p>In its more powerful function, it composes an <abbr title="Hyper Text Mark-up language">HTML</abbr> page from header comments in the code. Honouring Markdown conventions, it provides all the typographical features you need for documentation.</p>
 <p>If Markdown is new to you, see the Markdown article on Wikipedia [<a href="#fnref4" class="footnote_link"><sup>4</sup></a>] and <code>Markdown2Help</code>’s own help file. Your time will be well spent: these days Markdown is used very widely.</p>
-<p>Previously only found as a class in the APLTree library, ADoc is now shipped in Dyalog Version 16.0 as a user command.</p>
+<p>Previously only found as a class in the APLTree library, ADoc is now shipped in Dyalog Version 17.0 as a user command.</p>
 <div class="h_tag">
 <a href="#Get-a-summary" id="Get-a-summary" class="autoheader_anchor">
 <h3>5.1. Get a summary</h3>
@@ -3794,7 +3794,7 @@ Active      = 0
 
 <div class="leanpub_A">
 <h3>The <code>Bind</code> method</h3>
-<p>Note that for the <code>Bind</code> method to work as discussed in this chapter you must use at least version 16.0.31811.0 of Dyalog. Before that <code>Bind</code> was not an official method and did not support the <code>details</code>.</p>
+<p>Note that for the <code>Bind</code> method to work as discussed in this chapter you must use at least version 17.0.31811.0 of Dyalog. Before that <code>Bind</code> was not an official method and did not support the <code>details</code>.</p>
 </div>
 
 <p>Double-click <code>Make.dyapp</code>: a folder <code>MyApp</code> should appear in <code>Z:\code\v10</code> with, among other files, <code>MyApp.exe</code>.</p>
@@ -4652,7 +4652,7 @@ The system cannot find the file specified.</code></pre>
 <h2>3. Restrictions</h2>
 </a>
 </div>
-<p>With Dyalog version 16.0 we cannot install a stand-alone <abbr title="Executable file with the extension 'exe'">EXE</abbr> as a Windows Service. All we can do is to install a given interpreter and then ask it to load a workspace, which implies running <code>⎕LX</code>. (This restriction may be lifted in a future version of Dyalog.)</p>
+<p>With Dyalog version 17.0 we cannot install a stand-alone <abbr title="Executable file with the extension 'exe'">EXE</abbr> as a Windows Service. All we can do is to install a given interpreter and then ask it to load a workspace, which implies running <code>⎕LX</code>. (This restriction may be lifted in a future version of Dyalog.)</p>
 <p>That means that unless you're happy to expose your code, you have a problem. There are solutions:</p>
 <ul>
 <li>Lock all the functions and operators in the workspace.</li>
@@ -4747,7 +4747,7 @@ cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService DYALOG_NOPOPUPS=1'</code
 <div class="leanpub_A">
 <h3>CONTINUE workspaces</h3>
 <p>The Service might have created a CONTINUE workspace, for various reasons.</p>
-<p>Note that, starting with version 16.0, Dyalog no longer drops a CONTINUE workspace by default. You must configure Dyalog to do so.</p>
+<p>Note that, starting with version 17.0, Dyalog no longer drops a CONTINUE workspace by default. You must configure Dyalog to do so.</p>
 <p>A CONTINUE cannot be saved if there is more than one thread running – and Services are by definition multi-threaded. However, if it fails very early there <em>might</em> still be a CONTINUE.</p>
 <p>Once a second thread is started, Dyalog is no longer able to save a CONTINUE workspace. Establishing error trapping before a second thread is started avoids this problem.</p>
 </div>
@@ -5691,9 +5691,9 @@ HKCU\Software\MyApplication\MainForm\Size</code></pre>
 <p>Here’s an example. This is the definition of the MAX<abbr title="Short for Workspaces">WS</abbr> parameter for Dyalog 64 bit Unicode version 16:</p>
 <p><img src="Images/WinReg_maxws.png" alt="Definition of maxws in the Windows Registry" title="Definition of maxws in the Windows Registry"></p>
 <p>The full path is:</p>
-<pre><code>Computer\HKEY_CURRENT_USER\Software\Dyalog\Dyalog APL/W-64 16.0 Unicode\maxws</code></pre>
+<pre><code>Computer\HKEY_CURRENT_USER\Software\Dyalog\Dyalog APL/W-64 17.0 Unicode\maxws</code></pre>
 <p>We can omit <code>Computer</code> if it is the local machine, and we can shorten “HKEY_CURRENT_USER” as “HKCU”. That leaves us with:</p>
-<pre><code>HKCU\Software\Dyalog\Dyalog APL/W-64 16.0 Unicode\maxws</code></pre>
+<pre><code>HKCU\Software\Dyalog\Dyalog APL/W-64 17.0 Unicode\maxws</code></pre>
 <p>That looks pretty much like a file path, doesn't it? So what about calling the different parts to the left of <code>maxws</code> <em>folders</em>?</p>
 <p>Well, that might be logical, but Microsoft did not do that. Instead they call <code>HKCU</code> a <em>key</em>. The top-level parts are sometimes called <em>root keys</em>. The other parts except <code>maxws</code> are called <em>subkeys</em>; sometimes just <em>keys</em>.</p>
 <p>So what's <code>maxws</code>? Well, it holds a value, so why not call it <em>key</em>? Oops, that's already taken. Maybe <em>name</em> or <em>ID</em>? Well, Microsoft calls it a <em>value</em>. That's a strange name because is <em>has</em> an associated value, in our example, the string <code>'64000'</code>.</p>
@@ -5790,7 +5790,7 @@ HKCU\Software\MyApplication\MainForm\Size</code></pre>
 <p>It is also limited to the two datatypes <code>REG_SZ</code> and <code>REG_DWORD</code>.</p>
 <p>The class uses the Windows Scripting Host (<abbr title="Short for Workspaces">WS</abbr>H) [<a href="#fnref4" class="footnote_link"><sup>4</sup></a>]. It is available on all Windows systems although it can be switched off by group policies, though we have never seen this in the wild.</p>
 <p>If you want to read just a certain value then this – very small – class might suffice. For example, to read the aforementioned <code>maxws</code> value:</p>
-<pre><code>      #.WinRegSimple.Read 'HKCU\Software\Dyalog\Dyalog APL/W-64 16.0 Unicode\maxws'
+<pre><code>      #.WinRegSimple.Read 'HKCU\Software\Dyalog\Dyalog APL/W-64 17.0 Unicode\maxws'
 64000</code></pre>
 <p>You can create a new value as well as a new key with <code>Write</code>:</p>
 <pre><code>      #.WinRegSimple.Write 'HKCU\Software\Cookbooktests\MyValue' 1200
@@ -5879,13 +5879,13 @@ Shared Methods:
       ↑GetAllVersionsOfDyalog ⍬
 Dyalog APL/W 14.1 Unicode
 Dyalog APL/W 15.0 Unicode
-Dyalog APL/W 16.0 Unicode
+Dyalog APL/W 17.0 Unicode
 Dyalog APL/W-64 13.2 Unicode
 Dyalog APL/W-64 14.0 Unicode
 Dyalog APL/W-64 14.1 Unicode
 Dyalog APL/W-64 15.0
 Dyalog APL/W-64 15.0 Unicode
-Dyalog APL/W-64 16.0 Unicode</code></pre>
+Dyalog APL/W-64 17.0 Unicode</code></pre>
 <p>That's step one. In the next step we need to write a function that adds a folder to the list of user command folders:</p>
 <pre><code>∇ {r}←path Add version;subkey;folders
    r←⍬
@@ -5902,29 +5902,29 @@ Dyalog APL/W-64 16.0 Unicode</code></pre>
       ⍪{#.WinReg.GetValue 'HKCU\Software\Dyalog\',⍵,'\SALT\CommandFolder'}¨dyalogVersions
  C:\...\Dyalog APL 14.1 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\
  C:\...\Dyalog APL 15.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\
- C:\...\Dyalog APL 16.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\
+ C:\...\Dyalog APL 17.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\
 ...
       'C:\MyUserCommands'∘Add¨dyalogVersions
       ⍪{#.WinReg.GetValue 'HKCU\Software\Dyalog\',⍵,'\SALT\CommandFolder'}¨dyalogVersions
       C:\..\Dyalog APL 14.1 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands
 C:\...\Dyalog APL 15.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands
-C:\...\Dyalog APL 16.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands
+C:\...\Dyalog APL 17.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands
 ...
       'C:\MyUserCommands'∘Add¨dyalogVersions
       ⍪{#.WinReg.GetValue 'HKCU\Software\Dyalog\',⍵,'\SALT\CommandFolder'}¨dyalogVersions
 C:\...\Dyalog APL 14.1 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands
 C:\...\Dyalog APL 15.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands
-C:\...\Dyalog APL 16.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands</code></pre>
+C:\...\Dyalog APL 17.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCommands</code></pre>
 <p>Although we called <code>Add</code> twice, the folder <code>C:\MyUserCommands</code> appears only once. This is because we carefully removed it before adding it.</p>
 <div class="h_tag">
 <a href="#Configure-Dyalogs-window-captions" id="Configure-Dyalogs-window-captions" class="autoheader_anchor">
 <h3>6.2. Configure Dyalog's window captions</h3>
 </a>
 </div>
-<p>In <a href="./53 Appendix 4 — The development environment.html" class="external_link"><em>Appendix 4 — The development environment</em></a> we mention that if you run more than one instance of Dyalog in parallel then you want to be able to associate any dialog box to the instance that issued it. This can be achieved by adding certain pieces of information to certain entries in the Windows Registry. We talk about this subkey of, say, Dyalog APL/W-64 16.0 Unicode:</p>
-<pre><code>HKCU\Software\Dyalog\Dyalog APL/W-64 16.0 Unicode\Captions</code></pre>
+<p>In <a href="./53 Appendix 4 — The development environment.html" class="external_link"><em>Appendix 4 — The development environment</em></a> we mention that if you run more than one instance of Dyalog in parallel then you want to be able to associate any dialog box to the instance that issued it. This can be achieved by adding certain pieces of information to certain entries in the Windows Registry. We talk about this subkey of, say, Dyalog APL/W-64 17.0 Unicode:</p>
+<pre><code>HKCU\Software\Dyalog\Dyalog APL/W-64 17.0 Unicode\Captions</code></pre>
 <p>If that subkey exists (after an installation it doesn't) then it is supposed to contain particular values defining the captions for all dialog boxes that might make an appearance when running an instance of Dyalog.</p>
-<p>So to configure all these window captions you have to add the subkey <code>Chapter</code> and the required values in one way or another. This is a list of values honoured by version 16.0:</p>
+<p>So to configure all these window captions you have to add the subkey <code>Chapter</code> and the required values in one way or another. This is a list of values honoured by version 17.0:</p>
 <table>
 <tbody>
 <tr>
@@ -5998,7 +5998,7 @@ C:\...\Dyalog APL 16.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCo
 <p>We can now write <code>captionValues</code> to all versions:</p>
 <pre><code>       captionValues∘WriteCaptionValues¨dyalogVersions
       ⍝ Let's check:
-      rk←'HKCU\Software\Dyalog\Dyalog APL/W-64 16.0 Unicode\Captions'
+      rk←'HKCU\Software\Dyalog\Dyalog APL/W-64 17.0 Unicode\Captions'
       #.WinReg.GetTreeWithValues rk
 0  HKCU\...\Captions\
 1  HKCU\...\Editor          {PID} {TITLE} {WSID}-{NSID} {Chars} {Ver_A}.{VER_B}.{VER_C} {BITS}
@@ -6491,7 +6491,7 @@ Type: files; Name: {app}\baz\quux.txt</code></pre>
 </a>
 </div>
 <p>Dyalog uses the PCRE implementation of regular expressions. There are other other implementations available, and they differ in their use and performance characteristics. So you need to know what kind of engine you are using to find the right advice, examples and solutions on the Web.</p>
-<p>Dyalog 16.0 uses PCRE version 8. PCRE is considered one the most complete and powerful implementations of regular expressions.</p>
+<p>Dyalog 17.0 uses PCRE version 8. PCRE is considered one the most complete and powerful implementations of regular expressions.</p>
 <div class="h_tag">
 <a href="#RegEx-in-a-nutshell" id="RegEx-in-a-nutshell" class="autoheader_anchor">
 <h2>5. RegEx in a nutshell</h2>
@@ -7039,7 +7039,7 @@ This boo⍈goo is found as well</code></pre>
 <p>We can solve this problem with <code>\b</code> (word boundaries). <code>\b</code> does not attempt to match a particular character on a particular position. Instead it checks whether there is a word boundary either before are after the current position – but not both.</p>
 <p>That means no matter whether they are successful or not they won't change the position the engine is currently investigating. They are also called anchors.</p>
 <p>To put it simply, <code>\b</code> allows you to perform a ‘whole word only’ search as in <code>\bword\b</code>.</p>
-<p>Prior to version 8 of PCRE (and 16.0 of Dyalog) this was true only for ASCII characters. So it worked only for the English language.</p>
+<p>Prior to version 8 of PCRE (and 17.0 of Dyalog) this was true only for ASCII characters. So it worked only for the English language.</p>
 <pre><code>       ⍴'\bger\b'⎕S 0 ⊣'Kai Jägerßabc'
 1</code></pre>
 <p>That's because both ä and ß are non-ANSI characters.</p>
@@ -7386,7 +7386,7 @@ This ⍈; more: ⍈</code></pre>
 │ │ │ │A paragraph.      │ │ │ │
 │ └─┘ └──────────────────┘ └─┘ │
 └∊─────────────────────────────┘</code></pre>
-<p>That's what happens in version 16.0. Be aware that this might change in a later version of Dyalog.</p>
+<p>That's what happens in version 17.0. Be aware that this might change in a later version of Dyalog.</p>
 <div class="h_tag">
 <a href="#Miscellaneous" id="Miscellaneous" class="autoheader_anchor">
 <h2>7. Miscellaneous</h2>
@@ -8623,8 +8623,8 @@ This ⍈; more: ⍈</code></pre>
 <p>Whether you want to write your own user commands or to make use of any third-party user commands like those available from the APL wiki for download [<a href="#fnref1" class="footnote_link"><sup>1</sup></a>], you need to consider your options for how to integrate non-Dyalog user commands into your development environment.</p>
 <p>The default folder depends on your version of Dyalog of course, but you can always find out from a running instance of Dyalog APL:</p>
 <pre><code>      '"',(2⎕NQ # 'GetEnvironment' 'Dyalog'),'\SALT\spice\"'
-"C:\Program Files\Dyalog\Dyalog APL-64 16.0 Unicode\SALT\spice\"</code></pre>
-<p>The above is the default folder for the 64-bit Unicode version of Dyalog 16.0 for all Dyalog user commands available within that version.</p>
+"C:\Program Files\Dyalog\Dyalog APL-64 17.0 Unicode\SALT\spice\"</code></pre>
+<p>The above is the default folder for the 64-bit Unicode version of Dyalog 17.0 for all Dyalog user commands available within that version.</p>
 <div class="h_tag">
 <a href="#Using-the-default-folder" id="Using-the-default-folder" class="autoheader_anchor">
 <h2>2. Using the default folder</h2>
@@ -8799,7 +8799,7 @@ This ⍈; more: ⍈</code></pre>
 
 <div class="leanpub_A">
 <p>If the aplcore is saved at all that is, because if the current directory is something like <code>C:\Program files\</code> then you won't have the right to save into this directory anyway.</p>
-<p>When a program asks Windows to save a file in a location where that program has no write permission (e.g. <code>C:\Program Files</code>, <code>C:\Program Files (x86)</code>, <code>C:\Windows</code>) then Windows will tell the application that it has fulfilled the request, but the file will actually be saved in something like <code>C:\Users\{username}\AppData\Local\VirtualStore\Program Files\Dyalog\Dyalog APL-64 16.0 Unicode\</code></p>
+<p>When a program asks Windows to save a file in a location where that program has no write permission (e.g. <code>C:\Program Files</code>, <code>C:\Program Files (x86)</code>, <code>C:\Windows</code>) then Windows will tell the application that it has fulfilled the request, but the file will actually be saved in something like <code>C:\Users\{username}\AppData\Local\VirtualStore\Program Files\Dyalog\Dyalog APL-64 17.0 Unicode\</code></p>
 </div>
 
 <p>For that reason it is highly recommended to set the value <code>aplcorename</code> in the Windows Registry:</p>
@@ -8845,7 +8845,7 @@ This ⍈; more: ⍈</code></pre>
 <div>
 <h3>Leave the Dyalog installation directory alone</h3>
 <p>Do <em>not</em> alter any files in the Dyalog installation directory, and don't add your own files there either: Dyalog may update files in there in any patch.</p>
-<p>Although this is not strictly true in 16.0 and earlier, Dyalog <em>may</em> start to issue .msp files which might change any file in the installation directory without warning!</p>
+<p>Although this is not strictly true in 17.0 and earlier, Dyalog <em>may</em> start to issue .msp files which might change any file in the installation directory without warning!</p>
 </div>
 </div>
 
@@ -8881,7 +8881,7 @@ This ⍈; more: ⍈</code></pre>
 <pre><code>:Namespace Setup
 ⍝ Up to - and including - version 15.0 this script needs to go into:
 ⍝ "C:\Users\[username]\Documents\MyUCMDs"
-⍝ Under 16.0 that still works but the SALT workdir folders are scanned as well.
+⍝ Under 17.0 that still works but the SALT workdir folders are scanned as well.
   ⎕IO←1 ⋄ ⎕ML←1
 
 ∇ {r}←Setup arg;myStuff

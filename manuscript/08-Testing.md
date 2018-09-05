@@ -962,7 +962,7 @@ If it’s not `0`:
 
 [^occam]: _Non sunt multiplicanda entia sine necessitate._
 
-[^where]: With version 16.0 the same can be achieved with the new primitive `⍸`.
+[^where]: With version 17.0 the same can be achieved with the new primitive `⍸`.
 
 
 *[HTML]: Hyper Text Mark-up language

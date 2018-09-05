@@ -4,70 +4,57 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta charset="utf-8">
 <title>EnvVars</title>
-<link href="./CSS/BlackOnWhite_screen.css" rel="stylesheet" media="screen">
-<link href="./CSS/Cookbook_Chapter_screen.css" rel="stylesheet" media="screen">
-<link href="./CSS/snap.css" rel="stylesheet" media="screen">
-<link href="./CSS/BlackOnWhite_print.css" rel="stylesheet" media="print">
-<link href="./CSS/Cookbook_Chapter_print.css" rel="stylesheet" media="print">
-<script src="./JavaScript/snap.js"></script>
+<style media="screen">
+html{line-height:1.15;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;}body{margin:0;}article,aside,footer,header,nav,section{display:block;}h1{font-size:2em;margin:0.67em 0;}figcaption,figure,main{display:block;}figure{margin:1em 40px;}hr{box-sizing:content-box;height:0;overflow:visible;}pre{font-family:monospace, monospace;font-size:1em;}a{background-color:transparent;-webkit-text-decoration-skip:objects;}abbr[title]{border-bottom:none;text-decoration:underline;text-decoration:underline dotted;}b,strong{font-weight:inherit;}b,strong{font-weight:bolder;}code,kbd,samp{font-family:monospace, monospace;font-size:1em;}dfn{font-style:italic;}mark{background-color:#ff0;color:#000;}small{font-size:0.8em;}sub,sup{font-size:0.75em;line-height:0;position:relative;vertical-align:baseline;}sub{bottom:-0.25em;}sup{top:-0.5em;}audio,video{display:inline-block;}audio:not([controls]){display:none;height:0;}img{border-style:none;}svg:not(:root){overflow:hidden;}button,input,optgroup,select,textarea{font-family:sans-serif;font-size:1em;line-height:1.15;margin:0;}button,input{overflow:visible;}button,select{text-transform:none;}button,html [type="button"], [type="reset"],[type="submit"]{-webkit-appearance:button;}button::-moz-focus-inner,[type="button"]::-moz-focus-inner,[type="reset"]::-moz-focus-inner,[type="submit"]::-moz-focus-inner{border-style:none;padding:0;}button:-moz-focusring,[type="button"]:-moz-focusring,[type="reset"]:-moz-focusring,[type="submit"]:-moz-focusring{outline:1px dotted ButtonText;}fieldset{padding:0.35em 0.75em 0.625em;}legend{box-sizing:border-box;color:inherit;display:table;max-width:100%;padding:0;white-space:normal;}progress{display:inline-block;vertical-align:baseline;}textarea{overflow:auto;}[type="checkbox"],[type="radio"]{box-sizing:border-box;padding:0;}[type="number"]::-webkit-inner-spin-button,[type="number"]::-webkit-outer-spin-button{height:auto;}[type="search"]{-webkit-appearance:textfield;outline-offset:-2px;}[type="search"]::-webkit-search-cancel-button,[type="search"]::-webkit-search-decoration{-webkit-appearance:none;}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit;}details, menu{display:block;}summary{display:list-item;}canvas{display:inline-block;}template{display:none;}[hidden]{display:none;}body{margin:0;font-family:"Bookman Old Style", "Callisto MT", Bookman, "Goudy Old Style", Garamond, serif;background-color:#fdfdfd;font-size:18px;line-height:1.4;max-width:none;padding:0.83em;color:#292929;}h1, h2, h3, h4, h5, h6{color:#404040;font-weight:800;padding-left:0;}h1, h2, h3, h4, h5, h6{font-family:"Century Gothic", Verdana, "Sans";}h1, h2, h3, h4, p{margin-bottom:0.88em;}h1{font-size:1.8em;margin:0.27em 0 1.11em 0;}h1 > code, h2 > code, h3 > code, h4 > code, h5 > code, h6 > code{font-size:1em;background-color:inherit;}h2{font-size:1.44em;margin:0.55em 0 0.55em 0;padding-top:0.55em;border-bottom:1px solid Silver;}h3{margin:0;margin-top:0.55em;font-size:1.22em;}nav h3{font-size:0.88em;margin-left:0.83em;margin-bottom:0.27em;}h4{font-size:1em;margin:0;margin-top:0.55em;}h5{font-size:0.94em;margin:0;margin-top:0.66em;padding:0;}h6{font-size:0.88em;margin:0;margin-top:0.66em;padding:0;}a{color:#0099ff;margin:0;padding:0;vertical-align:baseline;}a:visited{color:purple;}a.autoheader_anchor{text-decoration:none;}ul{list-style-type:disc;}ul, ol{padding:0;margin:0;}dd{padding-top:0.25em;}p.first_dd{padding-top:0.25em;}li > ul, ol{padding-bottom:0;}li{line-height:1.3;margin-left:1.38em;margin-bottom:0.55em;}ul > li{margin-left:1.11em;}li ul{margin-left:0.55em;}li ul{margin-left:0.27em;}li p{padding:1px 0 0 0;margin:0.55em 0 0.27em 0;line-height:1.3;}p, ul, ol{line-height:1.3;padding:0.44em 0 0 0;margin:0;}pre{overflow:scroll;padding:0.55em 0.27em;margin:0.55em 0 0.55em 0 !important;background-color:#faebd7;color:#3e3e3e;border:1px Silver dashed;display:block;font-family:APLFont, monospace;font-weight:400;}pre > code{line-height:1.2;border:0;padding:0;margin:0;background-color:inherit;color:inherit;font-weight:inherit;}a code{padding:0;font-size:1em;}nav code{background-color:inherit;font-weight:400;color:inherit;}code{font-family:APLFont, monospace;background-color:#e7e7e7;color:Black;font-weight:800;line-height:1.2;font-size:0.88em;margin:0;color:#950000;padding:0 0.16em;}tbody tr:nth-child(even){background-color:#F0F0F0;}th{background-color:#E6E6E6;color:black;}th, td{padding:0.16em 0.55em;}table{border-color:Black;margin:1.11em 0 1.11em 0;border:2px black;border-collapse:collapse;font-family:APLFont;font-size:0.88em;line-height:1.2;border:1px solid Gray;}li > table{margin:0.55em 0 0.55em 0;}tr{margin:1.11em;}th{font-weight:bold;}tfoot td{font-weight:bold;}blockquote{border-left:0.27em solid silver;padding-left:0.27em;margin:0.83em 0.27em 0.83em 0.55em;}blockquote ul li{margin-left:1.38em;}blockquote ol li{margin-left:1.38em;}li > blockquote{margin-left:0;}nav{background-color:#f5f5f5;border:1px solid Black;padding:0.55em;margin:0.55em;margin-right:0;box-shadow:0.27em 0.27em 0.27em Gray;overflow:hidden;}nav#main_nav{position:fixed;top:0;right:0.55em;float:none;width:auto;}nav#main_nav_no_collapse li{font-size:0.77rem;}nav#main_nav_no_collapse li{line-height:1.5;}nav ul{list-style-type:none;margin:0 0 0.11em 0;padding:0;}nav a:visited{color:black;}nav ul li{margin-bottom:0.16em;}nav li p{margin:0;padding:0;line-height:1;margin:0;padding:0;}nav li{font-size:0.75rem;line-height:1.3;padding:0;margin-top:0;margin-bottom:0;margin-left:0.83em;}nav p{font-weight:bold;font-size:0.75rem;padding-top:0;}dl{margin-top:0.1em;margin-bottom:0.1em;}dt{margin-top:0.75em;margin-bottom:0.1em;font-weight:800;}label#hide_toc_label{font-size:0.8em;}.toc-container{position:relative;height:auto;}div.toc-container h1{font-size:0.88em;margin:0.27em 0 0.27em 0;}[type="checkbox"]{position:absolute;left:-9999px;}label{display:block;width:100%;height:1.1em;cursor:pointer;top:0;padding-left:1.1em;}label:before{content:'Table of contents \25BC';font-weight:bold;font-size:90%;padding-bottom:0;}[type="checkbox"] ~ div{display:none;}[type="checkbox"]:checked ~ div{display:block;margin-top:1.1em;}[type="checkbox"]:checked + label{top:100%;}[type="checkbox"]:checked + label:before{content:'Table of contents ▲';}div#footnotes_div p{line-height:1;padding-bottom:0;padding-top:0;}div#footnotes_div ol{padding-top:0;}@font-face{font-family:"APLFont";src:local("APL385 Unicode"), url("http://misc.aplteam.com/apl385.ttf") format("truetype");}.no_display{display:none;}.red{color:red;}img{margin-top:0.55em;margin-bottom:0.27em;}div.leanpub{padding:0.83em 0.55em 1.11em 0;margin:0.55em 0 0 0.27em;overflow:auto;}div.leanpub_A{border:1px solid black;background-color:#f1f1f1;padding:0.55em;margin:1.11em 0 0.83em 0;}div.leanpub h3, div.leanpub_A h3{font-size:1.2em;padding:0;margin:0;}div.leanpub h4, div.leanpub_A h4{font-size:1.1em;padding:0.27em 0 0 0;margin:0;}div.leanpub h5, div.leanpub h5{font-size:1.0em;padding:0.27em 0 0 0;margin:0;}div.leanpub_A h5, div.leanpub_A h5{font-size:1.0em;padding:0.27em 0 0 0;margin:0;}div.leanpub img{padding:0;margin:0 1.11em 0.27em 0;}div.leanpub_A > p:first-child{padding-top:0;margin-top:0;}div.leanpub img{float:left;padding:0;margin:0.55em 1.11em 0 0;clear:both;}div.leanpub tbody *{background-color:transparent;}div.leanpub p{padding:0.17em 0 0 0;margin:0;}span.leanpub_code{color:Red;}div.leanpub p{display:block;padding:0.44em 0 0 0;}div.leanpub > div{margin-left:2.27em;}
+</style>
+<style media="print">
+@page{margin:25mm 20mm 25mm 20mm;}body{font-family:"Bookman Old Style", "Callisto MT", Bookman,"Goudy Old Style", Garamond, serif;font-size:9pt;line-height:1.2;}h1{font-size:170%;}h2{font-size:110%;}h3{font-size:110%;}h4{font-size:105%;}h5{font-size:100%;}h6{font-size:95%;}h1{margin:0 0 20pt 0;}h2{margin:15pt 0 3pt 0;}h3{margin:10pt 0 0pt 0;}h4{margin:10pt 0 0pt 0;}h5{margin:9pt 0 0pt 0;}h6{margin:9pt 0 0pt 0;}h1, h2, h3, h4, h5, h6{color:black;font-family:"Century Gothic", Verdana, "Sans";page-break-after:avoid;}h1 > code, h2 > code, h3 > code, h4 > code, h5 > code, h6 > code{font-size:100%;}h2{border-bottom:1pt solid Silver;padding-bottom:2pt;}.h_tag{page-break-after:avoid;break-after:avoid;}abbr[title]{border-bottom:0;text-decoration:none;}a{color:black;margin:0;padding:0;vertical-align:baseline;text-decoration:none;font-style:italic;}a.autoheader_anchor{text-decoration:none;font-style:normal;page-break-after:avoid;break-after:avoid;}ul{list-style-type:square;}ul, ol{padding:0;margin:0;}li > ul, ol{padding-bottom:0;}li{line-height:1.3;margin-left:13pt;margin-bottom:5pt;}ul > li{margin-left:10pt;}li ul{margin-left:5pt;}li ul{margin-left:3pt;}li p{padding:1pt 0 0 0;margin:5pt 0 3pt 0;line-height:1.3;}p, ul, ol{line-height:1.3;padding:4pt 0 0 0;margin:0;color:black;}pre{padding:3pt;margin:5pt 0;white-space:pre-wrap;background-color:#FAFAFA;border:1pt Silver solid;display:block;font-family:APLFont, monospace;page-break-inside:avoid;-webkit-print-color-adjust:exact;}pre code{background-color:#FAFAFA;color:Black;padding:0;margin:0 0 -6pt 0;line-height:1.1;border:0;}code{font-family:APLFont, monospace;line-height:1.2;font-size:9pt;padding:3pt 1pt 3pt 1pt;color:#950000;padding:3pt 4pt 3pt 4pt;}tbody th, tfoot tr{background-color:#e6e6e6;}tbody tr:nth-child(even){background-color:#fafafa;}th{background-color:#F0F0F0;}th, td{padding:1pt 5pt;}table{margin:10pt 0;font-family:APLFont;font-size:9pt;padding:0;border:1pt solid silver;-webkit-print-color-adjust:exact;}li > table{margin:10pt 0 10pt 0;}tr{margin:20pt;}th{font-weight:bold;}tfoot td{font-weight:bold;}blockquote{border-left:5pt solid silver;padding-left:5pt;margin:8pt 3pt 8pt 8pt;}nav{background-color:#f8f8f8;border:1pt solid Gray;width:auto;float:right;padding:5pt 5pt 5pt 0;margin:5pt 0 5pt 5pt;page-break-inside:avoid;}nav *{font-size:75%;}nav ul{list-style-type:none;margin:0 0 2pt 0;padding:0;}nav ul li{margin-bottom:0;}nav li p{margin:0;padding:0;line-height:1;margin:0;padding:0;}nav li{font-size:9pt;line-height:1;padding:0;margin-top:0;margin-bottom:0;margin-left:8pt;}dl{margin-top:0;margin-bottom:10pt;}dt{margin-top:10pt;margin-bottom:0;font-weight:800;page-break-inside:avoid;}dd{margin-top:2pt;}label#hide_toc_label{font-size:65%;}.toc-container{position:relative;height:auto;margin-top:5pt;}.toc-container h1{margin:0 0 7pt 7pt;}[type="checkbox"]{display:none;}label{display:block;width:100%;height:1.1em;top:0;padding-left:10pt;}label:before{content:'Table of contents';font-weight:bold;font-size:140%;padding-bottom:10pt;}a.external_link::before{content:" 🌎";}a.bookmark_link::before{content:" ➯";}a.mailto_link::before{content:" ✉"}nav a.bookmark_link{font-style:normal;}nav p{margin-left:10pt;font-weight:bold;font-size:9pt;}nav a{font-style:normal;}nav a.bookmark_link::before{content:"";}div#footnotes_div a::before{content:"";}div#footnotes_div a{font-style:normal;}div#footnotes_div{page-break-inside:avoid;}@font-face{font-family:"APLFont";src:local("APL385 Unicode"), url("http://misc.aplteam.com/apl385.ttf") format("truetype");}.no_print{display:none;}.red{color:red;}.avoid_page_break{page-break-inside:avoid;}.page_break_before{page-break-before:auto;}div.leanpub{margin:10pt 0 10pt 8pt;page-break-inside:avoid;}div.leanpub_A{border:1pt solid black;background-color:#f9f9f9;padding:5pt;margin:10pt 0 10pt 0;page-break-inside:avoid;}div.leanpub h3, div.leanpub_A h3{font-size:1.2em;padding:3pt 0 0 0;margin:0;}div.leanpub h4, div.leanpub_A h4{font-size:1.1em;padding:3pt 0 0 0;margin:0;}div.leanpub h5, div.leanpub h5{font-size:1.0em;padding:3pt 0 0 0;margin:0;}div.leanpub_A h5, div.leanpub_A h5{font-size:1.0em;padding:3pt 0 0 0;margin:0;}div.leanpub img{padding:0;margin:0 10pt 2pt 0;}div.leanpub_A > p:first-child{padding-top:0;margin-top:0;}div.leanpub > div > h1:first-child{padding-top:5pt;}div.leanpub img{float:left;padding:0;margin:5pt 10pt 0 0;clear:both;}div.leanpub p{padding:3pt 0 0 0;margin:0;}span.leanpub_code{color:black;}div.leanpub p{display:block;padding:8pt 0 0 0;}div.leanpub > div{margin-left:35pt;}
+</style>
+<meta name="author" content="kai">
 </head>
 <body>
-<div class="snap-drawers">
-<div class="snap-drawer snap-drawer-left">
-<div class="h_tag">
-<h3>Chapters</h3>
-</div>
-<ol>
-<li><a href="./01-Introduction.html" class="external_link">Introduction</a></li>
-<li><a href="./02-Structure.html" class="external_link">Structure</a></li>
-<li><a href="./03-Packaging.html" class="external_link">Packaging</a></li>
-<li><a href="./04-Logging%20.html" class="external_link">Logging </a></li>
-<li><a href="./05-Configuration.html" class="external_link">Configuration</a></li>
-<li><a href="./06-Debugging-EXEs.html" class="external_link">Debugging EXEs</a></li>
-<li><a href="./07-Handling-errors.html" class="external_link">Handling errors</a></li>
-<li><a href="./08-Testing.html" class="external_link">Testing</a></li>
-<li><a href="./09-Documentation.html" class="external_link">Documentation</a></li>
-<li><a href="./10-Make.html" class="external_link">Make</a></li>
-<li><a href="./11-Providing-help.html" class="external_link">Providing help</a></li>
-<li><a href="./12-Scheduled-Tasks.html" class="external_link">Scheduled Tasks</a></li>
-<li><a href="./13-Windows-Services.html" class="external_link">Windows Services</a></li>
-<li><a href="./14-Windows-Event-Log.html" class="external_link">Windows Event Log</a></li>
-<li><a href="./15-Windows-Registry.html" class="external_link">Windows Registry</a></li>
-<li><a href="./16-Creating-SetUp.exe.html" class="external_link">Creating SetUp.exe</a></li>
-<li><a href="./17-Regular-Expressions.html" class="external_link">Regular Expressions</a></li>
-<li><a href="./18-Acre.html" class="external_link">Acre</a></li>
-<li><a href="./19-GUI.html" class="external_link">GUI</a></li>
-<li><a href="./20-Git.html" class="external_link">Git</a></li>
-</ol>
-<div class="h_tag">
-<h3>Appendices</h3>
-</div>
-<ol>
-<li><a href="./Appendix-01_Windows-environment-vars.html" class="external_link">Windows environment vars</a></li>
-<li><a href="./Appendix-02_User-commands.html" class="external_link">User commands</a></li>
-<li><a href="./Appendix-03_aplcores-&-WS-integrity.html" class="external_link">aplcores & WS integrity</a></li>
-<li><a href="./Appendix-04_Development-environment.html" class="external_link">Development environment</a></li>
-<li><a href="./Appendix-05_Special-characters.html" class="external_link">Special characters</a></li>
-</ol>
-<div class="h_tag">
-<h3>Misc</h3>
-</div>
+<nav id="main_nav_no_collapse">
+<div class="toc-container">
+<h3>Table of contents</h3>
 <ul>
-<li><a href="20-Git.html">Previous chapter</a></li>
-<li><a href="Appendix-02_User-commands.html">Next chapter</a></li>
-<li><a href="./Dyalog_Cookbook.html" class="external_link" alt="All chapters, for printing" title="All chapters, for printing">Single document<br></a></li>
+<li><a href="#Overview">Overview</a></li>
+<li><a href="#Outdated">Outdated?!</a></li>
+<li><a href="#The-variables">The variables</a>
+<ul>
+<li><a href="#AllUserProfile"><code>AllUserProfile</code></a></li>
+<li><a href="#appdata"><code>AppData</code></a></li>
+<li><a href="#CommonProgramFiles"><code>CommonProgramFiles(x86)</code></a></li>
+<li><a href="#CommonProgramW6432"><code>CommonProgramW6432</code></a></li>
+<li><a href="#ComputerName"><code>ComputerName</code></a></li>
+<li><a href="#ComSpec"><code>ComSpec</code></a></li>
+<li><a href="#ErrorLevel"><code>ErrorLevel</code></a></li>
+<li><a href="#HomeDrive"><code>HomeDrive</code></a></li>
+<li><a href="#HomePath"><code>HomePath</code></a></li>
+<li><a href="#HomeShare"><code>HomeShare</code></a></li>
+<li><a href="#localappdata"><code>LocalAppData</code></a></li>
+<li><a href="#LogonServer"><code>LogonServer</code></a></li>
+<li><a href="#OS"><code>OS</code></a></li>
+<li><a href="#Path"><code>Path</code></a></li>
+<li><a href="#PathExt"><code>PathExt</code></a></li>
+<li><a href="#programdata"><code>ProgramData</code></a></li>
+<li><a href="#programfiles"><code>ProgramFiles</code></a></li>
+<li><a href="#x86"><code>ProgramFiles(x86)</code></a></li>
+<li><a href="#ProgramW6432"><code>ProgramW6432</code></a></li>
+<li><a href="#PSModulePath"><code>PSModulePath</code></a></li>
+<li><a href="#Public"><code>Public</code></a></li>
+<li><a href="#systemroot"><code>SystemRoot</code></a></li>
+<li><a href="#Temp"><code>Temp</code></a></li>
+<li><a href="#TMP"><code>TMP</code></a></li>
+<li><a href="#Username"><code>Username</code></a></li>
+<li><a href="#UserProfile"><code>UserProfile</code></a></li>
+<li><a href="#WinDir"><code>WinDir</code></a>
+</li></ul></li>
 </ul>
 </div>
-</div>
-<div id="mainmenu">
-<a href=# style="color:black;"><p><span id="mainmenu_match">≡</span></p></a>
-<p><span id="mainmenu_title">The Dyalog Cookbook</span></p>
-</div>
-<div id="content" class="snap-content">
-<div id="cookbook_content">
+</nav>
 <div class="h_tag">
-<a href="#21-Appendix-1-----Windows-environment-variables" id="21-Appendix-1-----Windows-environment-variables" class="autoheader_anchor">
-<h1>21. Appendix 1 — Windows environment variables</h1>
+<a href="#Appendix-1--Windows-environment-variables" id="Appendix-1--Windows-environment-variables" class="autoheader_anchor">
+<h1>Appendix 1 — Windows environment variables</h1>
 </a>
 </div>
 <div class="h_tag">
@@ -78,14 +65,7 @@
 <p>Windows comes with quite a number of environment variables. Those variables are helpful in addressing, say, a particular path without actually using a physical path.</p>
 <p>For example, on most PCs, Windows is installed in C:\Windows, but this is by no means guaranteed. It is therefore much better to address this particular folder as <code>⊣2 ⎕NQ # 'GetEnvironment' 'WINDIR'</code>.</p>
 <p>Below some of the environment variables found on a Windows 10 system are listed and explained.</p>
-
-<div class="leanpub">
-<img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
-<div>
-<p>The Dyalog Cookbook is usually referring to Windows 10 which, in most cases, is identical with Windows 8 and 7. The Cookbook is not applicable to unsupported versions of Windows like Vista and earlier.</p>
-</div>
-</div>
-
+<p>I&gt; The Dyalog Cookbook is usually referring to Windows 10 which, in most cases, is identical with Windows 8 and 7. The Cookbook is not applicable to unsupported versions of Windows like Vista and earlier.</p>
 <p>Notes:</p>
 <ul>
 <li>When something like “{this}” is part of a path then it means that this string has to be exchanged for something reasonable. For example, in “C:/Users/{yourName}/” the string “{yourName}” needs to be replaced by the value of <code>⎕AN</code>.</li>
@@ -103,86 +83,188 @@
 <h2>The variables</h2>
 </a>
 </div>
-<dl>
-<dt><code>AllUserProfile</code></dt>
-<dd>Defaults to <code>C:\ProgramData</code>: see <a href="#programdata" class="bookmark_link">ProgramData</a></dd>
-<dt id="appdata"><code>AppData</code></dt>
-<dd><p class="first_dd">Defaults to <code>C:\Users\{yourName}\AppData\Roaming</code></p></dd>
-<dd><p>Use this to store data that is both application <strong>and</strong> user specific that is supposed to roam [<a href="#fnref1" class="footnote_link"><sup>1</sup></a>] with the user. An <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> might be an example.</p></dd>
-<dd><p>See also <strong><a href="#localappdata" class="bookmark_link">LocalAppData</a></strong></p></dd>
-<dt><code>CommonProgramFiles</code></dt>
-<dd>Defaults to <code>C:\Program Files\Common Files</code></dd>
-<dt><code>CommonProgramFiles(x86)</code></dt>
-<dd>Defaults to <code>C:\Program Files (x86)\Common Files</code></dd>
-<dt><code>CommonProgramW6432</code></dt>
-<dd>Defaults to <code>C:\Program Files\Common Files</code></dd>
-<dt><code>ComputerName</code></dt>
-<dd>The name of the computer</dd>
-<dt><code>ComSpec</code></dt>
-<dd>Defaults to <code>C:\WINDOWS\system32\cmd.exe</code></dd>
-<dt><code>ErrorLevel</code></dt>
-<dd>This variable does not necessarily exist. If you execute <code>⎕OFF 123</code> in an APL application it will set <code>ErrorLevel</code> to 123.</dd>
-<dt><code>HomePath</code></dt>
-<dd>Defaults to <code>\Users\{yourName}</code></dd>
-<dt id="localappdata"><code>LocalAppData</code></dt>
-<dd><p class="first_dd">Defaults to <code>C:\Users\{yourName}\AppData\Local</code></p></dd>
-<dd><p>Use this to store data that is both application <strong>and</strong> user specific that is <strong>not</strong> supposed to roam [<a href="#fnref1" class="footnote_link"><sup>1</sup></a>] with the user.</p></dd>
-<dd><p>A log file might be an example. The reason is that when a user logs in all the data stored in <code>%APPDATA%</code> is copied over. A large log file might take significant time to be copied with very little (or no) benefit.</p></dd>
-<dd><p>See also <strong><a href="#appdata" class="bookmark_link">AppData</a></strong>.</p></dd>
-<dt><code>LogonServer</code></dt>
-<dd>Defaults to the name of the computer your are logged on to. In case of your own desktop PC the values of <code>LogonServer</code> and <code>ComputerName</code> will be the same. In a Windows Server Domain however they will differ.</dd>
-<dt><code>OS</code></dt>
-<dd>Specifies the Operating System; under Windows 10, <code>Windows_NT</code></dd>
-<dt><code>Path</code></dt>
-<dd>All the folders (separated by semicola) that the operating system should check if the user enters something like <code>my.exe</code> into a console window and <code>my.exe</code> is not found in the current directory.</dd>
-<dt><code>PathExt</code></dt>
-<dd>A list of the file extensions the operating system considers executable, for example: <code>.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC</code>.</dd>
-<dt id="programdata"><code>ProgramData</code></dt>
-<dd>Defaults to <code>C:\ProgramData</code>. Use this for information that is application-specific and needs write access after installation. For Dyalog, this would be the right place to store the session file, workspaces and user commands.</dd>
-<dt id="programfiles"><code>ProgramFiles</code></dt>
-<dd>Defaults to <code>C:\Program Files</code>. On a 64-bit version of Windows this is where 64-bit programs are installed. Note however that on a 32-bit version of Windows this points to <a href="#x86" class="bookmark_link">ProgramFiles(x86)</a>.</dd>
-<dt id="x86"><code>ProgramFiles(x86)</code></dt>
-<dd>Defaults to <code>C:\Program Files (x86)</code>. This is where 32-bit programs are installed.</dd>
-<dt><code>ProgramW6432</code></dt>
-<dd>Defaults to <code>C:\Program Files</code>. On a 64-bit version of Windows this path points to <a href="#programfiles" class="bookmark_link">ProgramFiles</a>. On a 32-bit version of Windows it also points to <code>ProgramFiles</code> which in turn points to <a href="#x86" class="bookmark_link">ProgramFiles(x86)</a>.</dd>
-</dl>
-<p>For details see <em>WOW64 Implementation Detail</em> [<a href="#fnref3" class="footnote_link"><sup>3</sup></a>].</p>
-<dl>
-<dt><code>PSModulePath</code></dt>
-<dd>Defaults to <code>C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\</code>. This path is used by Windows Power Shell [<a href="#fnref2" class="footnote_link"><sup>2</sup></a>] to locate modules when the user does not specify the full path to a module.</dd>
-<dt><code>Public</code></dt>
-<dd>Defaults to <code>C:\Users\Public</code>. It contains folders like <code>Public Documents</code>, <code>Public Music</code>, <code>Public Pictures</code>, <code>Public Videos</code>, … well, you get the picture.</dd>
-<dt id="systemroot"><code>SystemRoot</code></dt>
-<dd>Specifies the folder in which Windows is installed. Defaults to <code>C:\WINDOWS</code>.</dd>
-<dt><code>Temp</code></dt>
-<dd>Points to the folder that holds temporary files and folders. Defaults to <code>C:\Users\{username}\AppData\Local\Temp</code>. See also <code>TMP</code>.</dd>
-<dt><code>TMP</code></dt>
-<dd>Points to the folder that holds temporary files and folders. Defaults to <code>C:\Users\{username}\AppData\Local\Temp</code>. Note that the <code>GetTempFileName</code> API function (which is available as <code>FilesAndDirs.GetTempFilename</code>) will first look for the <code>TMP</code> environment variable and only if that does not exist for the <code>TEMP</code> variable.</dd>
-<dt><code>Username</code></dt>
-<dd>The username of the user currently logged on. Same as <code>⎕AN</code> in APL.</dd>
-<dt><code>UserProfile</code></dt>
-<dd>Defaults to <code>C:\Users\{username}</code>. That's where everything is saved that belongs to the user currently logged on. Note that this is kept apart from other user's eyes by the operating system.</dd>
-<dt><code>WinDir</code></dt>
-<dd>Defaults to the value of <a href="#systemroot" class="bookmark_link"><code>%SystemRoot%</code></a>. Deprecated.</dd>
-</dl>
+<div class="h_tag">
+<a href="#AllUserProfile" id="AllUserProfile" class="autoheader_anchor">
+<h3><code>AllUserProfile</code></h3>
+</a>
+</div>
+<p>Defaults to <code>C:\ProgramData</code>: see <a href="#programdata" class="bookmark_link">ProgramData</a></p>
+<div class="h_tag">
+<a href="#appdata" id="appdata" class="autoheader_anchor">
+<h3><code>AppData</code></h3>
+</a>
+</div>
+<p>Defaults to <code>C:\Users\{yourName}\AppData\Roaming</code></p>
+<p>Use this to store data that is both application <strong>and</strong> user specific that is supposed to roam [<a href="#fnref2" class="footnote_link"><sup>2</sup></a>] with the user. An <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> might be an example.</p>
+<p>See also <strong><a href="#localappdata" class="bookmark_link">LocalAppData</a></strong></p>
+<p>###<code>CommonProgramFiles</code></p>
+<p>Defaults to <code>C:\Program Files\Common Files</code></p>
+<div class="h_tag">
+<a href="#CommonProgramFiles" id="CommonProgramFiles" class="autoheader_anchor">
+<h3><code>CommonProgramFiles(x86)</code></h3>
+</a>
+</div>
+<p>Defaults to <code>C:\Program Files (x86)\Common Files</code></p>
+<div class="h_tag">
+<a href="#CommonProgramW6432" id="CommonProgramW6432" class="autoheader_anchor">
+<h3><code>CommonProgramW6432</code></h3>
+</a>
+</div>
+<p>Defaults to <code>C:\Program Files\Common Files</code></p>
+<div class="h_tag">
+<a href="#ComputerName" id="ComputerName" class="autoheader_anchor">
+<h3><code>ComputerName</code></h3>
+</a>
+</div>
+<p>The name of the computer</p>
+<div class="h_tag">
+<a href="#ComSpec" id="ComSpec" class="autoheader_anchor">
+<h3><code>ComSpec</code></h3>
+</a>
+</div>
+<p>Defaults to <code>C:\WINDOWS\system32\cmd.exe</code></p>
+<div class="h_tag">
+<a href="#ErrorLevel" id="ErrorLevel" class="autoheader_anchor">
+<h3><code>ErrorLevel</code></h3>
+</a>
+</div>
+<p>This variable does not necessarily exist. If you execute <code>⎕OFF 123</code> in an APL application it will set <code>ErrorLevel</code> to 123.</p>
+<div class="h_tag">
+<a href="#HomeDrive" id="HomeDrive" class="autoheader_anchor">
+<h3><code>HomeDrive</code></h3>
+</a>
+</div>
+<p>Carries the drive letter and a colon (like <code>C:</code>) but only if the user's data (documents, downloads, music…) do not live on a UCN path; for that see <a href="#HomeShare" class="bookmark_link">HomeShare</a>.</p>
+<div class="h_tag">
+<a href="#HomePath" id="HomePath" class="autoheader_anchor">
+<h3><code>HomePath</code></h3>
+</a>
+</div>
+<p>Defaults to <code>\Users\{yourName}</code>. Note that this means it comes <strong>without</strong> the drive letter or UNC path! For a full path you need also either <a href="#HomeDrive" class="bookmark_link">HomeDrive</a> or <a href="#HomeShare" class="bookmark_link">HomeShare</a>.</p>
+<p>See also <code>%USERPROFILE%</code> which is usually identical to <code>%HOMEPATH%</code>[<a href="#fnref1" class="footnote_link"><sup>1</sup></a>] but comes <strong>with</strong> the drive letter.</p>
+<div class="h_tag">
+<a href="#HomeShare" id="HomeShare" class="autoheader_anchor">
+<h3><code>HomeShare</code></h3>
+</a>
+</div>
+<p>This variable exists only of the users's data (documents, downloads, music…) live on a UNC path. See also <a href="#HomeShare" class="bookmark_link">HomePath</a>.</p>
+<div class="h_tag">
+<a href="#localappdata" id="localappdata" class="autoheader_anchor">
+<h3><code>LocalAppData</code></h3>
+</a>
+</div>
+<p>Defaults to <code>C:\Users\{yourName}\AppData\Local</code></p>
+<p>Use this to store data that is both application <strong>and</strong> user specific that is <strong>not</strong> supposed to roam [<a href="#fnref2" class="footnote_link"><sup>2</sup></a>] with the user.</p>
+<p>A log file might be an example. The reason is that when a user logs in all the data stored in <code>%APPDATA%</code> is copied over. A large log file might take significant time to be copied with very little (or no) benefit.</p>
+<p>See also <strong><a href="#appdata" class="bookmark_link">AppData</a></strong>.</p>
+<div class="h_tag">
+<a href="#LogonServer" id="LogonServer" class="autoheader_anchor">
+<h3><code>LogonServer</code></h3>
+</a>
+</div>
+<p>Defaults to the name of the computer your are logged on to. In case of your own desktop PC the values of <code>LogonServer</code> and <code>ComputerName</code> will be the same. In a Windows Server Domain however they will differ.</p>
+<div class="h_tag">
+<a href="#OS" id="OS" class="autoheader_anchor">
+<h3><code>OS</code></h3>
+</a>
+</div>
+<p>Specifies the Operating System; under Windows 10, <code>Windows_NT</code></p>
+<div class="h_tag">
+<a href="#Path" id="Path" class="autoheader_anchor">
+<h3><code>Path</code></h3>
+</a>
+</div>
+<p>All the folders (separated by semicola) that the operating system should check if the user enters something like <code>my.exe</code> into a console window and <code>my.exe</code> is not found in the current directory.</p>
+<div class="h_tag">
+<a href="#PathExt" id="PathExt" class="autoheader_anchor">
+<h3><code>PathExt</code></h3>
+</a>
+</div>
+<p>A list of the file extensions the operating system considers executable, for example: <code>.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC</code>.</p>
+<div class="h_tag">
+<a href="#programdata" id="programdata" class="autoheader_anchor">
+<h3><code>ProgramData</code></h3>
+</a>
+</div>
+<p>Defaults to <code>C:\ProgramData</code>. Use this for information that is application-specific and needs write access after installation. For Dyalog, this would be the right place to store the session file, workspaces and user commands.</p>
+<div class="h_tag">
+<a href="#programfiles" id="programfiles" class="autoheader_anchor">
+<h3><code>ProgramFiles</code></h3>
+</a>
+</div>
+<p>Defaults to <code>C:\Program Files</code>. On a 64-bit version of Windows this is where 64-bit programs are installed. Note however that on a 32-bit version of Windows this points to <a href="#x86" class="bookmark_link">ProgramFiles(x86)</a>.</p>
+<div class="h_tag">
+<a href="#x86" id="x86" class="autoheader_anchor">
+<h3><code>ProgramFiles(x86)</code></h3>
+</a>
+</div>
+<p>Defaults to <code>C:\Program Files (x86)</code>. This is where 32-bit programs are installed.</p>
+<div class="h_tag">
+<a href="#ProgramW6432" id="ProgramW6432" class="autoheader_anchor">
+<h3><code>ProgramW6432</code></h3>
+</a>
+</div>
+<p>Defaults to <code>C:\Program Files</code>. On a 64-bit version of Windows this path points to <a href="#programfiles" class="bookmark_link">ProgramFiles</a>. On a 32-bit version of Windows it also points to <code>ProgramFiles</code> which in turn points to <a href="#x86" class="bookmark_link">ProgramFiles(x86)</a>.</p>
+<p>For details see <em>WOW64 Implementation Detail</em> [<a href="#fnref4" class="footnote_link"><sup>4</sup></a>].</p>
+<div class="h_tag">
+<a href="#PSModulePath" id="PSModulePath" class="autoheader_anchor">
+<h3><code>PSModulePath</code></h3>
+</a>
+</div>
+<p>Defaults to <code>C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\</code>. This path is used by Windows Power Shell [<a href="#fnref3" class="footnote_link"><sup>3</sup></a>] to locate modules when the user does not specify the full path to a module.</p>
+<div class="h_tag">
+<a href="#Public" id="Public" class="autoheader_anchor">
+<h3><code>Public</code></h3>
+</a>
+</div>
+<p>Defaults to <code>C:\Users\Public</code>. It contains folders like <code>Public Documents</code>, <code>Public Music</code>, <code>Public Pictures</code>, <code>Public Videos</code>, … well, you get the picture.</p>
+<div class="h_tag">
+<a href="#systemroot" id="systemroot" class="autoheader_anchor">
+<h3><code>SystemRoot</code></h3>
+</a>
+</div>
+<p>Specifies the folder in which Windows is installed. Defaults to <code>C:\WINDOWS</code>.</p>
+<div class="h_tag">
+<a href="#Temp" id="Temp" class="autoheader_anchor">
+<h3><code>Temp</code></h3>
+</a>
+</div>
+<p>: Points to the folder that holds temporary files and folders. Defaults to <code>C:\Users\{username}\AppData\Local\Temp</code>. See also <code>TMP</code>.</p>
+<div class="h_tag">
+<a href="#TMP" id="TMP" class="autoheader_anchor">
+<h3><code>TMP</code></h3>
+</a>
+</div>
+<p>Points to the folder that holds temporary files and folders. Defaults to <code>C:\Users\{username}\AppData\Local\Temp</code>. Note that the <code>GetTempFileName</code> API function (which is available as <code>FilesAndDirs.GetTempFilename</code>) will first look for the <code>TMP</code> environment variable and only if that does not exist for the <code>TEMP</code> variable.</p>
+<div class="h_tag">
+<a href="#Username" id="Username" class="autoheader_anchor">
+<h3><code>Username</code></h3>
+</a>
+</div>
+<p>The username of the user currently logged on. Same as <code>⎕AN</code> in APL.</p>
+<div class="h_tag">
+<a href="#UserProfile" id="UserProfile" class="autoheader_anchor">
+<h3><code>UserProfile</code></h3>
+</a>
+</div>
+<p>Defaults to <code>C:\Users\{username}</code>. That's where everything is saved that belongs to the user currently logged on. Note that this is kept apart from other user's eyes by the operating system.</p>
+<p>This is usally identical[<a href="#fnref1" class="footnote_link"><sup>1</sup></a>] to <code>%HOMEPATH%</code> except that <code>%HOMEPATH%</code> does not carry the drive letter.</p>
+<div class="h_tag">
+<a href="#WinDir" id="WinDir" class="autoheader_anchor">
+<h3><code>WinDir</code></h3>
+</a>
+</div>
+<p>Defaults to the value of <a href="#systemroot" class="bookmark_link"><code>%SystemRoot%</code></a>. Deprecated.</p>
+<p>It is possible to have no profile loaded, but this is a very special — and rare — case. Google for it when you run into this.</p>
 <div id="footnotes_div">
 <hr>
 <p><strong>Footnotes</strong></p>
 <ol>
-<li id="fnref1"><p><a href="https://en.wikipedia.org/wiki/Roaming_user_profile" class="external_link">https://en.wikipedia.org/wiki/Roaming_user_profile</a></p><a href="#fnref1" class="footnote_anchor"></a>
-<li id="fnref2"><p><a href="https://en.wikipedia.org/wiki/PowerShell" class="external_link">https://en.wikipedia.org/wiki/PowerShell</a></p><a href="#fnref2" class="footnote_anchor"></a>
-<li id="fnref3"><p><a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa384274(v=vs.85).aspx" class="external_link">https://msdn.microsoft.com/en-us/library/windows/desktop/aa384274(v=vs.85).aspx</a></p><a href="#fnref3" class="footnote_anchor"></a>
+<li id="fnref1"><p>The difference between <code>%HOMEDIR%|%HOMESHARE%\%HOMEPATH%</code> and <code>%USERPROFILE</code> is that <em>usually</em> the are the same. However, it is possible — and relatively simple — to put the user's data (<code>%HOME\*%</code>) elsewhere, a network drive for example. <code>%USERPROFILE%</code> however is where the user's profile is loaded from, and that cannot be changed.</p><a href="#fnref1" class="footnote_anchor"></a>
+<li id="fnref2"><p><a href="https://en.wikipedia.org/wiki/Roaming_user_profile" class="external_link">https://en.wikipedia.org/wiki/Roaming_user_profile</a></p><a href="#fnref2" class="footnote_anchor"></a>
+<li id="fnref3"><p><a href="https://en.wikipedia.org/wiki/PowerShell" class="external_link">https://en.wikipedia.org/wiki/PowerShell</a></p><a href="#fnref3" class="footnote_anchor"></a>
+<li id="fnref4"><p><a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa384274(v=vs.85).aspx" class="external_link">https://msdn.microsoft.com/en-us/library/windows/desktop/aa384274(v=vs.85).aspx</a></p><a href="#fnref4" class="footnote_anchor"></a>
 </ol>
 </div>
-</div>
-</div>
-<script>
-var snapper = new Snap({
-element: document.getElementById('content')
-});
-document.getElementById('mainmenu_match').onclick = function(){
-snapper.state().state==='closed'?snapper.open('left'):snapper.close();
-}
-</script>
 </body>
 </html>

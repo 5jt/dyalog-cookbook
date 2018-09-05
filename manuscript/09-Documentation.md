@@ -87,7 +87,7 @@ In its more powerful function, it composes an HTML page from header comments in 
 
 If Markdown is new to you, see the Markdown article on Wikipedia [^markdown] and `Markdown2Help`’s own help file. Your time will be well spent: these days Markdown is used very widely.
 
-Previously only found as a class in the APLTree library, ADoc is now shipped in Dyalog Version 16.0 as a user command.
+Previously only found as a class in the APLTree library, ADoc is now shipped in Dyalog Version 17.0 as a user command.
 
 
 ### Get a summary

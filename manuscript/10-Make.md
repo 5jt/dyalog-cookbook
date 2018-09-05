@@ -411,7 +411,7 @@ I> But "FileVersion" is the more important one: the Inno installer for example (
 
 A> # The `Bind` method
 A>
-A> Note that for the `Bind` method to work as discussed in this chapter you must use at least version 16.0.31811.0 of Dyalog. Before that `Bind` was not an official method and did not support the `details`.
+A> Note that for the `Bind` method to work as discussed in this chapter you must use at least version 17.0.31811.0 of Dyalog. Before that `Bind` was not an official method and did not support the `details`.
 
 Double-click `Make.dyapp`: a folder `MyApp` should appear in `Z:\code\v10` with, among other files, `MyApp.exe`.
 

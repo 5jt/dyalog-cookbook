@@ -587,7 +587,7 @@ The HTM contains a report of the crash and some key system variables:
 ~~~
 MyApp_20170307111141
 
-Version:   Windows-64 16.0 W Development
+Version:   Windows-64 17.0 W Development
 ⎕WSID:       MyApp
 ⎕IO:       1
 ⎕ML:       1

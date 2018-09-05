@@ -742,7 +742,7 @@ We have reached our goal:
 * Along the way we have improved the quality of the code, making it more readable and easier to debug.
 
 
-[^csv]: With version 16.0 Dyalog has introduced a system function `⎕CSV` for both importing from and exporting to CSV files.
+[^csv]: With version 17.0 Dyalog has introduced a system function `⎕CSV` for both importing from and exporting to CSV files.
 
 
 *[HTML]: Hyper Text Mark-up language

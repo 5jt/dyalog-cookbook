@@ -14,19 +14,19 @@ We see an alert message: _This Dyalog APL runtime application has attempted to u
 `MyApp` failed because there is no file or folder `Z:\texts\Does_not_exist`. That triggered an error in the APL code. The interpreter tried to display an error message and looked for input from a developer from the session. But a runtime task has no session, so at that point the interpreter popped the alert message and `MyApp` died.   
 
 A> # CONTINUE workspaces
-A> Prior to version 16.0, as soon as you close the message box a CONTINUE workspace was created in the current directory. Such a CONTINUE WS can be loaded and investigated, making it easy to figure out what the problem is. (However, this is true only if it is a single-threaded application, since workspaces cannot be saved when more than one thread is running.)
+A> Prior to version 17.0, as soon as you close the message box a CONTINUE workspace was created in the current directory. Such a CONTINUE WS can be loaded and investigated, making it easy to figure out what the problem is. (However, this is true only if it is a single-threaded application, since workspaces cannot be saved when more than one thread is running.)
 A>
-A> With version 16.0 you can still force the interpreter to drop a CONTINUE workspace by enabling the old behaviour with `2704⌶ 1`, while `2704⌶ 0` would disable it again.
+A> With version 17.0 you can still force the interpreter to drop a CONTINUE workspace by enabling the old behaviour with `2704⌶ 1`, while `2704⌶ 0` would disable it again.
 A> 
 A> For analysis, load a CONTINUE workspace in an already running Dyalog session – don’t double-click a CONTINUE! The reason is that `⎕DM` and `⎕DMX` are overwritten in the process of booting SALT, meaning that you lose the error message. 
 A>
 A> You _might_ recreate them by re-executing the failing line – but that has other dangers, or might fail in a new way.
 A>
-A> Note also that the CONTINUE is always saved in the current directory; in version 16.0 there is no way to tell the interpreter to save the CONTINUE workspace elsewhere. 
+A> Note also that the CONTINUE is always saved in the current directory; in version 17.0 there is no way to tell the interpreter to save the CONTINUE workspace elsewhere. 
 A>
 A> That is limiting, as it will fail for your own stand-alone EXEs if they are installed in the standard folders for executables under Windows, `C:\Program Files` (64-bit programs) and `C:\Program Files (x86)` (32-bit programs): even as an admin you cannot write to those folders or subfolders.
 A>
-A> But Windows saves it anyway! If a program attempts to write to a banned location Windows tells them "Sure, no problem" but saves them in a e.g. `"C:\Users\kai\AppData\Local\VirtualStore\Program Files\Dyalog\Dyalog APL-64 16.0 Unicode\CONTINUE.dws"` where you are running Dyalog APL 64-bit Unicode version 16.0. 
+A> But Windows saves it anyway! If a program attempts to write to a banned location Windows tells them "Sure, no problem" but saves them in a e.g. `"C:\Users\kai\AppData\Local\VirtualStore\Program Files\Dyalog\Dyalog APL-64 17.0 Unicode\CONTINUE.dws"` where you are running Dyalog APL 64-bit Unicode version 17.0. 
 
 The next version of `MyApp` will improve by logging what happens when it runs.
 

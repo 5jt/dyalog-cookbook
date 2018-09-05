@@ -11,7 +11,7 @@ This is an open-source project. You are invited to contribute using the [Forked 
 
 Alternatively, write to Kai (<mailto:kai@aplteam.com>) or Stephen (<mailto:sjt@5jt.com>). 
 
-The project requires Dyalog APL Unicode 16.0 or later. 
+The project requires Dyalog APL Unicode 17.0 or later. 
 
 The manuscript is written in Markdown and converted into HTML5 by a program written in Dyalog APL. 
 

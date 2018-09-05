@@ -180,7 +180,7 @@ Note that this does not require the development EXE to be involved: it may well 
 
 ## DLLs required by Ride
 
-Prior to version 16.0 one had to copy these files :
+Prior to version 17.0 one had to copy these files :
 * `ride27_64.dll` 
 * `ride27ssl64.dll`
 
@@ -189,7 +189,7 @@ or these:
 * `ride27ssl32.dll`
 
 
- as siblings of the EXE. From 16.0 onward you must copy the Conga DLLs instead. 
+ as siblings of the EXE. From 17.0 onward you must copy the Conga DLLs instead. 
 
 Neglecting that will make `3502⌶1` fail. Note that 2.7 refers to the version of Conga, not Ride.
 

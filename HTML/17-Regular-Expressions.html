@@ -156,7 +156,7 @@
 </a>
 </div>
 <p>Dyalog uses the PCRE implementation of regular expressions. There are other other implementations available, and they differ in their use and performance characteristics. So you need to know what kind of engine you are using to find the right advice, examples and solutions on the Web.</p>
-<p>Dyalog 16.0 uses PCRE version 8. PCRE is considered one the most complete and powerful implementations of regular expressions.</p>
+<p>Dyalog 17.0 uses PCRE version 8. PCRE is considered one the most complete and powerful implementations of regular expressions.</p>
 <div class="h_tag">
 <a href="#RegEx-in-a-nutshell" id="RegEx-in-a-nutshell" class="autoheader_anchor">
 <h2>RegEx in a nutshell</h2>
@@ -704,7 +704,7 @@ This boo⍈goo is found as well</code></pre>
 <p>We can solve this problem with <code>\b</code> (word boundaries). <code>\b</code> does not attempt to match a particular character on a particular position. Instead it checks whether there is a word boundary either before are after the current position – but not both.</p>
 <p>That means no matter whether they are successful or not they won't change the position the engine is currently investigating. They are also called anchors.</p>
 <p>To put it simply, <code>\b</code> allows you to perform a ‘whole word only’ search as in <code>\bword\b</code>.</p>
-<p>Prior to version 8 of PCRE (and 16.0 of Dyalog) this was true only for ASCII characters. So it worked only for the English language.</p>
+<p>Prior to version 8 of PCRE (and 17.0 of Dyalog) this was true only for ASCII characters. So it worked only for the English language.</p>
 <pre><code>       ⍴'\bger\b'⎕S 0 ⊣'Kai Jägerßabc'
 1</code></pre>
 <p>That's because both ä and ß are non-ANSI characters.</p>
@@ -1051,7 +1051,7 @@ This ⍈; more: ⍈</code></pre>
 │ │ │ │A paragraph.      │ │ │ │
 │ └─┘ └──────────────────┘ └─┘ │
 └∊─────────────────────────────┘</code></pre>
-<p>That's what happens in version 16.0. Be aware that this might change in a later version of Dyalog.</p>
+<p>That's what happens in version 17.0. Be aware that this might change in a later version of Dyalog.</p>
 <div class="h_tag">
 <a href="#Miscellaneous" id="Miscellaneous" class="autoheader_anchor">
 <h2>Miscellaneous</h2>

@@ -15,10 +15,10 @@ The default folder depends on your version of Dyalog of course, but you can alwa
 
 ~~~
       '"',(2⎕NQ # 'GetEnvironment' 'Dyalog'),'\SALT\spice\"'
-"C:\Program Files\Dyalog\Dyalog APL-64 16.0 Unicode\SALT\spice\"
+"C:\Program Files\Dyalog\Dyalog APL-64 17.0 Unicode\SALT\spice\"
 ~~~
 
-The above is the default folder for the 64-bit Unicode version of Dyalog 16.0 for all Dyalog user commands available within that version.
+The above is the default folder for the 64-bit Unicode version of Dyalog 17.0 for all Dyalog user commands available within that version.
 
 
 ## Using the default folder

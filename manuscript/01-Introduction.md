@@ -41,7 +41,7 @@ Later on we’ll introduce some professional writing techniques that might make 
 
 ## What you need to use the Dyalog Cookbook
 
-* The Dyalog Version 16.0 Unicode interpreter or later.
+* The Dyalog Version 17.0 Unicode interpreter or later.
 
 * Microsoft Windows 10
 

@@ -7,7 +7,7 @@
 
 ## What is a Windows Service
 
-While the Windows Task Manager just starts any ordinary application, any application that runs as a Windows Service must be specifically designed to meet certain requirements. 
+While the Windows Task Manager just starts any ordinary application, an application that is supposed to run as a Windows Service must be specifically designed to meet certain requirements. 
 
 In particular, services communicate by exchanging messages with the Windows Service Control Manager (SCM). 
 
@@ -25,7 +25,7 @@ We won't add the ability to write to the Windows Event Log in this chapter, but 
 
 ## Restrictions
 
-With Dyalog version 16.0 we cannot install a stand-alone EXE as a Windows Service. All we can do is to install a given interpreter and then ask it to load a workspace, which implies running `⎕LX`. (This restriction may be lifted in a future version of Dyalog.)
+With Dyalog version 17.0 we cannot install a stand-alone EXE as a Windows Service. All we can do is to install a given interpreter and then ask it to load a workspace, which implies running `⎕LX`. (This restriction may be lifted in a future version of Dyalog.)
 
 That means that unless you're happy to expose your code, you have a problem. There are solutions:
 
@@ -48,7 +48,7 @@ To simplify matters we shall use the `ServiceState` namespace, also from the APL
 
    However, note that the interpreter confirms the Start request for us; no further action is required.
    
-   Create a parameter space by calling `CreateParmSpace`, and set at least the name of the log function and possibly the namespace (or class instance) the log function is in. This log function is used to log any incoming requests from the SCM. The parameter space is then passed to `Init` as the right argument.
+   Create a parameter space by calling `CreateParmSpace`, and set at least the name of the log function and possibly the namespace (or class instance) the log function lives in. This log function is used to log any incoming requests from the SCM. The parameter space is then passed to `Init` as the right argument.
 
 1. In its main loop the Service is expected to call `ServiceState.CheckServiceMessages`.
    
@@ -59,7 +59,7 @@ To simplify matters we shall use the `ServiceState` namespace, also from the APL
    If a Stop is requested, the operator will quit and return a 1.
 
    
-## Installing and uninstalling a Service.
+## Installing a Service.
 
 **Note:** for installing or uninstalling a Service you need admin rights.
 
@@ -73,9 +73,13 @@ cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService DYALOG_NOPOPUPS=1'
 
 `cmd` could now be executed with the `Execute` class introduced in the chapter "[Handling Errors](./07 Handling errors.html)". That would do the trick.
 
-`DYALOG_NOPOPUPS`
-: Setting this to 1 prevents any dialogs popping up (aplcore, WS FULL etc.). You don't want them when Dyalog is running in the background because there's nobody around to click the _OK_ button. 
-: This also prevents the _Service MyAppService successfully installed_ message from popping up. You don't want to see that when executing tests that install, start, pause, resume, stop and uninstall a Service.
+### DYALOG_NOPOPUPS
+
+Setting this to 1 prevents any dialogs popping up (aplcore, WS FULL etc.). You don't want them when Dyalog is running in the background because it would not show any GUI controls. But even if it would, there's no guarantee that anybody would be around in order to click the _OK_ button. 
+
+This also prevents the _Service MyAppService successfully installed_ message from popping up. You don't want to see that when executing tests that install, start, pause, resume, stop and uninstall a Service, or when you have an automated Build process in place.    
+
+## Uninstalling a service
 
 To uninstall the Service, simply open a console window with _Run as administrator_ and enter:
 
@@ -138,7 +142,7 @@ A> # CONTINUE workspaces
 A> 
 A> The Service might have created a CONTINUE workspace, for various reasons.  
 A> 
-A> Note that, starting with version 16.0, Dyalog no longer drops a CONTINUE workspace by default. You must configure Dyalog to do so. 
+A> Note that, starting with version 17.0, Dyalog no longer drops a CONTINUE workspace by default. You must configure Dyalog to do so. 
 A> 
 A> A CONTINUE cannot be saved if there is more than one thread running -- and Services are by definition multi-threaded. However, if it fails very early there _might_ still be a CONTINUE.
 A> 
@@ -157,7 +161,7 @@ A> This saves any aplcore as "my_aplcore" followed by a running number. For more
   
 ### The Service starts but ignores Pause and Stop requests
 
-Here the log file contains everything we expect: calling parameters etc. In such a case we _know_ the Service started and is running.
+The log file contains everything we expect: calling parameters etc. In such a case we _know_ the Service started and is running.
 
 * Check you have really called `ServiceState.Init`.
 * Check you have called `CheckServiceMessages` in the main loop of the application.
@@ -165,7 +169,7 @@ Here the log file contains everything we expect: calling parameters etc. In such
 If these two conditions are met then it's hard to imagine what could prevent the application from reacting to any requests of the SCM, except when you have an endless loop somewhere in your application.
 
 
-### The application does not do what's supposed to do
+### The application does not do what it is supposed to do
 
 > The very thought of you
 > And I forget to do
@@ -175,7 +179,7 @@ If these two conditions are met then it's hard to imagine what could prevent the
 
 First and foremost it is worth repeating that any application supposed to run as a Service should be developed as an ordinary application, including test cases. When it passes such test cases you have reasons to be confident the application will run as a Service too.
 
-Having said this, there can be surprising differences between running as an ordinary application and a Service. For example, when a Service runs, not with a user's account, but with the system account (which is quite normal to do) any call to `#.FilesAndDirs.GetTempPath` results in
+Having said this, there can be surprising differences between running as an ordinary application and as a Service. For example, when a Service runs not with a user's account, but with the system account (which is quite normal to do) any call to `#.FilesAndDirs.GetTempPath` results in
 
 `"C:\Windows\System32\config\systemprofile\AppData\Local\Apps"` 
 
@@ -203,7 +207,7 @@ In the former case ensure as soon as possible after startup you allow the progra
 
 At such an early stage we don't have an INI file instantiated, so we cannot switch Ride on and off via the INI file, we have to modify the code for that. 
 
-You might feel tempted to overcome this by doing it a bit later (e.g. after processing the INI file) but beware: if a Service is not cooperating then "a bit later" might be too late to get investigate the problem. Resist temptation.
+You might feel tempted to overcome this by doing it a bit later (e.g. after processing the INI file) but beware: if a Service is not cooperating then "a bit later" might be too late to be able to investigate the problem; resist the temptation!
   
 In the second case, add the call to `CheckForRide` once the INI file has been instantiated.
 
@@ -215,7 +219,7 @@ I> Make sure that you have _never_ more than one of the two calls to `CheckForRi
 
 ### Local logging
 
-We want to log as soon as possible any command-line parameters, as well as any message exchange between the Service and the SCM.
+We want to log as soon as possible any command-line parameters as well as any message exchange between the Service and the SCM.
 
 Again we advise you not to wait until the folder holding the log files is defined by instantiating the INI file. Instead we suggest making the assumption that a certain folder ("Logs") will (or might) exist in the current directory which will become where the workspace was loaded from.
 

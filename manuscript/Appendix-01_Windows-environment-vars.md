@@ -2,9 +2,11 @@
 [parm]:title='EnvVars'
 
 
-# Appendix 1 --- Windows environment variables
+Appendix 1 --- Windows environment variables
+=============================================
 
-## Overview
+Overview
+--------
 
 Windows comes with quite a number of environment variables. Those variables are helpful in addressing, say, a particular path without actually using a physical path. 
 
@@ -21,103 +23,147 @@ Notes:
 * Under Windows, the names of environment variables are case-insensitive.
 
 
-## Outdated?!
+Outdated?!
+----------
 
 Some consider environment variables an outdated technology. We don't want to get involved in this argument here but enviroment variables will be round for a very long time, and Windows relies on them. (They are also standard under UNIX, including Linux and MacOS.)
 
 
-## The variables
+The variables
+-------------
 
-`AllUserProfile`
-: Defaults to `C:\ProgramData`: see [ProgramData](#programdata)
+### `AllUserProfile`
 
-`AppData`{#appdata}
-: Defaults to `C:\Users\{yourName}\AppData\Roaming`
+Defaults to `C:\ProgramData`: see [ProgramData](#programdata)
 
-: Use this to store data that is both application **and** user specific that is supposed to roam [^roaming] with the user. An INI might be an example.
 
-: See also **[LocalAppData](#localappdata)**
+### `AppData`{#appdata}
 
-`CommonProgramFiles`
-: Defaults to `C:\Program Files\Common Files`
+Defaults to `C:\Users\{yourName}\AppData\Roaming`
 
-`CommonProgramFiles(x86)`
-: Defaults to `C:\Program Files (x86)\Common Files`
+Use this to store data that is both application **and** user specific that is supposed to roam [^roaming] with the user. An INI might be an example.
 
-`CommonProgramW6432`
-: Defaults to `C:\Program Files\Common Files`
+See also **[LocalAppData](#localappdata)**
 
-`ComputerName`
-: The name of the computer
 
-`ComSpec`
-: Defaults to `C:\WINDOWS\system32\cmd.exe`
+###`CommonProgramFiles`
+Defaults to `C:\Program Files\Common Files`
 
-`ErrorLevel`
-: This variable does not necessarily exist. If you execute `⎕OFF 123` in an APL application it will set `ErrorLevel` to 123.
+### `CommonProgramFiles(x86)`
 
-`HomePath`
-: Defaults to `\Users\{yourName}`
+Defaults to `C:\Program Files (x86)\Common Files`
 
-`LocalAppData`{#localappdata}
-: Defaults to `C:\Users\{yourName}\AppData\Local`
+### `CommonProgramW6432`
 
-: Use this to store data that is both application **and** user specific that is **not** supposed to roam [^roaming] with the user. 
+Defaults to `C:\Program Files\Common Files`
 
-: A log file might be an example. The reason is that when a user logs in all the data stored in `%APPDATA%` is copied over. A large log file might take significant time to be copied with very little (or no) benefit.
+### `ComputerName`
 
-: See also **[AppData](#appdata)**.
+The name of the computer
 
-`LogonServer`
-: Defaults to the name of the computer your are logged on to. In case of your own desktop PC the values of `LogonServer` and `ComputerName` will be the same. In a Windows Server Domain however they will differ.
+### `ComSpec`
 
-`OS`
-: Specifies the Operating System; under Windows 10, `Windows_NT`
+Defaults to `C:\WINDOWS\system32\cmd.exe`
 
-`Path`
-: All the folders (separated by semicola) that the operating system should check if the user enters something like `my.exe` into a console window and `my.exe` is not found in the current directory.
+### `ErrorLevel`
 
-`PathExt`
-: A list of the file extensions the operating system considers executable, for example: `.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC`.
+This variable does not necessarily exist. If you execute `⎕OFF 123` in an APL application it will set `ErrorLevel` to 123.
 
-`ProgramData`{#programdata}
-: Defaults to `C:\ProgramData`. Use this for information that is application-specific and needs write access after installation. For Dyalog, this would be the right place to store the session file, workspaces and user commands.
+### `HomeDrive
 
-`ProgramFiles`{#programfiles}
-: Defaults to `C:\Program Files`. On a 64-bit version of Windows this is where 64-bit programs are installed. Note however that on a 32-bit version of Windows this points to [ProgramFiles(x86)](#x86).
+Carries the drive letter and a colon (like `C:`) but only if the user's data (documents, downloads, music...) do not live on a UCN path; for that see [HomeShare](#HomeShare).
 
-`ProgramFiles(x86)`{#x86}
- : Defaults to `C:\Program Files (x86)`. This is where 32-bit programs are installed.
+### `HomePath`
 
-`ProgramW6432`
-: Defaults to `C:\Program Files`. On a 64-bit version of Windows this path points to [ProgramFiles](#programfiles). On a 32-bit version of Windows it also points to `ProgramFiles` which in turn points to [ProgramFiles(x86)](#x86).
+Defaults to `\Users\{yourName}`. Note that this means it comes **without** the drive letter or UNC path! For a full path you need also either [HomeDrive](#HomeDrive) or [HomeShare](#HomeShare).
+
+See also `%USERPROFILE%` which is usually identical to `%HOMEPATH%`[^homepath]  but comes **with** the drive letter.
+
+
+### `HomeShare`
+
+This variable exists only of the users's data (documents, downloads, music...) live on a UNC path. See also [HomePath](#HomeShare).
+
+### `LocalAppData`{#localappdata}
+
+Defaults to `C:\Users\{yourName}\AppData\Local`
+
+Use this to store data that is both application **and** user specific that is **not** supposed to roam [^roaming] with the user. 
+
+A log file might be an example. The reason is that when a user logs in all the data stored in `%APPDATA%` is copied over. A large log file might take significant time to be copied with very little (or no) benefit.
+
+See also **[AppData](#appdata)**.
+
+### `LogonServer`
+
+Defaults to the name of the computer your are logged on to. In case of your own desktop PC the values of `LogonServer` and `ComputerName` will be the same. In a Windows Server Domain however they will differ.
+
+### `OS`
+
+Specifies the Operating System; under Windows 10, `Windows_NT`
+
+### `Path`
+
+All the folders (separated by semicola) that the operating system should check if the user enters something like `my.exe` into a console window and `my.exe` is not found in the current directory.
+
+### `PathExt`
+
+A list of the file extensions the operating system considers executable, for example: `.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC`.
+
+### `ProgramData`{#programdata}
+
+Defaults to `C:\ProgramData`. Use this for information that is application-specific and needs write access after installation. For Dyalog, this would be the right place to store the session file, workspaces and user commands.
+
+### `ProgramFiles`{#programfiles}
+
+Defaults to `C:\Program Files`. On a 64-bit version of Windows this is where 64-bit programs are installed. Note however that on a 32-bit version of Windows this points to [ProgramFiles(x86)](#x86).
+
+### `ProgramFiles(x86)`{#x86}
+
+Defaults to `C:\Program Files (x86)`. This is where 32-bit programs are installed.
+
+### `ProgramW6432`
+
+Defaults to `C:\Program Files`. On a 64-bit version of Windows this path points to [ProgramFiles](#programfiles). On a 32-bit version of Windows it also points to `ProgramFiles` which in turn points to [ProgramFiles(x86)](#x86).
 
 For details see _WOW64 Implementation Detail_ [^wow].
 
-`PSModulePath`
-: Defaults to `C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\`. This path is used by Windows Power Shell [^powershell] to locate modules when the user does not specify the full path to a module.
+### `PSModulePath`
 
-`Public`
-: Defaults to `C:\Users\Public`. It contains folders like `Public Documents`, `Public Music`, `Public Pictures`, `Public Videos`, ... well, you get the picture.
+Defaults to `C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\`. This path is used by Windows Power Shell [^powershell] to locate modules when the user does not specify the full path to a module.
 
-`SystemRoot`{#systemroot}
-: Specifies the folder in which Windows is installed. Defaults to `C:\WINDOWS`.
+### `Public`
 
-`Temp`
+Defaults to `C:\Users\Public`. It contains folders like `Public Documents`, `Public Music`, `Public Pictures`, `Public Videos`, ... well, you get the picture.
+
+### `SystemRoot`{#systemroot}
+
+Specifies the folder in which Windows is installed. Defaults to `C:\WINDOWS`.
+
+### `Temp`
 : Points to the folder that holds temporary files and folders. Defaults to `C:\Users\{username}\AppData\Local\Temp`. See also `TMP`.
 
-`TMP`
-: Points to the folder that holds temporary files and folders. Defaults to `C:\Users\{username}\AppData\Local\Temp`. Note that the `GetTempFileName` API function (which is available as `FilesAndDirs.GetTempFilename`) will first look for the `TMP` environment variable and only if that does not exist for the `TEMP` variable.
+### `TMP`
 
-`Username`
- : The username of the user currently logged on. Same as `⎕AN` in APL.
+Points to the folder that holds temporary files and folders. Defaults to `C:\Users\{username}\AppData\Local\Temp`. Note that the `GetTempFileName` API function (which is available as `FilesAndDirs.GetTempFilename`) will first look for the `TMP` environment variable and only if that does not exist for the `TEMP` variable.
 
-`UserProfile`
-: Defaults to `C:\Users\{username}`. That's where everything is saved that belongs to the user currently logged on. Note that this is kept apart from other user's eyes by the operating system.
+### `Username`
 
-`WinDir`
-: Defaults to the value of [`%SystemRoot%`](#systemroot). Deprecated.
+The username of the user currently logged on. Same as `⎕AN` in APL.
 
+### `UserProfile`
+
+Defaults to `C:\Users\{username}`. That's where everything is saved that belongs to the user currently logged on. Note that this is kept apart from other user's eyes by the operating system.
+
+This is usally identical[^homepath] to `%HOMEPATH%` except that `%HOMEPATH%` does not carry the drive letter. 
+
+### `WinDir`
+
+Defaults to the value of [`%SystemRoot%`](#systemroot). Deprecated.
+
+[^homepath]: The difference between `%HOMEDIR%|%HOMESHARE%\%HOMEPATH%` and `%USERPROFILE` is that _usually_ the are the same. However, it is possible --- and relatively simple --- to put the user's data (`%HOME\*%`) elsewhere, a network drive for example. `%USERPROFILE%` however is where the user's profile is loaded from, and that cannot be changed.
+
+It is possible to have no profile loaded, but this is a very special --- and rare --- case. Google for it when you run into this.
 
 [^roaming]: <https://en.wikipedia.org/wiki/Roaming_user_profile>
 

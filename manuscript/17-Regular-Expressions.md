@@ -42,7 +42,7 @@ Regular expressions allow you to find the position of a string in another string
 
 Dyalog uses the PCRE implementation of regular expressions. There are other other implementations available, and they differ in their use and performance characteristics. So you need to know what kind of engine you are using to find the right advice, examples and solutions on the Web.
 
-Dyalog 16.0 uses PCRE version 8. PCRE is considered one the most complete and powerful implementations of regular expressions.
+Dyalog 17.0 uses PCRE version 8. PCRE is considered one the most complete and powerful implementations of regular expressions.
 
 
 ## RegEx in a nutshell
@@ -641,7 +641,7 @@ That means no matter whether they are successful or not they won't change the po
 
 To put it simply, `\b` allows you to perform a ‘whole word only’ search as in `\bword\b`.
 
-Prior to version 8 of PCRE (and 16.0 of Dyalog) this was true only for ASCII characters. So it worked only for the English language.
+Prior to version 8 of PCRE (and 17.0 of Dyalog) this was true only for ASCII characters. So it worked only for the English language.
 
 ~~~
        ⍴'\bger\b'⎕S 0 ⊣'Kai Jägerßabc'
@@ -1161,7 +1161,7 @@ If you want a stricter correspondence between input and output you need to proce
 └∊─────────────────────────────┘
 ~~~
 
-That's what happens in version 16.0. Be aware that this might change in a later version of Dyalog.
+That's what happens in version 17.0. Be aware that this might change in a later version of Dyalog.
 
 
 ## Miscellaneous

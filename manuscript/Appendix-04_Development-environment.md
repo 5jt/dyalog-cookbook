@@ -33,7 +33,7 @@ W> ### Leave the Dyalog installation directory alone
 W>
 W> Do _not_ alter any files in the Dyalog installation directory, and don't add your own files there either: Dyalog may update files in there in any patch. 
 W>
-W> Although this is not strictly true in 16.0 and earlier, Dyalog _may_ start to issue .msp files which might change any file in the installation directory without warning!
+W> Although this is not strictly true in 17.0 and earlier, Dyalog _may_ start to issue .msp files which might change any file in the installation directory without warning!
 
 Both approaches have their own problems, the most obvious being that with a new version of Dyalog you start from scratch. However, there is a better way: save a function `Setup` in either `C:\Users\{UserName}\Documents\MyUCMDs\setup.dyalog` or one of the SALT work directories and it will be executed when...
 
@@ -74,7 +74,7 @@ The following code is an example for how you can put this mechanism to good use:
 :Namespace Setup
 ⍝ Up to - and including - version 15.0 this script needs to go into:
 ⍝ "C:\Users\[username]\Documents\MyUCMDs"
-⍝ Under 16.0 that still works but the SALT workdir folders are scanned as well.
+⍝ Under 17.0 that still works but the SALT workdir folders are scanned as well.
   ⎕IO←1 ⋄ ⎕ML←1 
 
 ∇ {r}←Setup arg;myStuff

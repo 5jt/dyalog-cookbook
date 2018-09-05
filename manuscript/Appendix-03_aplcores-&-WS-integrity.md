@@ -71,7 +71,7 @@ but this might actually create another aplcore, overwriting the first one. Now i
  
 A> If the aplcore is saved at all that is, because if the current directory is something like `C:\Program files\` then you won't have the right to save into this directory anyway.
 A>
-A> When a program asks Windows to save a file in a location where that program has no write permission (e.g. `C:\Program Files`, `C:\Program Files (x86)`, `C:\Windows`) then Windows will tell the application that it has fulfilled the request, but the file will actually be saved in something like `C:\Users\{username}\AppData\Local\VirtualStore\Program Files\Dyalog\Dyalog APL-64 16.0 Unicode\`
+A> When a program asks Windows to save a file in a location where that program has no write permission (e.g. `C:\Program Files`, `C:\Program Files (x86)`, `C:\Windows`) then Windows will tell the application that it has fulfilled the request, but the file will actually be saved in something like `C:\Users\{username}\AppData\Local\VirtualStore\Program Files\Dyalog\Dyalog APL-64 17.0 Unicode\`
  
 For that reason it is highly recommended to set the value `aplcorename` in the Windows Registry:
 
