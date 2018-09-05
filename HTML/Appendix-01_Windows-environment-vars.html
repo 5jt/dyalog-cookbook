@@ -108,19 +108,23 @@
 <h3><code>AllUserProfile</code></h3>
 </a>
 </div>
-<p>Defaults to <code>C:\ProgramData</code>: see <a href="#programdata" class="bookmark_link">ProgramData</a></p>
+<p>Defaults to <code>C:\ProgramData</code>: see <a href="#programdata" class="bookmark_link"><code>ProgramData</code></a></p>
 <div class="h_tag">
-<a href="#appdata" id="appdata" class="autoheader_anchor">
+<a href="#AppData" id="AppData" class="autoheader_anchor">
 <h3><code>AppData</code></h3>
 </a>
 </div>
 <p>Defaults to <code>C:\Users\{yourName}\AppData\Roaming</code></p>
 <p>Use this to store data that is both application <strong>and</strong> user specific that is supposed to roam [<a href="#fnref2" class="footnote_link"><sup>2</sup></a>] with the user. An <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> might be an example.</p>
-<p>See also <strong><a href="#localappdata" class="bookmark_link">LocalAppData</a></strong></p>
-<p>###<code>CommonProgramFiles</code></p>
-<p>Defaults to <code>C:\Program Files\Common Files</code></p>
+<p>See also <strong><a href="#localappdata" class="bookmark_link"><code>LocalAppData</code></a></strong></p>
 <div class="h_tag">
 <a href="#CommonProgramFiles" id="CommonProgramFiles" class="autoheader_anchor">
+<h3><code>CommonProgramFiles</code></h3>
+</a>
+</div>
+<p>Defaults to <code>C:\Program Files\Common Files</code></p>
+<div class="h_tag">
+<a href="#CommonProgramFiles-1" id="CommonProgramFiles-1" class="autoheader_anchor">
 <h3><code>CommonProgramFiles(x86)</code></h3>
 </a>
 </div>
@@ -154,20 +158,20 @@
 <h3><code>HomeDrive</code></h3>
 </a>
 </div>
-<p>Carries the drive letter and a colon (like <code>C:</code>) but only if the user's data (documents, downloads, music…) do not live on a UCN path; for that see <a href="#HomeShare" class="bookmark_link">HomeShare</a>.</p>
+<p>Carries the drive letter and a colon (like <code>C:</code>) but only if the user's data (documents, downloads, music…) do not live on a UCN path; for that see <a href="#HomeShare" class="bookmark_link"><code>HomeShare</code></a>.</p>
 <div class="h_tag">
 <a href="#HomePath" id="HomePath" class="autoheader_anchor">
 <h3><code>HomePath</code></h3>
 </a>
 </div>
-<p>Defaults to <code>\Users\{yourName}</code>. Note that this means it comes <strong>without</strong> the drive letter or UNC path! For a full path you need also either <a href="#HomeDrive" class="bookmark_link">HomeDrive</a> or <a href="#HomeShare" class="bookmark_link">HomeShare</a>.</p>
-<p>See also <code>%USERPROFILE%</code> which is usually identical to <code>%HOMEPATH%</code>[<a href="#fnref1" class="footnote_link"><sup>1</sup></a>] but comes <strong>with</strong> the drive letter.</p>
+<p>Defaults to <code>\Users\{yourName}</code>. Note that this means it comes <strong>without</strong> the drive letter or UNC path! For a full path you need also either <a href="#HomeDrive" class="bookmark_link"><code>HomeDrive</code></a> or <a href="#HomeShare" class="bookmark_link"><code>HomeShare</code></a>.</p>
+<p>See also <a href="#UserProfile" class="bookmark_link"><code>USERPROFILE</code></a> which is usually identical with <a href="#HomePath" class="bookmark_link"><code>HOMEPATH</code></a>[<a href="#fnref1" class="footnote_link"><sup>1</sup></a>] but comes <strong>with</strong> the drive letter.</p>
 <div class="h_tag">
 <a href="#HomeShare" id="HomeShare" class="autoheader_anchor">
 <h3><code>HomeShare</code></h3>
 </a>
 </div>
-<p>This variable exists only of the user's data (documents, downloads, music…) live on a UNC path. See also <a href="#HomeShare" class="bookmark_link">HomePath</a>.</p>
+<p>This variable exists only of the user's data (documents, downloads, music…) live on a UNC path. See also <a href="#HomeShare" class="bookmark_link"><code>HomePath</code></a>.</p>
 <div class="h_tag">
 <a href="#localappdata" id="localappdata" class="autoheader_anchor">
 <h3><code>LocalAppData</code></h3>
@@ -175,14 +179,14 @@
 </div>
 <p>Defaults to <code>C:\Users\{yourName}\AppData\Local</code></p>
 <p>Use this to store data that is both application <strong>and</strong> user specific that is <strong>not</strong> supposed to roam [<a href="#fnref2" class="footnote_link"><sup>2</sup></a>] with the user.</p>
-<p>A log file might be an example. The reason is that when a user logs in all the data stored in <code>%APPDATA%</code> is copied over. A large log file might take significant time to be copied with very little (or no) benefit.</p>
-<p>See also <strong><a href="#appdata" class="bookmark_link">AppData</a></strong>.</p>
+<p>A log file might be an example. The reason is that when a user logs in all the data stored in <a href="#AppData" class="bookmark_link"><code>APPDATA</code></a> is copied over. A large log file might take significant time to be copied with very little (or no) benefit.</p>
+<p>See also <strong><a href="#AppData" class="bookmark_link"><code>AppData</code></a></strong>.</p>
 <div class="h_tag">
 <a href="#LogonServer" id="LogonServer" class="autoheader_anchor">
 <h3><code>LogonServer</code></h3>
 </a>
 </div>
-<p>Defaults to the name of the computer your are logged on to. In case of your own desktop PC the values of <code>LogonServer</code> and <code>ComputerName</code> will be the same. In a Windows Server Domain however they will differ.</p>
+<p>Defaults to the name of the computer your are logged on to. In case of your own desktop PC the values of <code>LogonServer</code> and <a href="#ComputerName" class="bookmark_link"><code>ComputerName</code></a> will be the same. In a Windows Server Domain however they will differ.</p>
 <div class="h_tag">
 <a href="#OS" id="OS" class="autoheader_anchor">
 <h3><code>OS</code></h3>
@@ -212,7 +216,7 @@
 <h3><code>ProgramFiles</code></h3>
 </a>
 </div>
-<p>Defaults to <code>C:\Program Files</code>. On a 64-bit version of Windows this is where 64-bit programs are installed. Note however that on a 32-bit version of Windows this points to <a href="#x86" class="bookmark_link">ProgramFiles(x86)</a>.</p>
+<p>Defaults to <code>C:\Program Files</code>. On a 64-bit version of Windows this is where 64-bit programs are installed. Note however that on a 32-bit version of Windows this points to <a href="#x86" class="bookmark_link"><code>ProgramFiles(x86)</code></a>.</p>
 <div class="h_tag">
 <a href="#x86" id="x86" class="autoheader_anchor">
 <h3><code>ProgramFiles(x86)</code></h3>
@@ -224,7 +228,7 @@
 <h3><code>ProgramW6432</code></h3>
 </a>
 </div>
-<p>Defaults to <code>C:\Program Files</code>. On a 64-bit version of Windows this path points to <a href="#programfiles" class="bookmark_link">ProgramFiles</a>. On a 32-bit version of Windows it also points to <code>ProgramFiles</code> which in turn points to <a href="#x86" class="bookmark_link">ProgramFiles(x86)</a>.</p>
+<p>Defaults to <code>C:\Program Files</code>. On a 64-bit version of Windows this path points to <a href="#programfiles" class="bookmark_link"><code>ProgramFiles</code></a>. On a 32-bit version of Windows it also points to <code>ProgramFiles</code> which in turn points to <a href="#x86" class="bookmark_link"><code>ProgramFiles(x86)</code></a>.</p>
 <p>For details see <em>WOW64 Implementation Detail</em> [<a href="#fnref4" class="footnote_link"><sup>4</sup></a>].</p>
 <div class="h_tag">
 <a href="#PSModulePath" id="PSModulePath" class="autoheader_anchor">
@@ -237,7 +241,7 @@
 <h3><code>Public</code></h3>
 </a>
 </div>
-<p>Defaults to <code>C:\Users\Public</code>. It contains folders like <code>Public Documents</code>, <code>Public Music</code>, <code>Public Pictures</code>, <code>Public Videos</code>, … well, you get the picture.</p>
+<p>Defaults to <code>C:\Users\Public</code>. It contains folders like <code>\Public Documents</code>, <code>\Public Music</code>, <code>\Public Pictures</code>, <code>\Public Videos</code>, … well, you get the picture.</p>
 <div class="h_tag">
 <a href="#systemroot" id="systemroot" class="autoheader_anchor">
 <h3><code>SystemRoot</code></h3>
@@ -249,13 +253,13 @@
 <h3><code>Temp</code></h3>
 </a>
 </div>
-<p>: Points to the folder that holds temporary files and folders. Defaults to <code>C:\Users\{username}\AppData\Local\Temp</code>. See also <code>TMP</code>.</p>
+<p>Points to the folder that holds temporary files and folders. Defaults to <code>C:\Users\{username}\AppData\Local\Temp</code>. See also <a href="#TMP" class="bookmark_link"><code>TMP</code></a>.</p>
 <div class="h_tag">
 <a href="#TMP" id="TMP" class="autoheader_anchor">
 <h3><code>TMP</code></h3>
 </a>
 </div>
-<p>Points to the folder that holds temporary files and folders. Defaults to <code>C:\Users\{username}\AppData\Local\Temp</code>. Note that the <code>GetTempFileName</code> API function (which is available as <code>FilesAndDirs.GetTempFilename</code>) will first look for the <code>TMP</code> environment variable and only if that does not exist for the <code>TEMP</code> variable.</p>
+<p>Points to the folder that holds temporary files and folders. Defaults to <code>C:\Users\{username}\AppData\Local\Temp</code>. Note that the <code>GetTempFileName</code> API function (which is available as <code>FilesAndDirs.GetTempFilename</code>) will first look for the <code>TMP</code> environment variable and only if that does not exist for the <a href="#Temp" class="bookmark_link"><code>TEMP</code></a> variable.</p>
 <div class="h_tag">
 <a href="#Username" id="Username" class="autoheader_anchor">
 <h3><code>Username</code></h3>
@@ -267,20 +271,19 @@
 <h3><code>UserProfile</code></h3>
 </a>
 </div>
-<p>Defaults to <code>C:\Users\{username}</code>. That's where everything is saved that belongs to the user currently logged on. Note that this is kept apart from other user's eyes by the operating system.</p>
-<p>This is usally identical[<a href="#fnref1" class="footnote_link"><sup>1</sup></a>] to <code>%HOMEPATH%</code> except that <code>%HOMEPATH%</code> does not carry the drive letter.</p>
+<p>Defaults to <code>C:\Users\{username}</code>. That's where everything is saved that belongs to the user currently logged on.</p>
+<p>This is usally identical[<a href="#fnref1" class="footnote_link"><sup>1</sup></a>] to <a href="#HomePath" class="bookmark_link"><code>HomePath</code></a> except that <code>HomePath</code> does not carry the drive letter.</p>
 <div class="h_tag">
 <a href="#WinDir" id="WinDir" class="autoheader_anchor">
 <h3><code>WinDir</code></h3>
 </a>
 </div>
-<p>Defaults to the value of <a href="#systemroot" class="bookmark_link"><code>%SystemRoot%</code></a>. Deprecated.</p>
-<p>It is possible to have no profile loaded, but this is a very special — and rare — case. Google for it when you run into this.</p>
+<p>Defaults to the value of <a href="#systemroot" class="bookmark_link"><code>SystemRoot</code></a>. Deprecated.</p>
 <div id="footnotes_div">
 <hr>
 <p><strong>Footnotes</strong></p>
 <ol>
-<li id="fnref1"><p>The difference between <code>%HOMEDIR%|%HOMESHARE%\%HOMEPATH%</code> and <code>%USERPROFILE</code> is that <em>usually</em> the are the same. However, it is possible — and relatively simple — to put the user's data (<code>%HOME\*%</code>) elsewhere, a network drive for example. <code>%USERPROFILE%</code> however is where the user's profile is loaded from, and that cannot be changed.</p><a href="#fnref1" class="footnote_anchor"></a>
+<li id="fnref1"><p>The difference between <code>HomeDrive|HomeShare\HomePath</code> and <code>UserProfile</code> is that <em>usually</em> they are the same. However, it is possible — and relatively simple — to put the user's data (<code>HomePath\*</code>) elsewhere, a network drive for example. <code>UserProfile</code> however is where the user's profile is loaded from, and that cannot be changed.</p><p>Note that it is possible to have no profile loaded, but this is a very special — and rare — case. Google for it when you run into this.</p><a href="#fnref1" class="footnote_anchor"></a>
 <li id="fnref2"><p><a href="https://en.wikipedia.org/wiki/Roaming_user_profile" class="external_link">https://en.wikipedia.org/wiki/Roaming_user_profile</a></p><a href="#fnref2" class="footnote_anchor"></a>
 <li id="fnref3"><p><a href="https://en.wikipedia.org/wiki/PowerShell" class="external_link">https://en.wikipedia.org/wiki/PowerShell</a></p><a href="#fnref3" class="footnote_anchor"></a>
 <li id="fnref4"><p><a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa384274(v=vs.85).aspx" class="external_link">https://msdn.microsoft.com/en-us/library/windows/desktop/aa384274(v=vs.85).aspx</a></p><a href="#fnref4" class="footnote_anchor"></a>
