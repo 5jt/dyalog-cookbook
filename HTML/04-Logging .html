@@ -99,7 +99,7 @@
 <p>For analysis, load a CONTINUE workspace in an already running Dyalog session – don’t double-click a CONTINUE! The reason is that <code>⎕DM</code> and <code>⎕DMX</code> are overwritten in the process of booting SALT, meaning that you lose the error message.</p>
 <p>You <em>might</em> recreate them by re-executing the failing line – but that has other dangers, or might fail in a new way.</p>
 <p>Note also that the CONTINUE is always saved in the current directory; in version 17.0 there is no way to tell the interpreter to save the CONTINUE workspace elsewhere.</p>
-<p>That is limiting, as it will fail for your own stand-alone <abbr title="Executable file with the extension 'exe'">EXE</abbr>s if they are installed in the standard folders for executables under Windows, <code>C:\Program Files</code> (64-bit programs) and <code>C:\Program Files (x86)</code> (32-bit programs): even as an admin you cannot write to those folders or subfolders.</p>
+<p>That is limiting, as it will fail for your own stand-alone EXEs if they are installed in the standard folders for executables under Windows, <code>C:\Program Files</code> (64-bit programs) and <code>C:\Program Files (x86)</code> (32-bit programs): even as an admin you cannot write to those folders or subfolders.</p>
 <p>But Windows saves it anyway! If a program attempts to write to a banned location Windows tells them “Sure, no problem” but saves them in a e.g. <code>"C:\Users\kai\AppData\Local\VirtualStore\Program Files\Dyalog\Dyalog APL-64 17.0 Unicode\CONTINUE.dws"</code> where you are running Dyalog APL 64-bit Unicode version 17.0.</p>
 </div>
 
@@ -427,6 +427,7 @@ Z:\code\v04</code></pre>
 <p>Why that is: a destructor (if any) is called when the instance of a class is destroyed (or shortly thereafter).</p>
 <p><code>MyLogger</code> is localized in the header of <code>TxtToCsv</code>, meaning that when <code>TxtToCsv</code> ends, this instance of the <code>Logger</code> class is destroyed and the destructor is invoked. Since the Tracer was up and running, the destructor makes an appearance in the Tracer.</p>
 </div>
+
 <div id="footnotes_div">
 <hr>
 <p><strong>Footnotes</strong></p>

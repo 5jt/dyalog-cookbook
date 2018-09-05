@@ -118,7 +118,7 @@ HKCU\Software\MyApplication\MainForm\Size</code></pre>
 <p>&lt;!– Find the terminology strange? So do we, but it was invented by Microsoft and defines the standard.</p>
 <p>So we use it too. That makes it easier to understand the Microsoft documentation and also to understand others discussing the Windows Registry. It also helps when you Google for Registry tweaks because the guys posting the solution to your problem are most likely using Microsoft speech as well.</p>
 <p>What is strange about the terminology? Microsoft gives common words unusual meanings when it comes to the Windows Registry. –&gt;</p>
-<p>Here’s an example. This is the definition of the MAX<abbr title="Short for Workspaces">WS</abbr> parameter for Dyalog 64 bit Unicode version 16:</p>
+<p>Here’s an example. This is the definition of the MAXWS parameter for Dyalog 64 bit Unicode version 16:</p>
 <p><img src="Images/WinReg_maxws.png" alt="Definition of maxws in the Windows Registry" title="Definition of maxws in the Windows Registry"></p>
 <p>The full path is:</p>
 <pre><code>Computer\HKEY_CURRENT_USER\Software\Dyalog\Dyalog APL/W-64 17.0 Unicode\maxws</code></pre>
@@ -218,7 +218,7 @@ HKCU\Software\MyApplication\MainForm\Size</code></pre>
 <li><code>Delete</code></li>
 </ul>
 <p>It is also limited to the two datatypes <code>REG_SZ</code> and <code>REG_DWORD</code>.</p>
-<p>The class uses the Windows Scripting Host (<abbr title="Short for Workspaces">WS</abbr>H) [<a href="#fnref4" class="footnote_link"><sup>4</sup></a>]. It is available on all Windows systems although it can be switched off by group policies, though we have never seen this in the wild.</p>
+<p>The class uses the Windows Scripting Host (WSH) [<a href="#fnref4" class="footnote_link"><sup>4</sup></a>]. It is available on all Windows systems although it can be switched off by group policies, though we have never seen this in the wild.</p>
 <p>If you want to read just a certain value then this – very small – class might suffice. For example, to read the aforementioned <code>maxws</code> value:</p>
 <pre><code>      #.WinRegSimple.Read 'HKCU\Software\Dyalog\Dyalog APL/W-64 17.0 Unicode\maxws'
 64000</code></pre>
@@ -391,7 +391,7 @@ C:\...\Dyalog APL 17.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCo
 <td>SysTray</td>
 </tr>
 <tr>
-<td><abbr title="Short for Workspaces">WS</abbr>Search</td>
+<td>WSSearch</td>
 </tr>
 </tbody>
 </table>

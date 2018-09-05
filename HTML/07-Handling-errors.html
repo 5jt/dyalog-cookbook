@@ -527,8 +527,8 @@ HandleError.Process caught SYNTAX ERROR</code></pre>
 <p>We also find evidence in the log file that something broke; see LogDog:</p>
 <p><img src="Images/LogDog2.png" alt="The log file" title="The log file"></p>
 <p>This is done for us automatically by the <code>HandleError</code> class because we provided the name of a logging function, and a ref pointing to the instance where that log function lives.</p>
-<p>We also have an HTM with a crash report, an eponymous <abbr title="Dyalog workspace">D<abbr title="Short for Workspaces">WS</abbr></abbr> containing the workspace saved at the time it broke, and an eponymous DCF whose single component is a namespace of all the variables visible at the moment of the crash. Some of this has got to help.</p>
-<p>Note that the crash file names are simply the <abbr title="Short for Workspaces">WS</abbr>ID and the timestamp prefixed by an underscore:</p>
+<p>We also have an HTM with a crash report, an eponymous <abbr title="Dyalog workspace">DWS</abbr> containing the workspace saved at the time it broke, and an eponymous DCF whose single component is a namespace of all the variables visible at the moment of the crash. Some of this has got to help.</p>
+<p>Note that the crash file names are simply the WSID and the timestamp prefixed by an underscore:</p>
 <pre><code>      ⍪{⊃,/1↓⎕NPARTS⍵}¨⊃#.FilesAndDirs.Dir #.ErrorParms.errorFolder,'\'
  MyApp_20170307111141.dcf
  MyApp_20170307111141.dws
@@ -604,7 +604,7 @@ i
 isDev
 tbl
 tgt</code></pre>
-<p>The <abbr title="Dyalog workspace">D<abbr title="Short for Workspaces">WS</abbr></abbr> is the crash workspace. Load it. The Latent Expression has been disabled to ensure <code>MyApp</code> does not attempt to start up again.</p>
+<p>The <abbr title="Dyalog workspace">DWS</abbr> is the crash workspace. Load it. The Latent Expression has been disabled to ensure <code>MyApp</code> does not attempt to start up again.</p>
 <pre><code>      ⎕LX
 ⎕TRAP←0 'S' ⍝#.MyApp.StartFromCmdLine</code></pre>
 <p>The state indicator shows the workspace captured at the moment the <code>HandleError</code> object saved the workspace. Your real problem – the full stop in <code>MyApp.TxtToCsv</code> – is some levels down in the stack.</p>

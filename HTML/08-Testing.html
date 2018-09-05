@@ -738,7 +738,7 @@ Looking for a function "Cleanup"...
   F.DeleteFile⊃F.Dir ∆Path,'\*.csv'
 ∇
 ...</code></pre>
-<p>This one will process <em>all</em> <abbr title="File with the extension 'txt' containing text">TXT</abbr>s in <code>∆Path</code> and write a file <code>total.csv</code>. We check whether this is the case and we are done. Almost: in a real-world application we most likely would also check for a path that contains spaces in its name. We don’t do this, instead we execute the full test suite:</p>
+<p>This one will process <em>all</em> TXTs in <code>∆Path</code> and write a file <code>total.csv</code>. We check whether this is the case and we are done. Almost: in a real-world application we most likely would also check for a path that contains spaces in its name. We don’t do this, instead we execute the full test suite:</p>
 <pre><code>      GetHelpers
       ⎕←⊃Run
 --- Test framework "Tester" version 3.6.0 from YYYY-MM-DD ----------------------------

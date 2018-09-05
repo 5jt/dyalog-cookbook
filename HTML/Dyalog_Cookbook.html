@@ -123,7 +123,7 @@
 <p>To follow this, we’ll make a very simple program. It counts the frequency of letters used in one or multiple text files. (This is simple, but useful in cryptanalysis, at least at hobby level.) We’ll put the source code under version control, and package the program for use.</p>
 <p>Some of the things we are going to add to this application will seem like overkill, but keep in mind that we use this application just as a very simple example for all the techniques we are going to introduce.</p>
 <p>Let’s assume you've done the convenient thing. Your code is in a workspace. Everything it needs to run is defined in the workspace. Maybe you set a latent expression, so the program starts when you load the workspace.</p>
-<p>We shall convert a <abbr title="Dyalog workspace">D<abbr title="Short for Workspaces">WS</abbr></abbr> to some <abbr title="File with the extension 'dyalog' holding APL code">DYALOG</abbr> scripts and introduce a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> script to assemble an active workspace from them.</p>
+<p>We shall convert a <abbr title="Dyalog workspace">DWS</abbr> to some <abbr title="File with the extension 'dyalog' holding APL code">DYALOG</abbr> scripts and introduce a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> script to assemble an active workspace from them.</p>
 <p>Using scripts to store your source code has many advantages: you can use a traditional source code management system rather than having your code and data stored in a binary blob.</p>
 <p>Changes that you make to your source code are saved immediately, rather than relying on you to remember to save the workspace at some suitable point in your work process.</p>
 <p>Finally, you don’t need to worry about crashes in your code or externally called modules and also any corruption of the active workspace which might prevent you from saving it.</p>
@@ -181,7 +181,7 @@
 <p>acre Desktop can be used as a source-code management system in its own rights= together with acre Server, but it can use other code management systems like Git or SubVersion as well. Both acre Desktop and acre Server are available as open source software. We will discuss acre in its own appendix.</p>
 </div>
 
-<p>Whichever SCM you use (we used GitHub for writing this book and the code in it) your source code will comprise class and namespace scripts (<abbr title="File with the extension 'dyalog' holding APL code">DYALOG</abbr>s) for the application. The help system will be an ordinary – non-scripted – namespace. We use a <em>build script</em> (<abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>) to assemble the application and the development environment.</p>
+<p>Whichever SCM you use (we used GitHub for writing this book and the code in it) your source code will comprise class and namespace scripts (DYALOGs) for the application. The help system will be an ordinary – non-scripted – namespace. We use a <em>build script</em> (<abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>) to assemble the application and the development environment.</p>
 <p>You’ll keep your local working copy in whatever folder you please. We’ll refer to this <em>working folder</em> as <code>Z:\</code> but it will of course be wherever suits you.</p>
 <div class="h_tag">
 <a href="#The-LetterCount-workspace" id="The-LetterCount-workspace" class="autoheader_anchor">
@@ -208,7 +208,7 @@
 <p>What does it mean to maintain a version? At the very minimum, you keep the source code for it, so you could recreate its <abbr title="Executable file with the extension 'exe'">EXE</abbr> from scratch, exactly as it was distributed. There will be things you want to improve, and perhaps bugs you must fix. Those will all go into the next version, of course. But some you may need to put into the released version and re-issue it to current users as a patch.</p>
 <p>So in <em>The Dyalog Cookbook</em> we shall develop in successive versions until we manage to create an installer that is capable of installing the application on any machine running Windows 10. What’s needed to achieve that is discussed in the chapters 1-16. Later chapters are independent.</p>
 <p>Our ‘versions’ are not ready to ship, so are probably better considered as milestones on the way to version 1.0. You could think of them as versions 0.1, 0.2 and so on. But we’ll just refer to them as Versions 1, 2, and so on.</p>
-<p>Our first version won’t even be ready to export as an <abbr title="Executable file with the extension 'exe'">EXE</abbr>. It will just create a workspace <code>MyApp.dws</code> from scripts: a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> and some <abbr title="File with the extension 'dyalog' holding APL code">DYALOG</abbr>s. We’ll call it Version 1.</p>
+<p>Our first version won’t even be ready to export as an <abbr title="Executable file with the extension 'exe'">EXE</abbr>. It will just create a workspace <code>MyApp.dws</code> from scripts: a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> and some DYALOGs. We’ll call it Version 1.</p>
 <p>Load the <code>LetterCount.dws</code> workspace from the <code>code\foo</code> folder on the book website. Again, this is just the stand-in for your own code. Here’s a quick tour.</p>
 <div class="h_tag">
 <a href="#Investigating-the-workspace-LetterCount" id="Investigating-the-workspace-LetterCount" class="autoheader_anchor">
@@ -510,7 +510,7 @@ Accents←2 28⍴'ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝAAAAAA
 </a>
 </div>
 <p>We’ll raid <a href="https://www.gutenberg.org/" class="external_link">Project Gutenberg</a> for some texts to read.</p>
-<p>We’re tempted by the complete works of William Shakespeare but we don’t know that letter distribution stayed constant over four centuries. Interesting to find out, though, so we’ll save a copy as <code>Z:\texts\en\shakespeare.dat</code>. And we’ll download some 20th-century books as <abbr title="File with the extension 'txt' containing text">TXT</abbr>s into the same folder. Here are some texts we can use.</p>
+<p>We’re tempted by the complete works of William Shakespeare but we don’t know that letter distribution stayed constant over four centuries. Interesting to find out, though, so we’ll save a copy as <code>Z:\texts\en\shakespeare.dat</code>. And we’ll download some 20th-century books as TXTs into the same folder. Here are some texts we can use.</p>
 <pre><code>      ↑⊃(⎕NINFO⍠'Wildcard' 1) 'z:\texts\en\*.txt'
 z:/texts/en/ageofinnocence.txt
 z:/texts/en/dubliners.txt
@@ -527,7 +527,7 @@ z:/texts/en/wizardoz.txt</code></pre>
 </a>
 </div>
 <p>We’ll first make <code>MyApp</code> a simple 'engine' that does not interact with the user. Many applications have functions like this at their core. Let’s enable the user to call this engine from the command line with appropriate parameters. By the time we give it a user interface, it will already have important capabilities, such as logging errors and recovering from crashes.</p>
-<p>Our engine will be based on the <code>TxtToCsv</code> function. It will take one parameter, a fully qualified filepath for a folder or file. If it is a file it will write a sibling CSV. If it is a folder it will read all the <abbr title="File with the extension 'txt' containing text">TXT</abbr>s in the folder, count the letter frequencies and write them as a CSV sibling to the folder. Simple enough. Here we go.</p>
+<p>Our engine will be based on the <code>TxtToCsv</code> function. It will take one parameter, a fully qualified filepath for a folder or file. If it is a file it will write a sibling CSV. If it is a folder it will read all the TXTs in the folder, count the letter frequencies and write them as a CSV sibling to the folder. Simple enough. Here we go.</p>
 <div class="h_tag">
 <a href="#Building-from-a-DYAPP" id="Building-from-a-DYAPP" class="autoheader_anchor">
 <h2>7. Building from a DYAPP</h2>
@@ -688,7 +688,7 @@ Load MyApp</code></pre>
 </div>
 </div>
 
-<p>We have converted the saved workspace to text files, and made a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> that builds the workspace from the <abbr title="File with the extension 'dyalog' holding APL code">DYALOG</abbr>s. But we have not saved a workspace: we will always build a workspace from scripts.</p>
+<p>We have converted the saved workspace to text files, and made a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> that builds the workspace from the DYALOGs. But we have not saved a workspace: we will always build a workspace from scripts.</p>
 <p>Launch the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> by double-clicking on its icon in Windows Explorer. Examine the active session. We see</p>
 <pre><code>- Constants
   - NINFO
@@ -942,7 +942,7 @@ Run #.MyApp.SetLX ⍬</code></pre>
 <p>For analysis, load a CONTINUE workspace in an already running Dyalog session – don’t double-click a CONTINUE! The reason is that <code>⎕DM</code> and <code>⎕DMX</code> are overwritten in the process of booting SALT, meaning that you lose the error message.</p>
 <p>You <em>might</em> recreate them by re-executing the failing line – but that has other dangers, or might fail in a new way.</p>
 <p>Note also that the CONTINUE is always saved in the current directory; in version 17.0 there is no way to tell the interpreter to save the CONTINUE workspace elsewhere.</p>
-<p>That is limiting, as it will fail for your own stand-alone <abbr title="Executable file with the extension 'exe'">EXE</abbr>s if they are installed in the standard folders for executables under Windows, <code>C:\Program Files</code> (64-bit programs) and <code>C:\Program Files (x86)</code> (32-bit programs): even as an admin you cannot write to those folders or subfolders.</p>
+<p>That is limiting, as it will fail for your own stand-alone EXEs if they are installed in the standard folders for executables under Windows, <code>C:\Program Files</code> (64-bit programs) and <code>C:\Program Files (x86)</code> (32-bit programs): even as an admin you cannot write to those folders or subfolders.</p>
 <p>But Windows saves it anyway! If a program attempts to write to a banned location Windows tells them “Sure, no problem” but saves them in a e.g. <code>"C:\Users\kai\AppData\Local\VirtualStore\Program Files\Dyalog\Dyalog APL-64 17.0 Unicode\CONTINUE.dws"</code> where you are running Dyalog APL 64-bit Unicode version 17.0.</p>
 </div>
 
@@ -1270,6 +1270,7 @@ Z:\code\v04</code></pre>
 <p>Why that is: a destructor (if any) is called when the instance of a class is destroyed (or shortly thereafter).</p>
 <p><code>MyLogger</code> is localized in the header of <code>TxtToCsv</code>, meaning that when <code>TxtToCsv</code> ends, this instance of the <code>Logger</code> class is destroyed and the destructor is invoked. Since the Tracer was up and running, the destructor makes an appearance in the Tracer.</p>
 </div>
+
 <div id="footnotes_div">
 <hr>
 <p><strong>Footnotes</strong></p>
@@ -2211,8 +2212,8 @@ HandleError.Process caught SYNTAX ERROR</code></pre>
 <p>We also find evidence in the log file that something broke; see LogDog:</p>
 <p><img src="Images/LogDog2.png" alt="The log file" title="The log file"></p>
 <p>This is done for us automatically by the <code>HandleError</code> class because we provided the name of a logging function, and a ref pointing to the instance where that log function lives.</p>
-<p>We also have an HTM with a crash report, an eponymous <abbr title="Dyalog workspace">D<abbr title="Short for Workspaces">WS</abbr></abbr> containing the workspace saved at the time it broke, and an eponymous DCF whose single component is a namespace of all the variables visible at the moment of the crash. Some of this has got to help.</p>
-<p>Note that the crash file names are simply the <abbr title="Short for Workspaces">WS</abbr>ID and the timestamp prefixed by an underscore:</p>
+<p>We also have an HTM with a crash report, an eponymous <abbr title="Dyalog workspace">DWS</abbr> containing the workspace saved at the time it broke, and an eponymous DCF whose single component is a namespace of all the variables visible at the moment of the crash. Some of this has got to help.</p>
+<p>Note that the crash file names are simply the WSID and the timestamp prefixed by an underscore:</p>
 <pre><code>      ⍪{⊃,/1↓⎕NPARTS⍵}¨⊃#.FilesAndDirs.Dir #.ErrorParms.errorFolder,'\'
  MyApp_20170307111141.dcf
  MyApp_20170307111141.dws
@@ -2288,7 +2289,7 @@ i
 isDev
 tbl
 tgt</code></pre>
-<p>The <abbr title="Dyalog workspace">D<abbr title="Short for Workspaces">WS</abbr></abbr> is the crash workspace. Load it. The Latent Expression has been disabled to ensure <code>MyApp</code> does not attempt to start up again.</p>
+<p>The <abbr title="Dyalog workspace">DWS</abbr> is the crash workspace. Load it. The Latent Expression has been disabled to ensure <code>MyApp</code> does not attempt to start up again.</p>
 <pre><code>      ⎕LX
 ⎕TRAP←0 'S' ⍝#.MyApp.StartFromCmdLine</code></pre>
 <p>The state indicator shows the workspace captured at the moment the <code>HandleError</code> object saved the workspace. Your real problem – the full stop in <code>MyApp.TxtToCsv</code> – is some levels down in the stack.</p>
@@ -3062,7 +3063,7 @@ Looking for a function "Cleanup"...
   F.DeleteFile⊃F.Dir ∆Path,'\*.csv'
 ∇
 ...</code></pre>
-<p>This one will process <em>all</em> <abbr title="File with the extension 'txt' containing text">TXT</abbr>s in <code>∆Path</code> and write a file <code>total.csv</code>. We check whether this is the case and we are done. Almost: in a real-world application we most likely would also check for a path that contains spaces in its name. We don’t do this, instead we execute the full test suite:</p>
+<p>This one will process <em>all</em> TXTs in <code>∆Path</code> and write a file <code>total.csv</code>. We check whether this is the case and we are done. Almost: in a real-world application we most likely would also check for a path that contains spaces in its name. We don’t do this, instead we execute the full test suite:</p>
 <pre><code>      GetHelpers
       ⎕←⊃Run
 --- Test framework "Tester" version 3.6.0 from YYYY-MM-DD ----------------------------
@@ -3459,7 +3460,7 @@ TxtToCsv
 </ul>
 <p>At first glance you might think all we need are two versions of the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>, one for development and one for producing the <abbr title="Executable file with the extension 'exe'">EXE</abbr>, but there will be tasks we cannot carry out with this approach. Examples are:</p>
 <ul>
-<li>On our development machine <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>s are associated (in the Windows Registry) with a single version of Dyalog. We need a way to control which version that is, even if at this point there is just one version installed on our machine.</li>
+<li>On our development machine DYAPPs are associated (in the Windows Registry) with a single version of Dyalog. We need a way to control which version that is, even if at this point there is just one version installed on our machine.</li>
 <li>We might want to convert any Markdown documents – like README.<abbr title="File with the extension 'md' that contains markdown">MD</abbr> – into <abbr title="Hyper Text Mark-up language">HTML</abbr> documents. While the <abbr title="File with the extension 'md' that contains markdown">MD</abbr> is the source, only the <abbr title="Hyper Text Mark-up language">HTML</abbr> will be shipped.</li>
 <li>We need to ensure the Help system – which we will introduce soon – is properly compiled and configured by the Make utility.</li>
 <li>Soon we shall need an installer that produces an <abbr title="Executable file with the extension 'exe'">EXE</abbr> we can send to the customer for installing the software.</li>
@@ -3564,7 +3565,7 @@ Run #.Tester.EstablishHelpersIn #.Tests
 </a>
 </div>
 <p>For now, we’ll create a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> file <code>Make.dyapp</code> that performs the Make.</p>
-<p>However, if you want to specify explicitly the version of Dyalog that should run this <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> rather than using whichever version happens to be associated with the file extension <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> at the time you double-click it, (also <abbr title="Dyalog workspace">D<abbr title="Short for Workspaces">WS</abbr></abbr> and <abbr title="File with the extension 'dyalog' holding APL code">DYALOG</abbr>) you need a batch file that starts the correct version of Dyalog.</p>
+<p>However, if you want to specify explicitly the version of Dyalog that should run this <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> rather than using whichever version happens to be associated with the file extension <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> at the time you double-click it, (also <abbr title="Dyalog workspace">DWS</abbr> and <abbr title="File with the extension 'dyalog' holding APL code">DYALOG</abbr>) you need a batch file that starts the correct version of Dyalog.</p>
 <p>Create such a batch file as <code>Make.bat</code>:</p>
 <pre><code>"C:\Program Files\Dyalog\Dyalog APL{yourPreferredVersion}\Dyalog.exe" DYAPP="%~dp0Make.dyapp"
 @echo off
@@ -3591,7 +3592,7 @@ if NOT ["%errorlevel%"]==["0"] (
 <p>For APLers, the current directory (sometimes called “working directory”) is, when running under Windows, a strange animal. In general, the current directory is where ‘the application’ lives.</p>
 <p>That means that for an application <code>C:\Program Files\Foo\Foo.exe</code> the current directory will be <code>C:\Program Files\Foo</code>.</p>
 <p>For APLers “the application” is <em>not</em> the <abbr title="File with the extension 'dyalog' holding APL code">DYALOG</abbr>.<abbr title="Executable file with the extension 'exe'">EXE</abbr>, it’s the workspace, whether it was loaded from disk or assembled by a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>. When you double-click <code>MyApp.dyapp</code> the interpreter changes the current directory for you: it’s going to be where the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> lives, which suits an APL application programmer’s point of view.</p>
-<p>The same holds true when you double-click a <abbr title="Dyalog workspace">D<abbr title="Short for Workspaces">WS</abbr></abbr> but it is <em>not</em> true when you <em>load</em> a workspace: the current directory then remains what it was before, by default where the Dyalog <abbr title="Executable file with the extension 'exe'">EXE</abbr> lives.</p>
+<p>The same holds true when you double-click a <abbr title="Dyalog workspace">DWS</abbr> but it is <em>not</em> true when you <em>load</em> a workspace: the current directory then remains what it was before, by default where the Dyalog <abbr title="Executable file with the extension 'exe'">EXE</abbr> lives.</p>
 <p>So it’s smart to change the current directory yourself <em>at the earliest possible stage</em> after loading a workspace: call <code>#.FilesAndDirs.PolishCurrentDir</code> and you’re covered, no matter what the circumstances are. One of the authors has been doing this for roughly 20 years now, and it has solved several problems without introducing new ones.</p>
 </div>
 
@@ -3848,7 +3849,7 @@ Active      = 0
 <h2>5. Workflow</h2>
 </a>
 </div>
-<p>With the two <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>s and the <abbr title="Executable file that contains batch commands">BAT</abbr> file, your development cycle now looks like this:</p>
+<p>With the two DYAPPs and the <abbr title="Executable file that contains batch commands">BAT</abbr> file, your development cycle now looks like this:</p>
 <ol start="1">
 <li>Launch <code>MyApp.dyapp</code> and check the test results.</li>
 <li>Fix any errors and rerun <code>#.Tests.Run</code> until it’s fine. If you edit the test themselves, either rerun
@@ -4636,7 +4637,7 @@ The system cannot find the file specified.</code></pre>
 <h2>1. What is a Windows Service</h2>
 </a>
 </div>
-<p>While the Windows Task Manager just starts any ordinary application, any application that runs as a Windows Service must be specifically designed to meet certain requirements.</p>
+<p>While the Windows Task Manager just starts any ordinary application, an application that is supposed to run as a Windows Service must be specifically designed to meet certain requirements.</p>
 <p>In particular, services communicate by exchanging messages with the Windows Service Control Manager (SCM).</p>
 <p>Commands can be issued by the <code>SC.exe</code> (Service Controller) application or interactively via the Services application. This allows the user to start, pause, continue (resume) and stop a Windows Service.</p>
 <div class="h_tag">
@@ -4671,15 +4672,15 @@ The system cannot find the file specified.</code></pre>
 <li>Call <code>ServiceState.Init</code> as early as possible. This function will ensure the Service can communicate with the SCM.
 <p>Do it as early as possible to enure any request from the SCM will be answered promptly. Windows is not exactly patient when it waits for a Service to respond to a Pause, Resume or Stop request: after only 5 seconds you may see an error message complaining that the Service refused to cooperate.</p>
 <p>However, note that the interpreter confirms the Start request for us; no further action is required.</p>
-<p>Create a parameter space by calling <code>CreateParmSpace</code>, and set at least the name of the log function and possibly the namespace (or class instance) the log function is in. This log function is used to log any incoming requests from the SCM. The parameter space is then passed to <code>Init</code> as the right argument.</p></li>
+<p>Create a parameter space by calling <code>CreateParmSpace</code>, and set at least the name of the log function and possibly the namespace (or class instance) the log function lives in. This log function is used to log any incoming requests from the SCM. The parameter space is then passed to <code>Init</code> as the right argument.</p></li>
 <li>In its main loop the Service is expected to call <code>ServiceState.CheckServiceMessages</code>.
 <p>This is an operator, so it needs a function as operand: that is, a function that is doing the logging, allowing <code>CheckServiceMessages</code> to log its actions to the log file. (If you don't need a log file then simply passing <code>{⍵}</code> will do.</p>
 <p>When <code>CheckServiceMessages</code> is called if no request of the SCM is pending it will quit straight away and return a 0. If a Pause is pending then it goes into a loop, and continues to loop (with a <code>⎕DL</code> in between) until either Continue (a.k.a. Resume) or Stop is requested by the SCM.</p>
 <p>If a Stop is requested, the operator will quit and return a 1.</p></li>
 </ol>
 <div class="h_tag">
-<a href="#Installing-and-uninstalling-a-Service" id="Installing-and-uninstalling-a-Service" class="autoheader_anchor">
-<h2>5. Installing and uninstalling a Service.</h2>
+<a href="#Installing-a-Service" id="Installing-a-Service" class="autoheader_anchor">
+<h2>5. Installing a Service.</h2>
 </a>
 </div>
 <p><strong>Note:</strong> for installing or uninstalling a Service you need admin rights.</p>
@@ -4688,11 +4689,18 @@ The system cannot find the file specified.</code></pre>
 wsid←'"whereEverTheWsLives\MyAppService.DWS"'
 cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService DYALOG_NOPOPUPS=1'</code></pre>
 <p><code>cmd</code> could now be executed with the <code>Execute</code> class introduced in the chapter “<a href="./07 Handling errors.html" class="external_link">Handling Errors</a>”. That would do the trick.</p>
-<dl>
-<dt><code>DYALOG_NOPOPUPS</code></dt>
-<dd><p class="first_dd">Setting this to 1 prevents any dialogs popping up (aplcore, <abbr title="Short for Workspaces">WS</abbr> FULL etc.). You don't want them when Dyalog is running in the background because there's nobody around to click the <em>OK</em> button.</p></dd>
-<dd><p>This also prevents the <em>Service MyAppService successfully installed</em> message from popping up. You don't want to see that when executing tests that install, start, pause, resume, stop and uninstall a Service.</p></dd>
-</dl>
+<div class="h_tag">
+<a href="#DYALOG_NOPOPUPS" id="DYALOG_NOPOPUPS" class="autoheader_anchor">
+<h3>5.1. DYALOG_NOPOPUPS</h3>
+</a>
+</div>
+<p>Setting this to 1 prevents any dialogs popping up (aplcore, <abbr title="Short for Workspaces">WS</abbr> FULL etc.). You don't want them when Dyalog is running in the background because it would not show any GUI controls. But even if it would, there's no guarantee that anybody would be around in order to click the <em>OK</em> button.</p>
+<p>This also prevents the <em>Service MyAppService successfully installed</em> message from popping up. You don't want to see that when executing tests that install, start, pause, resume, stop and uninstall a Service, or when you have an automated Build process in place.</p>
+<div class="h_tag">
+<a href="#Uninstalling-a-service" id="Uninstalling-a-service" class="autoheader_anchor">
+<h2>6. Uninstalling a service</h2>
+</a>
+</div>
 <p>To uninstall the Service, simply open a console window with <em>Run as administrator</em> and enter:</p>
 <pre><code>sc delete MyAppService</code></pre>
 <p>and you are done.</p>
@@ -4722,7 +4730,7 @@ cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService DYALOG_NOPOPUPS=1'</code
 
 <div class="h_tag">
 <a href="#Obstacles" id="Obstacles" class="autoheader_anchor">
-<h2>6. Obstacles</h2>
+<h2>7. Obstacles</h2>
 </a>
 </div>
 <p>From experience we know there are pitfalls. In general, there are kinds of problem you might encounter:</p>
@@ -4733,7 +4741,7 @@ cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService DYALOG_NOPOPUPS=1'</code
 </ol>
 <div class="h_tag">
 <a href="#The-Service-seems-to-be-doing-nothing-at-all" id="The-Service-seems-to-be-doing-nothing-at-all" class="autoheader_anchor">
-<h3>6.1. The Service seems to be doing nothing at all</h3>
+<h3>7.1. The Service seems to be doing nothing at all</h3>
 </a>
 </div>
 <p>If a Service does not seem to do anything when started:</p>
@@ -4762,18 +4770,18 @@ cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService DYALOG_NOPOPUPS=1'</code
 
 <div class="h_tag">
 <a href="#The-Service-starts-but-ignores-Pause-and-Stop-requests" id="The-Service-starts-but-ignores-Pause-and-Stop-requests" class="autoheader_anchor">
-<h3>6.2. The Service starts but ignores Pause and Stop requests</h3>
+<h3>7.2. The Service starts but ignores Pause and Stop requests</h3>
 </a>
 </div>
-<p>Here the log file contains everything we expect: calling parameters etc. In such a case we <em>know</em> the Service started and is running.</p>
+<p>The log file contains everything we expect: calling parameters etc. In such a case we <em>know</em> the Service started and is running.</p>
 <ul>
 <li>Check you have really called <code>ServiceState.Init</code>.</li>
 <li>Check you have called <code>CheckServiceMessages</code> in the main loop of the application.</li>
 </ul>
 <p>If these two conditions are met then it's hard to imagine what could prevent the application from reacting to any requests of the SCM, except when you have an endless loop somewhere in your application.</p>
 <div class="h_tag">
-<a href="#The-application-does-not-do-whats-supposed-to-do" id="The-application-does-not-do-whats-supposed-to-do" class="autoheader_anchor">
-<h3>6.3. The application does not do what's supposed to do</h3>
+<a href="#The-application-does-not-do-what-it-is-supposed-to-do" id="The-application-does-not-do-what-it-is-supposed-to-do" class="autoheader_anchor">
+<h3>7.3. The application does not do what it is supposed to do</h3>
 </a>
 </div>
 <blockquote>
@@ -4781,19 +4789,19 @@ cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService DYALOG_NOPOPUPS=1'</code
 <p>— <em>Cole Porter</em></p>
 </blockquote>
 <p>First and foremost it is worth repeating that any application supposed to run as a Service should be developed as an ordinary application, including test cases. When it passes such test cases you have reasons to be confident the application will run as a Service too.</p>
-<p>Having said this, there can be surprising differences between running as an ordinary application and a Service. For example, when a Service runs, not with a user's account, but with the system account (which is quite normal to do) any call to <code>#.FilesAndDirs.GetTempPath</code> results in</p>
+<p>Having said this, there can be surprising differences between running as an ordinary application and as a Service. For example, when a Service runs not with a user's account, but with the system account (which is quite normal to do) any call to <code>#.FilesAndDirs.GetTempPath</code> results in</p>
 <p><code>"C:\Windows\System32\config\systemprofile\AppData\Local\Apps"</code></p>
 <p>while for a user's account it would be something like</p>
 <p><code>'C:\Users\{username}\AppData\Local\Temp'</code>.</p>
 <p>When the application behaves in an unexpected way you need to debug it, and for that Ride is invaluable.</p>
 <div class="h_tag">
 <a href="#Potions-and-wands" id="Potions-and-wands" class="autoheader_anchor">
-<h2>7. Potions and wands</h2>
+<h2>8. Potions and wands</h2>
 </a>
 </div>
 <div class="h_tag">
 <a href="#Ride" id="Ride" class="autoheader_anchor">
-<h3>7.1. Ride</h3>
+<h3>8.1. Ride</h3>
 </a>
 </div>
 <p>First of all we have to make sure that the application will give us a Ride if we need one. Since passing any arguments for a Ride via the command line requires the Service to be uninstalled and installed at least twice we recommend preparing the Service from within the application instead.</p>
@@ -4805,7 +4813,7 @@ cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService DYALOG_NOPOPUPS=1'</code
 </ol>
 <p>In the former case ensure as soon as possible after startup you allow the programmer to Ride into the Service. The first line of the function in <code>⎕LX</code> should provide a Ride.</p>
 <p>At such an early stage we don't have an <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file instantiated, so we cannot switch Ride on and off via the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file, we have to modify the code for that.</p>
-<p>You might feel tempted to overcome this by doing it a bit later (e.g. after processing the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file) but beware: if a Service is not cooperating then “a bit later” might be too late to get investigate the problem. Resist temptation.</p>
+<p>You might feel tempted to overcome this by doing it a bit later (e.g. after processing the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file) but beware: if a Service is not cooperating then “a bit later” might be too late to be able to investigate the problem; resist the temptation!</p>
 <p>In the second case, add the call to <code>CheckForRide</code> once the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file has been instantiated.</p>
 
 <div class="leanpub">
@@ -4817,31 +4825,31 @@ cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService DYALOG_NOPOPUPS=1'</code
 
 <div class="h_tag">
 <a href="#Logging" id="Logging" class="autoheader_anchor">
-<h2>8. Logging</h2>
+<h2>9. Logging</h2>
 </a>
 </div>
 <div class="h_tag">
 <a href="#Local-logging" id="Local-logging" class="autoheader_anchor">
-<h3>8.1. Local logging</h3>
+<h3>9.1. Local logging</h3>
 </a>
 </div>
-<p>We want to log as soon as possible any command-line parameters, as well as any message exchange between the Service and the SCM.</p>
+<p>We want to log as soon as possible any command-line parameters as well as any message exchange between the Service and the SCM.</p>
 <p>Again we advise you not to wait until the folder holding the log files is defined by instantiating the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file. Instead we suggest making the assumption that a certain folder (“Logs”) will (or might) exist in the current directory which will become where the workspace was loaded from.</p>
 <p>If that's not convenient, consider passing the directory that will contain the <code>Logs</code> folder as a command line parameter.</p>
 <div class="h_tag">
 <a href="#Windows-event-log" id="Windows-event-log" class="autoheader_anchor">
-<h4>8.1.1. Windows event log</h4>
+<h4>9.1.1. Windows event log</h4>
 </a>
 </div>
 <p>In the next chapter (“<a href="./14 The Windows Event Log.html" class="external_link">The Windows Event Log</a>”) we will discuss why and how to use the Windows Event Log, in particular when it comes to Services.</p>
 <div class="h_tag">
 <a href="#How-to-implement-it" id="How-to-implement-it" class="autoheader_anchor">
-<h3>8.2. How to implement it</h3>
+<h3>9.2. How to implement it</h3>
 </a>
 </div>
 <div class="h_tag">
 <a href="#Setting-the-latent-expression" id="Setting-the-latent-expression" class="autoheader_anchor">
-<h4>8.2.1. Setting the latent expression</h4>
+<h4>9.2.1. Setting the latent expression</h4>
 </a>
 </div>
 <p>First of all we need to point out that <code>MyApp</code> as it stands is hardly a candidate for a Service. We need to make something up. Let's specify one or more folders to be watched by the <code>MyApp</code> Service.</p>
@@ -4859,7 +4867,7 @@ cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService DYALOG_NOPOPUPS=1'</code
 <p>Because we have now two functions that set <code>⎕LX</code> we shall rename the original one (<code>SetLX</code>) to <code>SetLXForApplication</code> to tell them apart.</p>
 <div class="h_tag">
 <a href="#Initialising-the-Service" id="Initialising-the-Service" class="autoheader_anchor">
-<h4>8.2.2. Initialising the Service</h4>
+<h4>9.2.2. Initialising the Service</h4>
 </a>
 </div>
 <p>Next we need the main function for the service:</p>
@@ -4893,7 +4901,7 @@ cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService DYALOG_NOPOPUPS=1'</code
 </ul>
 <div class="h_tag">
 <a href="#The-business-logic" id="The-business-logic" class="autoheader_anchor">
-<h4>8.2.3. The “business logic”</h4>
+<h4>9.2.3. The “business logic”</h4>
 </a>
 </div>
 <p>Time to change the <code>MyApp.Initial</code> function:</p>
@@ -5002,16 +5010,16 @@ cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService DYALOG_NOPOPUPS=1'</code
 </span> ∇</code></pre>
 <div class="h_tag">
 <a href="#Running-the-test-cases" id="Running-the-test-cases" class="autoheader_anchor">
-<h4>8.2.4. Running the test cases</h4>
+<h4>9.2.4. Running the test cases</h4>
 </a>
 </div>
 <p>Now it's time to see if we broke anything. Double-click <code>MyApp.dyapp</code> and type <code>y</code> to answer the question whether you would like to run all test cases. If anything fails, execute <code>#.Tests.RunDebug 0</code> and fix the problem.</p>
 <div class="h_tag">
 <a href="#Installing-and-un-installing-the-Service" id="Installing-and-un-installing-the-Service" class="autoheader_anchor">
-<h2>9. Installing and un-installing the Service</h2>
+<h2>10. Installing and un-installing the Service</h2>
 </a>
 </div>
-<p>In order to install or uninstall the Service we need two <abbr title="Executable file that contains batch commands">BAT</abbr>s: <code>InstallService.bat</code> and <code>Uninstall_Service.bat</code>. We will write these <abbr title="Executable file that contains batch commands">BAT</abbr>s from Dyalog. For that we write a class <code>ServiceHelpers</code>:</p>
+<p>In order to install or uninstall the Service we need two BATs: <code>InstallService.bat</code> and <code>Uninstall_Service.bat</code>. We will write these BATs from Dyalog. For that we write a class <code>ServiceHelpers</code>:</p>
 <pre><code>:Class ServiceHelpers
 
     ∇ {r}←CreateBatFiles dummy;path;cmd;aplexe;wsid
@@ -5054,7 +5062,7 @@ cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService DYALOG_NOPOPUPS=1'</code
 </ul>
 <div class="h_tag">
 <a href="#Make-for-the-Service" id="Make-for-the-Service" class="autoheader_anchor">
-<h2>10. “Make” for the Service</h2>
+<h2>11. “Make” for the Service</h2>
 </a>
 </div>
 <p>Now it's time to create a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> for the service. For that copy <code>Make.dyapp</code> as <code>MakeService.dyapp</code> and then edit it:</p>
@@ -5088,7 +5096,7 @@ Run #.MakeService.Run 0
 <ul>
 <li>We need some more APLTree modules: <code>Tester</code>, <code>Execute</code> and <code>WinSys</code>.</li>
 <li>Ensure the two <abbr title="Executable file that contains batch commands">BAT</abbr> (for installing and uninstalling the service) are written to the disk.</li>
-<li>We delete the class <code>ServiceHelpers</code>: it is not needed for running the Service once we've created the <abbr title="Executable file that contains batch commands">BAT</abbr>s.</li>
+<li>We delete the class <code>ServiceHelpers</code>: it is not needed for running the Service once we've created the BATs.</li>
 <li>We set <code>⎕LX</code> by calling <code>SetLXForService</code>.</li>
 <li>We load the class <code>MakeService</code> and run <code>MakeService.Run</code>.</li>
 </ul>
@@ -5128,7 +5136,7 @@ Run #.MakeService.Run 0
 <ul>
 <li>Assigns the name of the destination folder to the global <code>DESTINATION</code>.</li>
 <li>(Re-)creates a folder with the name in <code>DESTINATION</code>.</li>
-<li>Copies over the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> as well as the two <abbr title="Executable file that contains batch commands">BAT</abbr>s.</li>
+<li>Copies over the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> as well as the two BATs.</li>
 <li>Finally it sets <code>⎕WSID</code> and saves the workspace, without the status indicator, and without <code>MakeService</code> – by deleting itself.</li>
 </ul>
 
@@ -5141,7 +5149,7 @@ Run #.MakeService.Run 0
 
 <div class="h_tag">
 <a href="#Testing-the-Service" id="Testing-the-Service" class="autoheader_anchor">
-<h2>11. Testing the Service</h2>
+<h2>12. Testing the Service</h2>
 </a>
 </div>
 <p>We have test cases that tell us the “business logig” of <code>MyApp</code> works just fine. What we also need are tests that it runs fine as a Service as well.</p>
@@ -5286,7 +5294,7 @@ SERVICE_NAME: MyAppService TYPE : 10 WIN32_OWN_PROCESS STATE : 4 RUNNING (STOPPA
 <p>Though this test starts and stops the Service, its real purpose is to make sure that the Service processes input files as expected.</p>
 <div class="h_tag">
 <a href="#Running-the-tests" id="Running-the-tests" class="autoheader_anchor">
-<h3>11.1. Running the tests</h3>
+<h3>12.1. Running the tests</h3>
 </a>
 </div>
 <p>First we need to ensure everything is assembled freshly, and with admin rights.</p>
@@ -5688,7 +5696,7 @@ HKCU\Software\MyApplication\MainForm\Size</code></pre>
 <p>&lt;!– Find the terminology strange? So do we, but it was invented by Microsoft and defines the standard.</p>
 <p>So we use it too. That makes it easier to understand the Microsoft documentation and also to understand others discussing the Windows Registry. It also helps when you Google for Registry tweaks because the guys posting the solution to your problem are most likely using Microsoft speech as well.</p>
 <p>What is strange about the terminology? Microsoft gives common words unusual meanings when it comes to the Windows Registry. –&gt;</p>
-<p>Here’s an example. This is the definition of the MAX<abbr title="Short for Workspaces">WS</abbr> parameter for Dyalog 64 bit Unicode version 16:</p>
+<p>Here’s an example. This is the definition of the MAXWS parameter for Dyalog 64 bit Unicode version 16:</p>
 <p><img src="Images/WinReg_maxws.png" alt="Definition of maxws in the Windows Registry" title="Definition of maxws in the Windows Registry"></p>
 <p>The full path is:</p>
 <pre><code>Computer\HKEY_CURRENT_USER\Software\Dyalog\Dyalog APL/W-64 17.0 Unicode\maxws</code></pre>
@@ -5788,7 +5796,7 @@ HKCU\Software\MyApplication\MainForm\Size</code></pre>
 <li><code>Delete</code></li>
 </ul>
 <p>It is also limited to the two datatypes <code>REG_SZ</code> and <code>REG_DWORD</code>.</p>
-<p>The class uses the Windows Scripting Host (<abbr title="Short for Workspaces">WS</abbr>H) [<a href="#fnref4" class="footnote_link"><sup>4</sup></a>]. It is available on all Windows systems although it can be switched off by group policies, though we have never seen this in the wild.</p>
+<p>The class uses the Windows Scripting Host (WSH) [<a href="#fnref4" class="footnote_link"><sup>4</sup></a>]. It is available on all Windows systems although it can be switched off by group policies, though we have never seen this in the wild.</p>
 <p>If you want to read just a certain value then this – very small – class might suffice. For example, to read the aforementioned <code>maxws</code> value:</p>
 <pre><code>      #.WinRegSimple.Read 'HKCU\Software\Dyalog\Dyalog APL/W-64 17.0 Unicode\maxws'
 64000</code></pre>
@@ -5961,7 +5969,7 @@ C:\...\Dyalog APL 17.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCo
 <td>SysTray</td>
 </tr>
 <tr>
-<td><abbr title="Short for Workspaces">WS</abbr>Search</td>
+<td>WSSearch</td>
 </tr>
 </tbody>
 </table>
@@ -8185,7 +8193,7 @@ This ⍈; more: ⍈</code></pre>
 [18]   }
      ∇</code></pre>
 <p>This namespace (<code>G</code>) is passed as the only argument to the <code>Find</code> function.</p>
-<p>Suppose you replaces the Windows native GUI by an <abbr title="Hyper Text Mark-up language">HTML</abbr>5/JavaScript GUI. All you have to do here is ensure the <code>G</code> namespace is fed with all the data needed. <code>##.BusinessLogic</code> will not be affected in any way.</p>
+<p>Suppose you replaces the Windows native GUI by an HTML5/JavaScript GUI. All you have to do here is ensure the <code>G</code> namespace is fed with all the data needed. <code>##.BusinessLogic</code> will not be affected in any way.</p>
 <div class="h_tag">
 <a href="#The-function-BusinessLogicFind" id="The-function-BusinessLogicFind" class="autoheader_anchor">
 <h3>2.12. The function <code>##.BusinessLogic.Find</code></h3>
@@ -8536,75 +8544,187 @@ This ⍈; more: ⍈</code></pre>
 <h2>3. The variables</h2>
 </a>
 </div>
-<dl>
-<dt><code>AllUserProfile</code></dt>
-<dd>Defaults to <code>C:\ProgramData</code>: see <a href="#programdata" class="bookmark_link">ProgramData</a></dd>
-<dt id="appdata"><code>AppData</code></dt>
-<dd><p class="first_dd">Defaults to <code>C:\Users\{yourName}\AppData\Roaming</code></p></dd>
-<dd><p>Use this to store data that is both application <strong>and</strong> user specific that is supposed to roam [<a href="#fnref1" class="footnote_link"><sup>1</sup></a>] with the user. An <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> might be an example.</p></dd>
-<dd><p>See also <strong><a href="#localappdata" class="bookmark_link">LocalAppData</a></strong></p></dd>
-<dt><code>CommonProgramFiles</code></dt>
-<dd>Defaults to <code>C:\Program Files\Common Files</code></dd>
-<dt><code>CommonProgramFiles(x86)</code></dt>
-<dd>Defaults to <code>C:\Program Files (x86)\Common Files</code></dd>
-<dt><code>CommonProgramW6432</code></dt>
-<dd>Defaults to <code>C:\Program Files\Common Files</code></dd>
-<dt><code>ComputerName</code></dt>
-<dd>The name of the computer</dd>
-<dt><code>ComSpec</code></dt>
-<dd>Defaults to <code>C:\WINDOWS\system32\cmd.exe</code></dd>
-<dt><code>ErrorLevel</code></dt>
-<dd>This variable does not necessarily exist. If you execute <code>⎕OFF 123</code> in an APL application it will set <code>ErrorLevel</code> to 123.</dd>
-<dt><code>HomePath</code></dt>
-<dd>Defaults to <code>\Users\{yourName}</code></dd>
-<dt id="localappdata"><code>LocalAppData</code></dt>
-<dd><p class="first_dd">Defaults to <code>C:\Users\{yourName}\AppData\Local</code></p></dd>
-<dd><p>Use this to store data that is both application <strong>and</strong> user specific that is <strong>not</strong> supposed to roam [<a href="#fnref1" class="footnote_link"><sup>1</sup></a>] with the user.</p></dd>
-<dd><p>A log file might be an example. The reason is that when a user logs in all the data stored in <code>%APPDATA%</code> is copied over. A large log file might take significant time to be copied with very little (or no) benefit.</p></dd>
-<dd><p>See also <strong><a href="#appdata" class="bookmark_link">AppData</a></strong>.</p></dd>
-<dt><code>LogonServer</code></dt>
-<dd>Defaults to the name of the computer your are logged on to. In case of your own desktop PC the values of <code>LogonServer</code> and <code>ComputerName</code> will be the same. In a Windows Server Domain however they will differ.</dd>
-<dt><code>OS</code></dt>
-<dd>Specifies the Operating System; under Windows 10, <code>Windows_NT</code></dd>
-<dt><code>Path</code></dt>
-<dd>All the folders (separated by semicola) that the operating system should check if the user enters something like <code>my.exe</code> into a console window and <code>my.exe</code> is not found in the current directory.</dd>
-<dt><code>PathExt</code></dt>
-<dd>A list of the file extensions the operating system considers executable, for example: <code>.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC</code>.</dd>
-<dt id="programdata"><code>ProgramData</code></dt>
-<dd>Defaults to <code>C:\ProgramData</code>. Use this for information that is application-specific and needs write access after installation. For Dyalog, this would be the right place to store the session file, workspaces and user commands.</dd>
-<dt id="programfiles"><code>ProgramFiles</code></dt>
-<dd>Defaults to <code>C:\Program Files</code>. On a 64-bit version of Windows this is where 64-bit programs are installed. Note however that on a 32-bit version of Windows this points to <a href="#x86" class="bookmark_link">ProgramFiles(x86)</a>.</dd>
-<dt id="x86"><code>ProgramFiles(x86)</code></dt>
-<dd>Defaults to <code>C:\Program Files (x86)</code>. This is where 32-bit programs are installed.</dd>
-<dt><code>ProgramW6432</code></dt>
-<dd>Defaults to <code>C:\Program Files</code>. On a 64-bit version of Windows this path points to <a href="#programfiles" class="bookmark_link">ProgramFiles</a>. On a 32-bit version of Windows it also points to <code>ProgramFiles</code> which in turn points to <a href="#x86" class="bookmark_link">ProgramFiles(x86)</a>.</dd>
-</dl>
-<p>For details see <em>WOW64 Implementation Detail</em> [<a href="#fnref3" class="footnote_link"><sup>3</sup></a>].</p>
-<dl>
-<dt><code>PSModulePath</code></dt>
-<dd>Defaults to <code>C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\</code>. This path is used by Windows Power Shell [<a href="#fnref2" class="footnote_link"><sup>2</sup></a>] to locate modules when the user does not specify the full path to a module.</dd>
-<dt><code>Public</code></dt>
-<dd>Defaults to <code>C:\Users\Public</code>. It contains folders like <code>Public Documents</code>, <code>Public Music</code>, <code>Public Pictures</code>, <code>Public Videos</code>, … well, you get the picture.</dd>
-<dt id="systemroot"><code>SystemRoot</code></dt>
-<dd>Specifies the folder in which Windows is installed. Defaults to <code>C:\WINDOWS</code>.</dd>
-<dt><code>Temp</code></dt>
-<dd>Points to the folder that holds temporary files and folders. Defaults to <code>C:\Users\{username}\AppData\Local\Temp</code>. See also <code>TMP</code>.</dd>
-<dt><code>TMP</code></dt>
-<dd>Points to the folder that holds temporary files and folders. Defaults to <code>C:\Users\{username}\AppData\Local\Temp</code>. Note that the <code>GetTempFileName</code> API function (which is available as <code>FilesAndDirs.GetTempFilename</code>) will first look for the <code>TMP</code> environment variable and only if that does not exist for the <code>TEMP</code> variable.</dd>
-<dt><code>Username</code></dt>
-<dd>The username of the user currently logged on. Same as <code>⎕AN</code> in APL.</dd>
-<dt><code>UserProfile</code></dt>
-<dd>Defaults to <code>C:\Users\{username}</code>. That's where everything is saved that belongs to the user currently logged on. Note that this is kept apart from other user's eyes by the operating system.</dd>
-<dt><code>WinDir</code></dt>
-<dd>Defaults to the value of <a href="#systemroot" class="bookmark_link"><code>%SystemRoot%</code></a>. Deprecated.</dd>
-</dl>
+<div class="h_tag">
+<a href="#AllUserProfile" id="AllUserProfile" class="autoheader_anchor">
+<h3>3.1. <code>AllUserProfile</code></h3>
+</a>
+</div>
+<p>Defaults to <code>C:\ProgramData</code>: see <a href="#programdata" class="bookmark_link">ProgramData</a></p>
+<div class="h_tag">
+<a href="#appdata" id="appdata" class="autoheader_anchor">
+<h3>3.2. <code>AppData</code></h3>
+</a>
+</div>
+<p>Defaults to <code>C:\Users\{yourName}\AppData\Roaming</code></p>
+<p>Use this to store data that is both application <strong>and</strong> user specific that is supposed to roam [<a href="#fnref2" class="footnote_link"><sup>2</sup></a>] with the user. An <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> might be an example.</p>
+<p>See also <strong><a href="#localappdata" class="bookmark_link">LocalAppData</a></strong></p>
+<p>###<code>CommonProgramFiles</code></p>
+<p>Defaults to <code>C:\Program Files\Common Files</code></p>
+<div class="h_tag">
+<a href="#CommonProgramFiles" id="CommonProgramFiles" class="autoheader_anchor">
+<h3>3.3. <code>CommonProgramFiles(x86)</code></h3>
+</a>
+</div>
+<p>Defaults to <code>C:\Program Files (x86)\Common Files</code></p>
+<div class="h_tag">
+<a href="#CommonProgramW6432" id="CommonProgramW6432" class="autoheader_anchor">
+<h3>3.4. <code>CommonProgramW6432</code></h3>
+</a>
+</div>
+<p>Defaults to <code>C:\Program Files\Common Files</code></p>
+<div class="h_tag">
+<a href="#ComputerName" id="ComputerName" class="autoheader_anchor">
+<h3>3.5. <code>ComputerName</code></h3>
+</a>
+</div>
+<p>The name of the computer</p>
+<div class="h_tag">
+<a href="#ComSpec" id="ComSpec" class="autoheader_anchor">
+<h3>3.6. <code>ComSpec</code></h3>
+</a>
+</div>
+<p>Defaults to <code>C:\WINDOWS\system32\cmd.exe</code></p>
+<div class="h_tag">
+<a href="#ErrorLevel" id="ErrorLevel" class="autoheader_anchor">
+<h3>3.7. <code>ErrorLevel</code></h3>
+</a>
+</div>
+<p>This variable does not necessarily exist. If you execute <code>⎕OFF 123</code> in an APL application it will set <code>ErrorLevel</code> to 123.</p>
+<div class="h_tag">
+<a href="#HomeDrive" id="HomeDrive" class="autoheader_anchor">
+<h3>3.8. <code>HomeDrive</code></h3>
+</a>
+</div>
+<p>Carries the drive letter and a colon (like <code>C:</code>) but only if the user's data (documents, downloads, music…) do not live on a UCN path; for that see <a href="#HomeShare" class="bookmark_link">HomeShare</a>.</p>
+<div class="h_tag">
+<a href="#HomePath" id="HomePath" class="autoheader_anchor">
+<h3>3.9. <code>HomePath</code></h3>
+</a>
+</div>
+<p>Defaults to <code>\Users\{yourName}</code>. Note that this means it comes <strong>without</strong> the drive letter or UNC path! For a full path you need also either <a href="#HomeDrive" class="bookmark_link">HomeDrive</a> or <a href="#HomeShare" class="bookmark_link">HomeShare</a>.</p>
+<p>See also <code>%USERPROFILE%</code> which is usually identical to <code>%HOMEPATH%</code>[<a href="#fnref1" class="footnote_link"><sup>1</sup></a>] but comes <strong>with</strong> the drive letter.</p>
+<div class="h_tag">
+<a href="#HomeShare" id="HomeShare" class="autoheader_anchor">
+<h3>3.10. <code>HomeShare</code></h3>
+</a>
+</div>
+<p>This variable exists only of the users's data (documents, downloads, music…) live on a UNC path. See also <a href="#HomeShare" class="bookmark_link">HomePath</a>.</p>
+<div class="h_tag">
+<a href="#localappdata" id="localappdata" class="autoheader_anchor">
+<h3>3.11. <code>LocalAppData</code></h3>
+</a>
+</div>
+<p>Defaults to <code>C:\Users\{yourName}\AppData\Local</code></p>
+<p>Use this to store data that is both application <strong>and</strong> user specific that is <strong>not</strong> supposed to roam [<a href="#fnref2" class="footnote_link"><sup>2</sup></a>] with the user.</p>
+<p>A log file might be an example. The reason is that when a user logs in all the data stored in <code>%APPDATA%</code> is copied over. A large log file might take significant time to be copied with very little (or no) benefit.</p>
+<p>See also <strong><a href="#appdata" class="bookmark_link">AppData</a></strong>.</p>
+<div class="h_tag">
+<a href="#LogonServer" id="LogonServer" class="autoheader_anchor">
+<h3>3.12. <code>LogonServer</code></h3>
+</a>
+</div>
+<p>Defaults to the name of the computer your are logged on to. In case of your own desktop PC the values of <code>LogonServer</code> and <code>ComputerName</code> will be the same. In a Windows Server Domain however they will differ.</p>
+<div class="h_tag">
+<a href="#OS" id="OS" class="autoheader_anchor">
+<h3>3.13. <code>OS</code></h3>
+</a>
+</div>
+<p>Specifies the Operating System; under Windows 10, <code>Windows_NT</code></p>
+<div class="h_tag">
+<a href="#Path" id="Path" class="autoheader_anchor">
+<h3>3.14. <code>Path</code></h3>
+</a>
+</div>
+<p>All the folders (separated by semicola) that the operating system should check if the user enters something like <code>my.exe</code> into a console window and <code>my.exe</code> is not found in the current directory.</p>
+<div class="h_tag">
+<a href="#PathExt" id="PathExt" class="autoheader_anchor">
+<h3>3.15. <code>PathExt</code></h3>
+</a>
+</div>
+<p>A list of the file extensions the operating system considers executable, for example: <code>.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC</code>.</p>
+<div class="h_tag">
+<a href="#programdata" id="programdata" class="autoheader_anchor">
+<h3>3.16. <code>ProgramData</code></h3>
+</a>
+</div>
+<p>Defaults to <code>C:\ProgramData</code>. Use this for information that is application-specific and needs write access after installation. For Dyalog, this would be the right place to store the session file, workspaces and user commands.</p>
+<div class="h_tag">
+<a href="#programfiles" id="programfiles" class="autoheader_anchor">
+<h3>3.17. <code>ProgramFiles</code></h3>
+</a>
+</div>
+<p>Defaults to <code>C:\Program Files</code>. On a 64-bit version of Windows this is where 64-bit programs are installed. Note however that on a 32-bit version of Windows this points to <a href="#x86" class="bookmark_link">ProgramFiles(x86)</a>.</p>
+<div class="h_tag">
+<a href="#x86" id="x86" class="autoheader_anchor">
+<h3>3.18. <code>ProgramFiles(x86)</code></h3>
+</a>
+</div>
+<p>Defaults to <code>C:\Program Files (x86)</code>. This is where 32-bit programs are installed.</p>
+<div class="h_tag">
+<a href="#ProgramW6432" id="ProgramW6432" class="autoheader_anchor">
+<h3>3.19. <code>ProgramW6432</code></h3>
+</a>
+</div>
+<p>Defaults to <code>C:\Program Files</code>. On a 64-bit version of Windows this path points to <a href="#programfiles" class="bookmark_link">ProgramFiles</a>. On a 32-bit version of Windows it also points to <code>ProgramFiles</code> which in turn points to <a href="#x86" class="bookmark_link">ProgramFiles(x86)</a>.</p>
+<p>For details see <em>WOW64 Implementation Detail</em> [<a href="#fnref4" class="footnote_link"><sup>4</sup></a>].</p>
+<div class="h_tag">
+<a href="#PSModulePath" id="PSModulePath" class="autoheader_anchor">
+<h3>3.20. <code>PSModulePath</code></h3>
+</a>
+</div>
+<p>Defaults to <code>C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\</code>. This path is used by Windows Power Shell [<a href="#fnref3" class="footnote_link"><sup>3</sup></a>] to locate modules when the user does not specify the full path to a module.</p>
+<div class="h_tag">
+<a href="#Public" id="Public" class="autoheader_anchor">
+<h3>3.21. <code>Public</code></h3>
+</a>
+</div>
+<p>Defaults to <code>C:\Users\Public</code>. It contains folders like <code>Public Documents</code>, <code>Public Music</code>, <code>Public Pictures</code>, <code>Public Videos</code>, … well, you get the picture.</p>
+<div class="h_tag">
+<a href="#systemroot" id="systemroot" class="autoheader_anchor">
+<h3>3.22. <code>SystemRoot</code></h3>
+</a>
+</div>
+<p>Specifies the folder in which Windows is installed. Defaults to <code>C:\WINDOWS</code>.</p>
+<div class="h_tag">
+<a href="#Temp" id="Temp" class="autoheader_anchor">
+<h3>3.23. <code>Temp</code></h3>
+</a>
+</div>
+<p>: Points to the folder that holds temporary files and folders. Defaults to <code>C:\Users\{username}\AppData\Local\Temp</code>. See also <code>TMP</code>.</p>
+<div class="h_tag">
+<a href="#TMP" id="TMP" class="autoheader_anchor">
+<h3>3.24. <code>TMP</code></h3>
+</a>
+</div>
+<p>Points to the folder that holds temporary files and folders. Defaults to <code>C:\Users\{username}\AppData\Local\Temp</code>. Note that the <code>GetTempFileName</code> API function (which is available as <code>FilesAndDirs.GetTempFilename</code>) will first look for the <code>TMP</code> environment variable and only if that does not exist for the <code>TEMP</code> variable.</p>
+<div class="h_tag">
+<a href="#Username" id="Username" class="autoheader_anchor">
+<h3>3.25. <code>Username</code></h3>
+</a>
+</div>
+<p>The username of the user currently logged on. Same as <code>⎕AN</code> in APL.</p>
+<div class="h_tag">
+<a href="#UserProfile" id="UserProfile" class="autoheader_anchor">
+<h3>3.26. <code>UserProfile</code></h3>
+</a>
+</div>
+<p>Defaults to <code>C:\Users\{username}</code>. That's where everything is saved that belongs to the user currently logged on. Note that this is kept apart from other user's eyes by the operating system.</p>
+<p>This is usally identical[<a href="#fnref1" class="footnote_link"><sup>1</sup></a>] to <code>%HOMEPATH%</code> except that <code>%HOMEPATH%</code> does not carry the drive letter.</p>
+<div class="h_tag">
+<a href="#WinDir" id="WinDir" class="autoheader_anchor">
+<h3>3.27. <code>WinDir</code></h3>
+</a>
+</div>
+<p>Defaults to the value of <a href="#systemroot" class="bookmark_link"><code>%SystemRoot%</code></a>. Deprecated.</p>
+<p>It is possible to have no profile loaded, but this is a very special — and rare — case. Google for it when you run into this.</p>
 <div id="footnotes_div">
 <hr>
 <p><strong>Footnotes</strong></p>
 <ol>
-<li id="fnref1"><p><a href="https://en.wikipedia.org/wiki/Roaming_user_profile" class="external_link">https://en.wikipedia.org/wiki/Roaming_user_profile</a></p><a href="#fnref1" class="footnote_anchor"></a>
-<li id="fnref2"><p><a href="https://en.wikipedia.org/wiki/PowerShell" class="external_link">https://en.wikipedia.org/wiki/PowerShell</a></p><a href="#fnref2" class="footnote_anchor"></a>
-<li id="fnref3"><p><a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa384274(v=vs.85).aspx" class="external_link">https://msdn.microsoft.com/en-us/library/windows/desktop/aa384274(v=vs.85).aspx</a></p><a href="#fnref3" class="footnote_anchor"></a>
+<li id="fnref1"><p>The difference between <code>%HOMEDIR%|%HOMESHARE%\%HOMEPATH%</code> and <code>%USERPROFILE</code> is that <em>usually</em> the are the same. However, it is possible — and relatively simple — to put the user's data (<code>%HOME\*%</code>) elsewhere, a network drive for example. <code>%USERPROFILE%</code> however is where the user's profile is loaded from, and that cannot be changed.</p><a href="#fnref1" class="footnote_anchor"></a>
+<li id="fnref2"><p><a href="https://en.wikipedia.org/wiki/Roaming_user_profile" class="external_link">https://en.wikipedia.org/wiki/Roaming_user_profile</a></p><a href="#fnref2" class="footnote_anchor"></a>
+<li id="fnref3"><p><a href="https://en.wikipedia.org/wiki/PowerShell" class="external_link">https://en.wikipedia.org/wiki/PowerShell</a></p><a href="#fnref3" class="footnote_anchor"></a>
+<li id="fnref4"><p><a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa384274(v=vs.85).aspx" class="external_link">https://msdn.microsoft.com/en-us/library/windows/desktop/aa384274(v=vs.85).aspx</a></p><a href="#fnref4" class="footnote_anchor"></a>
 </ol>
 </div>
 </article>

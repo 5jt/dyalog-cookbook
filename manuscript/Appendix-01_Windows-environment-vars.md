@@ -2,11 +2,10 @@
 [parm]:title='EnvVars'
 
 
-Appendix 1 --- Windows environment variables
-=============================================
+# Appendix 1 --- Windows environment variables
 
-Overview
---------
+
+## Overview
 
 Windows comes with quite a number of environment variables. Those variables are helpful in addressing, say, a particular path without actually using a physical path. 
 
@@ -23,14 +22,12 @@ Notes:
 * Under Windows, the names of environment variables are case-insensitive.
 
 
-Outdated?!
-----------
+## Outdated?!
 
 Some consider environment variables an outdated technology. We don't want to get involved in this argument here but enviroment variables will be round for a very long time, and Windows relies on them. (They are also standard under UNIX, including Linux and MacOS.)
 
 
-The variables
--------------
+## The variables
 
 ### `AllUserProfile`
 
