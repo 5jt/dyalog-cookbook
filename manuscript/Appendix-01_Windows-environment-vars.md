@@ -79,7 +79,7 @@ See also `%USERPROFILE%` which is usually identical to `%HOMEPATH%`[^homepath]  
 
 ### `HomeShare`
 
-This variable exists only of the users's data (documents, downloads, music...) live on a UNC path. See also [HomePath](#HomeShare).
+This variable exists only of the user's data (documents, downloads, music...) live on a UNC path. See also [HomePath](#HomeShare).
 
 ### `LocalAppData`{#localappdata}
 
