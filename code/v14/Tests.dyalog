@@ -3,7 +3,7 @@
 
     ∇ R←Initial;list;rc
       U←##.Utilities ⋄ F←##.FilesAndDirs ⋄ A←##.APLTreeUtils
-      ∆Path←F.GetTempPath,'\MyApp_Tests'
+      ∆Path←F.GetTempPath,'MyApp_Tests'
       ∆ExeFilename←'MyApp\MyApp.exe'
       F.RmDir ∆Path
       'Create!'F.CheckPath ∆Path
@@ -45,10 +45,8 @@
       R←∆Failed
       ##.MyApp.(Config MyLogger)←##.MyApp.Initial 0
       rc←##.MyApp.TxtToCsv'This_file_does_not_exist'
-      →GoToTidyUp rc≢##.MyApp.EXIT.SOURCE_NOT_FOUND
+      →PassesIf rc≡##.MyApp.EXIT.SOURCE_NOT_FOUND
       R←∆OK
-     ∆TidyUp:
-      ##.MyApp.Cleanup ⍬
     ∇
 
     ∇ R←Test_exe_01(stopFlag batchFlag);⎕TRAP;rc

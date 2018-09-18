@@ -12,7 +12,7 @@
       (F U)←##.(FilesAndDirs Utilities)
       (rc en more)←F.RmDir DESTINATION
       U.Assert 0=rc
-      U.Assert 'Create!'##.FilesAndDirs.CheckPath DESTINATION
+      U.Assert 'Create!'F.CheckPath DESTINATION
       'MyApp.ini.template' CopyTo DESTINATION,'\MyApp.ini'
       'Install_Service.bat' CopyTo DESTINATION,'\'
       'Uninstall_Service.bat' CopyTo DESTINATION,'\'

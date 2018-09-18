@@ -99,7 +99,7 @@
     ⍝ `earlyRide`: flag that allows a very early Ride.
     ⍝ `ridePort`: Port number used by Ride.
       r←⍬
-      CheckForRide earlyRide ridePort
+      CheckForRide ridePort earlyRide 
       #.FilesAndDirs.PolishCurrentDir
       ⎕TRAP←#.HandleError.SetTrap ⍬
       (Config MyLogger)←Initial #.ServiceState.IsRunningAsService
@@ -285,7 +285,9 @@
           Config.Debug{¯1≡⍵:⍺ ⋄ ⍵}←myIni.Get'Config:debug'
           Config.Trap←⊃Config.Trap myIni.Get'Config:trap'
           Config.Accents←⊃Config.Accents myIni.Get'Config:Accents'
-          :If isService
+          :If 0=isService
+              Config.LogFolder←'expand'F.NormalizePath⊃Config.LogFolder myIni.Get'Folders:Logs'
+          :Else
               Config.WatchFolders←⊃myIni.Get'Folders:Watch'
               Config.WriteToWindowsEventLog←0
           :EndIf
@@ -300,21 +302,26 @@
       Config.DumpFolder←'expand'F.NormalizePath Config.DumpFolder
     ∇
 
-    ∇ {r}←CheckForRide (ridePort waitFlag);rc;msg
-    ⍝ Depending on what is provided as right argument we prepare for a Ride 
-    ⍝ or we do not. In case `waitFlag` is 1 we enter an endless loop.
+    ∇ {r}←CheckForRide(ridePort waitFlag);rc;init;msg
+     ⍝ Depending on what's provided as right argument we prepare for a Ride
+     ⍝ or we do not. In case `waitFlag` is 1 we enter an endless loop.
      r←1
      :If 0<ridePort
-         rc←3502⌶0
-         rc←3502⌶'SERVE::',⍕ridePort
-         :If 0≠rc
+      :AndIf 0=3501⌶⊣⍬                 ⍝ Only if not already riding
+          init←'SERVE::',⍕ridePort     ⍝ Initialisation string
+          rc←3502⌶init                 ⍝ Specify INIT string
+          :If 32=rc
+              11 ⎕SIGNAL⍨'Cannot Ride: Conga DLLs are missing'
+          :ElseIf 64=rc
+              11 ⎕SIGNAL⍨'Cannot Ride; invalid initialisation string: ',init
+          :ElseIf 0≠rc
              msg←'Problem setting the Ride connecion string to SERVE::'
              msg,←,(⍕ridePort),', rc=',⍕rc
              11 ⎕SIGNAL⍨msg
          :EndIf
          rc←3502⌶1
          :If ~rc∊0 ¯1
-             11 ⎕SIGNAL⍨'Problem switching on Ride, rc=',⍕rc
+              11 ⎕SIGNAL⍨'Switching on Ride failed, rc=',⍕rc
          :EndIf
          {}{_←⎕DL ⍵ ⋄ ∇ ⍵}⍣(⊃waitFlag)⊣1  ⍝ Endless loop for an early RIDE
      :EndIf

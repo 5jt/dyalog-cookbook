@@ -234,7 +234,7 @@ leanpub-end-insert
 ⍝ Prepares the application.
   Config←CreateConfig isService
   Config.ControlFileTieNo←CheckForOtherInstances ⍬
-  CheckForRide(0≠Config.Ride)Config.Ride
+  CheckForRide Config.(Ride WaitForRide)
   MyLogger←OpenLogFile Config.LogFolder
 leanpub-start-insert
   Log'Started MyApp in ',F.PWD

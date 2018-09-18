@@ -3,7 +3,7 @@
 
     ∇ R←Initial;list;rc
       U←##.Utilities ⋄ F←##.FilesAndDirs ⋄ A←##.APLTreeUtils
-      ∆Path←F.GetTempPath,'\MyApp_Tests'
+      ∆Path←F.GetTempPath,'MyApp_Tests'
       F.RmDir ∆Path
       'Create!'F.CheckPath ∆Path
       list←⊃F.Dir'..\..\texts\en\*.txt'
@@ -42,7 +42,7 @@
       R←∆Failed
       ##.MyApp.(Config MyLogger)←##.MyApp.Initial ⍬
       rc←##.MyApp.TxtToCsv'This_file_does_not_exist'
-      →FailsIf rc≢##.MyApp.EXIT.SOURCE_NOT_FOUND
+      →PassesIf rc≡##.MyApp.EXIT.SOURCE_NOT_FOUND
       R←∆OK
     ∇
 

@@ -3,69 +3,19 @@
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta charset="utf-8">
-<title>Error Handling</title>
-<link href="./CSS/BlackOnWhite_screen.css" rel="stylesheet" media="screen">
-<link href="./CSS/Cookbook_Chapter_screen.css" rel="stylesheet" media="screen">
-<link href="./CSS/snap.css" rel="stylesheet" media="screen">
-<link href="./CSS/BlackOnWhite_print.css" rel="stylesheet" media="print">
-<link href="./CSS/Cookbook_Chapter_print.css" rel="stylesheet" media="print">
-<script src="./JavaScript/snap.js"></script>
+<title>Meddy</title>
+<style media="screen">
+html{line-height:1.15;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;}body{margin:0;}article,aside,footer,header,nav,section{display:block;}h1{font-size:2em;margin:0.67em 0;}figcaption,figure,main{display:block;}figure{margin:1em 40px;}hr{box-sizing:content-box;height:0;overflow:visible;}pre{font-family:monospace, monospace;font-size:1em;}a{background-color:transparent;-webkit-text-decoration-skip:objects;}abbr[title]{border-bottom:none;text-decoration:underline;text-decoration:underline dotted;}b,strong{font-weight:inherit;}b,strong{font-weight:bolder;}code,kbd,samp{font-family:monospace, monospace;font-size:1em;}dfn{font-style:italic;}mark{background-color:#ff0;color:#000;}small{font-size:0.8em;}sub,sup{font-size:0.75em;line-height:0;position:relative;vertical-align:baseline;}sub{bottom:-0.25em;}sup{top:-0.5em;}audio,video{display:inline-block;}audio:not([controls]){display:none;height:0;}img{border-style:none;}svg:not(:root){overflow:hidden;}button,input,optgroup,select,textarea{font-family:sans-serif;font-size:1em;line-height:1.15;margin:0;}button,input{overflow:visible;}button,select{text-transform:none;}button,html [type="button"], [type="reset"],[type="submit"]{-webkit-appearance:button;}button::-moz-focus-inner,[type="button"]::-moz-focus-inner,[type="reset"]::-moz-focus-inner,[type="submit"]::-moz-focus-inner{border-style:none;padding:0;}button:-moz-focusring,[type="button"]:-moz-focusring,[type="reset"]:-moz-focusring,[type="submit"]:-moz-focusring{outline:1px dotted ButtonText;}fieldset{padding:0.35em 0.75em 0.625em;}legend{box-sizing:border-box;color:inherit;display:table;max-width:100%;padding:0;white-space:normal;}progress{display:inline-block;vertical-align:baseline;}textarea{overflow:auto;}[type="checkbox"],[type="radio"]{box-sizing:border-box;padding:0;}[type="number"]::-webkit-inner-spin-button,[type="number"]::-webkit-outer-spin-button{height:auto;}[type="search"]{-webkit-appearance:textfield;outline-offset:-2px;}[type="search"]::-webkit-search-cancel-button,[type="search"]::-webkit-search-decoration{-webkit-appearance:none;}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit;}details, menu{display:block;}summary{display:list-item;}canvas{display:inline-block;}template{display:none;}[hidden]{display:none;}body{margin:0;font-family:"Bookman Old Style", "Callisto MT", Bookman, "Goudy Old Style", Garamond, serif;background-color:#fdfdfd;font-size:18px;line-height:1.4;max-width:none;padding:0.83em;color:#292929;}h1, h2, h3, h4, h5, h6{color:#404040;font-weight:800;padding-left:0;}h1, h2, h3, h4, h5, h6{font-family:"Century Gothic", Verdana, "Sans";}h1, h2, h3, h4, p{margin-bottom:0.88em;}h1{font-size:1.8em;margin:0.27em 0 1.11em 0;}h1 > code, h2 > code, h3 > code, h4 > code, h5 > code, h6 > code{font-size:1em;background-color:inherit;}h2{font-size:1.44em;margin:0.55em 0 0.55em 0;padding-top:0.55em;border-bottom:1px solid Silver;}h3{margin:0;margin-top:0.55em;font-size:1.22em;}nav h3{font-size:0.88em;margin-left:0.83em;margin-bottom:0.27em;}h4{font-size:1em;margin:0;margin-top:0.55em;}h5{font-size:0.94em;margin:0;margin-top:0.66em;padding:0;}h6{font-size:0.88em;margin:0;margin-top:0.66em;padding:0;}a{color:#0099ff;margin:0;padding:0;vertical-align:baseline;}a:visited{color:purple;}a.autoheader_anchor{text-decoration:none;}ul{list-style-type:disc;}ul, ol{padding:0;margin:0;}dd{padding-top:0.25em;}p.first_dd{padding-top:0.25em;}li > ul, ol{padding-bottom:0;}li{line-height:1.3;margin-left:1.38em;margin-bottom:0.55em;}ul > li{margin-left:1.11em;}li ul{margin-left:0.55em;}li ul{margin-left:0.27em;}li p{padding:1px 0 0 0;margin:0.55em 0 0.27em 0;line-height:1.3;}p, ul, ol{line-height:1.3;padding:0.44em 0 0 0;margin:0;}pre{overflow:scroll;padding:0.55em 0.27em;margin:0.55em 0 0.55em 0 !important;background-color:#faebd7;color:#3e3e3e;border:1px Silver dashed;display:block;font-family:APLFont, monospace;font-weight:400;}pre > code{line-height:1.2;border:0;padding:0;margin:0;background-color:inherit;color:inherit;font-weight:inherit;}a code{padding:0;font-size:1em;}nav code{background-color:inherit;font-weight:400;color:inherit;}code{font-family:APLFont, monospace;background-color:#e7e7e7;color:Black;font-weight:800;line-height:1.2;font-size:0.88em;margin:0;color:#950000;padding:0 0.16em;}tbody tr:nth-child(even){background-color:#F0F0F0;}th{background-color:#E6E6E6;color:black;}th, td{padding:0.16em 0.55em;}table{border-color:Black;margin:1.11em 0 1.11em 0;border:2px black;border-collapse:collapse;font-family:APLFont;font-size:0.88em;line-height:1.2;border:1px solid Gray;}li > table{margin:0.55em 0 0.55em 0;}tr{margin:1.11em;}th{font-weight:bold;}tfoot td{font-weight:bold;}blockquote{border-left:0.27em solid silver;padding-left:0.27em;margin:0.83em 0.27em 0.83em 0.55em;}blockquote ul li{margin-left:1.38em;}blockquote ol li{margin-left:1.38em;}li > blockquote{margin-left:0;}nav{background-color:#f5f5f5;border:1px solid Black;padding:0.55em;margin:0.55em;margin-right:0;box-shadow:0.27em 0.27em 0.27em Gray;overflow:hidden;}nav#main_nav{position:fixed;top:0;right:0.55em;float:none;width:auto;}nav#main_nav_no_collapse li{font-size:0.77rem;}nav#main_nav_no_collapse li{line-height:1.5;}nav ul{list-style-type:none;margin:0 0 0.11em 0;padding:0;}nav a:visited{color:black;}nav ul li{margin-bottom:0.16em;}nav li p{margin:0;padding:0;line-height:1;margin:0;padding:0;}nav li{font-size:0.75rem;line-height:1.3;padding:0;margin-top:0;margin-bottom:0;margin-left:0.83em;}nav p{font-weight:bold;font-size:0.75rem;padding-top:0;}dl{margin-top:0.1em;margin-bottom:0.1em;}dt{margin-top:0.75em;margin-bottom:0.1em;font-weight:800;}label#hide_toc_label{font-size:0.8em;}.toc-container{position:relative;height:auto;}div.toc-container h1{font-size:0.88em;margin:0.27em 0 0.27em 0;}[type="checkbox"]{position:absolute;left:-9999px;}label{display:block;width:100%;height:1.1em;cursor:pointer;top:0;padding-left:1.1em;}label:before{content:'Table of contents \25BC';font-weight:bold;font-size:90%;padding-bottom:0;}[type="checkbox"] ~ div{display:none;}[type="checkbox"]:checked ~ div{display:block;margin-top:1.1em;}[type="checkbox"]:checked + label{top:100%;}[type="checkbox"]:checked + label:before{content:'Table of contents ▲';}div#footnotes_div p{line-height:1;padding-bottom:0;padding-top:0;}div#footnotes_div ol{padding-top:0;}@font-face{font-family:"APLFont";src:local("APL385 Unicode"), url("http://misc.aplteam.com/apl385.ttf") format("truetype");}.no_display{display:none;}.red{color:red;}img{margin-top:0.55em;margin-bottom:0.27em;}div.leanpub{padding:0.83em 0.55em 1.11em 0;margin:0.55em 0 0 0.27em;overflow:auto;}div.leanpub_A{border:1px solid black;background-color:#f1f1f1;padding:0.55em;margin:1.11em 0 0.83em 0;}div.leanpub h3, div.leanpub_A h3{font-size:1.2em;padding:0;margin:0;}div.leanpub h4, div.leanpub_A h4{font-size:1.1em;padding:0.27em 0 0 0;margin:0;}div.leanpub h5, div.leanpub h5{font-size:1.0em;padding:0.27em 0 0 0;margin:0;}div.leanpub_A h5, div.leanpub_A h5{font-size:1.0em;padding:0.27em 0 0 0;margin:0;}div.leanpub img{padding:0;margin:0 1.11em 0.27em 0;}div.leanpub_A > p:first-child{padding-top:0;margin-top:0;}div.leanpub img{float:left;padding:0;margin:0.55em 1.11em 0 0;clear:both;}div.leanpub tbody *{background-color:transparent;}div.leanpub p{padding:0.17em 0 0 0;margin:0;}span.leanpub_code{color:Red;}div.leanpub p{display:block;padding:0.44em 0 0 0;}div.leanpub > div{margin-left:2.27em;}
+</style>
+<style media="print">
+@page{margin:25mm 20mm 25mm 20mm;}body{font-family:"Bookman Old Style", "Callisto MT", Bookman,"Goudy Old Style", Garamond, serif;font-size:9pt;line-height:1.2;}h1{font-size:170%;}h2{font-size:110%;}h3{font-size:110%;}h4{font-size:105%;}h5{font-size:100%;}h6{font-size:95%;}h1{margin:0 0 20pt 0;}h2{margin:15pt 0 3pt 0;}h3{margin:10pt 0 0pt 0;}h4{margin:10pt 0 0pt 0;}h5{margin:9pt 0 0pt 0;}h6{margin:9pt 0 0pt 0;}h1, h2, h3, h4, h5, h6{color:black;font-family:"Century Gothic", Verdana, "Sans";page-break-after:avoid;}h1 > code, h2 > code, h3 > code, h4 > code, h5 > code, h6 > code{font-size:100%;}h2{border-bottom:1pt solid Silver;padding-bottom:2pt;}.h_tag{page-break-after:avoid;break-after:avoid;}abbr[title]{border-bottom:0;text-decoration:none;}a{color:black;margin:0;padding:0;vertical-align:baseline;text-decoration:none;font-style:italic;}a.autoheader_anchor{text-decoration:none;font-style:normal;page-break-after:avoid;break-after:avoid;}ul{list-style-type:square;}ul, ol{padding:0;margin:0;}li > ul, ol{padding-bottom:0;}li{line-height:1.3;margin-left:13pt;margin-bottom:5pt;}ul > li{margin-left:10pt;}li ul{margin-left:5pt;}li ul{margin-left:3pt;}li p{padding:1pt 0 0 0;margin:5pt 0 3pt 0;line-height:1.3;}p, ul, ol{line-height:1.3;padding:4pt 0 0 0;margin:0;color:black;}pre{padding:3pt;margin:5pt 0;white-space:pre-wrap;background-color:#FAFAFA;border:1pt Silver solid;display:block;font-family:APLFont, monospace;page-break-inside:avoid;-webkit-print-color-adjust:exact;}pre code{background-color:#FAFAFA;color:Black;padding:0;margin:0 0 -6pt 0;line-height:1.1;border:0;}code{font-family:APLFont, monospace;line-height:1.2;font-size:9pt;padding:3pt 1pt 3pt 1pt;color:#950000;padding:3pt 4pt 3pt 4pt;}tbody th, tfoot tr{background-color:#e6e6e6;}tbody tr:nth-child(even){background-color:#fafafa;}th{background-color:#F0F0F0;}th, td{padding:1pt 5pt;}table{margin:10pt 0;font-family:APLFont;font-size:9pt;padding:0;border:1pt solid silver;-webkit-print-color-adjust:exact;}li > table{margin:10pt 0 10pt 0;}tr{margin:20pt;}th{font-weight:bold;}tfoot td{font-weight:bold;}blockquote{border-left:5pt solid silver;padding-left:5pt;margin:8pt 3pt 8pt 8pt;}nav{background-color:#f8f8f8;border:1pt solid Gray;width:auto;float:right;padding:5pt 5pt 5pt 0;margin:5pt 0 5pt 5pt;page-break-inside:avoid;}nav *{font-size:75%;}nav ul{list-style-type:none;margin:0 0 2pt 0;padding:0;}nav ul li{margin-bottom:0;}nav li p{margin:0;padding:0;line-height:1;margin:0;padding:0;}nav li{font-size:9pt;line-height:1;padding:0;margin-top:0;margin-bottom:0;margin-left:8pt;}dl{margin-top:0;margin-bottom:10pt;}dt{margin-top:10pt;margin-bottom:0;font-weight:800;page-break-inside:avoid;}dd{margin-top:2pt;}label#hide_toc_label{font-size:65%;}.toc-container{position:relative;height:auto;margin-top:5pt;}.toc-container h1{margin:0 0 7pt 7pt;}[type="checkbox"]{display:none;}label{display:block;width:100%;height:1.1em;top:0;padding-left:10pt;}label:before{content:'Table of contents';font-weight:bold;font-size:140%;padding-bottom:10pt;}a.external_link::before{content:" 🌎";}a.bookmark_link::before{content:" ➯";}a.mailto_link::before{content:" ✉"}nav a.bookmark_link{font-style:normal;}nav p{margin-left:10pt;font-weight:bold;font-size:9pt;}nav a{font-style:normal;}nav a.bookmark_link::before{content:"";}div#footnotes_div a::before{content:"";}div#footnotes_div a{font-style:normal;}div#footnotes_div{page-break-inside:avoid;}@font-face{font-family:"APLFont";src:local("APL385 Unicode"), url("http://misc.aplteam.com/apl385.ttf") format("truetype");}.no_print{display:none;}.red{color:red;}.avoid_page_break{page-break-inside:avoid;}.page_break_before{page-break-before:auto;}div.leanpub{margin:10pt 0 10pt 8pt;page-break-inside:avoid;}div.leanpub_A{border:1pt solid black;background-color:#f9f9f9;padding:5pt;margin:10pt 0 10pt 0;page-break-inside:avoid;}div.leanpub h3, div.leanpub_A h3{font-size:1.2em;padding:3pt 0 0 0;margin:0;}div.leanpub h4, div.leanpub_A h4{font-size:1.1em;padding:3pt 0 0 0;margin:0;}div.leanpub h5, div.leanpub h5{font-size:1.0em;padding:3pt 0 0 0;margin:0;}div.leanpub_A h5, div.leanpub_A h5{font-size:1.0em;padding:3pt 0 0 0;margin:0;}div.leanpub img{padding:0;margin:0 10pt 2pt 0;}div.leanpub_A > p:first-child{padding-top:0;margin-top:0;}div.leanpub > div > h1:first-child{padding-top:5pt;}div.leanpub img{float:left;padding:0;margin:5pt 10pt 0 0;clear:both;}div.leanpub p{padding:3pt 0 0 0;margin:0;}span.leanpub_code{color:black;}div.leanpub p{display:block;padding:8pt 0 0 0;}div.leanpub > div{margin-left:35pt;}
+</style>
+<meta name="author" content="kai">
 </head>
 <body>
-<div class="snap-drawers">
-<div class="snap-drawer snap-drawer-left">
-<div class="h_tag">
-<h3>Chapters</h3>
-</div>
-<ol>
-<li><a href="./01-Introduction.html" class="external_link">Introduction</a></li>
-<li><a href="./02-Structure.html" class="external_link">Structure</a></li>
-<li><a href="./03-Packaging.html" class="external_link">Packaging</a></li>
-<li><a href="./04-Logging%20.html" class="external_link">Logging </a></li>
-<li><a href="./05-Configuration.html" class="external_link">Configuration</a></li>
-<li><a href="./06-Debugging-EXEs.html" class="external_link">Debugging EXEs</a></li>
-<li><a href="./07-Handling-errors.html" class="external_link">Handling errors</a></li>
-<li><a href="./08-Testing.html" class="external_link">Testing</a></li>
-<li><a href="./09-Documentation.html" class="external_link">Documentation</a></li>
-<li><a href="./10-Make.html" class="external_link">Make</a></li>
-<li><a href="./11-Providing-help.html" class="external_link">Providing help</a></li>
-<li><a href="./12-Scheduled-Tasks.html" class="external_link">Scheduled Tasks</a></li>
-<li><a href="./13-Windows-Services.html" class="external_link">Windows Services</a></li>
-<li><a href="./14-Windows-Event-Log.html" class="external_link">Windows Event Log</a></li>
-<li><a href="./15-Windows-Registry.html" class="external_link">Windows Registry</a></li>
-<li><a href="./16-Creating-SetUp.exe.html" class="external_link">Creating SetUp.exe</a></li>
-<li><a href="./17-Regular-Expressions.html" class="external_link">Regular Expressions</a></li>
-<li><a href="./18-Acre.html" class="external_link">Acre</a></li>
-<li><a href="./19-GUI.html" class="external_link">GUI</a></li>
-<li><a href="./20-Git.html" class="external_link">Git</a></li>
-</ol>
-<div class="h_tag">
-<h3>Appendices</h3>
-</div>
-<ol>
-<li><a href="./Appendix-01_Windows-environment-vars.html" class="external_link">Windows environment vars</a></li>
-<li><a href="./Appendix-02_User-commands.html" class="external_link">User commands</a></li>
-<li><a href="./Appendix-03_aplcores-&-WS-integrity.html" class="external_link">aplcores & WS integrity</a></li>
-<li><a href="./Appendix-04_Development-environment.html" class="external_link">Development environment</a></li>
-<li><a href="./Appendix-05_Special-characters.html" class="external_link">Special characters</a></li>
-</ol>
-<div class="h_tag">
-<h3>Misc</h3>
-</div>
-<ul>
-<li><a href="07-Handling-errors.html">Previous chapter</a></li>
-<li><a href="09-Documentation.html">Next chapter</a></li>
-<li><a href="./Dyalog_Cookbook.html" class="external_link" alt="All chapters, for printing" title="All chapters, for printing">Single document<br></a></li>
-</ul>
-</div>
-</div>
-<div id="mainmenu">
-<a href=# style="color:black;"><p><span id="mainmenu_match">≡</span></p></a>
-<p><span id="mainmenu_title">The Dyalog Cookbook</span></p>
-<nav id="main_nav">
-<input type="checkbox" id="hide_toc">
-<label id="hide_toc_label" for="hide_toc"></label>
+<nav id="main_nav_no_collapse">
 <div class="toc-container">
+<h3>Table of contents</h3>
 <ul>
 <li><a href="#Why-you-want-to-write-tests">Why you want to write tests</a>
 <ul>
@@ -101,12 +51,9 @@
 </div>
 </nav>
 <p>1{:: encoding=“utf-8” /} [parm]:title='Testing'</p>
-</div>
-<div id="content" class="snap-content">
-<div id="cookbook_content">
 <div class="h_tag">
-<a href="#8-Testing--the-sound-of-breaking-glass" id="8-Testing--the-sound-of-breaking-glass" class="autoheader_anchor">
-<h1>8. Testing – the sound of breaking glass</h1>
+<a href="#Testing--the-sound-of-breaking-glass" id="Testing--the-sound-of-breaking-glass" class="autoheader_anchor">
+<h1>Testing – the sound of breaking glass</h1>
 </a>
 </div>
 <p>Our application here is simple – just count letter frequency in text files.</p>
@@ -356,7 +303,7 @@ Run #.MyApp.SetLX ⍬
 <ul>
 <li>We renamed the template from <code>Test_000</code> to <code>Test_001</code>.</li>
 <li>We described in line 1 as thoroughly as possible what the test case is doing. The reason is that this line is later the only way to tell this test case from any other.
-<p>In other words, it is really important to get this right. And if you cannot describe in a single line what the test case is doing, it may be doing too much.</p></li>
+<p>In other words, it is really important to get this right. If you cannot describe in a single line what the test case is doing, it may be doing too much.</p></li>
 <li>We set <code>⎕TRAP</code> so that any error 999 will stop the interpreter with a deliberate error; we will soon see why and what for.</li>
 <li>We also localise <code>⎕TRAP</code> so that any error 999 has an effect only within the test function. In fact, any error other than 999 is passed through with the <code>N</code> option in order to allow traps further up the stack to take control.</li>
 <li>We initialise the explicit result <code>R</code> by assigning the value returned by the niladic function <code>∆Failed</code>. That allows us simply to leave the function in case a test fails: the result will then tell.</li>
@@ -370,7 +317,7 @@ Run #.MyApp.SetLX ⍬
 <li>We also added a function <code>GetHelpers</code> to the script. The reason is that the helpers will disappear as soon as we fix the <code>Test</code> script. And we are going to fix it whenever we change something or add a new test case. Therefore we need an easy way to get them back: <code>GetHelpers</code> to the rescue.</li>
 <li>The function <code>Initial</code> will be executed by the test framework before any test function is executed. This can be used to initialise stuff that all (or many) test cases need. Here we establish the references <code>A</code> (for the <code>APLTreeUtils</code> module), <code>F</code> (for the <code>FilesAndDirs</code> module) and <code>U</code> (for the <code>Utilities</code> module).
 <p><code>Initial</code> relies on naming conventions; if there is a function in scope with that name, it will be executed. More later.</p></li>
-<li>The function <code>Cleanup</code> will be executed by the test framework after all test functions have been executed. This can be used to clean up stuff that’ no longer needed. Here we delete the references <code>A</code>, <code>F</code> and <code>U</code>. More later.</li>
+<li>The function <code>Cleanup</code> will be executed by the test framework after all test functions have been executed. This can be used to clean up stuff that’s no longer needed. Here we delete the references <code>A</code>, <code>F</code> and <code>U</code>. More later.</li>
 </ul>
 
 <div class="leanpub_A">
@@ -380,12 +327,12 @@ Run #.MyApp.SetLX ⍬
 <p>When you change a namespace script, on the other hand, the namespace is re-created from the script, and that means that our helpers will disappear because they are not a part of the <code>Tests</code> script.</p>
 </div>
 
-<p>Let’s call our test case. We do this by running the <code>Run</code> method first:</p>
+<p>Let’s execute our test case. We do this by running the <code>Run</code> method first:</p>
 <pre><code>Run
---- Test framework "Tester" version 3.5.0 from 2017-07-16 ---------------------------------
+--- Test framework "Tester" version 3.9.0 from yyyy-mm-dd ---------------------------------
 Searching for INI file Testcases.ini
   ...not found
-Searching for INI file testcases_APLTEAM2.ini
+Searching for INI file testcases_{compuetername}.ini
   ...not found
 Looking for a function "Initial"...
   "Initial" found and successfully executed
@@ -410,17 +357,17 @@ Looking for a function "Cleanup"...
 
 <div class="leanpub_A">
 <h3>What is a test case?!</h3>
-<p>You might wonder how <code>Run</code> established what is a test case and what isn’t: that’s achieved by naming conventions. Al test functions start their names with <code>Test_</code>. After that there are two possibilities:</p>
+<p>You might wonder how <code>Run</code> established what is a test case and what isn’t: that’s achieved by naming conventions. All test functions start their names with <code>Test_</code>. After that there are two possibilities:</p>
 <ol start="1">
 <li>In the simple case the <code>_</code> is followed by nothing but digits. All these qualify as test cases: <code>Test_1</code>, <code>Test_01</code>, <code>Test_001</code> and so on. (<code>Test_01A</code> however does not.)</li>
 <li>If you have a large number of test cases you most probably want to group them. You can insert a group name between two underscores, followed by one or more digits. So <code>Test_map_1</code> is recognized as a test case, and so is <code>Test_Foo_9999</code>. <code>Test_Foo_Goo_1</code> however is not.</li>
 </ol>
 </div>
 
-<p>What if we want to look into a broken or failing test case? Of course in our current scenario – which is extremely simple – we could just trace into <code>Test_001</code> and find out what’s going on, but if we take advantage of the many features the test framework offers, we cannot do this. (Soon to become clear why.)</p>
+<p>What if we want to look into a broken or failing test case? Of course in our current scenario – which is extremely simple – we could just trace into <code>Test_001</code> and find out what’s going on, but if we take advantage of the many features the test framework offers, we cannot do this. (Soon it will become clear why.)</p>
 <p>However, there is a way to do this no matter whether the scenario is simple, reasonably complex or extremely complex: we call <code>RunDebug</code>:</p>
 <pre><code>RunDebug 0
---- Test framework "Tester" version 3.6.0 from  -------
+--- Test framework "Tester" version 3.9.0 from yyyy-mm-dd -------
 Searching for INI file testcases_{computername}.ini
   ...not found
 Searching for INI file Testcases.ini
@@ -440,13 +387,13 @@ SYNTAX ERROR
 #.Tester.RunDebug[17]
 #.Tests.RunDebug[3]</code></pre>
 <p>It stopped in line 6. Obviously the call to <code>FailsIf</code> has something to do with this, and so has the <code>⎕TRAP</code> setting because apparently that’s where the “Deliberate error” comes from.</p>
-<p>This is indeed the case. All three flow-control functions, <code>FailIf</code>, <code>PassesIf</code> and <code>GoToTidyUp</code> check whether they are running in debug mode; if so, rather than return a result that indicates a failing test case, they <code>⎕SIGNAL 999</code>, which is then caught by the <code>⎕TRAP</code>, which in turn first prints <code>⍝ Deliberate error</code> to the session and then hands over control to the user.</p>
-<p>You can now investigate variables or start the Tracer, etc. to investigate the problem.</p>
+<p>This is indeed the case. All three flow-control functions, <code>FailIf</code>, <code>PassesIf</code> and <code>GoToTidyUp</code> check whether they are running in debug mode; if so, rather than returning a result that indicates a failing test case, they <code>⎕SIGNAL 999</code>, which is then caught by the <code>⎕TRAP</code>, which in turn first prints <code>⍝ Deliberate error</code> to the session and then hands over control to the user.</p>
+<p>You can now investigate variables or start the Tracer or take any other reasonable measure to investigate the problem.</p>
 <p>The difference between <code>Run</code> and <code>RunDebug</code> is the setting of the first of the two flags provided as right argument to the test function: <code>stopFlag</code>. This is <code>0</code> when <code>Run</code> executes the test cases, but it is <code>1</code> when <code>RunDebug</code> is in charge. The three flow-control functions <code>FailsIf</code>, <code>PassesIf</code> and <code>GoToTidyUp</code> all honour <code>stopFlag</code> – that’s how it works.</p>
-<p>Now sometimes you don’t want the test function to go to the point where the error actually appears, for example if the test function does a lot of precautioning, and you want to check this upfront because there might be something wrong with it, causing the failure.</p>
-<p>Note that so far we passed a <code>0</code> as right argument to <code>RunDebug</code>. If we pass a <code>1</code> instead, then the test framework would stop just before executing the test case:</p>
+<p>Now sometimes you don’t want the test function to go to the point where the error actually appears, for example if the test function does a lot of precautioning, and you want to check this upfront because there might be something wrong with it, causing the failure. In such a case you want to investigate the test function as early as possible.</p>
+<p>Note that so far we passed a <code>0</code> as right argument to <code>RunDebug</code>. If we pass a <code>1</code> instead, then the test framework would stop just before executing the actual test case:</p>
 <pre><code>      RunDebug 1
---- Test framework "Tester" version 3.6.0 from YYYY-MM-DD -------
+--- Test framework "Tester" version 3.9.0 from YYYY-MM-DD -------
 Searching for INI file Testcases.ini
   ...not found
 Searching for INI file testcases_APLTEAM2.ini
@@ -462,9 +409,10 @@ ExecuteTestFunction[6]
 #.Tester.Run__[39]
 #.Tester.RunDebug[17]
 #.Tests.RunDebug[3]</code></pre>
+<p>Note that it has however executed the <code>Initial</code> function.</p>
 <p>You could now trace into <code>Test_001</code> and investigate. Instead, enter <code>→0</code>. You should see something like this:</p>
 <pre><code>* Test_001 (1 of 1) : Is the length of the left argument of the `map` function checked?
- -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ ----------------------------------------------------------------------------------------
    1 test case executed
    1 test case failed
    0 test cases broken
@@ -491,7 +439,7 @@ Looking for a function "Cleanup"...
 
 <p>This checks whether the error message is what we expect. Trace through the test function and watch what it is doing. After having left the test function you may click the green triangle in the Tracer. (Continues execution of all threads.)</p>
 <p>Now what if you’ve executed, say, not one but 300 test cases with <code>Run</code>, and just one failed, say number 289? You expected them all to succeed; now you need to check on the failing one.</p>
-<p>Calling <code>Run</code> as well as <code>RunDebug</code> would always execute <em>all</em> test cases found. The function <code>RunThese</code> allows you to run just the specified test functions:</p>
+<p>Calling <code>Run</code> as well as <code>RunDebug</code> would always execute <em>all</em> test cases found. The function <code>RunThese</code> allows you to run just the specified test function(s):</p>
 <pre><code>      RunThese 1
 --- Test framework "Tester" version 3.5.0 from 2017-07-16 --------------------------------
 Searching for INI file Testcases.ini
@@ -510,7 +458,8 @@ Time of execution recorded on variable #.Tests.TestCasesExecutedAt in: YYYY-MM-D
 Looking for a function "Cleanup"...
   Function "Cleanup" found and executed.
 *** Tests done</code></pre>
-<p>This would run just test case number 1. If you specify it as <code>¯1</code> it would stop just before actually executing the test case. Same as before since we have just one test function yet but take our word for it, it would execute just <code>Test_001</code> no matter how many other test cases there are.</p>
+<p>This would run just test case number 1. If you specify it as <code>¯1</code> it would stop just before actually executing the test case.</p>
+<p>Same as before since we have just one test function yet but take our word for it, it would execute just <code>Test_001</code> no matter how many other test cases there are.</p>
 <p>We have discussed the functions <code>Run</code>, <code>RunDebug</code> and <code>RunThese</code>. That leaves <code>RunBatchTests</code> and <code>RunBatchTestsInDebugMode</code>; what are they for?</p>
 <p>Imagine a test that would either require an enormous amount of effort to implement – or alternatively you just build something up and ask the human in front of the monitor: <em>Does this look alright?</em>.</p>
 <p>That’s certainly <em>not</em> a batch test case because it needs a human sitting in front of the monitor. If you know upfront that there won’t be a human paying attention then you can prevent non-batch test cases from being executed by calling either <code>RunBatchTests</code> or <code>RunBatchTestsInDebugMode</code>.</p>
@@ -526,7 +475,7 @@ Looking for a function "Cleanup"...
  :Else
      R←∆NoBatchTest
  :EndIf</code></pre>
-<p>The test function checks the <code>batchFlag</code> and sees from the explicit result that it did not execute because it is not suitable for batch testing.</p>
+<p>The test function checks the <code>batchFlag</code> and does not execute the test as such because it is not suitable for batch testing.</p>
 <p>One can argue whether the test case we have implemented makes much sense, but it allowed us to investigate the basic features of the test framework. We are now ready to investigate the more sophisticated features.</p>
 <p>Of course we also need a test case that checks whether <code>map</code> does what it’s supposed to do when appropriate arrays are passed as arguments, therefore we add this to <code>Tests</code>:</p>
 <pre><code>Namespace Tests
@@ -553,10 +502,10 @@ Looking for a function "Cleanup"...
 </div>
 </div>
 
-<p>Now we try to execute these test cases:</p>
+<p>Now we try to execute the newly introduced second test case:</p>
 <pre><code>      #.Tests.GetHelpers
       RunThese 2
---- Test framework "Tester" version 3.6.0 from YYYY-MM-DD ----------------
+--- Test framework "Tester" version 3.9.0 from YYYY-MM-DD ----------------
 Searching for INI file testcases_{computername}.ini
   ...not found
 Searching for INI file Testcases.ini
@@ -606,10 +555,10 @@ TxtToCsv[4] MyLogger.Log'Source: ',fullfilepath
       R←∆OK
     ∇
 ...</code></pre>
-<p>Note that now both <code>Config</code> and <code>MyLogger</code> exist within <code>MyApp</code>, not in <code>Tests</code>. Therefore we don't even have to keep them local within <code>Test_003</code>. They are however not part of the script, so will disappear as soon as the script <code>Tests</code> is fixed again, very much like the helpers.</p>
+<p>Note that now both <code>Config</code> and <code>MyLogger</code> exist within <code>MyApp</code>, not in <code>Tests</code>. Therefore we don't even have to keep them local within <code>Test_003</code>.</p>
 <p>Let’s try again:</p>
 <pre><code>      RunThese 3
---- Test framework "Tester" version 3.6.0 from YYYY-MM-DD -------------------------
+--- Test framework "Tester" version 3.9.0 from YYYY-MM-DD -------------------------
 Searching for INI file testcases_{computername}.ini
   ...not found
 Searching for INI file Testcases.ini
@@ -643,7 +592,7 @@ Looking for a function "Cleanup"...
 ⎕IO←1 ⋄ ⎕ML←1
 <span class="leanpub_code"> ∇ R←Initial;list;rc
 </span>   U←##.Utilities ⋄ F←##.FilesAndDirs ⋄ A←##.APLTreeUtils
-<span class="leanpub_code">   ∆Path←F.GetTempPath,'\MyApp_Tests'
+<span class="leanpub_code">   ∆Path←F.GetTempPath,'MyApp_Tests'
    F.RmDir ∆Path
    'Create!'F.CheckPath ∆Path
    list←⊃F.Dir'..\..\texts\en\*.txt'
@@ -656,7 +605,7 @@ Looking for a function "Cleanup"...
 <p><code>Initial</code> does not have to return a result but if it does it must be a Boolean. For “success” it should return a <code>1</code> and otherwise a <code>0</code>. If it does return <code>0</code> then no test cases are executed, but if there is a function <code>Cleanup</code> it will be executed. Therefore <code>Cleanup</code> should be ready to clean up in case <code>Initial</code> was only partly or not at all successful.</p>
 <p>We have changed <code>Initial</code> so that it now returns a result because copying the files over might fail for all sorts of reasons – and we cannot do without them.</p>
 <p><code>Initial</code> may or may not accept a right argument. If it does it will be passed a namespace that holds all the parameters.</p>
-<p>What to do in <code>Initial</code>, apart from creating the references:</p>
+<p>What we do in <code>Initial</code>, apart from creating the references:</p>
 <ul>
 <li>Create a global variable <code>∆Path</code> which holds a path to a folder <code>MyApp_Tests</code> within the Windows temp folder.</li>
 <li>Remove that folder, in case it persists from previously failing test cases.</li>
@@ -670,7 +619,7 @@ Looking for a function "Cleanup"...
 <h3>Machine-dependent initialisation</h3>
 <p>What if you need to initialise something (say a database connection) but it depends on the machine the tests are executed on – its IP address, user-id, password…?</p>
 <p>The test framework looks for two different <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> files in the current directory: First it looks for <code>testcase.ini</code>. It then tries to find <code>testcase_{computername}.ini</code>. <code>computername</code> here is what you get when you execute <code>⊣ 2 ⎕nq # 'GetEnvironment' 'Computername'</code>.</p>
-<p>If it finds any of them (or both) it instantiates the <code>IniFile</code> class as <code>INI</code> on these <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> files within the namespace that hosts your test cases. In the case of a clash, the setting in <code>testcase_{computername}.ini</code> prevails.</p>
+<p>If it finds any of them (or both) it instantiates the <code>IniFile</code> class as <code>INI</code> on these <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> files within the namespace that hosts your test cases. In the case of a name clash, the setting in <code>testcase_{computername}.ini</code> prevails.</p>
 </div>
 
 <p>Now we are ready to test the <abbr title="Executable file with the extension 'exe'">EXE</abbr>; create it from scratch. Our first test case will process the file <code>ulysses.txt</code>:</p>
@@ -701,22 +650,24 @@ Looking for a function "Cleanup"...
 <p>Let’s run our new test case:</p>
 <pre><code>      GetHelpers
       RunThese 'exe'
---- Test framework "Tester" version 3.6.0 from YYYY-MM-DD -----
-Searching for INI file testcases_{computername}.ini
-  ...not found
+--- Test framework "Tester" version 3.9.0 from yyyy-mm-dd --------------------
 Searching for INI file Testcases.ini
+  ...not found
+Searching for INI file testcases_{computername}.ini
   ...not found
 Looking for a function "Initial"...
   "Initial" found and successfully executed
---- Tests started at YYYY-MM-DD hh:mm:ss on #.Tests -----------
+--- Tests started at YYYY-MM-DD HH:MM:SS on #.Tests --------------------------
   Test_exe_01 (1 of 1) : Process a single file with .\MyApp.exe
- --------------------------------------------------------------
-   1 test case executed
+ -----------------------------------------------------------------------------
+   1 test cases executed
    0 test cases failed
    0 test cases broken
-Time of execution recorded on variable #.Tests.TestCasesExecutedAt in: YYYY-MM-DD hh:mm:ss
+Time of execution recorded on variable #.Tests.TestCasesExecutedAt in: YYYY-MM-DD HH:MM:SS
 Looking for a function "Cleanup"...
-  Function "Cleanup" found and executed.</code></pre>
+*** Tests done</code></pre>
+<p>Note that instead of a test case number we have specified a group name as argument of <code>RunThese</code>. In such a case <code>RunThese</code> executes all test cases belonging to the group specified.</p>
+<p>You can also mix group names with test case number as in <code>RunThese 'exe' (1 3)</code>. <code>RunThese</code> is tolerant and ignores test case numbers that do not exist.</p>
 <p>We need one more test case:</p>
 <pre><code>:Namespace Tests
 ...
@@ -741,7 +692,7 @@ Looking for a function "Cleanup"...
 <p>This one will process <em>all</em> TXTs in <code>∆Path</code> and write a file <code>total.csv</code>. We check whether this is the case and we are done. Almost: in a real-world application we most likely would also check for a path that contains spaces in its name. We don’t do this, instead we execute the full test suite:</p>
 <pre><code>      GetHelpers
       ⎕←⊃Run
---- Test framework "Tester" version 3.6.0 from YYYY-MM-DD ----------------------------
+--- Test framework "Tester" version 3.9.0 from YYYY-MM-DD ----------------------------
 Searching for INI file testcases_{computername}.ini
   ...not found
 Searching for INI file Testcases.ini
@@ -749,11 +700,11 @@ Searching for INI file Testcases.ini
 Looking for a function "Initial"...
   "Initial" found and successfully executed
 --- Tests started at YYYY-MM-DD hh:mm:dd on #.Tests ---------------------------------------
-  Test_TxtToCsv_03 (1 of 5) : Test whether `TxtToCsv` handles a non-existing file correctly
-  Test_exe_01 (2 of 5)      : Process a single file with .\MyApp.exe
-  Test_exe_02 (3 of 5)      : Process all TXT files in a certain directory
-  Test_map_01 (4 of 5)      : Is the length of the left argument of the `map` function checked?
-  Test_map_02 (5 of 5)      : Check whether `map` works fine with appropriate data
+  Test_exe_01 (1 of 5) : Process a single file with .\MyApp.exe
+  Test_exe_02 (2 of 5) : Process all TXT files in a certain directory
+  Test_map_01 (3 of 5) : Check the length of the left argument
+  Test_map_02 (4 of 5) : Check whether `map` works fine with appropriate data
+  Test_TxtToCsv_01 (5 of 5) : Test whether `TxtToCsv` handles a non-existing file correctly
  ------------------------------------------------------------------------------------------
    5 test cases executed
    0 test cases failed
@@ -791,7 +742,7 @@ Looking for a function "Cleanup"...
 <h3>Markers</h3>
 </a>
 </div>
-<p>We’ve already mentioned elsewhere that it is useful to mark code in particular ways, like <code>⍝FIXME⍝</code> or <code>⍝TODO⍝</code>. It is an excellent idea to have a test case that checks for such markers. Before something makes it to a customer such strings should probably be removed from the code.</p>
+<p>We’ve already mentioned elsewhere that it is useful to mark code in particular ways, like <code>⍝FIXME⍝</code> or <code>⍝TODO⍝</code>. It is an excellent idea to have a test case that checks for such markers. Before code makes it to a customer such strings should probably be removed from the code.</p>
 <div class="h_tag">
 <a href="#The-L-and-G-helpers" id="The-L-and-G-helpers" class="autoheader_anchor">
 <h3>The “L” and “G” helpers</h3>
@@ -817,19 +768,19 @@ TxtToCsv
 </a>
 </div>
 <p>Whenever the test cases were executed <code>Tester</code> notifies the time on a global variable <code>TestCasesExecutedAt</code> in the hosting namespace. This can be used in order to find out whether part of the code has been changed since the last time the cases were executed.</p>
-<p>However, in order to do this, you have to make sure that the variable is either saved somewhere or added to the script <code>Tests</code>. For example, it could be handled by a cover function that calls any of <code>Tester</code>s <code>Run*</code> functions and then handled that variable.</p>
+<p>However, in order to do this, you have to make sure that the variable is either saved somewhere or added to the script <code>Tests</code>. For example, it could be handled by a cover function that calls any of <code>Tester</code>s <code>Run*</code> functions and then handle that variable.</p>
 <div class="h_tag">
 <a href="#Conclusion" id="Conclusion" class="autoheader_anchor">
 <h2>Conclusion</h2>
 </a>
 </div>
-<p>We have now a test suite available that allows us at any stage to call it in order to make sure that everything still works. Invaluable.</p>
+<p>We have now a test suite available that allows us to make sure that everything still works whenever we want. Invaluable.</p>
 <div class="h_tag">
 <a href="#The-sequence-of-tests" id="The-sequence-of-tests" class="autoheader_anchor">
 <h2>The sequence of tests</h2>
 </a>
 </div>
-<p>Please note that there is always the possibility of dependencies between test cases, however you try to avoid that. That might be a mistake – or due to an unnoticed side effect.</p>
+<p>Please note that there is always the possibility of dependencies between test cases, no matter how hard you try to avoid that. That might be due to a mistake or due to an unnoticed side effect.</p>
 <p>That doesn’t mean that you shouldn’t aim for making all test cases completely independent from one another. A future version of <code>Tester</code> might have an option to shuffle the test cases before executing them. That would help find dependencies.</p>
 <div class="h_tag">
 <a href="#Testing-in-different-versions-of-Windows" id="Testing-in-different-versions-of-Windows" class="autoheader_anchor">
@@ -840,12 +791,12 @@ TxtToCsv
 <p>You need to pick the versions of Windows you will support, and run your tests on all those versions. (If you are not already a fan of automated tests, you are about to become one.)</p>
 <p>For this you will need one of:</p>
 <ul>
-<li>a test machine for each OS (version of Windows) you support.</li>
+<li>a test machine for each OS (version of Windows) you support. The machine might well “live” in the cloud.</li>
 <li>a test machine and VM (virtual-machine) software.</li>
 </ul>
 <p>What VM software should you use? One of us has had good results with <em>Workstation Player</em> from <a href="http://www.vmware.com" class="external_link">VMware</a>.</p>
 <p>If you use VM software you will save a <em>machine image</em> for each OS. Include in each machine image your preferred development tools, such as text editor and Dyalog APL. You will need to keep each machine image up to date with fixes and patches to its OS and your tools.</p>
-<p>The machine images are large, about 10 GB each. So you want several hundred gigabytes of fast SSD (solid-state drive) on your test machine. With this you should be able to get a machine image loaded in 20 seconds or less.</p>
+<p>The machine images are large, at least 30 GB each. So you want several hundred gigabytes of fast SSD (solid-state drive) on your test machine. With this you should be able to get a machine image loaded in 20 seconds or less.</p>
 <div class="h_tag">
 <a href="#Testing-APLTree-modules" id="Testing-APLTree-modules" class="autoheader_anchor">
 <h2>Testing APLTree modules</h2>
@@ -860,6 +811,14 @@ TxtToCsv
 <dd>We cannot know whether those test cases cover the same environment/s (different versions of Windows, different versions of Dyalog, domain-managed network or not, network drives or not, multi-threaded versus single-threaded, you name it) our application will run in.</dd>
 </dl>
 <p>That suggests we should incorporate the tests the modules come with into our own test suite, although we are sure that not too many people/companies using modules from the APLTree library are actually doing this.</p>
+<table style="font-size:xx-large; color:red;">
+<tbody>
+<tr>
+<td>⍝TODO⍝</td>
+</tr>
+</tbody>
+</table>
+<p style="color:red;"><strong><em>We might want to change this because of Link or/and acre…</em></strong></p>
 <p>It’s not difficult to do: every module has a workspace saved on GitHub that comes with everything needed to run the test cases.</p>
 <p>All it requires is</p>
 <ul>
@@ -885,15 +844,5 @@ TxtToCsv
 <li id="fnref5"><p>With version 17.0 the same can be achieved with the new primitive <code>⍸</code>.</p><a href="#fnref5" class="footnote_anchor"></a>
 </ol>
 </div>
-</div>
-</div>
-<script>
-var snapper = new Snap({
-element: document.getElementById('content')
-});
-document.getElementById('mainmenu_match').onclick = function(){
-snapper.state().state==='closed'?snapper.open('left'):snapper.close();
-}
-</script>
 </body>
 </html>

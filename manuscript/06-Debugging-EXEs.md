@@ -111,18 +111,18 @@ As a result `Config.Ride` will be 0 if the INI rules that no Ride is permitted, 
 We add a function `CheckForRide`:
 
 ~~~
-∇ {r}←CheckForRide (ridePort waitFlag);rc;init;msg
+{r}←CheckForRide (ridePort waitFlag);rc;init;msg
  ⍝ Depending on what's provided as right argument we prepare for a Ride 
  ⍝ or we don't. In case `waitFlag` is 1 we enter an endless loop.
   r←1
   :If 0<ridePort
-      {}3502⌶0                     ⍝ Switch Ride off
+  :AndIf 0=3501⌶⊣⍬                 ⍝ Only if not already riding
       init←'SERVE::',⍕ridePort     ⍝ Initialisation string
-      rc←3502⌶ini                  ⍝ Specify INIT string
+      rc←3502⌶init                 ⍝ Specify INIT string
       :If 32=rc
-          11⎕Signal⍨'Cannot Ride: Conga DLLs are missing'
+          11 ⎕Signal⍨'Cannot Ride: Conga DLLs are missing'
       :ElseIf 64=rc
-          11 ⎕Signal⍨'Cannot Ride; invalid initialisation string: ',ini
+          11 ⎕Signal⍨'Cannot Ride; invalid initialisation string: ',init
       :ElseIf 0≠rc
           msg←'Problem setting the Ride connecion string to SERVE::'
           msg,←,(⍕ridePort),', rc=',⍕rc
@@ -141,25 +141,27 @@ Notes:
 
 * `ridePort` will be either the port to be used for communicating with Ride, or 0 if no Ride is required.
 
-* The optional left argument defaults to 0. If it is 1 then the function waits for Ride to hook on.
+* If `wait` is 1 then the function waits in an endless loop for Ride to hook on. Naturally this requires the user to issue an interrupt once connected to the application with Ride.
+
+* To check with `3501⌶` for whether the application is already connected to Ride is a safety net that allows you to ignore whether you might call `CheckForRide` twice in your application. 
+
+  A typical example for this being the case is a very early call that normaly is commented out and a later call ruled by the INI file.
 
 * In this specific case we pass a reference to `Config` as an argument to `CheckForRide`. For two reasons:
   * `CheckForRide` really needs `Config`.
   * We have nothing else to pass but we don’t want niladic functions around (except in very special circumstances).
 
-* We catch the return codes from the calls to `3502⌶` and check them on the next line. This is important because the calls may fail for several reasons; see below for an example. If something goes wrong, the function signals an error.
+* We catch the return codes from the calls to `3502⌶` and check them on the next line. This is important because the calls may fail for several reasons. If something goes wrong, the function signals an error.
 
-* With `3502⌶0` we switch Ride off, just in case. That way we ensure we can execute `→1` while tracing `CheckForRide` at any point if we wish to; see "Restartable functions" underneath this list.
-
-* With `3502⌶'SERVE::',⍕ridePort` we establish the Ride parameters: type (`'SERVE'`), host (nothing between the two colons, so it defaults to `'localhost'`) and port number.
+* With `3502⌶'SERVE::',⍕ridePort` we establish the Ride parameters; having nothing between the two colons makes it default to `'localhost'`).
 
 * With `3502⌶1` we enable Ride.
 
-* With `{_←⎕DL ⍵ ⋄ ∇ ⍵}1` we start an endless loop: it waits for a second, then calls itself (`∇`) recursively. It’s a dfn, so there is no stack growing on tail-recursive calls.
+* With `{_←⎕DL ⍵ ⋄ ∇ ⍵}1` we start an endless loop: it waits for a second, then calls itself (`∇`) recursively. Note that because it’s a dfn there is no growing stack.
 
 * We could have passed `Config` rather than `Config.(Ride WaitForRide)` to `CheckForRide`. By _not_ doing this we allow the function `CheckForRide` to be tested independently from `Config`. 
 
-  This is an important point. There is value in keeping the function independent in this way, but if you suspect that later you will need other parameters in `Config`, then the flexibility you gain here outweighs the value of keeping the function independent from `Config`. 
+  This is an important point. There is value in keeping the function independent in this way, but if you suspect that later you will need other parameters in `Config`, then the flexibility you gain here might outweight the value of keeping the function independent from `Config`. 
 
 Finally we amend the `Version` function:
 
@@ -206,7 +208,7 @@ A> # Restartable functions
 A> 
 A> Not only do we try to exit functions at the bottom, we also like them to be restartable. 
 A> 
-A> What we mean by that is that we want if possible a function – and its variables – to survive `→1`. That is not possible for all functions: for example, a function that starts a thread and _must not_ start a second one for the same task, or a file was tied etc. But most functions can be restartable. 
+A> What we mean by that is that we want if possible a function – and its variables – to survive `→1` while debugging it. That is not possible for all functions: for example, a function that starts a thread and _must not_ start a second one for the same task, or a file was tied etc. But most functions can be made restartable. 
 A>
 A> That means that something like this should be avoided:
 A>
@@ -218,7 +220,11 @@ A>     r,← DoSomethingSensible ⊃arg
 A> :Until 0∊⍴arg←1↓arg
 A> ~~~
 A> 
-A> This function does not make much sense but the point is that the right argument is overwritten; so one cannot restart this function with `→1`. Don’t do overwrite an argument without a _very_ good reason. In this example, a counter is a better way to iterate. (Faster, too.)
+A> This function does not make much sense but the point is that the right argument is overwritten; so one cannot restart this function with `→1`. Don’t overwrite an argument without a _very_ good reason (we can't think of any). In this example, a counter is a better way to iterate. It's also faster.
+A> 
+A> Another example is `CheckForRide`: once you get beyond the point where Ride is activated `→1` would let the function to exit on line [5].
+A>
+A> While in the first example cutting back the stack one level and then executing again the line that is actually calling the function would work, it wouldn't work in the second example.
 
 
 *[HTML]: Hyper Text Mark-up language

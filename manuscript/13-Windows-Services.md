@@ -2,6 +2,8 @@
 [parm]:title       =   'Services'
 
 
+|** This chapter needs attention due to the move to version 17.0!! **|{style="font-size:xx-large;color:red;"}
+
 # Windows Services
 
 
@@ -11,7 +13,7 @@ While the Windows Task Manager just starts any ordinary application, an applicat
 
 In particular, services communicate by exchanging messages with the Windows Service Control Manager (SCM). 
 
-Commands can be issued by the `SC.exe` (Service Controller) application or interactively via the Services application. This allows the user to start, pause, continue (resume) and stop a Windows Service. 
+Commands can be issued by the `SC.exe` (Service Controller) application via the command line or interactively via the Services application. Both allow the user to start, pause, continue (resume) and stop a Windows Service. 
 
 
 ## Windows Services and the Windows Event Log
@@ -44,7 +46,7 @@ To simplify matters we shall use the `ServiceState` namespace, also from the APL
 
 1. Call `ServiceState.Init` as early as possible. This function will ensure the Service can communicate with the SCM. 
 
-   Do it as early as possible to enure any request from the SCM will be answered promptly. Windows is not exactly patient when it waits for a Service to respond to a Pause, Resume or Stop request: after only 5 seconds you may see an error message complaining that the Service refused to cooperate.
+   Do it as early as possible to enure any request from the SCM will be answered promptly. Windows is not exactly patient when it waits for a Service to respond to a Pause, Resume or Stop request: you may see an error message complaining that the Service refused to cooperate after just 5 seconds, though Windows _might_ wait a bit longer.
 
    However, note that the interpreter confirms the Start request for us; no further action is required.
    
@@ -93,7 +95,7 @@ A> # Pitfalls when installing or uninstalling Windows Services
 A>
 A> When you have opened the _Services_ GUI while installing or uninstalling a Windows Service you must press F5 on the GUI to refresh the display. 
 A>
-A> The problem is not just that the GUI does not update itself -- annoying as that may be. You might end up with a Service marked in the GUI as `disabled`, aftrer which you need to reboot the machine. 
+A> The problem is not just that the GUI does not update itself -- annoying as that may be. You might end up with a Service marked in the GUI as `disabled`, after which you might need to reboot the machine. 
 A> 
 A> This can happen if you try to perform an action from the GUI when it is out of sync with the Service's current state.
 
@@ -118,12 +120,13 @@ A> * delete
 
 ## Obstacles
 
-From experience we know there are pitfalls. In general, there are kinds of problem you might encounter:
+From experience we know there are pitfalls. These are some of the problems you might encounter:
 
 1. The Service appears to start (shows _running_ in the Services GUI) but nothing happens at all.
-2. The Service starts, the log file confirms it, but once you request the Service pauses or stops you get nothing but a Windows error message.
+2. The Service starts, the log file confirms it, but once you request the Service to pause or stop you get nothing but a Windows error message.
 3. The Service runs, but the application does not do anything, or it does something unexpected.
 
+We discuss these problems one after the other.
 
 ### The Service seems to be doing nothing at all
 
@@ -181,6 +184,10 @@ First and foremost it is worth repeating that any application supposed to run as
 
 Having said this, there can be surprising differences between running as an ordinary application and as a Service. For example, when a Service runs not with a user's account, but with the system account (which is quite normal to do) any call to `#.FilesAndDirs.GetTempPath` results in
 
+`"C:\Windows\Temp"` 
+
+When a service runs under the account of a user you will get this:
+
 `"C:\Windows\System32\config\systemprofile\AppData\Local\Apps"` 
 
 while for a user's account it would be something like 
@@ -207,12 +214,9 @@ In the former case ensure as soon as possible after startup you allow the progra
 
 At such an early stage we don't have an INI file instantiated, so we cannot switch Ride on and off via the INI file, we have to modify the code for that. 
 
-You might feel tempted to overcome this by doing it a bit later (e.g. after processing the INI file) but beware: if a Service is not cooperating then "a bit later" might be too late to be able to investigate the problem; resist the temptation!
+You might feel tempted to overcome this by doing it a bit later (e.g. after processing the INI file) but beware: if a Service is not cooperating then "a bit later" might be too late; resist the temptation!
   
 In the second case, add the call to `CheckForRide` once the INI file has been instantiated.
-
-I> Make sure that you have _never_ more than one of the two calls to `CheckForRide` active. If both are active you would be able to use the first one, but the second one would throw you out!  
-
 
 ## Logging
 
@@ -231,14 +235,14 @@ If that's not convenient, consider passing the directory that will contain the `
 In the next chapter ("[The Windows Event Log](./14 The Windows Event Log.html)") we will discuss why and how to use the Windows Event Log, in particular when it comes to Services.
 
 
-### How to implement it
+## How to implement it
 
 
-#### Setting the latent expression
+### Setting the latent expression
 
-First of all we need to point out that `MyApp` as it stands is hardly a candidate for a Service. We need to make something up. Let's specify one or more folders to be watched by the `MyApp` Service.
+First of all we need to point out that `MyApp` as it stands is hardly a candidate for a Service. We need to make something up. 
 
-If any files are found then they are processed. Finally the app will store hashes for all the files it has processed. That allows it to recognize any added, changed or removed files efficiently.
+Let's specify one or more folders to be watched by the `MyApp` Service. If any files are found then they are processed. Finally the app will store hashes for all the files it has processed. That allows it to recognize any added, changed or removed files efficiently.
 
 For the Service we need to create a workspace that can be loaded by that Service. Therefore we need to set `⎕LX`, and for that we create a new function:
 
@@ -258,7 +262,7 @@ The function takes a flag `earlyRide` and an integer `ridePort` as arguments. Ho
 Because we have now two functions that set `⎕LX` we shall rename the original one (`SetLX`) to `SetLXForApplication` to tell them apart.
 
 
-#### Initialising the Service
+### Initialising the Service
 
 Next we need the main function for the service:
 
@@ -268,7 +272,7 @@ Next we need the main function for the service:
     ⍝ `earlyRide`: flag that allows a very early Ride.
     ⍝ `ridePort`: Port number used by Ride.
       r←⍬
-      CheckForRide earlyRide ridePort
+      CheckForRide(earlyRide×ridePort)1
       #.FilesAndDirs.PolishCurrentDir
       ⎕TRAP←#.HandleError.SetTrap ⍬
       (Config MyLogger)←Initial #.ServiceState.IsRunningAsService
@@ -297,7 +301,7 @@ Notes:
 * We call `MainLoop` (a function that has not been established yet) in different ways depending on whether the function is running as a Windows Service or not, for the simple reason that it is much easier to debug an application that runs in a single thread.
 
 
-#### The "business logic"
+### The "business logic"
 
 Time to change the `MyApp.Initial` function:
 
@@ -310,7 +314,7 @@ leanpub-start-insert
       Config←CreateConfig isService
 leanpub-end-insert
       Config.ControlFileTieNo←CheckForOtherInstances ⍬      
-      CheckForRide (0≠Config.Ride) Config.Ride
+      CheckForRide Config.(Ride WaitForRide)
       MyLogger←OpenLogFile Config.LogFolder
       MyLogger.Log'Started MyApp in ',F.PWD
       MyLogger.Log 2 ⎕NQ'#' 'GetCommandLine'
@@ -398,7 +402,7 @@ The function `LoopOverFolder`:
 ∇
 ~~~
 
-This function calls `GetHash` so we had better introduce it:
+This function calls `GetHash` so we better introduce it:
 
 ~~~
  GetHash←{
@@ -458,14 +462,16 @@ leanpub-end-insert
 ~~~
 
 
-#### Running the test cases
+## Running the test cases
 
 Now it's time to see if we broke anything. Double-click `MyApp.dyapp` and type `y` to answer the question whether you would like to run all test cases. If anything fails, execute `#.Tests.RunDebug 0` and fix the problem.
 
+In order to run the service-specific test cases we need to make some preparations.
 
-## Installing and un-installing the Service
 
-In order to install or uninstall the Service we need two BATs: `InstallService.bat` and `Uninstall_Service.bat`. We will write these BATs from Dyalog. For that we write a class `ServiceHelpers`:
+### Installing and un-installing the Service
+
+In order to install or uninstall the Service we need two BATs: `Install_Service.bat` and `Uninstall_Service.bat`. We will write these BATs from Dyalog. For that we create a class `ServiceHelpers`:
 
 ~~~
 :Class ServiceHelpers
@@ -508,7 +514,7 @@ Notes:
 
 * The setting of `APLCORENAME` specifies folder and name of any aplcores. 
 
-  For example, `D:\MyAplcores\aplcore_64_16_0_Unicode_*` would specify in which folder the aplcores shall be saved and that the filenames should start with `aplcore_64_16_0_Unicode_` followed by a running number (the asterisk).
+  For example, `D:\MyAplcores\aplcore_64_17_0_Unicode_*` would specify in which folder the aplcores shall be saved and that the filenames should start with `aplcore_64_17_0_Unicode_` followed by a running number (the asterisk).
 
 * By setting `DYALOG_EVENTLOGNAME` you tell the interpreter to write messages to the Windows Event Log, and what name to use for this.
 
@@ -517,7 +523,7 @@ Notes:
   If it detects an error it will pause so that one can actually see the error message even when we have just double-clicked the BAT. This is discussed in the chapter [_Handling errors_](./07 Handling errors.html).
 
 
-## "Make" for the Service
+### "Make" for the Service
 
 Now it's time to create a DYAPP for the service. For that copy `Make.dyapp` as `MakeService.dyapp` and then edit it:
 
@@ -558,7 +564,7 @@ leanpub-end-insert
 Notes:
 
 * We need some more APLTree modules: `Tester`, `Execute` and `WinSys`.
-* Ensure the two BAT (for installing and uninstalling the service) are written to the disk.
+* Ensure the two BATs (for installing and uninstalling the service) are written to the disk.
 * We delete the class `ServiceHelpers`: it is not needed for running the Service once we've created the BATs.
 * We set `⎕LX` by calling `SetLXForService`.
 * We load the class `MakeService` and run `MakeService.Run`.
@@ -580,7 +586,7 @@ That obviously requires the class `MakeService`:
       (F U)←##.(FilesAndDirs Utilities)
       (rc en more)←F.RmDir DESTINATION
       U.Assert 0=rc
-      U.Assert 'Create!'##.FilesAndDirs.CheckPath DESTINATION
+      U.Assert 'Create!'F.CheckPath DESTINATION
       'MyApp.ini.template' CopyTo DESTINATION,'\MyApp.ini'
       'Install_Service.bat' CopyTo DESTINATION,'\'
       'Uninstall_Service.bat' CopyTo DESTINATION,'\'
@@ -616,11 +622,11 @@ A>
 A> Even if the code of a class executes `⎕EX ⍕⎕THIS` or a function or operator `⎕EX ⊃⎕SI` the code keeps running because the copy on the stack will exist until the function or operator quits. Scripts might even live longer: only when the last reference pointing to a script is deleted does the script cease to exist.
 
 
-## Testing the Service
+### Testing the Service
 
-We have test cases that tell us the "business logig" of `MyApp` works just fine. What we also need are tests that it runs fine as a Service as well.
+We have test cases that tell us the "business logig" of `MyApp` works just fine. But we also need to make sure that it runs fine as a Windows Service as well.
 
-Since the two test scenarios are only loosely related we want to keep those tests separate. It is easy to see a way: testing the Service means assembling all the needed stuff, installing the Service, carrying out the tests and finally un-installing the tests and cleaning up. 
+Since the two test scenarios are only loosely related we want to keep those tests separate. It is easy to see why: testing the Service means assembling all the needed stuff, installing the Service, carrying out the tests and finally un-installing the tests and cleaning up. 
 
 We don't want to execute all this unless we really have to.
 

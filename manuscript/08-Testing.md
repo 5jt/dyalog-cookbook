@@ -323,7 +323,7 @@ What we changed:
 
 * We described in line 1 as thoroughly as possible what the test case is doing. The reason is that this line is later the only way to tell this test case from any other. 
 
-  In other words, it is really important to get this right. And if you cannot describe in a single line what the test case is doing, it may be doing too much.
+  In other words, it is really important to get this right. If you cannot describe in a single line what the test case is doing, it may be doing too much.
 
 * We set `⎕TRAP` so that any error 999 will stop the interpreter with a deliberate error; we will soon see why and what for.
 
@@ -348,7 +348,7 @@ Notes:
 
   `Initial` relies on naming conventions; if there is a function in scope with that name, it will be executed. More later.
 
-* The function `Cleanup` will be executed by the test framework after all test functions have been executed. This can be used to clean up stuff that’ no longer needed. Here we delete the references `A`, `F` and `U`. More later.
+* The function `Cleanup` will be executed by the test framework after all test functions have been executed. This can be used to clean up stuff that’s no longer needed. Here we delete the references `A`, `F` and `U`. More later.
 
 
 A> # Ordinary namespaces versus scripted ones 
@@ -359,14 +359,14 @@ A> Now you change/add/delete test functions; that would have no effect on anythi
 A>
 A> When you change a namespace script, on the other hand, the namespace is re-created from the script, and that means that our helpers will disappear because they are not a part of the `Tests` script.
 
-Let’s call our test case. We do this by running the `Run` method first:
+Let’s execute our test case. We do this by running the `Run` method first:
 
 ~~~
 Run
---- Test framework "Tester" version 3.5.0 from 2017-07-16 ---------------------------------
+--- Test framework "Tester" version 3.9.0 from yyyy-mm-dd ---------------------------------
 Searching for INI file Testcases.ini
   ...not found
-Searching for INI file testcases_APLTEAM2.ini
+Searching for INI file testcases_{compuetername}.ini
   ...not found
 Looking for a function "Initial"...
   "Initial" found and successfully executed
@@ -387,18 +387,18 @@ That’s what we expect.
 I> Note that there are INI files mentioned. Ignore this for the time being; we will discuss this later on.
 
 A> # What is a test case?!
-A> You might wonder how `Run` established what is a test case and what isn’t: that’s achieved by naming conventions. Al test functions start their names with `Test_`. After that there are two possibilities:
+A> You might wonder how `Run` established what is a test case and what isn’t: that’s achieved by naming conventions. All test functions start their names with `Test_`. After that there are two possibilities:
 A> 
 A> 1. In the simple case the `_` is followed by nothing but digits. All these qualify as test cases: `Test_1`, `Test_01`, `Test_001` and so on. (`Test_01A` however does not.)
 A> 1. If you have a large number of test cases you most probably want to group them. You can insert a group name between two underscores, followed by one or more digits. So `Test_map_1` is recognized as a test case, and so is `Test_Foo_9999`. `Test_Foo_Goo_1` however is not.
 
-What if we want to look into a broken or failing test case? Of course in our current scenario – which is extremely simple – we could just trace into `Test_001` and find out what’s going on, but if we take advantage of the many features the test framework offers, we cannot do this. (Soon to become clear why.) 
+What if we want to look into a broken or failing test case? Of course in our current scenario – which is extremely simple – we could just trace into `Test_001` and find out what’s going on, but if we take advantage of the many features the test framework offers, we cannot do this. (Soon it will become clear why.) 
 
 However, there is a way to do this no matter whether the scenario is simple, reasonably complex or extremely complex: we call `RunDebug`:
 
 ~~~
 RunDebug 0
---- Test framework "Tester" version 3.6.0 from  -------
+--- Test framework "Tester" version 3.9.0 from yyyy-mm-dd -------
 Searching for INI file testcases_{computername}.ini
   ...not found
 Searching for INI file Testcases.ini
@@ -421,19 +421,19 @@ SYNTAX ERROR
 
 It stopped in line 6. Obviously the call to `FailsIf` has something to do with this, and so has the `⎕TRAP` setting because apparently that’s where the “Deliberate error” comes from. 
 
-This is indeed the case. All three flow-control functions, `FailIf`, `PassesIf` and `GoToTidyUp` check whether they are running in debug mode; if so, rather than return a result that indicates a failing test case, they `⎕SIGNAL 999`, which is then caught by the `⎕TRAP`, which in turn first prints `⍝ Deliberate error` to the session and then hands over control to the user. 
+This is indeed the case. All three flow-control functions, `FailIf`, `PassesIf` and `GoToTidyUp` check whether they are running in debug mode; if so, rather than returning a result that indicates a failing test case, they `⎕SIGNAL 999`, which is then caught by the `⎕TRAP`, which in turn first prints `⍝ Deliberate error` to the session and then hands over control to the user. 
 
-You can now investigate variables or start the Tracer, etc. to investigate the problem.
+You can now investigate variables or start the Tracer or take any other reasonable measure to investigate the problem.
 
 The difference between `Run` and `RunDebug` is the setting of the first of the two flags provided as right argument to the test function: `stopFlag`. This is `0` when `Run` executes the test cases, but it is `1` when `RunDebug` is in charge. The three flow-control functions `FailsIf`, `PassesIf` and `GoToTidyUp` all honour `stopFlag` – that’s how it works.
 
-Now sometimes you don’t want the test function to go to the point where the error actually appears, for example if the test function does a lot of precautioning, and you want to check this upfront because there might be something wrong with it, causing the failure. 
+Now sometimes you don’t want the test function to go to the point where the error actually appears, for example if the test function does a lot of precautioning, and you want to check this upfront because there might be something wrong with it, causing the failure. In such a case you want to investigate the test function as early as possible.
 
-Note that so far we passed a `0` as right argument to `RunDebug`. If we pass a `1` instead, then the test framework would stop just before executing the test case:
+Note that so far we passed a `0` as right argument to `RunDebug`. If we pass a `1` instead, then the test framework would stop just before executing the actual test case:
 
 ~~~
       RunDebug 1
---- Test framework "Tester" version 3.6.0 from YYYY-MM-DD -------
+--- Test framework "Tester" version 3.9.0 from YYYY-MM-DD -------
 Searching for INI file Testcases.ini
   ...not found
 Searching for INI file testcases_APLTEAM2.ini
@@ -451,14 +451,16 @@ ExecuteTestFunction[6]
 #.Tests.RunDebug[3]
 ~~~
 
+Note that it has however executed the `Initial` function.
+
 You could now trace into `Test_001` and investigate. Instead, enter `→0`. You should see something like this: 
 
 ~~~
 * Test_001 (1 of 1) : Is the length of the left argument of the `map` function checked?
- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
-   1 test case executed                                                                                                                                                    
-   1 test case failed                                                                                                                                                      
-   0 test cases broken                                                                                                                                                     
+ ----------------------------------------------------------------------------------------
+   1 test case executed        
+   1 test case failed          
+   0 test cases broken         
 Time of execution recorded on variable #.Tests.TestCasesExecutedAt in: YYYY-MM-DD hh:mm:ss
 Looking for a function "Cleanup"...
   Function "Cleanup" found and executed.
@@ -494,7 +496,7 @@ This checks whether the error message is what we expect. Trace through the test 
 
 Now what if you’ve executed, say, not one but 300 test cases with `Run`, and just one failed, say number 289? You expected them all to succeed; now you need to check on the failing one. 
 
-Calling `Run` as well as `RunDebug` would always execute _all_ test cases found. The function `RunThese` allows you to run just the specified test functions:
+Calling `Run` as well as `RunDebug` would always execute _all_ test cases found. The function `RunThese` allows you to run just the specified test function(s):
 
 ~~~
       RunThese 1
@@ -517,7 +519,9 @@ Looking for a function "Cleanup"...
 *** Tests done
 ~~~
 
-This would run just test case number 1. If you specify it as `¯1` it would stop just before actually executing the test case. Same as before since we have just one test function yet but take our word for it, it would execute just `Test_001` no matter how many other test cases there are. 
+This would run just test case number 1. If you specify it as `¯1` it would stop just before actually executing the test case.
+
+Same as before since we have just one test function yet but take our word for it, it would execute just `Test_001` no matter how many other test cases there are. 
 
 We have discussed the functions `Run`, `RunDebug` and `RunThese`. That leaves `RunBatchTests` and `RunBatchTestsInDebugMode`; what are they for? 
 
@@ -542,7 +546,7 @@ The second flag is called `batchFlag`, and that gives you an idea of what it’s
  :EndIf
 ~~~
 
-The test function checks the `batchFlag` and sees from the explicit result that it did not execute because it is not suitable for batch testing.
+The test function checks the `batchFlag` and does not execute the test as such because it is not suitable for batch testing.
 
 One can argue whether the test case we have implemented makes much sense, but it allowed us to investigate the basic features of the test framework. We are now ready to investigate the more sophisticated features.
 
@@ -569,12 +573,12 @@ Namespace Tests
 
 I> Note how using the references `U` and `A` here simplifies the code greatly.
 
-Now we try to execute these test cases:
+Now we try to execute the newly introduced second test case:
 
 ~~~
       #.Tests.GetHelpers
       RunThese 2
---- Test framework "Tester" version 3.6.0 from YYYY-MM-DD ----------------
+--- Test framework "Tester" version 3.9.0 from YYYY-MM-DD ----------------
 Searching for INI file testcases_{computername}.ini
   ...not found
 Searching for INI file Testcases.ini
@@ -641,13 +645,13 @@ leanpub-end-insert
 ...
 ~~~
 
-Note that now both `Config` and `MyLogger` exist within `MyApp`, not in `Tests`. Therefore we don't even have to keep them local within `Test_003`. They are however not part of the script, so will disappear as soon as the script `Tests` is fixed again, very much like the helpers. 
+Note that now both `Config` and `MyLogger` exist within `MyApp`, not in `Tests`. Therefore we don't even have to keep them local within `Test_003`.
 
 Let’s try again:
 
 ~~~
       RunThese 3
---- Test framework "Tester" version 3.6.0 from YYYY-MM-DD -------------------------
+--- Test framework "Tester" version 3.9.0 from YYYY-MM-DD -------------------------
 Searching for INI file testcases_{computername}.ini
   ...not found
 Searching for INI file Testcases.ini
@@ -688,7 +692,7 @@ leanpub-start-insert
 leanpub-end-insert    
    U←##.Utilities ⋄ F←##.FilesAndDirs ⋄ A←##.APLTreeUtils
 leanpub-start-insert   
-   ∆Path←F.GetTempPath,'\MyApp_Tests'
+   ∆Path←F.GetTempPath,'MyApp_Tests'
    F.RmDir ∆Path
    'Create!'F.CheckPath ∆Path
    list←⊃F.Dir'..\..\texts\en\*.txt'
@@ -707,7 +711,7 @@ We have changed `Initial` so that it now returns a result because copying the fi
 
 `Initial` may or may not accept a right argument. If it does it will be passed a namespace that holds all the parameters.
 
-What to do in `Initial`, apart from creating the references:
+What we do in `Initial`, apart from creating the references:
 
 * Create a global variable `∆Path` which holds a path to a folder `MyApp_Tests` within the Windows temp folder.
 * Remove that folder, in case it persists from previously failing test cases.
@@ -724,7 +728,7 @@ A>
 A> The test framework looks for two different INI files in the current directory:
 A> First it looks for `testcase.ini`. It then tries to find `testcase_{computername}.ini`. `computername` here is what you get when you execute `⊣ 2 ⎕nq # 'GetEnvironment' 'Computername'`.
 A>
-A> If it finds any of them (or both) it instantiates the `IniFile` class as `INI` on these INI files within the namespace that hosts your test cases. In the case of a clash, the setting in `testcase_{computername}.ini` prevails.
+A> If it finds any of them (or both) it instantiates the `IniFile` class as `INI` on these INI files within the namespace that hosts your test cases. In the case of a name clash, the setting in `testcase_{computername}.ini` prevails.
 
 Now we are ready to test the EXE; create it from scratch. Our first test case will process the file `ulysses.txt`:
 
@@ -760,23 +764,27 @@ Let’s run our new test case:
 ~~~
       GetHelpers
       RunThese 'exe'
---- Test framework "Tester" version 3.6.0 from YYYY-MM-DD -----
-Searching for INI file testcases_{computername}.ini
-  ...not found
+--- Test framework "Tester" version 3.9.0 from yyyy-mm-dd --------------------
 Searching for INI file Testcases.ini
+  ...not found
+Searching for INI file testcases_{computername}.ini
   ...not found
 Looking for a function "Initial"...
   "Initial" found and successfully executed
---- Tests started at YYYY-MM-DD hh:mm:ss on #.Tests -----------
+--- Tests started at YYYY-MM-DD HH:MM:SS on #.Tests --------------------------
   Test_exe_01 (1 of 1) : Process a single file with .\MyApp.exe
- --------------------------------------------------------------
-   1 test case executed
+ -----------------------------------------------------------------------------
+   1 test cases executed
    0 test cases failed
-   0 test cases broken
-Time of execution recorded on variable #.Tests.TestCasesExecutedAt in: YYYY-MM-DD hh:mm:ss
+   0 test cases broken                                
+Time of execution recorded on variable #.Tests.TestCasesExecutedAt in: YYYY-MM-DD HH:MM:SS
 Looking for a function "Cleanup"...
-  Function "Cleanup" found and executed.
+*** Tests done
 ~~~
+
+Note that instead of a test case number we have specified a group name as argument of `RunThese`. In such a case `RunThese` executes all test cases belonging to the group specified.
+
+You can also mix group names with test case number as in `RunThese 'exe' (1 3)`. `RunThese` is tolerant and ignores test case numbers that do not exist.
 
 We need one more test case:
 
@@ -808,7 +816,7 @@ This one will process _all_ TXTs in `∆Path` and write a file `total.csv`. We c
 ~~~
       GetHelpers
       ⎕←⊃Run
---- Test framework "Tester" version 3.6.0 from YYYY-MM-DD ----------------------------
+--- Test framework "Tester" version 3.9.0 from YYYY-MM-DD ----------------------------
 Searching for INI file testcases_{computername}.ini
   ...not found
 Searching for INI file Testcases.ini
@@ -816,11 +824,11 @@ Searching for INI file Testcases.ini
 Looking for a function "Initial"...
   "Initial" found and successfully executed
 --- Tests started at YYYY-MM-DD hh:mm:dd on #.Tests ---------------------------------------
-  Test_TxtToCsv_03 (1 of 5) : Test whether `TxtToCsv` handles a non-existing file correctly
-  Test_exe_01 (2 of 5)      : Process a single file with .\MyApp.exe
-  Test_exe_02 (3 of 5)      : Process all TXT files in a certain directory
-  Test_map_01 (4 of 5)      : Is the length of the left argument of the `map` function checked?
-  Test_map_02 (5 of 5)      : Check whether `map` works fine with appropriate data  
+  Test_exe_01 (1 of 5) : Process a single file with .\MyApp.exe
+  Test_exe_02 (2 of 5) : Process all TXT files in a certain directory
+  Test_map_01 (3 of 5) : Check the length of the left argument
+  Test_map_02 (4 of 5) : Check whether `map` works fine with appropriate data
+  Test_TxtToCsv_01 (5 of 5) : Test whether `TxtToCsv` handles a non-existing file correctly
  ------------------------------------------------------------------------------------------
    5 test cases executed
    0 test cases failed
@@ -864,7 +872,7 @@ If so, the function is executed after the last test case has been executed. The 
 
 ### Markers
 
-We’ve already mentioned elsewhere that it is useful to mark code in particular ways, like `⍝FIXME⍝` or `⍝TODO⍝`. It is an excellent idea to have a test case that checks for such markers. Before something makes it to a customer such strings should probably be removed from the code.
+We’ve already mentioned elsewhere that it is useful to mark code in particular ways, like `⍝FIXME⍝` or `⍝TODO⍝`. It is an excellent idea to have a test case that checks for such markers. Before code makes it to a customer such strings should probably be removed from the code.
 
 ### The "L" and "G" helpers
 
@@ -891,17 +899,17 @@ TxtToCsv
 
 Whenever the test cases were executed `Tester` notifies the time on a global variable `TestCasesExecutedAt` in the hosting namespace. This can be used in order to find out whether part of the code has been changed since the last time the cases were executed.
 
-However, in order to do this, you have to make sure that the variable is either saved somewhere or added to the script `Tests`. For example, it could be handled by a cover function that calls any of `Tester`s `Run*` functions and then handled that variable.
+However, in order to do this, you have to make sure that the variable is either saved somewhere or added to the script `Tests`. For example, it could be handled by a cover function that calls any of `Tester`s `Run*` functions and then handle that variable.
 
 
 ## Conclusion
 
-We have now a test suite available that allows us at any stage to call it in order to make sure that everything still works. Invaluable.
+We have now a test suite available that allows us to make sure that everything still works whenever we want. Invaluable.
 
 
 ## The sequence of tests
 
-Please note that there is always the possibility of dependencies between test cases, however you try to avoid that. That might be a mistake – or due to an unnoticed side effect.
+Please note that there is always the possibility of dependencies between test cases, no matter how hard you try to avoid that. That might be due to a mistake or due to an unnoticed side effect.
 
 That doesn’t mean that you shouldn’t aim for making all test cases completely independent from one another. A future version of `Tester` might have an option to shuffle the test cases before executing them. That would help find dependencies.
 
@@ -914,14 +922,14 @@ You need to pick the versions of Windows you will support, and run your tests on
 
 For this you will need one of:
 
-* a test machine for each OS (version of Windows) you support.
+* a test machine for each OS (version of Windows) you support. The machine might well "live" in the cloud.
 * a test machine and VM (virtual-machine) software.
 
 What VM software should you use? One of us has had good results with _Workstation Player_ from [VMware](http://www.vmware.com).
 
 If you use VM software you will save a _machine image_ for each OS. Include in each machine image your preferred development tools, such as text editor and Dyalog APL. You will need to keep each machine image up to date with fixes and patches to its OS and your tools. 
 
-The machine images are large, about 10 GB each. So you want several hundred gigabytes of fast SSD (solid-state drive) on your test machine. With this you should be able to get a machine image loaded in 20 seconds or less. 
+The machine images are large, at least 30 GB each. So you want several hundred gigabytes of fast SSD (solid-state drive) on your test machine. With this you should be able to get a machine image loaded in 20 seconds or less. 
 
 
 ## Testing APLTree modules
@@ -937,6 +945,10 @@ Contra
 : We cannot know whether those test cases cover the same environment/s (different versions of Windows, different versions of Dyalog, domain-managed network or not, network drives or not, multi-threaded versus single-threaded, you name it) our application will run in. 
 
 That suggests we should incorporate the tests the modules come with into our own test suite, although we are sure that not too many people/companies using modules from the APLTree library are actually doing this.
+
+|⍝TODO⍝|{style="font-size:xx-large; color:red;"}
+
+**_We might want to change this because of Link or/and acre..._**{style="color:red;"}
 
 It’s not difficult to do: every module has a workspace saved on GitHub that comes with everything needed to run the test cases. 
 
