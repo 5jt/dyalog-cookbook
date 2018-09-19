@@ -122,7 +122,7 @@ html{line-height:1.15;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;}b
 <h2>Installing a Service.</h2>
 </a>
 </div>
-<p><strong>Note:</strong> for installing or uninstalling a Service you need admin rights.</p>
+<p><strong>Note:</strong> for installing a Service you need admin rights, for uninstalling a Service you even need to execute the command in elevated mode.</p>
 <p>Suppose you have loaded a <abbr title="Short for Workspaces">WS</abbr> <code>MyService</code> which you want to install as a Windows Service run by the same version of Dyalog you are currently in:</p>
 <pre><code>aplexe←'"',(2 ⎕NQ # 'GetEnvironment' 'dyalog'),'\dyalogrt.exe"'
 wsid←'"whereEverTheWsLives\MyAppService.DWS"'
@@ -286,7 +286,7 @@ cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService DYALOG_NOPOPUPS=1'</code
 <h3>Setting the latent expression</h3>
 </a>
 </div>
-<p>First of all we need to point out that <code>MyApp</code> as it stands is hardly a candidate for a Service. We need to make something up.</p>
+<p>First of all we need to point out that <code>MyApp</code> as it stands is not a candidate for a Service, therefore we need to make something up.</p>
 <p>Let's specify one or more folders to be watched by the <code>MyApp</code> Service. If any files are found then they are processed. Finally the app will store hashes for all the files it has processed. That allows it to recognize any added, changed or removed files efficiently.</p>
 <p>For the Service we need to create a workspace that can be loaded by that Service. Therefore we need to set <code>⎕LX</code>, and for that we create a new function:</p>
 <pre><code> ∇ {r}←SetLXForService(earlyRide ridePort)
@@ -467,7 +467,7 @@ cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService DYALOG_NOPOPUPS=1'</code
       aplexe←'"',(2 ⎕NQ'#' 'GetEnvironment' 'dyalog'),'\dyalogrt.exe"'
       wsid←'"%~dp0\MyAppService.DWS"'
       cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService'
-     ⍝cmd,←' APLCORENAME={foldername}'
+     ⍝cmd,←' APLCORENAME={path}\Aplcores_*'
      ⍝cmd,←' DYALOG_EVENTLOGNAME={foo}'
       cmd,←' DYALOG_NOPOPUPS=1'
       cmd,←' MAXWS=64MB'
@@ -602,25 +602,25 @@ Run #.MakeService.Run 0
 <p>We now discuss the functions we are going to add one after the other. Note that the <code>Initial</code> function is particularly important in this scenario: we need to copy over all the stuff we need, code as well as input files, make adjustments, and install the Service.</p>
 <p>This could all be done in a single function but it would be lengthy and difficult to read. To avoid this we split the function into obvious units. By naming those functions carefully we should get away without adding any comments because the code explains itself. Here we go:</p>
 <pre><code>∇ r←Initial;rc;ini;row;bat;more
-   ∆Path←##.FilesAndDirs.GetTempFilename''
-   #.FilesAndDirs.DeleteFile ∆Path
-   ∆Path←¯4↓∆Path
-   ∆ServiceName←'MyAppService'
-   r←0
-   :If 0=#.WinSys.IsRunningAsAdmin
+   :If #.WinSys.IsRunningAsAdmin
+       ∆Path←##.FilesAndDirs.GetTempFilename''
+       #.FilesAndDirs.DeleteFile ∆Path
+       ∆Path←¯4↓∆Path      ⍝ Because we use it as a folder name no extension needed
+       ∆ServiceName←'MyAppService'
+       ∆CreateFolderStructure ⍬
+       ∆CopyFiles ⍬
+       ∆CreateBATs ⍬
+       ∆CreateIniFile ⍬
+       ∆InstallService ⍬
+       ⎕←'*** Service ',∆ServiceName,' successfully installed'
+       r←1
+   :Else
        ⎕←'Sorry, but you need admin rights to run this test suite!'
-       :Return
-   :EndIf
-   ∆CreateFolderStructure ⍬
-   ∆CopyFiles ⍬
-   ∆CreateBATs ⍬
-   ∆CreateIniFile ⍬
-   ∆InstallService ⍬
-   ⎕←'*** Service ',∆ServiceName,' successfully installed'
-   r←1</code></pre>
+       r←0
+   :EndIf</code></pre>
 <p>Note that all the sub-function and global variables start their names with <code>∆</code>. An example is the function <code>∆Execute_SC_Cmd</code>:</p>
 <pre><code>∇ {(rc msg)}←∆Execute_SC_Cmd command;cmd;buff
- ⍝ Executes a SC (Service Control) command
+ ⍝ Executes an SC (Service Control) command
    rc←1 ⋄ msg←'Could not execute the command'
    cmd←'SC ',command,' ',∆ServiceName
    buff←#.Execute.Process cmd
@@ -647,7 +647,7 @@ Run #.MakeService.Run 0
    ⎕←'   Pausing for ',(⍕seconds),' seconds...'
    ⎕DL seconds
 ∇</code></pre>
-<p>We could discuss all the sub functions called by these two functions but it would tell us little. Therefore we suggest you copy the code from the web site. We discuss here just the two test functions:</p>
+<p>We could discuss all the sub functions called by these two functions but it would tell us little. Therefore we suggest you copy the code from the web site. We discuss just the two test functions:</p>
 <pre><code>∇ R←Test_01(stopFlag batchFlag);⎕TRAP;rc;more
   ⍝ Start, pause, continue and stop the service.
   ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')

@@ -166,20 +166,6 @@ Notes:
   Now if an error occurs, the script will pause. And it will pass the value of `errorlevel` as its return code.
 
   However, this technique suits only scripts to be executed by a WCU [^WCU]; you don’t want a pause in scripts called by other scripts.
-  <!-- FIXME What should those scripts do? -->
-
-
-A> # The current directory
-A> 
-A> For APLers, the current directory (sometimes called “working directory”) is, when running under Windows, a strange animal. In general, the current directory is where ‘the application’ lives. 
-A> 
-A> That means that for an application `C:\Program Files\Foo\Foo.exe` the current directory will be `C:\Program Files\Foo`. 
-A>
-A> For APLers “the application” is _not_ the DYALOG.EXE, it’s the workspace, whether it was loaded from disk or assembled by a DYAPP. When you double-click `MyApp.dyapp` the interpreter changes the current directory for you: it’s going to be where the DYAPP lives, which suits an APL application programmer’s point of view.
-A> 
-A> The same holds true when you double-click a DWS but it is _not_ true when you _load_ a workspace: the current directory then remains what it was before, by default where the Dyalog EXE lives.
-A> 
-A> So it’s smart to change the current directory yourself _at the earliest possible stage_ after loading a workspace: call `#.FilesAndDirs.PolishCurrentDir` and you’re covered, no matter what the circumstances are. One of the authors has been doing this for roughly 20 years now, and it has solved several problems without introducing new ones.
 
 
 ### The DYAPP file

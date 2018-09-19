@@ -4,68 +4,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta charset="utf-8">
 <title>Installer</title>
-<link href="./CSS/BlackOnWhite_screen.css" rel="stylesheet" media="screen">
-<link href="./CSS/Cookbook_Chapter_screen.css" rel="stylesheet" media="screen">
-<link href="./CSS/snap.css" rel="stylesheet" media="screen">
-<link href="./CSS/BlackOnWhite_print.css" rel="stylesheet" media="print">
-<link href="./CSS/Cookbook_Chapter_print.css" rel="stylesheet" media="print">
-<script src="./JavaScript/snap.js"></script>
+<link href="file:///C:/Program Files (x86)/APL Team Ltd/Meddy/CSS/MarkAPL_screen.css" rel="stylesheet" media="screen">
+<link href="file:///C:/Program Files (x86)/APL Team Ltd/Meddy/CSS/MarkAPL_print.css" rel="stylesheet" media="print">
+<meta name="author" content="kai">
 </head>
 <body>
-<div class="snap-drawers">
-<div class="snap-drawer snap-drawer-left">
-<div class="h_tag">
-<h3>Chapters</h3>
-</div>
-<ol>
-<li><a href="./01-Introduction.html" class="external_link">Introduction</a></li>
-<li><a href="./02-Structure.html" class="external_link">Structure</a></li>
-<li><a href="./03-Packaging.html" class="external_link">Packaging</a></li>
-<li><a href="./04-Logging%20.html" class="external_link">Logging </a></li>
-<li><a href="./05-Configuration.html" class="external_link">Configuration</a></li>
-<li><a href="./06-Debugging-EXEs.html" class="external_link">Debugging EXEs</a></li>
-<li><a href="./07-Handling-errors.html" class="external_link">Handling errors</a></li>
-<li><a href="./08-Testing.html" class="external_link">Testing</a></li>
-<li><a href="./09-Documentation.html" class="external_link">Documentation</a></li>
-<li><a href="./10-Make.html" class="external_link">Make</a></li>
-<li><a href="./11-Providing-help.html" class="external_link">Providing help</a></li>
-<li><a href="./12-Scheduled-Tasks.html" class="external_link">Scheduled Tasks</a></li>
-<li><a href="./13-Windows-Services.html" class="external_link">Windows Services</a></li>
-<li><a href="./14-Windows-Event-Log.html" class="external_link">Windows Event Log</a></li>
-<li><a href="./15-Windows-Registry.html" class="external_link">Windows Registry</a></li>
-<li><a href="./16-Creating-SetUp.exe.html" class="external_link">Creating SetUp.exe</a></li>
-<li><a href="./17-Regular-Expressions.html" class="external_link">Regular Expressions</a></li>
-<li><a href="./18-Acre.html" class="external_link">Acre</a></li>
-<li><a href="./19-GUI.html" class="external_link">GUI</a></li>
-<li><a href="./20-Git.html" class="external_link">Git</a></li>
-</ol>
-<div class="h_tag">
-<h3>Appendices</h3>
-</div>
-<ol>
-<li><a href="./Appendix-01_Windows-environment-vars.html" class="external_link">Windows environment vars</a></li>
-<li><a href="./Appendix-02_User-commands.html" class="external_link">User commands</a></li>
-<li><a href="./Appendix-03_aplcores-&-WS-integrity.html" class="external_link">aplcores & WS integrity</a></li>
-<li><a href="./Appendix-04_Development-environment.html" class="external_link">Development environment</a></li>
-<li><a href="./Appendix-05_Special-characters.html" class="external_link">Special characters</a></li>
-</ol>
-<div class="h_tag">
-<h3>Misc</h3>
-</div>
-<ul>
-<li><a href="15-Windows-Registry.html">Previous chapter</a></li>
-<li><a href="17-Regular-Expressions.html">Next chapter</a></li>
-<li><a href="./Dyalog_Cookbook.html" class="external_link" alt="All chapters, for printing" title="All chapters, for printing">Single document<br></a></li>
-</ul>
-</div>
-</div>
-<div id="mainmenu">
-<a href=# style="color:black;"><p><span id="mainmenu_match">≡</span></p></a>
-<p><span id="mainmenu_title">The Dyalog Cookbook</span></p>
-<nav id="main_nav">
-<input type="checkbox" id="hide_toc">
-<label id="hide_toc_label" for="hide_toc"></label>
+<nav id="main_nav_no_collapse">
 <div class="toc-container">
+<h3>Table of contents</h3>
 <ul>
 <li><a href="#Defining-the-goal">Defining the goal</a></li>
 <li><a href="#Which-tool">Which tool</a></li>
@@ -97,16 +43,14 @@
 </ul></li>
 <li><a href="#Analyzing-problems">Analyzing problems</a></li>
 </ul></li>
+<li><a href="#Updating">Updating</a></li>
 <li><a href="#Conclusion">Conclusion</a>
 </ul>
 </div>
 </nav>
-</div>
-<div id="content" class="snap-content">
-<div id="cookbook_content">
 <div class="h_tag">
-<a href="#16-Creating-SetUpexe-with-Inno" id="16-Creating-SetUpexe-with-Inno" class="autoheader_anchor">
-<h1>16. Creating SetUp.exe with Inno</h1>
+<a href="#Creating-SetUpexe-with-Inno" id="Creating-SetUpexe-with-Inno" class="autoheader_anchor">
+<h1>Creating SetUp.exe with Inno</h1>
 </a>
 </div>
 <div class="h_tag">
@@ -329,18 +273,19 @@ Name: "english"; MessagesFile: "compiler:Default.isl"; \
 </a>
 </div>
 <pre><code>[Registry]
-Root: HKLM32; Subkey: "Software\{#MyAppPublisher}"; Flags: uninsdeletekeyifempty
-Root: HKLM32; Subkey: "Software\{#MyAppPublisher}\{#MyAppName}"; Flags: uninsdeletekey
 Root: HKLM32; Subkey: "Software\{#MyAppPublisher}\{#MyAppName}"; \
   ValueType: string; ValueName: "RecentFiles"; ValueData: ""; Flags: uninsdeletekey</code></pre>
 <p>This section allows you to add settings to the Windows Registry.</p>
 <p>Notes:</p>
 <ul>
-<li>With <code>Root:</code> you define the root key. See <a href="./15 The Windows Registry#root-keys]" class="external_link">The Windows Registry: root keys</a> for details of which root keys you can specify.</li>
-<li>With <code>Subkey</code> you define the remaining part but the value. &lt;!– FIXME Clarify –&gt;</li>
-<li>A <em>value</em> in Microsoft terminology is called <code>ValueName</code> by Inno.</li>
-<li>The <em>data</em> is called <code>ValueData</code> by Inno.</li>
-<li><code>ValueType</code> specifies the data type of <code>ValueData</code>. If <code>ValueType</code> is unspecified (or <code>none</code>) Inno will create the key but <em>not</em> the value. &lt;FIXME Clarify: is it the <em>value</em> or the <em>data</em> Inno omits?)
+<li><code>Root</code> defines the root key. See <a href="./15-Windows-Registry.html#root-keys" class="external_link">The Windows Registry: root keys</a> for details of which root keys you can specify.</li>
+<li><code>Subkey</code> defines the remaining part of the path (without the value).</li>
+<li><code>ValueName</code> defines the name of the value.</li>
+<li><code>ValueData</code> defines the actual value associated with root/subkey/valuename.</li>
+<li>Microsoft's <em>value</em> is called <code>ValueName</code> by Inno.</li>
+<li>Microsoft's <em>data</em> is called <code>ValueData</code> by Inno.</li>
+<li><code>ValueType</code> specifies the data type of <code>ValueData</code>. If <code>ValueType</code> is unspecified (or <code>none</code>) Inno will create the key (or SubKey) but <em>not</em> the value (or ValueName) and therefore no data (ValueData) either.</li>
+</ul>
 <p>Inno supports the following data types:</p>
 <ul>
 <li>none</li>
@@ -349,8 +294,7 @@ Root: HKLM32; Subkey: "Software\{#MyAppPublisher}\{#MyAppName}"; \
 <li>multisz</li>
 <li>dword</li>
 <li>qword</li>
-<li>binary</li>
-</ul>
+<li>binary
 <p>For details refer to the Inno help regarding the <code>[Registry]</code> setting.</p></li>
 <li>The keyword <code>uninsdeletekey</code> tells Inno that to delete the Registry key when the application is uninstalled. Without that keyword, Inno would <em>not</em> delete any Registry keys and values when the application is uninstalled.</li>
 <li>The <code>uninsdeletekeyifempty</code> keyword is similar but let Inno delete the Registry key only when it is empty.
@@ -518,6 +462,15 @@ Type: files; Name: {app}\baz\quux.txt</code></pre>
 2018-05-08 06:26:30.832   Version of existing file: 0.0.0.0
 2018-05-08 06:26:30.832   Same version. Skipping.</code></pre>
 <div class="h_tag">
+<a href="#Updating" id="Updating" class="autoheader_anchor">
+<h2>Updating</h2>
+</a>
+</div>
+<p>Imagine a situation were a new version of Dyalog comes with an exciting new system function or primitive. You want to start using the new version straight away.</p>
+<p>In such a situation it might be tempting to just enter the new version number in whatever script or batch file in your build process is responsible for deciding which version to use, but that would not end well.</p>
+<p>Keep always in mind that a new version of Dyalog does not only come with a new <abbr title="Executable file with the extension 'exe'">EXE</abbr>; expect some if not all DLLs to have changed as well. And tools like Conga might well come with a new version, too.</p>
+<p>Therefore updating to a new version of Dyalog APL always requires the Inno script to be reviewed!</p>
+<div class="h_tag">
 <a href="#Conclusion" id="Conclusion" class="autoheader_anchor">
 <h2>Conclusion</h2>
 </a>
@@ -531,15 +484,5 @@ Type: files; Name: {app}\baz\quux.txt</code></pre>
 <li id="fnref2"><p><a href="https://blogs.msdn.microsoft.com/oldnewthing/20080627-00/?p=21823/" class="external_link">https://blogs.msdn.microsoft.com/oldnewthing/20080627-00/?p=21823/</a>:<br>About GUIDs</p><a href="#fnref2" class="footnote_anchor"></a>
 </ol>
 </div>
-</div>
-</div>
-<script>
-var snapper = new Snap({
-element: document.getElementById('content')
-});
-document.getElementById('mainmenu_match').onclick = function(){
-snapper.state().state==='closed'?snapper.open('left'):snapper.close();
-}
-</script>
 </body>
 </html>

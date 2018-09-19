@@ -263,8 +263,6 @@ When we execute `Setup.exe` you will see when exactly their content is displayed
 
 ~~~
 [Registry]
-Root: HKLM32; Subkey: "Software\{#MyAppPublisher}"; Flags: uninsdeletekeyifempty
-Root: HKLM32; Subkey: "Software\{#MyAppPublisher}\{#MyAppName}"; Flags: uninsdeletekey
 Root: HKLM32; Subkey: "Software\{#MyAppPublisher}\{#MyAppName}"; \
   ValueType: string; ValueName: "RecentFiles"; ValueData: ""; Flags: uninsdeletekey
 ~~~
@@ -273,13 +271,16 @@ This section allows you to add settings to the Windows Registry.
 
 Notes:
 
-* With `Root:` you define the root key. See [The Windows Registry: root keys](./15 The Windows Registry#root-keys]) for details of which root keys you can specify.
-* With `Subkey` you define the remaining part but the value. <!-- FIXME Clarify -->
-* A _value_ in Microsoft terminology is called `ValueName` by Inno.
-* The _data_ is called `ValueData` by Inno.
-* `ValueType` specifies the data type of `ValueData`. If `ValueType` is unspecified (or `none`) Inno will create the key but _not_ the value. <FIXME Clarify: is it the _value_ or the _data_ Inno omits?)
+* `Root` defines the root key. See [The Windows Registry: root keys](./15-Windows-Registry.html#root-keys) for details of which root keys you can specify.
+* `Subkey` defines the remaining part of the path (without the value). 
+* `ValueName` defines the name of the value.
+* `ValueData` defines the actual value associated with root/subkey/valuename.
+* Microsoft's _value_ is called `ValueName` by Inno.
+* Microsoft's _data_ is called `ValueData` by Inno.
+* `ValueType` specifies the data type of `ValueData`. If `ValueType` is unspecified (or `none`) Inno will create the key (or SubKey) but _not_ the value (or ValueName) and therefore no data (ValueData) either.
 
-   Inno supports the following data types:
+
+Inno supports the following data types:
    * none
    * string
    * expandsz
@@ -471,6 +472,18 @@ In the above scenario you would find something similiar to this in the log file:
 2018-05-08 06:26:30.832   Version of existing file: 0.0.0.0
 2018-05-08 06:26:30.832   Same version. Skipping.
 ~~~
+
+
+Updating
+--------
+
+Imagine a situation were a new version of Dyalog comes with an exciting new system function or primitive. You want to start using the new version straight away.
+
+In such a situation it might be tempting to just enter the new version number in whatever script or batch file in your build process is responsible for deciding which version to use, but that would not end well.
+
+Keep always in mind that a new version of Dyalog does not only come with a new EXE; expect some if not all DLLs to have changed as well. And tools like Conga might well come with a new version, too.
+
+Therefore updating to a new version of Dyalog APL always requires the Inno script to be reviewed!
 
 
 Conclusion

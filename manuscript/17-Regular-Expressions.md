@@ -1018,7 +1018,7 @@ For plurals:
 
 Suppose we have a piece of HTML code and are interested in any text between anchor tags (`<a>`). Suppose also we know there is no other tag inside the `<a>`, just simple text.
 
-Now an `<a>` tag has always either an `href="..."` or an `id="..."` because otherwise it has no purpose. <!-- FIXME or `name=` -->
+Now an `<a>` tag has always either an `href="..."` or an `id="..."` because otherwise it has no purpose[^name].
 
 So it should be safe to say:
 
@@ -1204,6 +1204,7 @@ Book reviews
 
 : <https://www.regular-expressions.info/hipowls.html>
 
+[^name]: Note that the "name" attribute is not part of the definition of HTML5; use the "ID" attribute instead.
 
 *[HTML]: Hyper Text Mark-up language
 *[DYALOG]: File with the extension 'dyalog' holding APL code

@@ -1,4 +1,3 @@
-{:: encoding="utf-8" /}
 [parm]:title='Registry'
 
 # The Windows Registry
@@ -34,12 +33,16 @@ Note that `HKCU` is a short cut for "HKey Current User". There are others, and w
 
 Microsoft’s terminology for the Registry varies strikingly from common usage. That is a rich source of confusion, but there is no avoiding it. Has to be mastered.
 
-<!-- Find the terminology strange? So do we, but it was invented by Microsoft and defines the standard. 
+
+<!--
+
+Do you find the terminology strange? So do we, but it was invented by Microsoft and defines the standard. 
 
 So we use it too. That makes it easier to understand the Microsoft documentation and also to understand others discussing the Windows Registry. It also helps when you Google for Registry tweaks because the guys posting the solution to your problem are most likely using Microsoft speech as well.
 
 What is strange about the terminology? Microsoft gives common words unusual meanings when it comes to the Windows Registry. 
- -->
+
+-->
 
 Here’s an example. This is the definition of the MAXWS parameter for Dyalog 64 bit Unicode version 16:
 

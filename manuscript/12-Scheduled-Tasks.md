@@ -317,9 +317,11 @@ It is different when you simply double-click the `MyApp.exe`: in that case the _
 
 By the way, when you click _Cancel_ in the _Security Alert_ dialog box, you might expect the Windows Firewall to deny access to the port but not create a rule either. You would be mistaken. The two buttons _Allow access_ and _Cancel_ shouldn’t be buttons at all! Instead there should be a group _Create rule_ with two radio buttons: _Allow access_ and _Deny access_.
 
-If the user clicks the "Cancel" button a message _should_ pop up saying that although no rule will be created, access to the port in question is denied. That would imply that when the application is started again the _Security Alert_ dialog box will reappear. Instead, when _Cancel_ is clicked a blocking rule for that combination of application and port number is created, and you will not see that dialog box again for this combination.
+If the user clicks the "Cancel" button a message _should_ pop up saying that although no rule will be created, access to the port in question is denied. That would imply that when the application is started again the _Security Alert_ dialog box will reappear. 
 
-<!-- FIXME What to do? Edit the Windows Firewall, no? -->
+Instead, when _Cancel_ is clicked a blocking rule for that combination of application and port number is created, and you will not see that dialog box again for this combination.
+
+The solution is to edit the Firewall rules. For that search for "Firewall", run "Windows Defender Firewall" and then click on "Advanced settings". You can then remove the blocking rule and define an exception.
 
 
 ### The Task Scheduler GUI
@@ -367,14 +369,14 @@ Task Scheduler successfully completed task "\MyApp" , instance "{c7cb733a-be97-4
 
 That tells you task did not run at all. You won’t find either a log file or a crash file, and you cannot Ride into the application.
 
-<!-- FIXME What to do?  --> 
+You need to analyze the return code provided. This is discussed next.
 
 
 ### Task Scheduler error codes
 
 If the Task Scheduler itself throws an error you will find the error codes of little value – at first sight. 
 
-You can provoke such an error quite easily: edit the task we’ve created and changed the contents of the _Program/script_ field in the _Edit action_ dialog to something that does not exist, so the Task Scheduler won’t find such a program to run. Then issue the _Run_ command from the context menu.
+You can provoke such an error quite easily: edit the task we’ve created and change the contents of the _Program/script_ field in the _Edit action_ dialog to something that does not exist, so the Task Scheduler won’t find such a program to run. Then issue the _Run_ command from the context menu.
 
 Update the GUI by pressing F5 and you will see that errors are reported. The row that reads `Task Start Failed` in the _Task Category_ columns and `Launch Failure` in the _Operational Code_ columns is the one we are interested in. When you click on this row you will find that it reports an `Error Value 2147942402`. What exactly does this mean?
 

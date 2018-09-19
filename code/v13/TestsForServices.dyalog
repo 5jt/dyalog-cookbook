@@ -6,22 +6,22 @@
     ⎕IO←1 ⋄ ⎕ML←1
 
     ∇ r←Initial;rc;ini;row;bat;more
-      ∆Path←##.FilesAndDirs.GetTempFilename''
-      #.FilesAndDirs.DeleteFile ∆Path
-      ∆Path←¯4↓∆Path
-      ∆ServiceName←'MyAppService'
-      r←0
-      :If 0=#.WinSys.IsRunningAsAdmin
+      :If #.WinSys.IsRunningAsAdmin
+          ∆Path←##.FilesAndDirs.GetTempFilename''
+          #.FilesAndDirs.DeleteFile ∆Path
+          ∆Path←¯4↓∆Path        ⍝ Because we use it as a folder name no extension needed
+          ∆ServiceName←'MyAppService'
+          ∆CreateFolderStructure ⍬
+          ∆CopyFiles ⍬
+          ∆CreateBATs ⍬
+          ∆CreateIniFile ⍬
+          ∆InstallService ⍬
+          ⎕←'*** Service ',∆ServiceName,' successfully installed'
+          r←1
+      :Else
           ⎕←'Sorry, but you need admin rights to run this test suite!'
-          :Return
-      :EndIf
-      ∆CreateFolderStructure ⍬
-      ∆CopyFiles ⍬
-      ∆CreateBATs ⍬
-      ∆CreateIniFile ⍬
-      ∆InstallService ⍬
-      ⎕←'*** Service ',∆ServiceName,' successfully installed'
-      r←1
+          r←0          
+      :EndIf    
     ∇
 
     ∇ R←Test_01(stopFlag batchFlag);⎕TRAP;rc;more
@@ -110,7 +110,7 @@
     ∇
 
     ∇ {(rc msg)}←∆Execute_SC_Cmd command;cmd;buff
-    ⍝ Executes a SC (Service Control) command
+    ⍝ Executes an SC (Service Control) command
       rc←1 ⋄ msg←'Could not execute the command'
       cmd←'SC ',command,' ',∆ServiceName
       buff←#.Execute.Process cmd

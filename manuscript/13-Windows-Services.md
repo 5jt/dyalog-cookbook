@@ -63,7 +63,7 @@ To simplify matters we shall use the `ServiceState` namespace, also from the APL
    
 ## Installing a Service.
 
-**Note:** for installing or uninstalling a Service you need admin rights.
+**Note:** for installing a Service you need admin rights, for uninstalling a Service you even need to execute the command in elevated mode.
 
 Suppose you have loaded a WS `MyService` which you want to install as a Windows Service run by the same version of Dyalog you are currently in:
 
@@ -240,7 +240,7 @@ In the next chapter ("[The Windows Event Log](./14 The Windows Event Log.html)")
 
 ### Setting the latent expression
 
-First of all we need to point out that `MyApp` as it stands is hardly a candidate for a Service. We need to make something up. 
+First of all we need to point out that `MyApp` as it stands is not a candidate for a Service, therefore  we need to make something up. 
 
 Let's specify one or more folders to be watched by the `MyApp` Service. If any files are found then they are processed. Finally the app will store hashes for all the files it has processed. That allows it to recognize any added, changed or removed files efficiently.
 
@@ -486,7 +486,7 @@ In order to install or uninstall the Service we need two BATs: `Install_Service.
       aplexe←'"',(2 ⎕NQ'#' 'GetEnvironment' 'dyalog'),'\dyalogrt.exe"'
       wsid←'"%~dp0\MyAppService.DWS"'
       cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService'
-     ⍝cmd,←' APLCORENAME={foldername}'
+     ⍝cmd,←' APLCORENAME={path}\Aplcores_*'      
      ⍝cmd,←' DYALOG_EVENTLOGNAME={foo}'
       cmd,←' DYALOG_NOPOPUPS=1'
       cmd,←' MAXWS=64MB'
@@ -649,29 +649,29 @@ This could all be done in a single function but it would be lengthy and difficul
 
 ~~~
 ∇ r←Initial;rc;ini;row;bat;more
-   ∆Path←##.FilesAndDirs.GetTempFilename''
-   #.FilesAndDirs.DeleteFile ∆Path
-   ∆Path←¯4↓∆Path
-   ∆ServiceName←'MyAppService'
-   r←0
-   :If 0=#.WinSys.IsRunningAsAdmin
+   :If #.WinSys.IsRunningAsAdmin
+       ∆Path←##.FilesAndDirs.GetTempFilename''
+       #.FilesAndDirs.DeleteFile ∆Path
+       ∆Path←¯4↓∆Path      ⍝ Because we use it as a folder name no extension needed
+       ∆ServiceName←'MyAppService'
+       ∆CreateFolderStructure ⍬
+       ∆CopyFiles ⍬
+       ∆CreateBATs ⍬
+       ∆CreateIniFile ⍬
+       ∆InstallService ⍬
+       ⎕←'*** Service ',∆ServiceName,' successfully installed'
+       r←1  
+   :Else
        ⎕←'Sorry, but you need admin rights to run this test suite!'
-       :Return
+       r←0
    :EndIf
-   ∆CreateFolderStructure ⍬
-   ∆CopyFiles ⍬
-   ∆CreateBATs ⍬
-   ∆CreateIniFile ⍬
-   ∆InstallService ⍬
-   ⎕←'*** Service ',∆ServiceName,' successfully installed'
-   r←1
 ~~~
 
 Note that all the sub-function and global variables start their names with `∆`. An example is the function `∆Execute_SC_Cmd`:
 
 ~~~
 ∇ {(rc msg)}←∆Execute_SC_Cmd command;cmd;buff
- ⍝ Executes a SC (Service Control) command
+ ⍝ Executes an SC (Service Control) command
    rc←1 ⋄ msg←'Could not execute the command'
    cmd←'SC ',command,' ',∆ServiceName
    buff←#.Execute.Process cmd
@@ -711,7 +711,7 @@ We also need `∆Pause`:
 ∇
 ~~~
 
-We could discuss all the sub functions called by these two functions but it would tell us little. Therefore we suggest you copy the code from the web site. We discuss here just the two test functions:
+We could discuss all the sub functions called by these two functions but it would tell us little. Therefore we suggest you copy the code from the web site. We discuss just the two test functions:
 
 ~~~
 ∇ R←Test_01(stopFlag batchFlag);⎕TRAP;rc;more
