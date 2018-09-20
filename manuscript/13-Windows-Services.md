@@ -1,8 +1,4 @@
-{:: encoding="utf-8" /}
 [parm]:title       =   'Services'
-
-
-|** This chapter needs attention due to the move to version 17.0!! **|{style="font-size:xx-large;color:red;"}
 
 # Windows Services
 
@@ -83,13 +79,21 @@ This also prevents the _Service MyAppService successfully installed_ message fro
 
 ## Uninstalling a service
 
-To uninstall the Service, simply open a console window with _Run as administrator_ and enter:
+To uninstall the Service, simply open a console window with _Run as administrator_, navigate to the directory the DYAPP lives in and then enter:
 
 ~~~
 sc delete MyAppService
 ~~~
 
 and you are done.
+
+A> # Why is changing the current directory required?
+A>
+A> When you double-click a DYAPP the script is executed with the directory the script lives in defining what will become the current directory from the DYAPP's point of view.
+A>
+A> When you call a DYAPP the current directory is defined by the directory you call the DYAPP from. If that is different from where the DYAPP lives then statements like `Load ..\apltree\APLTreeUtils` will fail because they are relative to the current directory. That's why you must change the current directory first.
+A>
+A> At the time of writing one cannot set the current directory from within a DYAPP. Hopefully this restriction will be lifted soon.
 
 A> # Pitfalls when installing or uninstalling Windows Services
 A>

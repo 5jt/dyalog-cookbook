@@ -59,13 +59,6 @@ html{line-height:1.15;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;}b
 </ul>
 </div>
 </nav>
-<table style="font-size:xx-large;color:red;">
-<tbody>
-<tr>
-<td><strong> This chapter needs attention due to the move to version 17.0!! </strong></td>
-</tr>
-</tbody>
-</table>
 <div class="h_tag">
 <a href="#Windows-Services" id="Windows-Services" class="autoheader_anchor">
 <h1>Windows Services</h1>
@@ -140,9 +133,16 @@ cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService DYALOG_NOPOPUPS=1'</code
 <h2>Uninstalling a service</h2>
 </a>
 </div>
-<p>To uninstall the Service, simply open a console window with <em>Run as administrator</em> and enter:</p>
+<p>To uninstall the Service, simply open a console window with <em>Run as administrator</em>, navigate to the directory the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> lives in and then enter:</p>
 <pre><code>sc delete MyAppService</code></pre>
 <p>and you are done.</p>
+
+<div class="leanpub_A">
+<h3>Why is changing the current directory required?</h3>
+<p>When you double-click a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> the script is executed with the directory the script lives in defining what will become the current directory from the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>'s point of view.</p>
+<p>When you call a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> the current directory is defined by the directory you call the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> from. If that is different from where the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> lives then statements like <code>Load ..\apltree\APLTreeUtils</code> will fail because they are relative to the current directory. That's why you must change the current directory first.</p>
+<p>At the time of writing one cannot set the current directory from within a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>. Hopefully this restriction will be lifted soon.</p>
+</div>
 
 <div class="leanpub_A">
 <h3>Pitfalls when installing or uninstalling Windows Services</h3>
