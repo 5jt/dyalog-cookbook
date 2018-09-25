@@ -21,20 +21,24 @@ The default folder depends on your version of Dyalog of course, but you can alwa
 The above is the default folder for the 64-bit Unicode version of Dyalog 17.0 for all Dyalog user commands available within that version.
 
 
-## Using the default folder
-
-If you want to keep life simple the obvious choice seems to be this folder: you just copy your user command into this folder and it becomes available straight away.
-
-Simple may it be, but this is _not_ recommended:
-
-* When a new version of Dyalog comes along you need to copy your own stuff over.
-* When you use more than one version of Dyalog in parallel you have to maintain several copies of your user commands.
-* Because of Microsoft's security measures, writing to that folder requires admin rights.
-
-For these reasons you are advised to use a different folder.
+## Where to put user commands
 
 
-## Use your own dedicated folder
+### Using the default folder
+
+If you want to keep life simple the obvious choice is to copy your user command into the folder Dyalog has reserved for this very purpose starting with version 17.0.
+
+It's in `%HOMEDRIVE%%HOMEPATH%\Documents\MyUCMDs`[^envvars]. This folder is scanned automatically by Dyalog at start-up time and when `]URESET` is executed. Any script with the extension `.dyalog` is expected to be a user command class or user command script. This is also true for any sub folders.
+
+Notes:
+
+* User commands in that folder are only available for that specific user, not all users. Naturally it depends on the circumstances whether that's a good thing or a bad thing for you.
+* From version 17.0 onwards every version will look into the same folder, so the user command must check itself whether it is compatible with the version it is called from.
+
+For these reasons you might decide to go for a different folder.
+
+
+### Use your own dedicated folder
 
 Let's assume that you have a folder `C:\MyUserCommands` that's supposed to hold all non-Dyalog user commands. 
 
@@ -42,7 +46,7 @@ Via the _Options > Configure_ command you can select the User Commands dialog an
 
 If you use several versions of Dyalog in parallel then you are advised _not_ to add that folder via the configuration dialog box in each of those versions.
 
-Instead we recommend writing an APL function that adds the folder to all versions of Dyalog currently installed. See the chapter [The Windows Registry](./15 The Windows Registry) where this scenario is used as an example.
+Instead we recommend writing an APL function that adds the folder to all versions of Dyalog currently installed. See the chapter [The Windows Registry](./15 The Windows Registry) where this scenario is used as an example. The reason is that you can solve the problem for all installed versions with a single function call, and you can repeat that in case you have to re-install any of the versions.
 
 
 ## Name clashes
@@ -56,7 +60,7 @@ In other words, the full name of a user command is compiled by the group name (s
 ~~~
 
 
-## Group name
+## Group names
 
 Group names are not only useful to avoid name clashes, they also allow user commands to be, well, grouped in a sensible way. Whether you should add your own user commands to any of the groups Dyalog comes with is a diffult question to answer. There are pros and cons:
 
@@ -147,6 +151,7 @@ The workspace `Goo` can be tested independently from the user command framework,
 [^wiki]:Dyalog user commands from the APL wiki  
 <http://aplwiki.com//CategoryDyalogUserCommands>
 
+[^envvars]: See _Appendix 01 - Windows environment vars_ for details regarding the environment variables used here.
 
 *[HTML]: Hyper Text Mark-up language
 *[DYALOG]: File with the extension 'dyalog' holding APL code
