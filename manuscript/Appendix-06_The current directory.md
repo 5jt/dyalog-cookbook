@@ -44,6 +44,8 @@ Normally when a program is started the folder the EXE lives in determines the cu
 
 This is also true when you call any Dyalog EXE. However, from an APL programmer's point of view the workspace defines the program, not the EXE. That's why we advocate changing the current directory to where the workspace was loaded from.
 
+|⍝TODO⍝ This is currently not true: |{style="font-size:xx-large;color:red;"}
+
 It's similar for DYAPPs, though they don't load a workspace but assemble it dynamically. In case of a double-click on a DYAPP luckily there is no need to do anything because the current directory will be the folder the DYAPP lives in, which is exactly how it should be.
 
 |⍝TODO⍝: we need a mechanism for DYAPPs in case they got called programmitically!|{style="font-size:xx-large;color:red;"}

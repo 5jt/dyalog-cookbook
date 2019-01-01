@@ -177,7 +177,13 @@ You should see a message: _File Z:\\code\\v03\\MyApp.exe successfully created._ 
 
 If it keeps failing then the by far most common reason is that the EXE is running – you cannot replace an EXE while it is running. 
 
-I> Although you cannot replace a running EXE what you _can_ do is to rename it; that is possible. You can then create a new EXE with the original name.
+I> Although you cannot replace a running EXE what you _can_ do is to rename it. You can then create a new EXE with the original name.
+
+A> ### The "Command line" field
+A> You might think that when you specify something in the "Command line" field (like `name="APL"`) this would become available via a `2 ⎕NQ'.' 'GetCommandLineArgs'` statement but that would not work.
+A> The reason is that `2 ⎕NQ'.' 'GetCommandLineArgs'` gives you the command line _of the EXE_ when it is called.
+A>
+A> However, you can get the value with `2 ⎕NQ'.' 'GetEnvironment' 'name'`.
 
 In case you wonder what a “Console application” is: 
 

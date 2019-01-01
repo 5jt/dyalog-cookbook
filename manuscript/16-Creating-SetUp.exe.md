@@ -221,7 +221,7 @@ All those names _must_ be defined, however: Inno needs them.
 
 Notes:
 
-* The variables defined at the top of the Inno script (before the first section) are dereferenced here as `{#varsname}`.
+* The variables defined at the top of the Inno script (before the first section) are referenced here as `{#varsname}`.
 
 * The `AppId` is used to identify an application, in particular for un-installing it. It can be anything as long as it is less than 128 characters long but using a GUID[^guid] is a good idea. Tip: don't add a version number to it.
 
