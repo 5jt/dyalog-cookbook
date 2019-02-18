@@ -115,13 +115,19 @@ Defaults to `C:\ProgramData`. Use this for information that is application-speci
 
 Defaults to `C:\Program Files`. On a 64-bit version of Windows this is where 64-bit programs are installed. Note however that on a 32-bit version of Windows this points to [`ProgramFiles(x86)`](#x86).
 
+But this is true only when you execute it on a command line. When you use Microsoft's `ExpandEnvironmentStrings` API function (via `⎕NA`) then the result **depends on the version of Dyalog**! That means that executed from a 64-bit version of Dyalog you get the 64 bit location while from the 32-bit version you get the 32-bit location.
+
+To get around this use the [`ProgramW6432`](#x86) variable.
+
 ### `ProgramFiles(x86)`{#x86}
 
 Defaults to `C:\Program Files (x86)`. This is where 32-bit programs are installed.
 
 ### `ProgramW6432`
 
-Defaults to `C:\Program Files`. On a 64-bit version of Windows this path points to [`ProgramFiles`](#programfiles). On a 32-bit version of Windows it also points to `ProgramFiles` which in turn points to [`ProgramFiles(x86)`](#x86).
+Defaults to `C:\Program Files`. On a 64-bit version of Windows this path points to [`ProgramFiles`](#programfiles). On a 32-bit version of Windows it also points to `ProgramFiles` which in turn points to [`ProgramFiles(x86)`](#x86). 
+
+For this it does not matter whether the conversion was initiated from a 32- or 64 bit application; in this respect this variable differs from `ProgramFiles`.
 
 For details see _WOW64 Implementation Detail_ [^wow].
 
