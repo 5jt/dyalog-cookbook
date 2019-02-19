@@ -123,7 +123,7 @@
 <p>To follow this, we’ll make a very simple program. It counts the frequency of letters used in one or multiple text files. (This is simple, but useful in cryptanalysis, at least at hobby level.) We’ll put the source code under version control, and package the program for use.</p>
 <p>Some of the things we are going to add to this application will seem like overkill, but keep in mind that we use this application just as a very simple example for all the techniques we are going to introduce.</p>
 <p>Let’s assume you've done the convenient thing. Your code is in a workspace. Everything it needs to run is defined in the workspace. Maybe you set a latent expression, so the program starts when you load the workspace.</p>
-<p>We shall convert a <abbr title="Dyalog workspace">DWS</abbr> to some <abbr title="File with the extension 'dyalog' holding APL code">DYALOG</abbr> scripts and introduce a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> script to assemble an active workspace from them.</p>
+<p>We shall convert a <abbr title="Dyalog workspace">D<abbr title="Short for Workspaces">WS</abbr></abbr> to some <abbr title="File with the extension 'dyalog' holding APL code">DYALOG</abbr> scripts and introduce a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> script to assemble an active workspace from them.</p>
 <p>Using scripts to store your source code has many advantages: you can use a traditional source code management system rather than having your code and data stored in a binary blob.</p>
 <p>Changes that you make to your source code are saved immediately, rather than relying on you to remember to save the workspace at some suitable point in your work process.</p>
 <p>Finally, you don’t need to worry about crashes in your code or externally called modules and also any corruption of the active workspace which might prevent you from saving it.</p>
@@ -181,7 +181,7 @@
 <p>acre Desktop can be used as a source-code management system in its own rights= together with acre Server, but it can use other code management systems like Git or SubVersion as well. Both acre Desktop and acre Server are available as open source software. We will discuss acre in its own appendix.</p>
 </div>
 
-<p>Whichever SCM you use (we used GitHub for writing this book and the code in it) your source code will comprise class and namespace scripts (DYALOGs) for the application. The help system will be an ordinary – non-scripted – namespace. We use a <em>build script</em> (<abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>) to assemble the application and the development environment.</p>
+<p>Whichever SCM you use (we used GitHub for writing this book and the code in it) your source code will comprise class and namespace scripts (<abbr title="File with the extension 'dyalog' holding APL code">DYALOG</abbr>s) for the application. The help system will be an ordinary – non-scripted – namespace. We use a <em>build script</em> (<abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>) to assemble the application and the development environment.</p>
 <p>You’ll keep your local working copy in whatever folder you please. We’ll refer to this <em>working folder</em> as <code>Z:\</code> but it will of course be wherever suits you.</p>
 <div class="h_tag">
 <a href="#The-LetterCount-workspace" id="The-LetterCount-workspace" class="autoheader_anchor">
@@ -208,7 +208,7 @@
 <p>What does it mean to maintain a version? At the very minimum, you keep the source code for it, so you could recreate its <abbr title="Executable file with the extension 'exe'">EXE</abbr> from scratch, exactly as it was distributed. There will be things you want to improve, and perhaps bugs you must fix. Those will all go into the next version, of course. But some you may need to put into the released version and re-issue it to current users as a patch.</p>
 <p>So in <em>The Dyalog Cookbook</em> we shall develop in successive versions until we manage to create an installer that is capable of installing the application on any machine running Windows 10. What’s needed to achieve that is discussed in the chapters 1-16. Later chapters are independent.</p>
 <p>Our ‘versions’ are not ready to ship, so are probably better considered as milestones on the way to version 1.0. You could think of them as versions 0.1, 0.2 and so on. But we’ll just refer to them as Versions 1, 2, and so on.</p>
-<p>Our first version won’t even be ready to export as an <abbr title="Executable file with the extension 'exe'">EXE</abbr>. It will just create a workspace <code>MyApp.dws</code> from scripts: a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> and some DYALOGs. We’ll call it Version 1.</p>
+<p>Our first version won’t even be ready to export as an <abbr title="Executable file with the extension 'exe'">EXE</abbr>. It will just create a workspace <code>MyApp.dws</code> from scripts: a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> and some <abbr title="File with the extension 'dyalog' holding APL code">DYALOG</abbr>s. We’ll call it Version 1.</p>
 <p>Load the <code>LetterCount.dws</code> workspace from the <code>code\foo</code> folder on the book website. Again, this is just the stand-in for your own code. Here’s a quick tour.</p>
 <div class="h_tag">
 <a href="#Investigating-the-workspace-LetterCount" id="Investigating-the-workspace-LetterCount" class="autoheader_anchor">
@@ -510,7 +510,7 @@ Accents←2 28⍴'ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝAAAAAA
 </a>
 </div>
 <p>We’ll raid <a href="https://www.gutenberg.org/" class="external_link">Project Gutenberg</a> for some texts to read.</p>
-<p>We’re tempted by the complete works of William Shakespeare but we don’t know that letter distribution stayed constant over four centuries. Interesting to find out, though, so we’ll save a copy as <code>Z:\texts\en\shakespeare.dat</code>. And we’ll download some 20th-century books as TXTs into the same folder. Here are some texts we can use.</p>
+<p>We’re tempted by the complete works of William Shakespeare but we don’t know that letter distribution stayed constant over four centuries. Interesting to find out, though, so we’ll save a copy as <code>Z:\texts\en\shakespeare.dat</code>. And we’ll download some 20th-century books as <abbr title="File with the extension 'txt' containing text">TXT</abbr>s into the same folder. Here are some texts we can use.</p>
 <pre><code>      ↑⊃(⎕NINFO⍠'Wildcard' 1) 'z:\texts\en\*.txt'
 z:/texts/en/ageofinnocence.txt
 z:/texts/en/dubliners.txt
@@ -527,7 +527,7 @@ z:/texts/en/wizardoz.txt</code></pre>
 </a>
 </div>
 <p>We’ll first make <code>MyApp</code> a simple 'engine' that does not interact with the user. Many applications have functions like this at their core. Let’s enable the user to call this engine from the command line with appropriate parameters. By the time we give it a user interface, it will already have important capabilities, such as logging errors and recovering from crashes.</p>
-<p>Our engine will be based on the <code>TxtToCsv</code> function. It will take one parameter, a fully qualified filepath for a folder or file. If it is a file it will write a sibling CSV. If it is a folder it will read all the TXTs in the folder, count the letter frequencies and write them as a CSV sibling to the folder. Simple enough. Here we go.</p>
+<p>Our engine will be based on the <code>TxtToCsv</code> function. It will take one parameter, a fully qualified filepath for a folder or file. If it is a file it will write a sibling CSV. If it is a folder it will read all the <abbr title="File with the extension 'txt' containing text">TXT</abbr>s in the folder, count the letter frequencies and write them as a CSV sibling to the folder. Simple enough. Here we go.</p>
 <div class="h_tag">
 <a href="#Building-from-a-DYAPP" id="Building-from-a-DYAPP" class="autoheader_anchor">
 <h2>7. Building from a DYAPP</h2>
@@ -688,7 +688,7 @@ Load MyApp</code></pre>
 </div>
 </div>
 
-<p>We have converted the saved workspace to text files, and made a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> that builds the workspace from the DYALOGs. But we have not saved a workspace: we will always build a workspace from scripts.</p>
+<p>We have converted the saved workspace to text files, and made a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> that builds the workspace from the <abbr title="File with the extension 'dyalog' holding APL code">DYALOG</abbr>s. But we have not saved a workspace: we will always build a workspace from scripts.</p>
 <p>Launch the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> by double-clicking on its icon in Windows Explorer. Examine the active session. We see</p>
 <pre><code>- Constants
   - NINFO
@@ -878,8 +878,14 @@ Run #.MyApp.SetLX ⍬</code></pre>
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
-<p>Although you cannot replace a running <abbr title="Executable file with the extension 'exe'">EXE</abbr> what you <em>can</em> do is to rename it; that is possible. You can then create a new <abbr title="Executable file with the extension 'exe'">EXE</abbr> with the original name.</p>
+<p>Although you cannot replace a running <abbr title="Executable file with the extension 'exe'">EXE</abbr> what you <em>can</em> do is to rename it. You can then create a new <abbr title="Executable file with the extension 'exe'">EXE</abbr> with the original name.</p>
 </div>
+</div>
+
+<div class="leanpub_A">
+<h3>The “Command line” field</h3>
+<p>You might think that when you specify something in the “Command line” field (like <code>name="APL"</code>) this would become available via a <code>2 ⎕NQ'.' 'GetCommandLineArgs'</code> statement but that would not work. The reason is that <code>2 ⎕NQ'.' 'GetCommandLineArgs'</code> gives you the command line <em>of the <abbr title="Executable file with the extension 'exe'">EXE</abbr></em> when it is called.</p>
+<p>However, you can get the value with <code>2 ⎕NQ'.' 'GetEnvironment' 'name'</code>.</p>
 </div>
 
 <p>In case you wonder what a “Console application” is:</p>
@@ -942,7 +948,7 @@ Run #.MyApp.SetLX ⍬</code></pre>
 <p>For analysis, load a CONTINUE workspace in an already running Dyalog session – don’t double-click a CONTINUE! The reason is that <code>⎕DM</code> and <code>⎕DMX</code> are overwritten in the process of booting SALT, meaning that you lose the error message.</p>
 <p>You <em>might</em> recreate them by re-executing the failing line – but that has other dangers, or might fail in a new way.</p>
 <p>Note also that the CONTINUE is always saved in the current directory; in version 17.0 there is no way to tell the interpreter to save the CONTINUE workspace elsewhere.</p>
-<p>That is limiting, as it will fail for your own stand-alone EXEs if they are installed in the standard folders for executables under Windows, <code>C:\Program Files</code> (64-bit programs) and <code>C:\Program Files (x86)</code> (32-bit programs): even as an admin you cannot write to those folders or subfolders.</p>
+<p>That is limiting, as it will fail for your own stand-alone <abbr title="Executable file with the extension 'exe'">EXE</abbr>s if they are installed in the standard folders for executables under Windows, <code>C:\Program Files</code> (64-bit programs) and <code>C:\Program Files (x86)</code> (32-bit programs): even as an admin you cannot write to those folders or subfolders.</p>
 <p>But Windows saves it anyway! If a program attempts to write to a banned location Windows tells them “Sure, no problem” but saves them in a e.g. <code>"C:\Users\kai\AppData\Local\VirtualStore\Program Files\Dyalog\Dyalog APL-64 17.0 Unicode\CONTINUE.dws"</code> where you are running Dyalog APL 64-bit Unicode version 17.0.</p>
 </div>
 
@@ -1690,18 +1696,18 @@ Wait        = 1</code></pre>
 </a>
 </div>
 <p>We add a function <code>CheckForRide</code>:</p>
-<pre><code>∇ {r}←CheckForRide (ridePort waitFlag);rc;init;msg
+<pre><code>{r}←CheckForRide (ridePort waitFlag);rc;init;msg
  ⍝ Depending on what's provided as right argument we prepare for a Ride
  ⍝ or we don't. In case `waitFlag` is 1 we enter an endless loop.
   r←1
   :If 0&lt;ridePort
-      {}3502⌶0                     ⍝ Switch Ride off
+  :AndIf 0=3501⌶⊣⍬                 ⍝ Only if not already riding
       init←'SERVE::',⍕ridePort     ⍝ Initialisation string
-      rc←3502⌶ini                  ⍝ Specify INIT string
+      rc←3502⌶init                 ⍝ Specify INIT string
       :If 32=rc
-          11⎕Signal⍨'Cannot Ride: Conga DLLs are missing'
+          11 ⎕Signal⍨'Cannot Ride: Conga DLLs are missing'
       :ElseIf 64=rc
-          11 ⎕Signal⍨'Cannot Ride; invalid initialisation string: ',ini
+          11 ⎕Signal⍨'Cannot Ride; invalid initialisation string: ',init
       :ElseIf 0≠rc
           msg←'Problem setting the Ride connecion string to SERVE::'
           msg,←,(⍕ridePort),', rc=',⍕rc
@@ -1717,19 +1723,20 @@ Wait        = 1</code></pre>
 <p>Notes:</p>
 <ul>
 <li><code>ridePort</code> will be either the port to be used for communicating with Ride, or 0 if no Ride is required.</li>
-<li>The optional left argument defaults to 0. If it is 1 then the function waits for Ride to hook on.</li>
+<li>If <code>wait</code> is 1 then the function waits in an endless loop for Ride to hook on. Naturally this requires the user to issue an interrupt once connected to the application with Ride.</li>
+<li>To check with <code>3501⌶</code> for whether the application is already connected to Ride is a safety net that allows you to ignore whether you might call <code>CheckForRide</code> twice in your application.
+<p>A typical example for this being the case is a very early call that normaly is commented out and a later call ruled by the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file.</p></li>
 <li>In this specific case we pass a reference to <code>Config</code> as an argument to <code>CheckForRide</code>. For two reasons:
 <ul>
 <li><code>CheckForRide</code> really needs <code>Config</code>.</li>
 <li>We have nothing else to pass but we don’t want niladic functions around (except in very special circumstances).</li>
 </ul></li>
-<li>We catch the return codes from the calls to <code>3502⌶</code> and check them on the next line. This is important because the calls may fail for several reasons; see below for an example. If something goes wrong, the function signals an error.</li>
-<li>With <code>3502⌶0</code> we switch Ride off, just in case. That way we ensure we can execute <code>→1</code> while tracing <code>CheckForRide</code> at any point if we wish to; see “Restartable functions” underneath this list.</li>
-<li>With <code>3502⌶'SERVE::',⍕ridePort</code> we establish the Ride parameters: type (<code>'SERVE'</code>), host (nothing between the two colons, so it defaults to <code>'localhost'</code>) and port number.</li>
+<li>We catch the return codes from the calls to <code>3502⌶</code> and check them on the next line. This is important because the calls may fail for several reasons. If something goes wrong, the function signals an error.</li>
+<li>With <code>3502⌶'SERVE::',⍕ridePort</code> we establish the Ride parameters; having nothing between the two colons makes it default to <code>'localhost'</code>).</li>
 <li>With <code>3502⌶1</code> we enable Ride.</li>
-<li>With <code>{_←⎕DL ⍵ ⋄ ∇ ⍵}1</code> we start an endless loop: it waits for a second, then calls itself (<code>∇</code>) recursively. It’s a dfn, so there is no stack growing on tail-recursive calls.</li>
+<li>With <code>{_←⎕DL ⍵ ⋄ ∇ ⍵}1</code> we start an endless loop: it waits for a second, then calls itself (<code>∇</code>) recursively. Note that because it’s a dfn there is no growing stack.</li>
 <li>We could have passed <code>Config</code> rather than <code>Config.(Ride WaitForRide)</code> to <code>CheckForRide</code>. By <em>not</em> doing this we allow the function <code>CheckForRide</code> to be tested independently from <code>Config</code>.
-<p>This is an important point. There is value in keeping the function independent in this way, but if you suspect that later you will need other parameters in <code>Config</code>, then the flexibility you gain here outweighs the value of keeping the function independent from <code>Config</code>.</p></li>
+<p>This is an important point. There is value in keeping the function independent in this way, but if you suspect that later you will need other parameters in <code>Config</code>, then the flexibility you gain here might outweight the value of keeping the function independent from <code>Config</code>.</p></li>
 </ul>
 <p>Finally we amend the <code>Version</code> function:</p>
 <pre><code>∇r←Version
@@ -1765,14 +1772,16 @@ Wait        = 1</code></pre>
 <div class="leanpub_A">
 <h3>Restartable functions</h3>
 <p>Not only do we try to exit functions at the bottom, we also like them to be restartable.</p>
-<p>What we mean by that is that we want if possible a function – and its variables – to survive <code>→1</code>. That is not possible for all functions: for example, a function that starts a thread and <em>must not</em> start a second one for the same task, or a file was tied etc. But most functions can be restartable.</p>
+<p>What we mean by that is that we want if possible a function – and its variables – to survive <code>→1</code> while debugging it. That is not possible for all functions: for example, a function that starts a thread and <em>must not</em> start a second one for the same task, or a file was tied etc. But most functions can be made restartable.</p>
 <p>That means that something like this should be avoided:</p>
 <pre><code>∇r←MyFns arg
 r←⍬
 :Repeat
     r,← DoSomethingSensible ⊃arg
 :Until 0∊⍴arg←1↓arg</code></pre>
-<p>This function does not make much sense but the point is that the right argument is overwritten; so one cannot restart this function with <code>→1</code>. Don’t do overwrite an argument without a <em>very</em> good reason. In this example, a counter is a better way to iterate. (Faster, too.)</p>
+<p>This function does not make much sense but the point is that the right argument is overwritten; so one cannot restart this function with <code>→1</code>. Don’t overwrite an argument without a <em>very</em> good reason (we can't think of any). In this example, a counter is a better way to iterate. It's also faster.</p>
+<p>Another example is <code>CheckForRide</code>: once you get beyond the point where Ride is activated <code>→1</code> would let the function to exit on line [5].</p>
+<p>While in the first example cutting back the stack one level and then executing again the line that is actually calling the function would work, it wouldn't work in the second example.</p>
 </div>
 </article>
 <article>
@@ -2212,8 +2221,8 @@ HandleError.Process caught SYNTAX ERROR</code></pre>
 <p>We also find evidence in the log file that something broke; see LogDog:</p>
 <p><img src="Images/LogDog2.png" alt="The log file" title="The log file"></p>
 <p>This is done for us automatically by the <code>HandleError</code> class because we provided the name of a logging function, and a ref pointing to the instance where that log function lives.</p>
-<p>We also have an HTM with a crash report, an eponymous <abbr title="Dyalog workspace">DWS</abbr> containing the workspace saved at the time it broke, and an eponymous DCF whose single component is a namespace of all the variables visible at the moment of the crash. Some of this has got to help.</p>
-<p>Note that the crash file names are simply the WSID and the timestamp prefixed by an underscore:</p>
+<p>We also have an HTM with a crash report, an eponymous <abbr title="Dyalog workspace">D<abbr title="Short for Workspaces">WS</abbr></abbr> containing the workspace saved at the time it broke, and an eponymous DCF whose single component is a namespace of all the variables visible at the moment of the crash. Some of this has got to help.</p>
+<p>Note that the crash file names are simply the <abbr title="Short for Workspaces">WS</abbr>ID and the timestamp prefixed by an underscore:</p>
 <pre><code>      ⍪{⊃,/1↓⎕NPARTS⍵}¨⊃#.FilesAndDirs.Dir #.ErrorParms.errorFolder,'\'
  MyApp_20170307111141.dcf
  MyApp_20170307111141.dws
@@ -2289,7 +2298,7 @@ i
 isDev
 tbl
 tgt</code></pre>
-<p>The <abbr title="Dyalog workspace">DWS</abbr> is the crash workspace. Load it. The Latent Expression has been disabled to ensure <code>MyApp</code> does not attempt to start up again.</p>
+<p>The <abbr title="Dyalog workspace">D<abbr title="Short for Workspaces">WS</abbr></abbr> is the crash workspace. Load it. The Latent Expression has been disabled to ensure <code>MyApp</code> does not attempt to start up again.</p>
 <pre><code>      ⎕LX
 ⎕TRAP←0 'S' ⍝#.MyApp.StartFromCmdLine</code></pre>
 <p>The state indicator shows the workspace captured at the moment the <code>HandleError</code> object saved the workspace. Your real problem – the full stop in <code>MyApp.TxtToCsv</code> – is some levels down in the stack.</p>
@@ -2681,7 +2690,7 @@ Run #.MyApp.SetLX ⍬
 <ul>
 <li>We renamed the template from <code>Test_000</code> to <code>Test_001</code>.</li>
 <li>We described in line 1 as thoroughly as possible what the test case is doing. The reason is that this line is later the only way to tell this test case from any other.
-<p>In other words, it is really important to get this right. And if you cannot describe in a single line what the test case is doing, it may be doing too much.</p></li>
+<p>In other words, it is really important to get this right. If you cannot describe in a single line what the test case is doing, it may be doing too much.</p></li>
 <li>We set <code>⎕TRAP</code> so that any error 999 will stop the interpreter with a deliberate error; we will soon see why and what for.</li>
 <li>We also localise <code>⎕TRAP</code> so that any error 999 has an effect only within the test function. In fact, any error other than 999 is passed through with the <code>N</code> option in order to allow traps further up the stack to take control.</li>
 <li>We initialise the explicit result <code>R</code> by assigning the value returned by the niladic function <code>∆Failed</code>. That allows us simply to leave the function in case a test fails: the result will then tell.</li>
@@ -2695,7 +2704,7 @@ Run #.MyApp.SetLX ⍬
 <li>We also added a function <code>GetHelpers</code> to the script. The reason is that the helpers will disappear as soon as we fix the <code>Test</code> script. And we are going to fix it whenever we change something or add a new test case. Therefore we need an easy way to get them back: <code>GetHelpers</code> to the rescue.</li>
 <li>The function <code>Initial</code> will be executed by the test framework before any test function is executed. This can be used to initialise stuff that all (or many) test cases need. Here we establish the references <code>A</code> (for the <code>APLTreeUtils</code> module), <code>F</code> (for the <code>FilesAndDirs</code> module) and <code>U</code> (for the <code>Utilities</code> module).
 <p><code>Initial</code> relies on naming conventions; if there is a function in scope with that name, it will be executed. More later.</p></li>
-<li>The function <code>Cleanup</code> will be executed by the test framework after all test functions have been executed. This can be used to clean up stuff that’ no longer needed. Here we delete the references <code>A</code>, <code>F</code> and <code>U</code>. More later.</li>
+<li>The function <code>Cleanup</code> will be executed by the test framework after all test functions have been executed. This can be used to clean up stuff that’s no longer needed. Here we delete the references <code>A</code>, <code>F</code> and <code>U</code>. More later.</li>
 </ul>
 
 <div class="leanpub_A">
@@ -2705,12 +2714,12 @@ Run #.MyApp.SetLX ⍬
 <p>When you change a namespace script, on the other hand, the namespace is re-created from the script, and that means that our helpers will disappear because they are not a part of the <code>Tests</code> script.</p>
 </div>
 
-<p>Let’s call our test case. We do this by running the <code>Run</code> method first:</p>
+<p>Let’s execute our test case. We do this by running the <code>Run</code> method first:</p>
 <pre><code>Run
---- Test framework "Tester" version 3.5.0 from 2017-07-16 ---------------------------------
+--- Test framework "Tester" version 3.9.0 from yyyy-mm-dd ---------------------------------
 Searching for INI file Testcases.ini
   ...not found
-Searching for INI file testcases_APLTEAM2.ini
+Searching for INI file testcases_{compuetername}.ini
   ...not found
 Looking for a function "Initial"...
   "Initial" found and successfully executed
@@ -2735,17 +2744,17 @@ Looking for a function "Cleanup"...
 
 <div class="leanpub_A">
 <h3>What is a test case?!</h3>
-<p>You might wonder how <code>Run</code> established what is a test case and what isn’t: that’s achieved by naming conventions. Al test functions start their names with <code>Test_</code>. After that there are two possibilities:</p>
+<p>You might wonder how <code>Run</code> established what is a test case and what isn’t: that’s achieved by naming conventions. All test functions start their names with <code>Test_</code>. After that there are two possibilities:</p>
 <ol start="1">
 <li>In the simple case the <code>_</code> is followed by nothing but digits. All these qualify as test cases: <code>Test_1</code>, <code>Test_01</code>, <code>Test_001</code> and so on. (<code>Test_01A</code> however does not.)</li>
 <li>If you have a large number of test cases you most probably want to group them. You can insert a group name between two underscores, followed by one or more digits. So <code>Test_map_1</code> is recognized as a test case, and so is <code>Test_Foo_9999</code>. <code>Test_Foo_Goo_1</code> however is not.</li>
 </ol>
 </div>
 
-<p>What if we want to look into a broken or failing test case? Of course in our current scenario – which is extremely simple – we could just trace into <code>Test_001</code> and find out what’s going on, but if we take advantage of the many features the test framework offers, we cannot do this. (Soon to become clear why.)</p>
+<p>What if we want to look into a broken or failing test case? Of course in our current scenario – which is extremely simple – we could just trace into <code>Test_001</code> and find out what’s going on, but if we take advantage of the many features the test framework offers, we cannot do this. (Soon it will become clear why.)</p>
 <p>However, there is a way to do this no matter whether the scenario is simple, reasonably complex or extremely complex: we call <code>RunDebug</code>:</p>
 <pre><code>RunDebug 0
---- Test framework "Tester" version 3.6.0 from  -------
+--- Test framework "Tester" version 3.9.0 from yyyy-mm-dd -------
 Searching for INI file testcases_{computername}.ini
   ...not found
 Searching for INI file Testcases.ini
@@ -2765,13 +2774,13 @@ SYNTAX ERROR
 #.Tester.RunDebug[17]
 #.Tests.RunDebug[3]</code></pre>
 <p>It stopped in line 6. Obviously the call to <code>FailsIf</code> has something to do with this, and so has the <code>⎕TRAP</code> setting because apparently that’s where the “Deliberate error” comes from.</p>
-<p>This is indeed the case. All three flow-control functions, <code>FailIf</code>, <code>PassesIf</code> and <code>GoToTidyUp</code> check whether they are running in debug mode; if so, rather than return a result that indicates a failing test case, they <code>⎕SIGNAL 999</code>, which is then caught by the <code>⎕TRAP</code>, which in turn first prints <code>⍝ Deliberate error</code> to the session and then hands over control to the user.</p>
-<p>You can now investigate variables or start the Tracer, etc. to investigate the problem.</p>
+<p>This is indeed the case. All three flow-control functions, <code>FailIf</code>, <code>PassesIf</code> and <code>GoToTidyUp</code> check whether they are running in debug mode; if so, rather than returning a result that indicates a failing test case, they <code>⎕SIGNAL 999</code>, which is then caught by the <code>⎕TRAP</code>, which in turn first prints <code>⍝ Deliberate error</code> to the session and then hands over control to the user.</p>
+<p>You can now investigate variables or start the Tracer or take any other reasonable measure to investigate the problem.</p>
 <p>The difference between <code>Run</code> and <code>RunDebug</code> is the setting of the first of the two flags provided as right argument to the test function: <code>stopFlag</code>. This is <code>0</code> when <code>Run</code> executes the test cases, but it is <code>1</code> when <code>RunDebug</code> is in charge. The three flow-control functions <code>FailsIf</code>, <code>PassesIf</code> and <code>GoToTidyUp</code> all honour <code>stopFlag</code> – that’s how it works.</p>
-<p>Now sometimes you don’t want the test function to go to the point where the error actually appears, for example if the test function does a lot of precautioning, and you want to check this upfront because there might be something wrong with it, causing the failure.</p>
-<p>Note that so far we passed a <code>0</code> as right argument to <code>RunDebug</code>. If we pass a <code>1</code> instead, then the test framework would stop just before executing the test case:</p>
+<p>Now sometimes you don’t want the test function to go to the point where the error actually appears, for example if the test function does a lot of precautioning, and you want to check this upfront because there might be something wrong with it, causing the failure. In such a case you want to investigate the test function as early as possible.</p>
+<p>Note that so far we passed a <code>0</code> as right argument to <code>RunDebug</code>. If we pass a <code>1</code> instead, then the test framework would stop just before executing the actual test case:</p>
 <pre><code>      RunDebug 1
---- Test framework "Tester" version 3.6.0 from YYYY-MM-DD -------
+--- Test framework "Tester" version 3.9.0 from YYYY-MM-DD -------
 Searching for INI file Testcases.ini
   ...not found
 Searching for INI file testcases_APLTEAM2.ini
@@ -2787,9 +2796,10 @@ ExecuteTestFunction[6]
 #.Tester.Run__[39]
 #.Tester.RunDebug[17]
 #.Tests.RunDebug[3]</code></pre>
+<p>Note that it has however executed the <code>Initial</code> function.</p>
 <p>You could now trace into <code>Test_001</code> and investigate. Instead, enter <code>→0</code>. You should see something like this:</p>
 <pre><code>* Test_001 (1 of 1) : Is the length of the left argument of the `map` function checked?
- -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ ----------------------------------------------------------------------------------------
    1 test case executed
    1 test case failed
    0 test cases broken
@@ -2816,7 +2826,7 @@ Looking for a function "Cleanup"...
 
 <p>This checks whether the error message is what we expect. Trace through the test function and watch what it is doing. After having left the test function you may click the green triangle in the Tracer. (Continues execution of all threads.)</p>
 <p>Now what if you’ve executed, say, not one but 300 test cases with <code>Run</code>, and just one failed, say number 289? You expected them all to succeed; now you need to check on the failing one.</p>
-<p>Calling <code>Run</code> as well as <code>RunDebug</code> would always execute <em>all</em> test cases found. The function <code>RunThese</code> allows you to run just the specified test functions:</p>
+<p>Calling <code>Run</code> as well as <code>RunDebug</code> would always execute <em>all</em> test cases found. The function <code>RunThese</code> allows you to run just the specified test function(s):</p>
 <pre><code>      RunThese 1
 --- Test framework "Tester" version 3.5.0 from 2017-07-16 --------------------------------
 Searching for INI file Testcases.ini
@@ -2835,7 +2845,8 @@ Time of execution recorded on variable #.Tests.TestCasesExecutedAt in: YYYY-MM-D
 Looking for a function "Cleanup"...
   Function "Cleanup" found and executed.
 *** Tests done</code></pre>
-<p>This would run just test case number 1. If you specify it as <code>¯1</code> it would stop just before actually executing the test case. Same as before since we have just one test function yet but take our word for it, it would execute just <code>Test_001</code> no matter how many other test cases there are.</p>
+<p>This would run just test case number 1. If you specify it as <code>¯1</code> it would stop just before actually executing the test case.</p>
+<p>Same as before since we have just one test function yet but take our word for it, it would execute just <code>Test_001</code> no matter how many other test cases there are.</p>
 <p>We have discussed the functions <code>Run</code>, <code>RunDebug</code> and <code>RunThese</code>. That leaves <code>RunBatchTests</code> and <code>RunBatchTestsInDebugMode</code>; what are they for?</p>
 <p>Imagine a test that would either require an enormous amount of effort to implement – or alternatively you just build something up and ask the human in front of the monitor: <em>Does this look alright?</em>.</p>
 <p>That’s certainly <em>not</em> a batch test case because it needs a human sitting in front of the monitor. If you know upfront that there won’t be a human paying attention then you can prevent non-batch test cases from being executed by calling either <code>RunBatchTests</code> or <code>RunBatchTestsInDebugMode</code>.</p>
@@ -2851,7 +2862,7 @@ Looking for a function "Cleanup"...
  :Else
      R←∆NoBatchTest
  :EndIf</code></pre>
-<p>The test function checks the <code>batchFlag</code> and sees from the explicit result that it did not execute because it is not suitable for batch testing.</p>
+<p>The test function checks the <code>batchFlag</code> and does not execute the test as such because it is not suitable for batch testing.</p>
 <p>One can argue whether the test case we have implemented makes much sense, but it allowed us to investigate the basic features of the test framework. We are now ready to investigate the more sophisticated features.</p>
 <p>Of course we also need a test case that checks whether <code>map</code> does what it’s supposed to do when appropriate arrays are passed as arguments, therefore we add this to <code>Tests</code>:</p>
 <pre><code>Namespace Tests
@@ -2878,10 +2889,10 @@ Looking for a function "Cleanup"...
 </div>
 </div>
 
-<p>Now we try to execute these test cases:</p>
+<p>Now we try to execute the newly introduced second test case:</p>
 <pre><code>      #.Tests.GetHelpers
       RunThese 2
---- Test framework "Tester" version 3.6.0 from YYYY-MM-DD ----------------
+--- Test framework "Tester" version 3.9.0 from YYYY-MM-DD ----------------
 Searching for INI file testcases_{computername}.ini
   ...not found
 Searching for INI file Testcases.ini
@@ -2931,10 +2942,10 @@ TxtToCsv[4] MyLogger.Log'Source: ',fullfilepath
       R←∆OK
     ∇
 ...</code></pre>
-<p>Note that now both <code>Config</code> and <code>MyLogger</code> exist within <code>MyApp</code>, not in <code>Tests</code>. Therefore we don't even have to keep them local within <code>Test_003</code>. They are however not part of the script, so will disappear as soon as the script <code>Tests</code> is fixed again, very much like the helpers.</p>
+<p>Note that now both <code>Config</code> and <code>MyLogger</code> exist within <code>MyApp</code>, not in <code>Tests</code>. Therefore we don't even have to keep them local within <code>Test_003</code>.</p>
 <p>Let’s try again:</p>
 <pre><code>      RunThese 3
---- Test framework "Tester" version 3.6.0 from YYYY-MM-DD -------------------------
+--- Test framework "Tester" version 3.9.0 from YYYY-MM-DD -------------------------
 Searching for INI file testcases_{computername}.ini
   ...not found
 Searching for INI file Testcases.ini
@@ -2968,7 +2979,7 @@ Looking for a function "Cleanup"...
 ⎕IO←1 ⋄ ⎕ML←1
 <span class="leanpub_code"> ∇ R←Initial;list;rc
 </span>   U←##.Utilities ⋄ F←##.FilesAndDirs ⋄ A←##.APLTreeUtils
-<span class="leanpub_code">   ∆Path←F.GetTempPath,'\MyApp_Tests'
+<span class="leanpub_code">   ∆Path←F.GetTempPath,'MyApp_Tests'
    F.RmDir ∆Path
    'Create!'F.CheckPath ∆Path
    list←⊃F.Dir'..\..\texts\en\*.txt'
@@ -2981,7 +2992,7 @@ Looking for a function "Cleanup"...
 <p><code>Initial</code> does not have to return a result but if it does it must be a Boolean. For “success” it should return a <code>1</code> and otherwise a <code>0</code>. If it does return <code>0</code> then no test cases are executed, but if there is a function <code>Cleanup</code> it will be executed. Therefore <code>Cleanup</code> should be ready to clean up in case <code>Initial</code> was only partly or not at all successful.</p>
 <p>We have changed <code>Initial</code> so that it now returns a result because copying the files over might fail for all sorts of reasons – and we cannot do without them.</p>
 <p><code>Initial</code> may or may not accept a right argument. If it does it will be passed a namespace that holds all the parameters.</p>
-<p>What to do in <code>Initial</code>, apart from creating the references:</p>
+<p>What we do in <code>Initial</code>, apart from creating the references:</p>
 <ul>
 <li>Create a global variable <code>∆Path</code> which holds a path to a folder <code>MyApp_Tests</code> within the Windows temp folder.</li>
 <li>Remove that folder, in case it persists from previously failing test cases.</li>
@@ -2995,7 +3006,7 @@ Looking for a function "Cleanup"...
 <h3>Machine-dependent initialisation</h3>
 <p>What if you need to initialise something (say a database connection) but it depends on the machine the tests are executed on – its IP address, user-id, password…?</p>
 <p>The test framework looks for two different <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> files in the current directory: First it looks for <code>testcase.ini</code>. It then tries to find <code>testcase_{computername}.ini</code>. <code>computername</code> here is what you get when you execute <code>⊣ 2 ⎕nq # 'GetEnvironment' 'Computername'</code>.</p>
-<p>If it finds any of them (or both) it instantiates the <code>IniFile</code> class as <code>INI</code> on these <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> files within the namespace that hosts your test cases. In the case of a clash, the setting in <code>testcase_{computername}.ini</code> prevails.</p>
+<p>If it finds any of them (or both) it instantiates the <code>IniFile</code> class as <code>INI</code> on these <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> files within the namespace that hosts your test cases. In the case of a name clash, the setting in <code>testcase_{computername}.ini</code> prevails.</p>
 </div>
 
 <p>Now we are ready to test the <abbr title="Executable file with the extension 'exe'">EXE</abbr>; create it from scratch. Our first test case will process the file <code>ulysses.txt</code>:</p>
@@ -3026,22 +3037,24 @@ Looking for a function "Cleanup"...
 <p>Let’s run our new test case:</p>
 <pre><code>      GetHelpers
       RunThese 'exe'
---- Test framework "Tester" version 3.6.0 from YYYY-MM-DD -----
-Searching for INI file testcases_{computername}.ini
-  ...not found
+--- Test framework "Tester" version 3.9.0 from yyyy-mm-dd --------------------
 Searching for INI file Testcases.ini
+  ...not found
+Searching for INI file testcases_{computername}.ini
   ...not found
 Looking for a function "Initial"...
   "Initial" found and successfully executed
---- Tests started at YYYY-MM-DD hh:mm:ss on #.Tests -----------
+--- Tests started at YYYY-MM-DD HH:MM:SS on #.Tests --------------------------
   Test_exe_01 (1 of 1) : Process a single file with .\MyApp.exe
- --------------------------------------------------------------
-   1 test case executed
+ -----------------------------------------------------------------------------
+   1 test cases executed
    0 test cases failed
    0 test cases broken
-Time of execution recorded on variable #.Tests.TestCasesExecutedAt in: YYYY-MM-DD hh:mm:ss
+Time of execution recorded on variable #.Tests.TestCasesExecutedAt in: YYYY-MM-DD HH:MM:SS
 Looking for a function "Cleanup"...
-  Function "Cleanup" found and executed.</code></pre>
+*** Tests done</code></pre>
+<p>Note that instead of a test case number we have specified a group name as argument of <code>RunThese</code>. In such a case <code>RunThese</code> executes all test cases belonging to the group specified.</p>
+<p>You can also mix group names with test case number as in <code>RunThese 'exe' (1 3)</code>. <code>RunThese</code> is tolerant and ignores test case numbers that do not exist.</p>
 <p>We need one more test case:</p>
 <pre><code>:Namespace Tests
 ...
@@ -3063,10 +3076,10 @@ Looking for a function "Cleanup"...
   F.DeleteFile⊃F.Dir ∆Path,'\*.csv'
 ∇
 ...</code></pre>
-<p>This one will process <em>all</em> TXTs in <code>∆Path</code> and write a file <code>total.csv</code>. We check whether this is the case and we are done. Almost: in a real-world application we most likely would also check for a path that contains spaces in its name. We don’t do this, instead we execute the full test suite:</p>
+<p>This one will process <em>all</em> <abbr title="File with the extension 'txt' containing text">TXT</abbr>s in <code>∆Path</code> and write a file <code>total.csv</code>. We check whether this is the case and we are done. Almost: in a real-world application we most likely would also check for a path that contains spaces in its name. We don’t do this, instead we execute the full test suite:</p>
 <pre><code>      GetHelpers
       ⎕←⊃Run
---- Test framework "Tester" version 3.6.0 from YYYY-MM-DD ----------------------------
+--- Test framework "Tester" version 3.9.0 from YYYY-MM-DD ----------------------------
 Searching for INI file testcases_{computername}.ini
   ...not found
 Searching for INI file Testcases.ini
@@ -3074,11 +3087,11 @@ Searching for INI file Testcases.ini
 Looking for a function "Initial"...
   "Initial" found and successfully executed
 --- Tests started at YYYY-MM-DD hh:mm:dd on #.Tests ---------------------------------------
-  Test_TxtToCsv_03 (1 of 5) : Test whether `TxtToCsv` handles a non-existing file correctly
-  Test_exe_01 (2 of 5)      : Process a single file with .\MyApp.exe
-  Test_exe_02 (3 of 5)      : Process all TXT files in a certain directory
-  Test_map_01 (4 of 5)      : Is the length of the left argument of the `map` function checked?
-  Test_map_02 (5 of 5)      : Check whether `map` works fine with appropriate data
+  Test_exe_01 (1 of 5) : Process a single file with .\MyApp.exe
+  Test_exe_02 (2 of 5) : Process all TXT files in a certain directory
+  Test_map_01 (3 of 5) : Check the length of the left argument
+  Test_map_02 (4 of 5) : Check whether `map` works fine with appropriate data
+  Test_TxtToCsv_01 (5 of 5) : Test whether `TxtToCsv` handles a non-existing file correctly
  ------------------------------------------------------------------------------------------
    5 test cases executed
    0 test cases failed
@@ -3116,7 +3129,7 @@ Looking for a function "Cleanup"...
 <h3>8.3. Markers</h3>
 </a>
 </div>
-<p>We’ve already mentioned elsewhere that it is useful to mark code in particular ways, like <code>⍝FIXME⍝</code> or <code>⍝TODO⍝</code>. It is an excellent idea to have a test case that checks for such markers. Before something makes it to a customer such strings should probably be removed from the code.</p>
+<p>We’ve already mentioned elsewhere that it is useful to mark code in particular ways, like <code>⍝FIXME⍝</code> or <code>⍝TODO⍝</code>. It is an excellent idea to have a test case that checks for such markers. Before code makes it to a customer such strings should probably be removed from the code.</p>
 <div class="h_tag">
 <a href="#The-L-and-G-helpers" id="The-L-and-G-helpers" class="autoheader_anchor">
 <h3>8.4. The “L” and “G” helpers</h3>
@@ -3142,19 +3155,19 @@ TxtToCsv
 </a>
 </div>
 <p>Whenever the test cases were executed <code>Tester</code> notifies the time on a global variable <code>TestCasesExecutedAt</code> in the hosting namespace. This can be used in order to find out whether part of the code has been changed since the last time the cases were executed.</p>
-<p>However, in order to do this, you have to make sure that the variable is either saved somewhere or added to the script <code>Tests</code>. For example, it could be handled by a cover function that calls any of <code>Tester</code>s <code>Run*</code> functions and then handled that variable.</p>
+<p>However, in order to do this, you have to make sure that the variable is either saved somewhere or added to the script <code>Tests</code>. For example, it could be handled by a cover function that calls any of <code>Tester</code>s <code>Run*</code> functions and then handle that variable.</p>
 <div class="h_tag">
 <a href="#Conclusion" id="Conclusion" class="autoheader_anchor">
 <h2>10. Conclusion</h2>
 </a>
 </div>
-<p>We have now a test suite available that allows us at any stage to call it in order to make sure that everything still works. Invaluable.</p>
+<p>We have now a test suite available that allows us to make sure that everything still works whenever we want. Invaluable.</p>
 <div class="h_tag">
 <a href="#The-sequence-of-tests" id="The-sequence-of-tests" class="autoheader_anchor">
 <h2>11. The sequence of tests</h2>
 </a>
 </div>
-<p>Please note that there is always the possibility of dependencies between test cases, however you try to avoid that. That might be a mistake – or due to an unnoticed side effect.</p>
+<p>Please note that there is always the possibility of dependencies between test cases, no matter how hard you try to avoid that. That might be due to a mistake or due to an unnoticed side effect.</p>
 <p>That doesn’t mean that you shouldn’t aim for making all test cases completely independent from one another. A future version of <code>Tester</code> might have an option to shuffle the test cases before executing them. That would help find dependencies.</p>
 <div class="h_tag">
 <a href="#Testing-in-different-versions-of-Windows" id="Testing-in-different-versions-of-Windows" class="autoheader_anchor">
@@ -3165,12 +3178,12 @@ TxtToCsv
 <p>You need to pick the versions of Windows you will support, and run your tests on all those versions. (If you are not already a fan of automated tests, you are about to become one.)</p>
 <p>For this you will need one of:</p>
 <ul>
-<li>a test machine for each OS (version of Windows) you support.</li>
+<li>a test machine for each OS (version of Windows) you support. The machine might well “live” in the cloud.</li>
 <li>a test machine and VM (virtual-machine) software.</li>
 </ul>
 <p>What VM software should you use? One of us has had good results with <em>Workstation Player</em> from <a href="http://www.vmware.com" class="external_link">VMware</a>.</p>
 <p>If you use VM software you will save a <em>machine image</em> for each OS. Include in each machine image your preferred development tools, such as text editor and Dyalog APL. You will need to keep each machine image up to date with fixes and patches to its OS and your tools.</p>
-<p>The machine images are large, about 10 GB each. So you want several hundred gigabytes of fast SSD (solid-state drive) on your test machine. With this you should be able to get a machine image loaded in 20 seconds or less.</p>
+<p>The machine images are large, at least 30 GB each. So you want several hundred gigabytes of fast SSD (solid-state drive) on your test machine. With this you should be able to get a machine image loaded in 20 seconds or less.</p>
 <div class="h_tag">
 <a href="#Testing-APLTree-modules" id="Testing-APLTree-modules" class="autoheader_anchor">
 <h2>13. Testing APLTree modules</h2>
@@ -3185,6 +3198,14 @@ TxtToCsv
 <dd>We cannot know whether those test cases cover the same environment/s (different versions of Windows, different versions of Dyalog, domain-managed network or not, network drives or not, multi-threaded versus single-threaded, you name it) our application will run in.</dd>
 </dl>
 <p>That suggests we should incorporate the tests the modules come with into our own test suite, although we are sure that not too many people/companies using modules from the APLTree library are actually doing this.</p>
+<table style="font-size:xx-large; color:red;">
+<tbody>
+<tr>
+<td>⍝TODO⍝</td>
+</tr>
+</tbody>
+</table>
+<p style="color:red;"><strong><em>We might want to change this because of Link or/and acre…</em></strong></p>
 <p>It’s not difficult to do: every module has a workspace saved on GitHub that comes with everything needed to run the test cases.</p>
 <p>All it requires is</p>
 <ul>
@@ -3460,7 +3481,7 @@ TxtToCsv
 </ul>
 <p>At first glance you might think all we need are two versions of the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>, one for development and one for producing the <abbr title="Executable file with the extension 'exe'">EXE</abbr>, but there will be tasks we cannot carry out with this approach. Examples are:</p>
 <ul>
-<li>On our development machine DYAPPs are associated (in the Windows Registry) with a single version of Dyalog. We need a way to control which version that is, even if at this point there is just one version installed on our machine.</li>
+<li>On our development machine <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>s are associated (in the Windows Registry) with a single version of Dyalog. We need a way to control which version that is, even if at this point there is just one version installed on our machine.</li>
 <li>We might want to convert any Markdown documents – like README.<abbr title="File with the extension 'md' that contains markdown">MD</abbr> – into <abbr title="Hyper Text Mark-up language">HTML</abbr> documents. While the <abbr title="File with the extension 'md' that contains markdown">MD</abbr> is the source, only the <abbr title="Hyper Text Mark-up language">HTML</abbr> will be shipped.</li>
 <li>We need to ensure the Help system – which we will introduce soon – is properly compiled and configured by the Make utility.</li>
 <li>Soon we shall need an installer that produces an <abbr title="Executable file with the extension 'exe'">EXE</abbr> we can send to the customer for installing the software.</li>
@@ -3565,7 +3586,7 @@ Run #.Tester.EstablishHelpersIn #.Tests
 </a>
 </div>
 <p>For now, we’ll create a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> file <code>Make.dyapp</code> that performs the Make.</p>
-<p>However, if you want to specify explicitly the version of Dyalog that should run this <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> rather than using whichever version happens to be associated with the file extension <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> at the time you double-click it, (also <abbr title="Dyalog workspace">DWS</abbr> and <abbr title="File with the extension 'dyalog' holding APL code">DYALOG</abbr>) you need a batch file that starts the correct version of Dyalog.</p>
+<p>However, if you want to specify explicitly the version of Dyalog that should run this <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> rather than using whichever version happens to be associated with the file extension <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> at the time you double-click it, (also <abbr title="Dyalog workspace">D<abbr title="Short for Workspaces">WS</abbr></abbr> and <abbr title="File with the extension 'dyalog' holding APL code">DYALOG</abbr>) you need a batch file that starts the correct version of Dyalog.</p>
 <p>Create such a batch file as <code>Make.bat</code>:</p>
 <pre><code>"C:\Program Files\Dyalog\Dyalog APL{yourPreferredVersion}\Dyalog.exe" DYAPP="%~dp0Make.dyapp"
 @echo off
@@ -3584,18 +3605,8 @@ if NOT ["%errorlevel%"]==["0"] (
 <li>Checking <code>errorlevel</code> ensures that, in case of an error, the batch file shows the return code and then pauses.
 <p>That gets us around the problem that when you double-click a <abbr title="Executable file that contains batch commands">BAT</abbr> file, you see a black windows popping up for a split of a second, leaving you wondering whether it succeeded.</p>
 <p>Now if an error occurs, the script will pause. And it will pass the value of <code>errorlevel</code> as its return code.</p>
-<p>However, this technique suits only scripts to be executed by a WCU [<a href="#fnref1" class="footnote_link"><sup>1</sup></a>]; you don’t want a pause in scripts called by other scripts.   &lt;!– FIXME What should those scripts do? –&gt;</p></li>
+<p>However, this technique suits only scripts to be executed by a WCU [<a href="#fnref1" class="footnote_link"><sup>1</sup></a>]; you don’t want a pause in scripts called by other scripts.</p></li>
 </ul>
-
-<div class="leanpub_A">
-<h3>The current directory</h3>
-<p>For APLers, the current directory (sometimes called “working directory”) is, when running under Windows, a strange animal. In general, the current directory is where ‘the application’ lives.</p>
-<p>That means that for an application <code>C:\Program Files\Foo\Foo.exe</code> the current directory will be <code>C:\Program Files\Foo</code>.</p>
-<p>For APLers “the application” is <em>not</em> the <abbr title="File with the extension 'dyalog' holding APL code">DYALOG</abbr>.<abbr title="Executable file with the extension 'exe'">EXE</abbr>, it’s the workspace, whether it was loaded from disk or assembled by a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>. When you double-click <code>MyApp.dyapp</code> the interpreter changes the current directory for you: it’s going to be where the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> lives, which suits an APL application programmer’s point of view.</p>
-<p>The same holds true when you double-click a <abbr title="Dyalog workspace">DWS</abbr> but it is <em>not</em> true when you <em>load</em> a workspace: the current directory then remains what it was before, by default where the Dyalog <abbr title="Executable file with the extension 'exe'">EXE</abbr> lives.</p>
-<p>So it’s smart to change the current directory yourself <em>at the earliest possible stage</em> after loading a workspace: call <code>#.FilesAndDirs.PolishCurrentDir</code> and you’re covered, no matter what the circumstances are. One of the authors has been doing this for roughly 20 years now, and it has solved several problems without introducing new ones.</p>
-</div>
-
 <div class="h_tag">
 <a href="#The-DYAPP-file" id="The-DYAPP-file" class="autoheader_anchor">
 <h3>3.2. The DYAPP file</h3>
@@ -3849,7 +3860,7 @@ Active      = 0
 <h2>5. Workflow</h2>
 </a>
 </div>
-<p>With the two DYAPPs and the <abbr title="Executable file that contains batch commands">BAT</abbr> file, your development cycle now looks like this:</p>
+<p>With the two <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>s and the <abbr title="Executable file that contains batch commands">BAT</abbr> file, your development cycle now looks like this:</p>
 <ol start="1">
 <li>Launch <code>MyApp.dyapp</code> and check the test results.</li>
 <li>Fix any errors and rerun <code>#.Tests.Run</code> until it’s fine. If you edit the test themselves, either rerun
@@ -4536,8 +4547,9 @@ Run #.Make.Run 1</code></pre>
 <p>The application would start, seemingly run for a short period of time and then stop again without leaving any traces: no error codes, no log files, no crash files, nothing.</p>
 <p>It is different when you simply double-click the <code>MyApp.exe</code>: in that case the <em>Security Alert</em> dialog box pops up, giving you an easy way to create a rule that allows the application to communicate via the given port.</p>
 <p>By the way, when you click <em>Cancel</em> in the <em>Security Alert</em> dialog box, you might expect the Windows Firewall to deny access to the port but not create a rule either. You would be mistaken. The two buttons <em>Allow access</em> and <em>Cancel</em> shouldn’t be buttons at all! Instead there should be a group <em>Create rule</em> with two radio buttons: <em>Allow access</em> and <em>Deny access</em>.</p>
-<p>If the user clicks the “Cancel” button a message <em>should</em> pop up saying that although no rule will be created, access to the port in question is denied. That would imply that when the application is started again the <em>Security Alert</em> dialog box will reappear. Instead, when <em>Cancel</em> is clicked a blocking rule for that combination of application and port number is created, and you will not see that dialog box again for this combination.</p>
-<!-- FIXME What to do? Edit the Windows Firewall, no? -->
+<p>If the user clicks the “Cancel” button a message <em>should</em> pop up saying that although no rule will be created, access to the port in question is denied. That would imply that when the application is started again the <em>Security Alert</em> dialog box will reappear.</p>
+<p>Instead, when <em>Cancel</em> is clicked a blocking rule for that combination of application and port number is created, and you will not see that dialog box again for this combination.</p>
+<p>The solution is to edit the Firewall rules. For that search for “Firewall”, run “Windows Defender Firewall” and then click on “Advanced settings”. You can then remove the blocking rule and define an exception.</p>
 <div class="h_tag">
 <a href="#The-Task-Scheduler-GUI" id="The-Task-Scheduler-GUI" class="autoheader_anchor">
 <h3>7.2. The Task Scheduler GUI</h3>
@@ -4581,14 +4593,14 @@ The process cannot access the file because it is being used by another process.<
 <p>Don’t get fooled by <em>Action completed</em> and <em>Task completed</em> – they don’t tell you whether a task failed or not. Click <em>Action completed</em>: at the bottom you get information regarding that run. You might read something like:</p>
 <pre><code>Task Scheduler successfully completed task "\MyApp" , instance "{c7cb733a-be97-4988-afca-a551a7907918}" , action "...\code\v12\MyApp\MyApp.exe" with return code 2147942512.</code></pre>
 <p>That tells you task did not run at all. You won’t find either a log file or a crash file, and you cannot Ride into the application.</p>
-<!-- FIXME What to do?  -->
+<p>You need to analyze the return code provided. This is discussed next.</p>
 <div class="h_tag">
 <a href="#Task-Scheduler-error-codes" id="Task-Scheduler-error-codes" class="autoheader_anchor">
 <h3>7.7. Task Scheduler error codes</h3>
 </a>
 </div>
 <p>If the Task Scheduler itself throws an error you will find the error codes of little value – at first sight.</p>
-<p>You can provoke such an error quite easily: edit the task we’ve created and changed the contents of the <em>Program/script</em> field in the <em>Edit action</em> dialog to something that does not exist, so the Task Scheduler won’t find such a program to run. Then issue the <em>Run</em> command from the context menu.</p>
+<p>You can provoke such an error quite easily: edit the task we’ve created and change the contents of the <em>Program/script</em> field in the <em>Edit action</em> dialog to something that does not exist, so the Task Scheduler won’t find such a program to run. Then issue the <em>Run</em> command from the context menu.</p>
 <p>Update the GUI by pressing F5 and you will see that errors are reported. The row that reads <code>Task Start Failed</code> in the <em>Task Category</em> columns and <code>Launch Failure</code> in the <em>Operational Code</em> columns is the one we are interested in. When you click on this row you will find that it reports an <code>Error Value 2147942402</code>. What exactly does this mean?</p>
 <p>One way to find out is to google for 2147942402. For this particular error this will certainly do, but sometimes you will have to go through plenty of pages when people managed to produce the same error code in very different circumstances, and it can be quite time-consuming to find a page that carries useful information for <em>your</em> circumstances.</p>
 <p>Instead we use the user command [<a href="#fnref3" class="footnote_link"><sup>3</sup></a>] <code>Int2Hex</code>, based on code written and contributed by Phil Last [<a href="#fnref2" class="footnote_link"><sup>2</sup></a>]. With this user command we can convert the value 2147942402 into a hex value:</p>
@@ -4639,7 +4651,7 @@ The system cannot find the file specified.</code></pre>
 </div>
 <p>While the Windows Task Manager just starts any ordinary application, an application that is supposed to run as a Windows Service must be specifically designed to meet certain requirements.</p>
 <p>In particular, services communicate by exchanging messages with the Windows Service Control Manager (SCM).</p>
-<p>Commands can be issued by the <code>SC.exe</code> (Service Controller) application or interactively via the Services application. This allows the user to start, pause, continue (resume) and stop a Windows Service.</p>
+<p>Commands can be issued by the <code>SC.exe</code> (Service Controller) application via the command line or interactively via the Services application. Both allow the user to start, pause, continue (resume) and stop a Windows Service.</p>
 <div class="h_tag">
 <a href="#Windows-Services-and-the-Windows-Event-Log" id="Windows-Services-and-the-Windows-Event-Log" class="autoheader_anchor">
 <h2>2. Windows Services and the Windows Event Log</h2>
@@ -4670,7 +4682,7 @@ The system cannot find the file specified.</code></pre>
 <p>To simplify matters we shall use the <code>ServiceState</code> namespace, also from the APLTree project. It requires you to do just two things:</p>
 <ol start="1">
 <li>Call <code>ServiceState.Init</code> as early as possible. This function will ensure the Service can communicate with the SCM.
-<p>Do it as early as possible to enure any request from the SCM will be answered promptly. Windows is not exactly patient when it waits for a Service to respond to a Pause, Resume or Stop request: after only 5 seconds you may see an error message complaining that the Service refused to cooperate.</p>
+<p>Do it as early as possible to enure any request from the SCM will be answered promptly. Windows is not exactly patient when it waits for a Service to respond to a Pause, Resume or Stop request: you may see an error message complaining that the Service refused to cooperate after just 5 seconds, though Windows <em>might</em> wait a bit longer.</p>
 <p>However, note that the interpreter confirms the Start request for us; no further action is required.</p>
 <p>Create a parameter space by calling <code>CreateParmSpace</code>, and set at least the name of the log function and possibly the namespace (or class instance) the log function lives in. This log function is used to log any incoming requests from the SCM. The parameter space is then passed to <code>Init</code> as the right argument.</p></li>
 <li>In its main loop the Service is expected to call <code>ServiceState.CheckServiceMessages</code>.
@@ -4683,7 +4695,7 @@ The system cannot find the file specified.</code></pre>
 <h2>5. Installing a Service.</h2>
 </a>
 </div>
-<p><strong>Note:</strong> for installing or uninstalling a Service you need admin rights.</p>
+<p><strong>Note:</strong> for installing a Service you need admin rights, for uninstalling a Service you even need to execute the command in elevated mode.</p>
 <p>Suppose you have loaded a <abbr title="Short for Workspaces">WS</abbr> <code>MyService</code> which you want to install as a Windows Service run by the same version of Dyalog you are currently in:</p>
 <pre><code>aplexe←'"',(2 ⎕NQ # 'GetEnvironment' 'dyalog'),'\dyalogrt.exe"'
 wsid←'"whereEverTheWsLives\MyAppService.DWS"'
@@ -4701,14 +4713,21 @@ cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService DYALOG_NOPOPUPS=1'</code
 <h2>6. Uninstalling a service</h2>
 </a>
 </div>
-<p>To uninstall the Service, simply open a console window with <em>Run as administrator</em> and enter:</p>
+<p>To uninstall the Service, simply open a console window with <em>Run as administrator</em>, navigate to the directory the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> lives in and then enter:</p>
 <pre><code>sc delete MyAppService</code></pre>
 <p>and you are done.</p>
 
 <div class="leanpub_A">
+<h3>Why is changing the current directory required?</h3>
+<p>When you double-click a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> the script is executed with the directory the script lives in defining what will become the current directory from the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>'s point of view.</p>
+<p>When you call a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> the current directory is defined by the directory you call the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> from. If that is different from where the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> lives then statements like <code>Load ..\apltree\APLTreeUtils</code> will fail because they are relative to the current directory. That's why you must change the current directory first.</p>
+<p>At the time of writing one cannot set the current directory from within a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>. Hopefully this restriction will be lifted soon.</p>
+</div>
+
+<div class="leanpub_A">
 <h3>Pitfalls when installing or uninstalling Windows Services</h3>
 <p>When you have opened the <em>Services</em> GUI while installing or uninstalling a Windows Service you must press F5 on the GUI to refresh the display.</p>
-<p>The problem is not just that the GUI does not update itself – annoying as that may be. You might end up with a Service marked in the GUI as <code>disabled</code>, aftrer which you need to reboot the machine.</p>
+<p>The problem is not just that the GUI does not update itself – annoying as that may be. You might end up with a Service marked in the GUI as <code>disabled</code>, after which you might need to reboot the machine.</p>
 <p>This can happen if you try to perform an action from the GUI when it is out of sync with the Service's current state.</p>
 </div>
 
@@ -4733,12 +4752,13 @@ cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService DYALOG_NOPOPUPS=1'</code
 <h2>7. Obstacles</h2>
 </a>
 </div>
-<p>From experience we know there are pitfalls. In general, there are kinds of problem you might encounter:</p>
+<p>From experience we know there are pitfalls. These are some of the problems you might encounter:</p>
 <ol start="1">
 <li>The Service appears to start (shows <em>running</em> in the Services GUI) but nothing happens at all.</li>
-<li>The Service starts, the log file confirms it, but once you request the Service pauses or stops you get nothing but a Windows error message.</li>
+<li>The Service starts, the log file confirms it, but once you request the Service to pause or stop you get nothing but a Windows error message.</li>
 <li>The Service runs, but the application does not do anything, or it does something unexpected.</li>
 </ol>
+<p>We discuss these problems one after the other.</p>
 <div class="h_tag">
 <a href="#The-Service-seems-to-be-doing-nothing-at-all" id="The-Service-seems-to-be-doing-nothing-at-all" class="autoheader_anchor">
 <h3>7.1. The Service seems to be doing nothing at all</h3>
@@ -4790,6 +4810,8 @@ cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService DYALOG_NOPOPUPS=1'</code
 </blockquote>
 <p>First and foremost it is worth repeating that any application supposed to run as a Service should be developed as an ordinary application, including test cases. When it passes such test cases you have reasons to be confident the application will run as a Service too.</p>
 <p>Having said this, there can be surprising differences between running as an ordinary application and as a Service. For example, when a Service runs not with a user's account, but with the system account (which is quite normal to do) any call to <code>#.FilesAndDirs.GetTempPath</code> results in</p>
+<p><code>"C:\Windows\Temp"</code></p>
+<p>When a service runs under the account of a user you will get this:</p>
 <p><code>"C:\Windows\System32\config\systemprofile\AppData\Local\Apps"</code></p>
 <p>while for a user's account it would be something like</p>
 <p><code>'C:\Users\{username}\AppData\Local\Temp'</code>.</p>
@@ -4813,16 +4835,8 @@ cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService DYALOG_NOPOPUPS=1'</code
 </ol>
 <p>In the former case ensure as soon as possible after startup you allow the programmer to Ride into the Service. The first line of the function in <code>⎕LX</code> should provide a Ride.</p>
 <p>At such an early stage we don't have an <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file instantiated, so we cannot switch Ride on and off via the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file, we have to modify the code for that.</p>
-<p>You might feel tempted to overcome this by doing it a bit later (e.g. after processing the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file) but beware: if a Service is not cooperating then “a bit later” might be too late to be able to investigate the problem; resist the temptation!</p>
+<p>You might feel tempted to overcome this by doing it a bit later (e.g. after processing the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file) but beware: if a Service is not cooperating then “a bit later” might be too late; resist the temptation!</p>
 <p>In the second case, add the call to <code>CheckForRide</code> once the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file has been instantiated.</p>
-
-<div class="leanpub">
-<img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
-<div>
-<p>Make sure that you have <em>never</em> more than one of the two calls to <code>CheckForRide</code> active. If both are active you would be able to use the first one, but the second one would throw you out!</p>
-</div>
-</div>
-
 <div class="h_tag">
 <a href="#Logging" id="Logging" class="autoheader_anchor">
 <h2>9. Logging</h2>
@@ -4844,16 +4858,16 @@ cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService DYALOG_NOPOPUPS=1'</code
 <p>In the next chapter (“<a href="./14 The Windows Event Log.html" class="external_link">The Windows Event Log</a>”) we will discuss why and how to use the Windows Event Log, in particular when it comes to Services.</p>
 <div class="h_tag">
 <a href="#How-to-implement-it" id="How-to-implement-it" class="autoheader_anchor">
-<h3>9.2. How to implement it</h3>
+<h2>10. How to implement it</h2>
 </a>
 </div>
 <div class="h_tag">
 <a href="#Setting-the-latent-expression" id="Setting-the-latent-expression" class="autoheader_anchor">
-<h4>9.2.1. Setting the latent expression</h4>
+<h3>10.1. Setting the latent expression</h3>
 </a>
 </div>
-<p>First of all we need to point out that <code>MyApp</code> as it stands is hardly a candidate for a Service. We need to make something up. Let's specify one or more folders to be watched by the <code>MyApp</code> Service.</p>
-<p>If any files are found then they are processed. Finally the app will store hashes for all the files it has processed. That allows it to recognize any added, changed or removed files efficiently.</p>
+<p>First of all we need to point out that <code>MyApp</code> as it stands is not a candidate for a Service, therefore we need to make something up.</p>
+<p>Let's specify one or more folders to be watched by the <code>MyApp</code> Service. If any files are found then they are processed. Finally the app will store hashes for all the files it has processed. That allows it to recognize any added, changed or removed files efficiently.</p>
 <p>For the Service we need to create a workspace that can be loaded by that Service. Therefore we need to set <code>⎕LX</code>, and for that we create a new function:</p>
 <pre><code> ∇ {r}←SetLXForService(earlyRide ridePort)
    ⍝ Set Latent Expression (needed in order to export workspace as EXE)
@@ -4867,7 +4881,7 @@ cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService DYALOG_NOPOPUPS=1'</code
 <p>Because we have now two functions that set <code>⎕LX</code> we shall rename the original one (<code>SetLX</code>) to <code>SetLXForApplication</code> to tell them apart.</p>
 <div class="h_tag">
 <a href="#Initialising-the-Service" id="Initialising-the-Service" class="autoheader_anchor">
-<h4>9.2.2. Initialising the Service</h4>
+<h3>10.2. Initialising the Service</h3>
 </a>
 </div>
 <p>Next we need the main function for the service:</p>
@@ -4876,7 +4890,7 @@ cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService DYALOG_NOPOPUPS=1'</code
     ⍝ `earlyRide`: flag that allows a very early Ride.
     ⍝ `ridePort`: Port number used by Ride.
       r←⍬
-      CheckForRide earlyRide ridePort
+      CheckForRide(earlyRide×ridePort)1
       #.FilesAndDirs.PolishCurrentDir
       ⎕TRAP←#.HandleError.SetTrap ⍬
       (Config MyLogger)←Initial #.ServiceState.IsRunningAsService
@@ -4901,7 +4915,7 @@ cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService DYALOG_NOPOPUPS=1'</code
 </ul>
 <div class="h_tag">
 <a href="#The-business-logic" id="The-business-logic" class="autoheader_anchor">
-<h4>9.2.3. The “business logic”</h4>
+<h3>10.3. The “business logic”</h3>
 </a>
 </div>
 <p>Time to change the <code>MyApp.Initial</code> function:</p>
@@ -4910,7 +4924,7 @@ cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService DYALOG_NOPOPUPS=1'</code
 </span>    ⍝ Prepares the application.
 <span class="leanpub_code">      Config←CreateConfig isService
 </span>      Config.ControlFileTieNo←CheckForOtherInstances ⍬
-      CheckForRide (0≠Config.Ride) Config.Ride
+      CheckForRide Config.(Ride WaitForRide)
       MyLogger←OpenLogFile Config.LogFolder
       MyLogger.Log'Started MyApp in ',F.PWD
       MyLogger.Log 2 ⎕NQ'#' 'GetCommandLine'
@@ -4975,7 +4989,7 @@ cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService DYALOG_NOPOPUPS=1'</code
       :EndIf
   :EndFor
 ∇</code></pre>
-<p>This function calls <code>GetHash</code> so we had better introduce it:</p>
+<p>This function calls <code>GetHash</code> so we better introduce it:</p>
 <pre><code> GetHash←{
  ⍝ Get hash for file ⍵
      ⊣2 ⎕NQ'#' 'GetBuildID'⍵
@@ -5010,16 +5024,17 @@ cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService DYALOG_NOPOPUPS=1'</code
 </span> ∇</code></pre>
 <div class="h_tag">
 <a href="#Running-the-test-cases" id="Running-the-test-cases" class="autoheader_anchor">
-<h4>9.2.4. Running the test cases</h4>
+<h2>11. Running the test cases</h2>
 </a>
 </div>
 <p>Now it's time to see if we broke anything. Double-click <code>MyApp.dyapp</code> and type <code>y</code> to answer the question whether you would like to run all test cases. If anything fails, execute <code>#.Tests.RunDebug 0</code> and fix the problem.</p>
+<p>In order to run the service-specific test cases we need to make some preparations.</p>
 <div class="h_tag">
 <a href="#Installing-and-un-installing-the-Service" id="Installing-and-un-installing-the-Service" class="autoheader_anchor">
-<h2>10. Installing and un-installing the Service</h2>
+<h3>11.1. Installing and un-installing the Service</h3>
 </a>
 </div>
-<p>In order to install or uninstall the Service we need two BATs: <code>InstallService.bat</code> and <code>Uninstall_Service.bat</code>. We will write these BATs from Dyalog. For that we write a class <code>ServiceHelpers</code>:</p>
+<p>In order to install or uninstall the Service we need two <abbr title="Executable file that contains batch commands">BAT</abbr>s: <code>Install_Service.bat</code> and <code>Uninstall_Service.bat</code>. We will write these <abbr title="Executable file that contains batch commands">BAT</abbr>s from Dyalog. For that we create a class <code>ServiceHelpers</code>:</p>
 <pre><code>:Class ServiceHelpers
 
     ∇ {r}←CreateBatFiles dummy;path;cmd;aplexe;wsid
@@ -5032,7 +5047,7 @@ cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService DYALOG_NOPOPUPS=1'</code
       aplexe←'"',(2 ⎕NQ'#' 'GetEnvironment' 'dyalog'),'\dyalogrt.exe"'
       wsid←'"%~dp0\MyAppService.DWS"'
       cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService'
-     ⍝cmd,←' APLCORENAME={foldername}'
+     ⍝cmd,←' APLCORENAME={path}\Aplcores_*'
      ⍝cmd,←' DYALOG_EVENTLOGNAME={foo}'
       cmd,←' DYALOG_NOPOPUPS=1'
       cmd,←' MAXWS=64MB'
@@ -5055,14 +5070,14 @@ cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService DYALOG_NOPOPUPS=1'</code
 <li>The install <abbr title="Executable file that contains batch commands">BAT</abbr> will use the version of Dyalog used to create the <abbr title="Executable file that contains batch commands">BAT</abbr> file, and it will call the runtime <abbr title="Executable file with the extension 'exe'">EXE</abbr>.</li>
 <li><code>%~dp0</code> stands for: the directory from which this <abbr title="Executable file that contains batch commands">BAT</abbr> was loaded. In other words, as long as the workspace <code>MyAppService.DWS</code> (which we have not created yet) is a sibling of the <abbr title="Executable file that contains batch commands">BAT</abbr>, it will work.</li>
 <li>The setting of <code>APLCORENAME</code> specifies folder and name of any aplcores.
-<p>For example, <code>D:\MyAplcores\aplcore_64_16_0_Unicode_*</code> would specify in which folder the aplcores shall be saved and that the filenames should start with <code>aplcore_64_16_0_Unicode_</code> followed by a running number (the asterisk).</p></li>
+<p>For example, <code>D:\MyAplcores\aplcore_64_17_0_Unicode_*</code> would specify in which folder the aplcores shall be saved and that the filenames should start with <code>aplcore_64_17_0_Unicode_</code> followed by a running number (the asterisk).</p></li>
 <li>By setting <code>DYALOG_EVENTLOGNAME</code> you tell the interpreter to write messages to the Windows Event Log, and what name to use for this.</li>
 <li>The uninstall <abbr title="Executable file that contains batch commands">BAT</abbr> will check the <code>errorlevel</code> variable.
 <p>If it detects an error it will pause so that one can actually see the error message even when we have just double-clicked the <abbr title="Executable file that contains batch commands">BAT</abbr>. This is discussed in the chapter <a href="./07 Handling errors.html" class="external_link"><em>Handling errors</em></a>.</p></li>
 </ul>
 <div class="h_tag">
 <a href="#Make-for-the-Service" id="Make-for-the-Service" class="autoheader_anchor">
-<h2>11. “Make” for the Service</h2>
+<h3>11.2. “Make” for the Service</h3>
 </a>
 </div>
 <p>Now it's time to create a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> for the service. For that copy <code>Make.dyapp</code> as <code>MakeService.dyapp</code> and then edit it:</p>
@@ -5095,8 +5110,8 @@ Run #.MakeService.Run 0
 <p>Notes:</p>
 <ul>
 <li>We need some more APLTree modules: <code>Tester</code>, <code>Execute</code> and <code>WinSys</code>.</li>
-<li>Ensure the two <abbr title="Executable file that contains batch commands">BAT</abbr> (for installing and uninstalling the service) are written to the disk.</li>
-<li>We delete the class <code>ServiceHelpers</code>: it is not needed for running the Service once we've created the BATs.</li>
+<li>Ensure the two <abbr title="Executable file that contains batch commands">BAT</abbr>s (for installing and uninstalling the service) are written to the disk.</li>
+<li>We delete the class <code>ServiceHelpers</code>: it is not needed for running the Service once we've created the <abbr title="Executable file that contains batch commands">BAT</abbr>s.</li>
 <li>We set <code>⎕LX</code> by calling <code>SetLXForService</code>.</li>
 <li>We load the class <code>MakeService</code> and run <code>MakeService.Run</code>.</li>
 </ul>
@@ -5115,7 +5130,7 @@ Run #.MakeService.Run 0
       (F U)←##.(FilesAndDirs Utilities)
       (rc en more)←F.RmDir DESTINATION
       U.Assert 0=rc
-      U.Assert 'Create!'##.FilesAndDirs.CheckPath DESTINATION
+      U.Assert 'Create!'F.CheckPath DESTINATION
       'MyApp.ini.template' CopyTo DESTINATION,'\MyApp.ini'
       'Install_Service.bat' CopyTo DESTINATION,'\'
       'Uninstall_Service.bat' CopyTo DESTINATION,'\'
@@ -5136,7 +5151,7 @@ Run #.MakeService.Run 0
 <ul>
 <li>Assigns the name of the destination folder to the global <code>DESTINATION</code>.</li>
 <li>(Re-)creates a folder with the name in <code>DESTINATION</code>.</li>
-<li>Copies over the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> as well as the two BATs.</li>
+<li>Copies over the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> as well as the two <abbr title="Executable file that contains batch commands">BAT</abbr>s.</li>
 <li>Finally it sets <code>⎕WSID</code> and saves the workspace, without the status indicator, and without <code>MakeService</code> – by deleting itself.</li>
 </ul>
 
@@ -5149,11 +5164,11 @@ Run #.MakeService.Run 0
 
 <div class="h_tag">
 <a href="#Testing-the-Service" id="Testing-the-Service" class="autoheader_anchor">
-<h2>12. Testing the Service</h2>
+<h3>11.3. Testing the Service</h3>
 </a>
 </div>
-<p>We have test cases that tell us the “business logig” of <code>MyApp</code> works just fine. What we also need are tests that it runs fine as a Service as well.</p>
-<p>Since the two test scenarios are only loosely related we want to keep those tests separate. It is easy to see a way: testing the Service means assembling all the needed stuff, installing the Service, carrying out the tests and finally un-installing the tests and cleaning up.</p>
+<p>We have test cases that tell us the “business logig” of <code>MyApp</code> works just fine. But we also need to make sure that it runs fine as a Windows Service as well.</p>
+<p>Since the two test scenarios are only loosely related we want to keep those tests separate. It is easy to see why: testing the Service means assembling all the needed stuff, installing the Service, carrying out the tests and finally un-installing the tests and cleaning up.</p>
 <p>We don't want to execute all this unless we really have to.</p>
 <p>We start by creating a new script <code>TestsForServices</code> which we save alongside the other scrips in <code>v13/</code>:</p>
 <pre><code>:Namespace TestsForServices
@@ -5167,25 +5182,25 @@ Run #.MakeService.Run 0
 <p>We now discuss the functions we are going to add one after the other. Note that the <code>Initial</code> function is particularly important in this scenario: we need to copy over all the stuff we need, code as well as input files, make adjustments, and install the Service.</p>
 <p>This could all be done in a single function but it would be lengthy and difficult to read. To avoid this we split the function into obvious units. By naming those functions carefully we should get away without adding any comments because the code explains itself. Here we go:</p>
 <pre><code>∇ r←Initial;rc;ini;row;bat;more
-   ∆Path←##.FilesAndDirs.GetTempFilename''
-   #.FilesAndDirs.DeleteFile ∆Path
-   ∆Path←¯4↓∆Path
-   ∆ServiceName←'MyAppService'
-   r←0
-   :If 0=#.WinSys.IsRunningAsAdmin
+   :If #.WinSys.IsRunningAsAdmin
+       ∆Path←##.FilesAndDirs.GetTempFilename''
+       #.FilesAndDirs.DeleteFile ∆Path
+       ∆Path←¯4↓∆Path      ⍝ Because we use it as a folder name no extension needed
+       ∆ServiceName←'MyAppService'
+       ∆CreateFolderStructure ⍬
+       ∆CopyFiles ⍬
+       ∆CreateBATs ⍬
+       ∆CreateIniFile ⍬
+       ∆InstallService ⍬
+       ⎕←'*** Service ',∆ServiceName,' successfully installed'
+       r←1
+   :Else
        ⎕←'Sorry, but you need admin rights to run this test suite!'
-       :Return
-   :EndIf
-   ∆CreateFolderStructure ⍬
-   ∆CopyFiles ⍬
-   ∆CreateBATs ⍬
-   ∆CreateIniFile ⍬
-   ∆InstallService ⍬
-   ⎕←'*** Service ',∆ServiceName,' successfully installed'
-   r←1</code></pre>
+       r←0
+   :EndIf</code></pre>
 <p>Note that all the sub-function and global variables start their names with <code>∆</code>. An example is the function <code>∆Execute_SC_Cmd</code>:</p>
 <pre><code>∇ {(rc msg)}←∆Execute_SC_Cmd command;cmd;buff
- ⍝ Executes a SC (Service Control) command
+ ⍝ Executes an SC (Service Control) command
    rc←1 ⋄ msg←'Could not execute the command'
    cmd←'SC ',command,' ',∆ServiceName
    buff←#.Execute.Process cmd
@@ -5212,7 +5227,7 @@ Run #.MakeService.Run 0
    ⎕←'   Pausing for ',(⍕seconds),' seconds...'
    ⎕DL seconds
 ∇</code></pre>
-<p>We could discuss all the sub functions called by these two functions but it would tell us little. Therefore we suggest you copy the code from the web site. We discuss here just the two test functions:</p>
+<p>We could discuss all the sub functions called by these two functions but it would tell us little. Therefore we suggest you copy the code from the web site. We discuss just the two test functions:</p>
 <pre><code>∇ R←Test_01(stopFlag batchFlag);⎕TRAP;rc;more
   ⍝ Start, pause, continue and stop the service.
   ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
@@ -5294,7 +5309,7 @@ SERVICE_NAME: MyAppService TYPE : 10 WIN32_OWN_PROCESS STATE : 4 RUNNING (STOPPA
 <p>Though this test starts and stops the Service, its real purpose is to make sure that the Service processes input files as expected.</p>
 <div class="h_tag">
 <a href="#Running-the-tests" id="Running-the-tests" class="autoheader_anchor">
-<h3>12.1. Running the tests</h3>
+<h3>11.4. Running the tests</h3>
 </a>
 </div>
 <p>First we need to ensure everything is assembled freshly, and with admin rights.</p>
@@ -5547,7 +5562,7 @@ write       = 1 ; Has an affect only when it's running as a Service
 </span>⍝ Prepares the application.
   Config←CreateConfig isService
   Config.ControlFileTieNo←CheckForOtherInstances ⍬
-  CheckForRide(0≠Config.Ride)Config.Ride
+  CheckForRide Config.(Ride WaitForRide)
   MyLogger←OpenLogFile Config.LogFolder
 <span class="leanpub_code">  Log'Started MyApp in ',F.PWD
   Log 2 ⎕NQ'#' 'GetCommandLine'
@@ -5693,10 +5708,12 @@ HKCU\Software\MyApplication\MainForm\Size</code></pre>
 </a>
 </div>
 <p>Microsoft’s terminology for the Registry varies strikingly from common usage. That is a rich source of confusion, but there is no avoiding it. Has to be mastered.</p>
-<p>&lt;!– Find the terminology strange? So do we, but it was invented by Microsoft and defines the standard.</p>
+<p>&lt;!–</p>
+<p>Do you find the terminology strange? So do we, but it was invented by Microsoft and defines the standard.</p>
 <p>So we use it too. That makes it easier to understand the Microsoft documentation and also to understand others discussing the Windows Registry. It also helps when you Google for Registry tweaks because the guys posting the solution to your problem are most likely using Microsoft speech as well.</p>
-<p>What is strange about the terminology? Microsoft gives common words unusual meanings when it comes to the Windows Registry. –&gt;</p>
-<p>Here’s an example. This is the definition of the MAXWS parameter for Dyalog 64 bit Unicode version 16:</p>
+<p>What is strange about the terminology? Microsoft gives common words unusual meanings when it comes to the Windows Registry.</p>
+<p>–&gt;</p>
+<p>Here’s an example. This is the definition of the MAX<abbr title="Short for Workspaces">WS</abbr> parameter for Dyalog 64 bit Unicode version 16:</p>
 <p><img src="Images/WinReg_maxws.png" alt="Definition of maxws in the Windows Registry" title="Definition of maxws in the Windows Registry"></p>
 <p>The full path is:</p>
 <pre><code>Computer\HKEY_CURRENT_USER\Software\Dyalog\Dyalog APL/W-64 17.0 Unicode\maxws</code></pre>
@@ -5796,7 +5813,7 @@ HKCU\Software\MyApplication\MainForm\Size</code></pre>
 <li><code>Delete</code></li>
 </ul>
 <p>It is also limited to the two datatypes <code>REG_SZ</code> and <code>REG_DWORD</code>.</p>
-<p>The class uses the Windows Scripting Host (WSH) [<a href="#fnref4" class="footnote_link"><sup>4</sup></a>]. It is available on all Windows systems although it can be switched off by group policies, though we have never seen this in the wild.</p>
+<p>The class uses the Windows Scripting Host (<abbr title="Short for Workspaces">WS</abbr>H) [<a href="#fnref4" class="footnote_link"><sup>4</sup></a>]. It is available on all Windows systems although it can be switched off by group policies, though we have never seen this in the wild.</p>
 <p>If you want to read just a certain value then this – very small – class might suffice. For example, to read the aforementioned <code>maxws</code> value:</p>
 <pre><code>      #.WinRegSimple.Read 'HKCU\Software\Dyalog\Dyalog APL/W-64 17.0 Unicode\maxws'
 64000</code></pre>
@@ -5969,7 +5986,7 @@ C:\...\Dyalog APL 17.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCo
 <td>SysTray</td>
 </tr>
 <tr>
-<td>WSSearch</td>
+<td><abbr title="Short for Workspaces">WS</abbr>Search</td>
 </tr>
 </tbody>
 </table>
@@ -6225,7 +6242,7 @@ UninstallDisplayIcon={app}\{#MyAppIcoName}</code></pre>
 <p>The meaning of much of the above is pretty obvious. All those names <em>must</em> be defined, however: Inno needs them.</p>
 <p>Notes:</p>
 <ul>
-<li>The variables defined at the top of the Inno script (before the first section) are dereferenced here as <code>{#varsname}</code>.</li>
+<li>The variables defined at the top of the Inno script (before the first section) are referenced here as <code>{#varsname}</code>.</li>
 <li>The <code>AppId</code> is used to identify an application, in particular for un-installing it. It can be anything as long as it is less than 128 characters long but using a GUID[<a href="#fnref2" class="footnote_link"><sup>2</sup></a>] is a good idea. Tip: don't add a version number to it.
 <p>You can create a GUID from within Inno Script Studio: check the <em>Tools &gt; Generate GUID</em> menu item.</p></li>
 <li><code>pf32</code> is an internal Inno constant. It points to the machine's 32-bit program folder, by default <code>C:\Program folder (x86)</code>.
@@ -6258,18 +6275,19 @@ Name: "english"; MessagesFile: "compiler:Default.isl"; \
 </a>
 </div>
 <pre><code>[Registry]
-Root: HKLM32; Subkey: "Software\{#MyAppPublisher}"; Flags: uninsdeletekeyifempty
-Root: HKLM32; Subkey: "Software\{#MyAppPublisher}\{#MyAppName}"; Flags: uninsdeletekey
 Root: HKLM32; Subkey: "Software\{#MyAppPublisher}\{#MyAppName}"; \
   ValueType: string; ValueName: "RecentFiles"; ValueData: ""; Flags: uninsdeletekey</code></pre>
 <p>This section allows you to add settings to the Windows Registry.</p>
 <p>Notes:</p>
 <ul>
-<li>With <code>Root:</code> you define the root key. See <a href="./15 The Windows Registry#root-keys]" class="external_link">The Windows Registry: root keys</a> for details of which root keys you can specify.</li>
-<li>With <code>Subkey</code> you define the remaining part but the value. &lt;!– FIXME Clarify –&gt;</li>
-<li>A <em>value</em> in Microsoft terminology is called <code>ValueName</code> by Inno.</li>
-<li>The <em>data</em> is called <code>ValueData</code> by Inno.</li>
-<li><code>ValueType</code> specifies the data type of <code>ValueData</code>. If <code>ValueType</code> is unspecified (or <code>none</code>) Inno will create the key but <em>not</em> the value. &lt;FIXME Clarify: is it the <em>value</em> or the <em>data</em> Inno omits?)
+<li><code>Root</code> defines the root key. See <a href="./15-Windows-Registry.html#root-keys" class="external_link">The Windows Registry: root keys</a> for details of which root keys you can specify.</li>
+<li><code>Subkey</code> defines the remaining part of the path (without the value).</li>
+<li><code>ValueName</code> defines the name of the value.</li>
+<li><code>ValueData</code> defines the actual value associated with root/subkey/valuename.</li>
+<li>Microsoft's <em>value</em> is called <code>ValueName</code> by Inno.</li>
+<li>Microsoft's <em>data</em> is called <code>ValueData</code> by Inno.</li>
+<li><code>ValueType</code> specifies the data type of <code>ValueData</code>. If <code>ValueType</code> is unspecified (or <code>none</code>) Inno will create the key (or SubKey) but <em>not</em> the value (or ValueName) and therefore no data (ValueData) either.</li>
+</ul>
 <p>Inno supports the following data types:</p>
 <ul>
 <li>none</li>
@@ -6278,8 +6296,7 @@ Root: HKLM32; Subkey: "Software\{#MyAppPublisher}\{#MyAppName}"; \
 <li>multisz</li>
 <li>dword</li>
 <li>qword</li>
-<li>binary</li>
-</ul>
+<li>binary
 <p>For details refer to the Inno help regarding the <code>[Registry]</code> setting.</p></li>
 <li>The keyword <code>uninsdeletekey</code> tells Inno that to delete the Registry key when the application is uninstalled. Without that keyword, Inno would <em>not</em> delete any Registry keys and values when the application is uninstalled.</li>
 <li>The <code>uninsdeletekeyifempty</code> keyword is similar but let Inno delete the Registry key only when it is empty.
@@ -6447,8 +6464,17 @@ Type: files; Name: {app}\baz\quux.txt</code></pre>
 2018-05-08 06:26:30.832   Version of existing file: 0.0.0.0
 2018-05-08 06:26:30.832   Same version. Skipping.</code></pre>
 <div class="h_tag">
+<a href="#Updating" id="Updating" class="autoheader_anchor">
+<h2>9. Updating</h2>
+</a>
+</div>
+<p>Imagine a situation were a new version of Dyalog comes with an exciting new system function or primitive. You want to start using the new version straight away.</p>
+<p>In such a situation it might be tempting to just enter the new version number in whatever script or batch file in your build process is responsible for deciding which version to use, but that would not end well.</p>
+<p>Keep always in mind that a new version of Dyalog does not only come with a new <abbr title="Executable file with the extension 'exe'">EXE</abbr>; expect some if not all DLLs to have changed as well. And tools like Conga might well come with a new version, too.</p>
+<p>Therefore updating to a new version of Dyalog APL always requires the Inno script to be reviewed!</p>
+<div class="h_tag">
 <a href="#Conclusion" id="Conclusion" class="autoheader_anchor">
-<h2>9. Conclusion</h2>
+<h2>10. Conclusion</h2>
 </a>
 </div>
 <p>Although Inno is significantly easier to master than the top dog Wix, it provides a large selection of features and options. This chapter only scratches the surface, but it will get you going.</p>
@@ -7305,7 +7331,7 @@ donkey, bird, ⍈, rat, dog, ⍈</code></pre>
 </a>
 </div>
 <p>Suppose we have a piece of <abbr title="Hyper Text Mark-up language">HTML</abbr> code and are interested in any text between anchor tags (<code>&lt;a&gt;</code>). Suppose also we know there is no other tag inside the <code>&lt;a&gt;</code>, just simple text.</p>
-<p>Now an <code>&lt;a&gt;</code> tag has always either an <code>href="..."</code> or an <code>id="..."</code> because otherwise it has no purpose. &lt;!– FIXME or <code>name=</code> –&gt;</p>
+<p>Now an <code>&lt;a&gt;</code> tag has always either an <code>href="..."</code> or an <code>id="..."</code> because otherwise it has no purpose[<a href="#fnref1" class="footnote_link"><sup>1</sup></a>].</p>
 <p>So it should be safe to say:</p>
 <pre><code>      '&lt;a.*&gt;.*&lt;'⎕R'⍈'⊣'This &lt;a href="http://aplwiki.com"&gt;is a link&lt;/a&gt;, really!'
 This ⍈, really!</code></pre>
@@ -7435,6 +7461,13 @@ This ⍈; more: ⍈</code></pre>
 <dd><p class="first_dd">The aforementioned website comes with detailed book reviews:</p></dd>
 <dd><p><a href="https://www.regular-expressions.info/hipowls.html" class="external_link">https://www.regular-expressions.info/hipowls.html</a></p></dd>
 </dl>
+<div id="footnotes_div">
+<hr>
+<p><strong>Footnotes</strong></p>
+<ol>
+<li id="fnref1"><p>Note that the “name” attribute is not part of the definition of <abbr title="Hyper Text Mark-up language">HTML</abbr>5; use the “ID” attribute instead.</p><a href="#fnref1" class="footnote_anchor"></a>
+</ol>
+</div>
 </article>
 <article>
 <div class="h_tag">
@@ -8193,7 +8226,7 @@ This ⍈; more: ⍈</code></pre>
 [18]   }
      ∇</code></pre>
 <p>This namespace (<code>G</code>) is passed as the only argument to the <code>Find</code> function.</p>
-<p>Suppose you replaces the Windows native GUI by an HTML5/JavaScript GUI. All you have to do here is ensure the <code>G</code> namespace is fed with all the data needed. <code>##.BusinessLogic</code> will not be affected in any way.</p>
+<p>Suppose you replaces the Windows native GUI by an <abbr title="Hyper Text Mark-up language">HTML</abbr>5/JavaScript GUI. All you have to do here is ensure the <code>G</code> namespace is fed with all the data needed. <code>##.BusinessLogic</code> will not be affected in any way.</p>
 <div class="h_tag">
 <a href="#The-function-BusinessLogicFind" id="The-function-BusinessLogicFind" class="autoheader_anchor">
 <h3>2.12. The function <code>##.BusinessLogic.Find</code></h3>
@@ -8612,7 +8645,7 @@ This ⍈; more: ⍈</code></pre>
 <h3>3.11. <code>HomeShare</code></h3>
 </a>
 </div>
-<p>This variable exists only of the user's data (documents, downloads, music…) live on a UNC path. See also <a href="#HomeShare" class="bookmark_link"><code>HomePath</code></a>.</p>
+<p>This variable exists only if the user's data (documents, downloads, music…) live on a UNC path. See also <a href="#HomeShare" class="bookmark_link"><code>HomePath</code></a>.</p>
 <div class="h_tag">
 <a href="#localappdata" id="localappdata" class="autoheader_anchor">
 <h3>3.12. <code>LocalAppData</code></h3>
@@ -8658,6 +8691,8 @@ This ⍈; more: ⍈</code></pre>
 </a>
 </div>
 <p>Defaults to <code>C:\Program Files</code>. On a 64-bit version of Windows this is where 64-bit programs are installed. Note however that on a 32-bit version of Windows this points to <a href="#x86" class="bookmark_link"><code>ProgramFiles(x86)</code></a>.</p>
+<p>But this is true only when you execute it on a command line. When you use Microsoft's <code>ExpandEnvironmentStrings</code> API function (via <code>⎕NA</code>) then the result <strong>depends on the version of Dyalog</strong>! That means that executed from a 64-bit version of Dyalog you get the 64 bit location while from the 32-bit version you get the 32-bit location.</p>
+<p>To get around this use the <a href="#x86" class="bookmark_link"><code>ProgramW6432</code></a> variable.</p>
 <div class="h_tag">
 <a href="#x86" id="x86" class="autoheader_anchor">
 <h3>3.19. <code>ProgramFiles(x86)</code></h3>
@@ -8670,6 +8705,7 @@ This ⍈; more: ⍈</code></pre>
 </a>
 </div>
 <p>Defaults to <code>C:\Program Files</code>. On a 64-bit version of Windows this path points to <a href="#programfiles" class="bookmark_link"><code>ProgramFiles</code></a>. On a 32-bit version of Windows it also points to <code>ProgramFiles</code> which in turn points to <a href="#x86" class="bookmark_link"><code>ProgramFiles(x86)</code></a>.</p>
+<p>For this it does not matter whether the conversion was initiated from a 32- or 64 bit application; in this respect this variable differs from <code>ProgramFiles</code>.</p>
 <p>For details see <em>WOW64 Implementation Detail</em> [<a href="#fnref4" class="footnote_link"><sup>4</sup></a>].</p>
 <div class="h_tag">
 <a href="#PSModulePath" id="PSModulePath" class="autoheader_anchor">
@@ -8749,44 +8785,49 @@ This ⍈; more: ⍈</code></pre>
 "C:\Program Files\Dyalog\Dyalog APL-64 17.0 Unicode\SALT\spice\"</code></pre>
 <p>The above is the default folder for the 64-bit Unicode version of Dyalog 17.0 for all Dyalog user commands available within that version.</p>
 <div class="h_tag">
-<a href="#Using-the-default-folder" id="Using-the-default-folder" class="autoheader_anchor">
-<h2>2. Using the default folder</h2>
+<a href="#Where-to-put-user-commands" id="Where-to-put-user-commands" class="autoheader_anchor">
+<h2>2. Where to put user commands</h2>
 </a>
 </div>
-<p>If you want to keep life simple the obvious choice seems to be this folder: you just copy your user command into this folder and it becomes available straight away.</p>
-<p>Simple may it be, but this is <em>not</em> recommended:</p>
+<div class="h_tag">
+<a href="#Using-the-default-folder" id="Using-the-default-folder" class="autoheader_anchor">
+<h3>2.1. Using the default folder</h3>
+</a>
+</div>
+<p>If you want to keep life simple the obvious choice is to copy your user command into the folder Dyalog has reserved for this very purpose starting with version 17.0.</p>
+<p>It's in <code>%HOMEDRIVE%%HOMEPATH%\Documents\MyUCMDs</code>[<a href="#fnref2" class="footnote_link"><sup>2</sup></a>]. This folder is scanned automatically by Dyalog at start-up time and when <code>]URESET</code> is executed. Any script with the extension <code>.dyalog</code> is expected to be a user command class or user command script. This is also true for any sub folders.</p>
+<p>Notes:</p>
 <ul>
-<li>When a new version of Dyalog comes along you need to copy your own stuff over.</li>
-<li>When you use more than one version of Dyalog in parallel you have to maintain several copies of your user commands.</li>
-<li>Because of Microsoft's security measures, writing to that folder requires admin rights.</li>
+<li>User commands in that folder are only available for that specific user, not all users. Naturally it depends on the circumstances whether that's a good thing or a bad thing for you.</li>
+<li>From version 17.0 onwards every version will look into the same folder, so the user command must check itself whether it is compatible with the version it is called from.</li>
 </ul>
-<p>For these reasons you are advised to use a different folder.</p>
+<p>For these reasons you might decide to go for a different folder.</p>
 <div class="h_tag">
 <a href="#Use-your-own-dedicated-folder" id="Use-your-own-dedicated-folder" class="autoheader_anchor">
-<h2>3. Use your own dedicated folder</h2>
+<h3>2.2. Use your own dedicated folder</h3>
 </a>
 </div>
 <p>Let's assume that you have a folder <code>C:\MyUserCommands</code> that's supposed to hold all non-Dyalog user commands.</p>
 <p>Via the <em>Options &gt; Configure</em> command you can select the User Commands dialog and add that folder to the search path; remember to press the <em>Add</em> button once you have browsed to the right directory.</p>
 <p>If you use several versions of Dyalog in parallel then you are advised <em>not</em> to add that folder via the configuration dialog box in each of those versions.</p>
-<p>Instead we recommend writing an APL function that adds the folder to all versions of Dyalog currently installed. See the chapter <a href="./15 The Windows Registry" class="external_link">The Windows Registry</a> where this scenario is used as an example.</p>
+<p>Instead we recommend writing an APL function that adds the folder to all versions of Dyalog currently installed. See the chapter <a href="./15 The Windows Registry" class="external_link">The Windows Registry</a> where this scenario is used as an example. The reason is that you can solve the problem for all installed versions with a single function call, and you can repeat that in case you have to re-install any of the versions.</p>
 <div class="h_tag">
 <a href="#Name-clashes" id="Name-clashes" class="autoheader_anchor">
-<h2>4. Name clashes</h2>
+<h2>3. Name clashes</h2>
 </a>
 </div>
 <p>Where two user commands share the same name, the last definition wins. You can achieve this just by having a user command Foo in two different scripts in different folders <em>with the same group name, or no group name at all!</em></p>
 <p>In other words, the full name of a user command is compiled by the group name (say <code>foo</code>) and the user-command name (say <code>goo</code>): <code>]foo.goo</code>. However, as long as there is only one user command <code>goo</code> this will do nicely:</p>
 <pre><code>      ]goo</code></pre>
 <div class="h_tag">
-<a href="#Group-name" id="Group-name" class="autoheader_anchor">
-<h2>5. Group name</h2>
+<a href="#Group-names" id="Group-names" class="autoheader_anchor">
+<h2>4. Group names</h2>
 </a>
 </div>
 <p>Group names are not only useful to avoid name clashes, they also allow user commands to be, well, grouped in a sensible way. Whether you should add your own user commands to any of the groups Dyalog comes with is a diffult question to answer. There are pros and cons:</p>
 <div class="h_tag">
 <a href="#Pros" id="Pros" class="autoheader_anchor">
-<h3>5.1. Pros</h3>
+<h3>4.1. Pros</h3>
 </a>
 </div>
 <ul>
@@ -8795,7 +8836,7 @@ This ⍈; more: ⍈</code></pre>
 </ul>
 <div class="h_tag">
 <a href="#Cons" id="Cons" class="autoheader_anchor">
-<h3>5.2. Cons</h3>
+<h3>4.2. Cons</h3>
 </a>
 </div>
 <ul>
@@ -8804,7 +8845,7 @@ This ⍈; more: ⍈</code></pre>
 </ul>
 <div class="h_tag">
 <a href="#Updates" id="Updates" class="autoheader_anchor">
-<h2>6. Updates</h2>
+<h2>5. Updates</h2>
 </a>
 </div>
 <p>Note that once you've copied a new user command into that folder it is available straight away, even in instances of Dyalog that are already running.</p>
@@ -8812,7 +8853,7 @@ This ⍈; more: ⍈</code></pre>
 <p>In case you change an existing user command, for example by modifying the parsing rules, you must execute <code>]ureset</code> in order to get access to the changes from any instance of Dyalog that has already been running by then.</p>
 <div class="h_tag">
 <a href="#Writing-your-own-user-commands" id="Writing-your-own-user-commands" class="autoheader_anchor">
-<h2>7. Writing your own user commands</h2>
+<h2>6. Writing your own user commands</h2>
 </a>
 </div>
 <p>It's not difficult to write your own user commands, and there is an example script available that makes that easy and straightforward. However, if your user command is not too simple consider developing it as an independent application, living in a particular namespace (let's assume <code>Foo</code>) in a particular workspace (let's assume <code>Goo</code>).</p>
@@ -8871,6 +8912,7 @@ This ⍈; more: ⍈</code></pre>
 <p><strong>Footnotes</strong></p>
 <ol>
 <li id="fnref1"><p>Dyalog user commands from the APL wiki <a href="http://aplwiki.com//CategoryDyalogUserCommands" class="external_link">http://aplwiki.com//CategoryDyalogUserCommands</a></p><a href="#fnref1" class="footnote_anchor"></a>
+<li id="fnref2"><p>See <em>Appendix 01 - Windows environment vars</em> for details regarding the environment variables used here.</p><a href="#fnref2" class="footnote_anchor"></a>
 </ol>
 </div>
 </article>
@@ -9233,6 +9275,81 @@ This ⍈; more: ⍈</code></pre>
 <ol>
 <li id="fnref1"><p>Was “linefeed” in the old days.</p><a href="#fnref1" class="footnote_anchor"></a>
 <li id="fnref2"><p>Before OS X</p><a href="#fnref2" class="footnote_anchor"></a>
+</ol>
+</div>
+</article>
+<article>
+<div class="h_tag">
+<a href="#Chapter-26Appendix-6-----current-directory" id="Chapter-26Appendix-6-----current-directory" class="autoheader_anchor">
+<h1 style="margin-left:auto;margin-right:auto;">Chapter 26: <br> <br>Appendix 6 — current directory</h1>
+</a>
+</div>
+<div class="h_tag">
+<a href="#Overview" id="Overview" class="autoheader_anchor">
+<h2>1. Overview</h2>
+</a>
+</div>
+<p>The <em>current directory</em>, sometimes also referred to as <em>working directory</em> — or even <em>starting working directory</em> — as well as <em>Start in</em>" in some dialog boxes is an important concept: it's where a file without a path name will be searched for</p>
+<div class="h_tag">
+<a href="#The-possible-scenarios" id="The-possible-scenarios" class="autoheader_anchor">
+<h2>2. The possible scenarios</h2>
+</a>
+</div>
+<dl>
+<dt>Double-clicking a Dyalog <abbr title="Executable file with the extension 'exe'">EXE</abbr></dt>
+<dd><p>The <abbr title="Executable file with the extension 'exe'">EXE</abbr>'s installation path is the current directory.</p></dd>
+</dl>
+<dl>
+<dt>Calling a Dyalog <abbr title="Executable file with the extension 'exe'">EXE</abbr> or a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> from a console window</dt>
+<dd><p>The current directory of the console window is also going to be the <abbr title="Executable file with the extension 'exe'">EXE</abbr>'s current directory.</p></dd>
+<dt>Double-clicking <abbr title="Dyalog workspace">D<abbr title="Short for Workspaces">WS</abbr></abbr> or <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr></dt>
+<dd><p>The current directory is going to be where the workspace or the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> file lives.</p></dd>
+</dl>
+<dl>
+<dt>Double-clicking a shortcut</dt>
+<dd><p class="first_dd">The result depends on whether a folder is specified in “Start in” (available via the shortcut's “Properties” dialog):</p></dd>
+<dd><p>– If “Start in” specifies a valid folder then this will determine the current directory.</p></dd>
+<dd><p>– If “Start in” is empty or specifies an invalid folder[<a href="#fnref1" class="footnote_link"><sup>1</sup></a>] then the folder the shortcut lives in will determine the current directory.</p></dd>
+</dl>
+<div class="h_tag">
+<a href="#Special-cases-soft-and-hard-links" id="Special-cases-soft-and-hard-links" class="autoheader_anchor">
+<h2>3. Special cases: soft and hard links</h2>
+</a>
+</div>
+<table style="font-size:xx-large;color:red;">
+<tbody>
+<tr>
+<td>⍝TODO⍝</td>
+</tr>
+</tbody>
+</table>
+<div class="h_tag">
+<a href="#Remarks" id="Remarks" class="autoheader_anchor">
+<h2>4. Remarks</h2>
+</a>
+</div>
+<p>Normally when a program is started the folder the <abbr title="Executable file with the extension 'exe'">EXE</abbr> lives in determines the current directory.</p>
+<p>This is also true when you call any Dyalog <abbr title="Executable file with the extension 'exe'">EXE</abbr>. However, from an APL programmer's point of view the workspace defines the program, not the <abbr title="Executable file with the extension 'exe'">EXE</abbr>. That's why we advocate changing the current directory to where the workspace was loaded from.</p>
+<table style="font-size:xx-large;color:red;">
+<tbody>
+<tr>
+<td>⍝TODO⍝ This is currently not true:</td>
+</tr>
+</tbody>
+</table>
+<p>It's similar for <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>s, though they don't load a workspace but assemble it dynamically. In case of a double-click on a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> luckily there is no need to do anything because the current directory will be the folder the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> lives in, which is exactly how it should be.</p>
+<table style="font-size:xx-large;color:red;">
+<tbody>
+<tr>
+<td>⍝TODO⍝: we need a mechanism for <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>s in case they got called programmitically!</td>
+</tr>
+</tbody>
+</table>
+<div id="footnotes_div">
+<hr>
+<p><strong>Footnotes</strong></p>
+<ol>
+<li id="fnref1"><p>Although it is impossible to enter an invalid path in the “Properties” dialog of a shortcut, a valid folder name might of course become invalid at a later point.</p><a href="#fnref1" class="footnote_anchor"></a>
 </ol>
 </div>
 </article>

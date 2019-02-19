@@ -153,6 +153,7 @@ The workspace `Goo` can be tested independently from the user command framework,
 
 [^envvars]: See _Appendix 01 - Windows environment vars_ for details regarding the environment variables used here.
 
+
 *[HTML]: Hyper Text Mark-up language
 *[DYALOG]: File with the extension 'dyalog' holding APL code
 *[TXT]: File with the extension 'txt' containing text

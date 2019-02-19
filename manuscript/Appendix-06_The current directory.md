@@ -51,3 +51,18 @@ It's similar for DYAPPs, though they don't load a workspace but assemble it dyna
 |⍝TODO⍝: we need a mechanism for DYAPPs in case they got called programmitically!|{style="font-size:xx-large;color:red;"}
 
 [^invalid]: Although it is impossible to enter an invalid path in the "Properties" dialog of a shortcut, a valid folder name might of course become invalid at a later point.
+
+
+*[HTML]: Hyper Text Mark-up language
+*[DYALOG]: File with the extension 'dyalog' holding APL code
+*[TXT]: File with the extension 'txt' containing text
+*[INI]: File with the extension 'ini' containing configuration data
+*[DYAPP]: File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application
+*[EXE]: Executable file with the extension 'exe'
+*[BAT]: Executable file that contains batch commands
+*[CSS]: File that contains layout definitions (Cascading Style Sheet)
+*[MD]: File with the extension 'md' that contains markdown
+*[CHM]: Executable file with the extension 'chm' that contains Windows Help(Compiled Help) 
+*[DWS]: Dyalog workspace
+*[WS]: Short for Workspaces
+*[PF-key]: Programmable function key

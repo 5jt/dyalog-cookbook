@@ -1,17 +1,72 @@
 <!DOCTYPE html>
-<html lang="en" style="scroll-behavior:smooth" >
+<html lang="en">
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta charset="utf-8">
 <title>Installer</title>
-<link href="file:///C:/Program Files (x86)/APL Team Ltd/Meddy/CSS/MarkAPL_screen.css" rel="stylesheet" media="screen">
-<link href="file:///C:/Program Files (x86)/APL Team Ltd/Meddy/CSS/MarkAPL_print.css" rel="stylesheet" media="print">
-<meta name="author" content="kai">
+<link href="./CSS/BlackOnWhite_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/Cookbook_Chapter_screen.css" rel="stylesheet" media="screen">
+<link href="./CSS/snap.css" rel="stylesheet" media="screen">
+<link href="./CSS/BlackOnWhite_print.css" rel="stylesheet" media="print">
+<link href="./CSS/Cookbook_Chapter_print.css" rel="stylesheet" media="print">
+<script src="./JavaScript/snap.js"></script>
 </head>
 <body>
-<nav id="main_nav_no_collapse">
+<div class="snap-drawers">
+<div class="snap-drawer snap-drawer-left">
+<div class="h_tag">
+<h3>Chapters</h3>
+</div>
+<ol>
+<li><a href="./01-Introduction.html" class="external_link">Introduction</a></li>
+<li><a href="./02-Structure.html" class="external_link">Structure</a></li>
+<li><a href="./03-Packaging.html" class="external_link">Packaging</a></li>
+<li><a href="./04-Logging%20.html" class="external_link">Logging </a></li>
+<li><a href="./05-Configuration.html" class="external_link">Configuration</a></li>
+<li><a href="./06-Debugging-EXEs.html" class="external_link">Debugging EXEs</a></li>
+<li><a href="./07-Handling-errors.html" class="external_link">Handling errors</a></li>
+<li><a href="./08-Testing.html" class="external_link">Testing</a></li>
+<li><a href="./09-Documentation.html" class="external_link">Documentation</a></li>
+<li><a href="./10-Make.html" class="external_link">Make</a></li>
+<li><a href="./11-Providing-help.html" class="external_link">Providing help</a></li>
+<li><a href="./12-Scheduled-Tasks.html" class="external_link">Scheduled Tasks</a></li>
+<li><a href="./13-Windows-Services.html" class="external_link">Windows Services</a></li>
+<li><a href="./14-Windows-Event-Log.html" class="external_link">Windows Event Log</a></li>
+<li><a href="./15-Windows-Registry.html" class="external_link">Windows Registry</a></li>
+<li><a href="./16-Creating-SetUp.exe.html" class="external_link">Creating SetUp.exe</a></li>
+<li><a href="./17-Regular-Expressions.html" class="external_link">Regular Expressions</a></li>
+<li><a href="./18-Acre.html" class="external_link">Acre</a></li>
+<li><a href="./19-GUI.html" class="external_link">GUI</a></li>
+<li><a href="./20-Git.html" class="external_link">Git</a></li>
+</ol>
+<div class="h_tag">
+<h3>Appendices</h3>
+</div>
+<ol>
+<li><a href="./Appendix-01_Windows-environment-vars.html" class="external_link">Windows environment vars</a></li>
+<li><a href="./Appendix-02_User-commands.html" class="external_link">User commands</a></li>
+<li><a href="./Appendix-03_aplcores-&-WS-integrity.html" class="external_link">aplcores & WS integrity</a></li>
+<li><a href="./Appendix-04_Development-environment.html" class="external_link">Development environment</a></li>
+<li><a href="./Appendix-05_Special-characters.html" class="external_link">Special characters</a></li>
+<li><a href="./Appendix-06_The%20current%20directory.html" class="external_link">The current directory</a></li>
+</ol>
+<div class="h_tag">
+<h3>Misc</h3>
+</div>
+<ul>
+<li><a href="15-Windows-Registry.html">Previous chapter</a></li>
+<li><a href="17-Regular-Expressions.html">Next chapter</a></li>
+<li><a href="./Dyalog_Cookbook.html" class="external_link" alt="All chapters, for printing" title="All chapters, for printing">Single document<br></a></li>
+</ul>
+</div>
+</div>
+<div id="mainmenu">
+<a href=# style="color:black;"><p><span id="mainmenu_match">≡</span></p></a>
+<p><span id="mainmenu_title">The Dyalog Cookbook</span></p>
+<nav id="main_nav">
+<input type="checkbox" id="hide_toc">
+<label id="hide_toc_label" for="hide_toc"></label>
 <div class="toc-container">
-<h3>Table of contents</h3>
 <ul>
 <li><a href="#Defining-the-goal">Defining the goal</a></li>
 <li><a href="#Which-tool">Which tool</a></li>
@@ -48,9 +103,12 @@
 </ul>
 </div>
 </nav>
+</div>
+<div id="content" class="snap-content">
+<div id="cookbook_content">
 <div class="h_tag">
-<a href="#Creating-SetUpexe-with-Inno" id="Creating-SetUpexe-with-Inno" class="autoheader_anchor">
-<h1>Creating SetUp.exe with Inno</h1>
+<a href="#16-Creating-SetUpexe-with-Inno" id="16-Creating-SetUpexe-with-Inno" class="autoheader_anchor">
+<h1>16. Creating SetUp.exe with Inno</h1>
 </a>
 </div>
 <div class="h_tag">
@@ -97,7 +155,15 @@
 </a>
 </div>
 <p>An installer needs admin rights. Installing a program is a potentially dangerous thing.</p>
-<p>I&gt; It is rare these days to install an application in, say, <code>C:\MyFolder</code>. Under such rare circumstances, it might be possible to install an application without admin rights. I&gt; I&gt; However, even installing a font requires admin rights.</p>
+
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
+<div>
+<p>It is rare these days to install an application in, say, <code>C:\MyFolder</code>. Under such rare circumstances, it might be possible to install an application without admin rights.</p>
+<p>However, even installing a font requires admin rights.</p>
+</div>
+</div>
+
 <p>Programs are usually installed in one of:</p>
 <ul>
 <li><code>C:\Program Files</code></li>
@@ -117,7 +183,13 @@
 <li><code>C:\Users\{username}\AppData\Roaming</code></li>
 </ul>
 <p>The <code>Roaming</code> folder is the right choice if a user wants the application to be available regardless of which computer she logs on to.</p>
-<p>A&gt; # About C:\ProgramData A&gt; There is only one difference between the <em>AppData</em> and the <em>ProgramData</em> folders: every user has her own <em>AppData</em> folder but there is only a single <em>ProgramData</em> folder, shared by all users. A&gt; A&gt; The folder <code>C:\ProgramData</code> is hidden by default, so you will see it only when you tick the <em>Hidden items</em> checkbox on the <em>View</em> tab of the Windows Explorer.</p>
+
+<div class="leanpub_A">
+<h3>About C:\ProgramData</h3>
+<p>There is only one difference between the <em>AppData</em> and the <em>ProgramData</em> folders: every user has her own <em>AppData</em> folder but there is only a single <em>ProgramData</em> folder, shared by all users.</p>
+<p>The folder <code>C:\ProgramData</code> is hidden by default, so you will see it only when you tick the <em>Hidden items</em> checkbox on the <em>View</em> tab of the Windows Explorer.</p>
+</div>
+
 <p>Of course you can put that folder in any place you want — provided you have the necessary rights — but by choosing one of these two locations you stick to what's usual under Windows.</p>
 <div class="h_tag">
 <a href="#Sample-application" id="Sample-application" class="autoheader_anchor">
@@ -301,7 +373,14 @@ Name: "{commonappdata}\{#MyAppName}"; Permissions: users-modify</code></pre>
 <p>With the above line we tell Inno to create a folder <code>{#MyAppName}</code> which in our case will be “My Company Ltd”. Note that <code>commonappdata</code> defaults to <code>ProgramData\</code>, usually on the <code>C:\</code> drive.</p>
 <p>Instead we could have used <code>localappdata</code>, which defaults to <code>C:\Users\{username}\AppData\Local</code>. There are many more constants available; refer to <em>Constants</em> in the Inno Help for details.</p>
 <p>We also tell Inno to give any user in the <code>Users</code> group the right to modify files in this directory.</p>
-<p>W&gt; Of course you must not grant Modify rights to the folder where your application's <abbr title="Executable file with the extension 'exe'">EXE</abbr> lives, let alone to folders not associated with your application.</p>
+
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/warning.png" alt="Warning">
+<div>
+<p>Of course you must not grant Modify rights to the folder where your application's <abbr title="Executable file with the extension 'exe'">EXE</abbr> lives, let alone to folders not associated with your application.</p>
+</div>
+</div>
+
 <p>Note that if you install the application <em>again</em> the folder <em>won't</em> be created – and you won't see an error message either.</p>
 <div class="h_tag">
 <a href="#files" id="files" class="autoheader_anchor">
@@ -334,7 +413,14 @@ Source: "C:\Windows\Fonts\apl385.ttf"; DestDir: "{fonts}"; FontInstall: "APL385 
 <li>We include the font <code>APL385 Unicode</code> if it does not already exist (<code>onlyifdoesntexist</code>) and we ensure the font is not uninstalled, even if the application is (<code>uninsneveruninstall</code>).</li>
 <li>If you want to Ride into your application you also need the Conga DLLs. Usually this would be done only while the application is still under development or being tested.</li>
 </ul>
-<p>W&gt; # .NET W&gt; W&gt; If your applications call any .NET methods make sure you include the Dyalog .NET bridge files!</p>
+<div class="leanpub">
+<img src="https://download.aplwiki.com/LeanPub/Images/warning.png" alt="Warning">
+<div>
+<h3>.NET</h3>
+<p>If your applications call any .NET methods make sure you include the Dyalog .NET bridge files!</p>
+</div>
+</div>
+
 <div class="h_tag">
 <a href="#icons" id="icons" class="autoheader_anchor">
 <h3>The section [Icons]</h3>
@@ -456,5 +542,15 @@ Type: files; Name: {app}\baz\quux.txt</code></pre>
 <li id="fnref2"><p><a href="https://blogs.msdn.microsoft.com/oldnewthing/20080627-00/?p=21823/" class="external_link">https://blogs.msdn.microsoft.com/oldnewthing/20080627-00/?p=21823/</a>:<br>About GUIDs</p><a href="#fnref2" class="footnote_anchor"></a>
 </ol>
 </div>
+</div>
+</div>
+<script>
+var snapper = new Snap({
+element: document.getElementById('content')
+});
+document.getElementById('mainmenu_match').onclick = function(){
+snapper.state().state==='closed'?snapper.open('left'):snapper.close();
+}
+</script>
 </body>
 </html>
