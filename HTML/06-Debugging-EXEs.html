@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="scroll-behavior:smooth" >
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta charset="utf-8">
@@ -105,7 +105,6 @@ Wait        = 1</code></pre>
 <p>If that's something you need to avoid, you have to find other ways to make the <abbr title="Executable file with the extension 'exe'">EXE</abbr> communicate with Ride, perhaps by making temporary changes to the code.</p>
 <p>The approach would be the same in both cases. In MyApp we keep things simple and allow the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file to rule whether the user may ride into the application or not.</p>
 <p>Copy <code>Z:\code\v05</code> to <code>Z:\code\v06</code> and then run the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> to recreate the <code>MyApp</code> workspace.</p>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -249,7 +248,6 @@ Wait        = 1</code></pre>
 <p>Since 3.0 Conga can serve several applications in parallel. We suggest you copy the 32-bit and the 64-bit DLLs as siblings of your <abbr title="Executable file with the extension 'exe'">EXE</abbr>.</p>
 <p>If you forgot to copy the DLLs you will see an error <em>Can't find Conga DLL</em>. This is because the OS does not bother to tell you about dependencies.</p>
 <p>You need a tool like DependencyWalker for finding out exactly what’s missing. (We said <em>OS</em> because this is <em>not</em> a Windows-only problem.)</p>
-
 <div class="leanpub_A">
 <h3>Restartable functions</h3>
 <p>Not only do we try to exit functions at the bottom, we also like them to be restartable.</p>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="scroll-behavior:smooth" >
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta charset="utf-8">
@@ -165,7 +165,6 @@ Run MyApp.SetLX</code></pre>
 <pre><code>      EXIT.GetName EXIT.INVALID_SOURCE
 INVALID_SOURCE</code></pre>
 <p>This is useful when we want to log an error code: the name is telling while the number is meaningless.</p>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -206,7 +205,6 @@ INVALID_SOURCE</code></pre>
       ⎕OFF exitCode
   :EndIf
 ∇</code></pre>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -313,7 +311,6 @@ HOLD_ERROR  FILE_TIE_ERROR  FILE_INDEX_ERROR  FILE_FULL  FILE_NAME_ERROR...</cod
   r,←E.FILE_SYSTEM_NO_SPACE
   r,←E.FILE_ACCESS_ERROR_CONVERTING_FILE
 ∇</code></pre>
-
 <div class="leanpub_A">
 <h3>Why don’t we just <code>:Trap</code> all errors?</h3>
 <p><code>:Trap 0</code> would trap all errors - way easier to read and write, so why don’t we do this?</p>
@@ -355,7 +352,6 @@ HOLD_ERROR  FILE_TIE_ERROR  FILE_INDEX_ERROR  FILE_FULL  FILE_NAME_ERROR...</cod
 </span>      :EndIf
     ∇</code></pre>
 <p>Note that the exit code is tested against <code>EXIT.OK</code>. Testing <code>0=exit</code> would work and read as well, but relies on <code>EXIT.OK</code> being 0. The point of defining the codes in <code>EXIT</code> is to make the functions relate to the exit codes only by their names.</p>
-
 <div class="leanpub_A">
 <h3>Logging file-related errors</h3>
 <p>Logging errors related to files in a real-world application requires more attention to detail: <code>⎕DMX</code> provides more information that can be very useful:</p>
@@ -387,7 +383,6 @@ HOLD_ERROR  FILE_TIE_ERROR  FILE_INDEX_ERROR  FILE_FULL  FILE_NAME_ERROR...</cod
 <span class="leanpub_code">    APPLICATION_CRASHED←104
 </span>    INVALID_SOURCE←111
     ...</code></pre>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -516,7 +511,6 @@ HandleError.Process caught SYNTAX ERROR</code></pre>
 <li>An open edit or trace window</li>
 <li>More than one thread running at the moment of the crash</li>
 </ul>
-
 <div class="leanpub_A">
 <p>This is not strictly true. When <code>HandleError</code> detects multiple threads it tries to kill all of them. By definition that won’t work because (a) it cannot kill the main thread (0) and (b) it cannot kill its own thread.</p>
 <p>However, if it happens to run in the main thread at that very moment it will get rid of all other running threads and be able to save a crash workspace afterwards as a result.</p>
@@ -528,8 +522,8 @@ HandleError.Process caught SYNTAX ERROR</code></pre>
 <p>We also find evidence in the log file that something broke; see LogDog:</p>
 <p><img src="Images/LogDog2.png" alt="The log file" title="The log file"></p>
 <p>This is done for us automatically by the <code>HandleError</code> class because we provided the name of a logging function, and a ref pointing to the instance where that log function lives.</p>
-<p>We also have an HTM with a crash report, an eponymous <abbr title="Dyalog workspace">D<abbr title="Short for Workspaces">WS</abbr></abbr> containing the workspace saved at the time it broke, and an eponymous DCF whose single component is a namespace of all the variables visible at the moment of the crash. Some of this has got to help.</p>
-<p>Note that the crash file names are simply the <abbr title="Short for Workspaces">WS</abbr>ID and the timestamp prefixed by an underscore:</p>
+<p>We also have an HTM with a crash report, an eponymous <abbr title="Dyalog workspace">DWS</abbr> containing the workspace saved at the time it broke, and an eponymous DCF whose single component is a namespace of all the variables visible at the moment of the crash. Some of this has got to help.</p>
+<p>Note that the crash file names are simply the WSID and the timestamp prefixed by an underscore:</p>
 <pre><code>      ⍪{⊃,/1↓⎕NPARTS⍵}¨⊃#.FilesAndDirs.Dir #.ErrorParms.errorFolder,'\'
  MyApp_20170307111141.dcf
  MyApp_20170307111141.dws
@@ -605,7 +599,7 @@ i
 isDev
 tbl
 tgt</code></pre>
-<p>The <abbr title="Dyalog workspace">D<abbr title="Short for Workspaces">WS</abbr></abbr> is the crash workspace. Load it. The Latent Expression has been disabled to ensure <code>MyApp</code> does not attempt to start up again.</p>
+<p>The <abbr title="Dyalog workspace">DWS</abbr> is the crash workspace. Load it. The Latent Expression has been disabled to ensure <code>MyApp</code> does not attempt to start up again.</p>
 <pre><code>      ⎕LX
 ⎕TRAP←0 'S' ⍝#.MyApp.StartFromCmdLine</code></pre>
 <p>The state indicator shows the workspace captured at the moment the <code>HandleError</code> object saved the workspace. Your real problem – the full stop in <code>MyApp.TxtToCsv</code> – is some levels down in the stack.</p>
@@ -675,7 +669,6 @@ C:\Users\kai\AppData\Local\MyApp\Log\MyApp_20170309.log</code></pre>
 </span>  #.⎕SHADOW'ErrorParms'
   ....</code></pre>
 <p>Note that we use the <code>SetTrap</code> function in <code>HandleError</code>. It accepts a parameter space as right argument, but it also accepts an empty vector, when it falls back to the defaults.</p>
-
 <div class="leanpub_A">
 <h3>Resetting the diagnostic message and the event number</h3>
 <p>We take the opportunity to initialize both <code>⎕DM</code> and <code>⎕EN</code>: with <code>⎕SIGNAL 0</code> we ensure</p>
@@ -690,7 +683,7 @@ SYNTAX ERROR
 2
      ⎕SIGNAL 0
      ⎕DM
-
+&nbsp;
      ⎕EN
 0</code></pre>
 </div>

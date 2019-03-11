@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="scroll-behavior:smooth" >
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta charset="utf-8">
@@ -103,7 +103,6 @@
 <p>Settings needed by Windows itself <em>have</em> to be stored in the Registry. For example, associating a file extension with your application, so that double-clicking on its icon launches your application.</p>
 <p>The APLTree classes <a href="http://aplwiki.com/WinReg" class="external_link">WinRegSimple</a> and <a href="http://aplwiki.com/WinReg" class="external_link">WinReg</a> provide methods for handling the Windows Registry. We will discuss them in their own chapter.</p>
 <p>MyApp doesn’t need the Windows Registry at this point. We’ll store its configurations in configuration files.</p>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -292,7 +291,6 @@ Errors      = '{localhome}\Errors'</code></pre>
 </span>  r←TxtToCsv arg~''''
 ∇</code></pre>
 <p>Although both <code>MyLogger</code> and <code>Config</code> are global and not passed as arguments, it’s good practice to assign them this way rather than bury their creation somewhere down the stack. This way it’s easy to see where they are set.</p>
-
 <div class="leanpub_A">
 <h3>Specifying an <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file on the command line</h3>
 <p>We could pass the command line parameters as arguments to <code>Initial</code> and investigate whether it carries any <code>INI=</code> statement. If so the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file specified this way should take precedence over any other <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file. However, we keep it simple here.</p>

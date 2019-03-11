@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="scroll-behavior:smooth" >
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta charset="utf-8">
@@ -105,11 +105,10 @@
 <p>To follow this, we’ll make a very simple program. It counts the frequency of letters used in one or multiple text files. (This is simple, but useful in cryptanalysis, at least at hobby level.) We’ll put the source code under version control, and package the program for use.</p>
 <p>Some of the things we are going to add to this application will seem like overkill, but keep in mind that we use this application just as a very simple example for all the techniques we are going to introduce.</p>
 <p>Let’s assume you've done the convenient thing. Your code is in a workspace. Everything it needs to run is defined in the workspace. Maybe you set a latent expression, so the program starts when you load the workspace.</p>
-<p>We shall convert a <abbr title="Dyalog workspace">D<abbr title="Short for Workspaces">WS</abbr></abbr> to some <abbr title="File with the extension 'dyalog' holding APL code">DYALOG</abbr> scripts and introduce a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> script to assemble an active workspace from them.</p>
+<p>We shall convert a <abbr title="Dyalog workspace">DWS</abbr> to some <abbr title="File with the extension 'dyalog' holding APL code">DYALOG</abbr> scripts and introduce a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> script to assemble an active workspace from them.</p>
 <p>Using scripts to store your source code has many advantages: you can use a traditional source code management system rather than having your code and data stored in a binary blob.</p>
 <p>Changes that you make to your source code are saved immediately, rather than relying on you to remember to save the workspace at some suitable point in your work process.</p>
 <p>Finally, you don’t need to worry about crashes in your code or externally called modules and also any corruption of the active workspace which might prevent you from saving it.</p>
-
 <div class="leanpub_A">
 <h3>Corrupted workspaces</h3>
 <p>The <em>workspace</em> (<abbr title="Short for Workspaces">WS</abbr>) is where the APL interpreter manages all code and all data in memory. The Dyalog tracer/debugger has extensive edit-and-continue capabilities; the downside is that these have been known to corrupt the workspace occasionally.</p>
@@ -127,7 +126,6 @@
 </a>
 </div>
 <p>Could not be simpler. If your user has a Dyalog interpreter, she can also save and send you the crash workspace if your program hits an execution error. But she will also be able to read your code – which might be more than you wish for.</p>
-
 <div class="leanpub_A">
 <h3>Crash workspaces</h3>
 <p>A crash workspace is a workspace that was saved by a function that was initiated by error trapping, typically by setting <code>⎕TRAP</code>. It’s a snapshot of the workspace at the moment an unforeseen problem triggered error trapping to take over. It’s usually very useful to analyse such problems.</p>
@@ -155,7 +153,6 @@
 <p>Sometimes a code change turns out to be for the worse, and you need to undo it. Perhaps the change you need to undo is not the most recent change.</p>
 <p>We’ll keep the program in manageable pieces – ‘modules’ – and keep those pieces in text files under version control.</p>
 <p>For this, there are many <em>source-control management</em> (SCM) systems and repositories available. Subversion, Git and Mercurial are presently popular. These SCMs support multiple programmers working on the same program, and have sophisticated features to help resolve conflicts between them.</p>
-
 <div class="leanpub_A">
 <h3>Source code management with acre Desktop</h3>
 <p>Some members of the APL community prefer to use a source-code management system that is tailored to solve the needs of an APL programmer, or a team of APL programmers: acre Desktop.</p>
@@ -163,7 +160,7 @@
 <p>acre Desktop can be used as a source-code management system in its own rights= together with acre Server, but it can use other code management systems like Git or SubVersion as well. Both acre Desktop and acre Server are available as open source software. We will discuss acre in its own appendix.</p>
 </div>
 
-<p>Whichever SCM you use (we used GitHub for writing this book and the code in it) your source code will comprise class and namespace scripts (<abbr title="File with the extension 'dyalog' holding APL code">DYALOG</abbr>s) for the application. The help system will be an ordinary – non-scripted – namespace. We use a <em>build script</em> (<abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>) to assemble the application and the development environment.</p>
+<p>Whichever SCM you use (we used GitHub for writing this book and the code in it) your source code will comprise class and namespace scripts (DYALOGs) for the application. The help system will be an ordinary – non-scripted – namespace. We use a <em>build script</em> (<abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>) to assemble the application and the development environment.</p>
 <p>You’ll keep your local working copy in whatever folder you please. We’ll refer to this <em>working folder</em> as <code>Z:\</code> but it will of course be wherever suits you.</p>
 <div class="h_tag">
 <a href="#The-LetterCount-workspace" id="The-LetterCount-workspace" class="autoheader_anchor">
@@ -172,7 +169,6 @@
 </div>
 <p>We suppose you already have a workspace in which your program runs. We don’t have your code to hand so we’ll use ours. We’ll use a very small and simple program, so we can focus on packaging the code as an application, not on writing the application itself.</p>
 <p>So we’ll begin with the LetterCount workspace. It’s trivially simple but for now it will stand in for your code. You can download it from the book’s web site: <a href="https://cookbook.dyalog.com" class="external_link">https://cookbook.dyalog.com</a>.</p>
-
 <div class="leanpub_A">
 <h3>On encryption</h3>
 <p>Frequency counting relies on the distribution of letters being more or less constant for any given language. It is the first step in breaking a substitution cypher.</p>
@@ -190,7 +186,7 @@
 <p>What does it mean to maintain a version? At the very minimum, you keep the source code for it, so you could recreate its <abbr title="Executable file with the extension 'exe'">EXE</abbr> from scratch, exactly as it was distributed. There will be things you want to improve, and perhaps bugs you must fix. Those will all go into the next version, of course. But some you may need to put into the released version and re-issue it to current users as a patch.</p>
 <p>So in <em>The Dyalog Cookbook</em> we shall develop in successive versions until we manage to create an installer that is capable of installing the application on any machine running Windows 10. What’s needed to achieve that is discussed in the chapters 1-16. Later chapters are independent.</p>
 <p>Our ‘versions’ are not ready to ship, so are probably better considered as milestones on the way to version 1.0. You could think of them as versions 0.1, 0.2 and so on. But we’ll just refer to them as Versions 1, 2, and so on.</p>
-<p>Our first version won’t even be ready to export as an <abbr title="Executable file with the extension 'exe'">EXE</abbr>. It will just create a workspace <code>MyApp.dws</code> from scripts: a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> and some <abbr title="File with the extension 'dyalog' holding APL code">DYALOG</abbr>s. We’ll call it Version 1.</p>
+<p>Our first version won’t even be ready to export as an <abbr title="Executable file with the extension 'exe'">EXE</abbr>. It will just create a workspace <code>MyApp.dws</code> from scripts: a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> and some DYALOGs. We’ll call it Version 1.</p>
 <p>Load the <code>LetterCount.dws</code> workspace from the <code>code\foo</code> folder on the book website. Again, this is just the stand-in for your own code. Here’s a quick tour.</p>
 <div class="h_tag">
 <a href="#Investigating-the-workspace-LetterCount" id="Investigating-the-workspace-LetterCount" class="autoheader_anchor">
@@ -220,7 +216,6 @@ D 2
 C 1
 P 1
 Y 1</code></pre>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -242,7 +237,6 @@ AAAAAACDEEEEIIIINOOOOOOUUUUY</code></pre>
 </a>
 </div>
 <p>To expand this program into distributable software we’re going to add features, many of them drawn from the APLTree library. To facilitate that we’ll first organise the existing code into script files, and write a <em>build script</em> to assemble a workspace from them.</p>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -276,7 +270,6 @@ AAAAAACDEEEEIIIINOOOOOOUUUUY</code></pre>
 | \-⍟Utils
 \-○Logger
 \-⍟UI</code></pre>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -342,7 +335,6 @@ AAAAAACDEEEEIIIINOOOOOOUUUUY</code></pre>
 <p>This requires the namespace <code>#.Utilities</code> to be a sibling of the assumed class <code>MyApp</code>. Now within the class you can do</p>
 <pre><code>status←(bar&gt;3) means 'ok' else 'error'</code></pre>
 <p>yet Shift+Enter in the Tracer or the Editor still works, and any changes made to the utilities would go into <code>#.Utilities</code>.</p>
-
 <div class="leanpub_A">
 <h3>More about :Include</h3>
 <p>When a namespace is included, the interpreter will execute functions from that namespace as if they had been defined in the current class. However, the actual <em>code</em> is shared with the original namespace. For example, this means that if the code of <code>means</code> or <code>else</code> is changed while tracing into it from the <code>MyApp</code> class those changes are reflected in <code>#.Utilities</code> immediately (and any other classes that might have included it).</p>
@@ -352,7 +344,7 @@ AAAAAACDEEEEIIIINOOOOOOUUUUY</code></pre>
 <pre><code>:Class Foo
 :Include Goo
 :EndClass
-
+&nbsp;
 :Namespace Goo
 ∇ r←Hello
     :Access Public Shared
@@ -385,7 +377,6 @@ copied...</code></pre>
 <p>There is one major problem with this: when executing the code in the Tracer the line will be executed in one go. If you think you might want to follow the control flow and trace into the individual expressions, you should spread the control structure over 5 lines.</p>
 <p>In general: if you have a choice between a short and a long expression then go for the short one – unless the long one offers an incentive such as improved readability, better debugging or faster execution speed.</p>
 <p>Diamonds can be useful in some situations. In general it’s better to avoid them.</p>
-
 <div class="leanpub_A">
 <h3>Diamonds</h3>
 <p>In some circumstances diamonds are quite useful:</p>
@@ -492,7 +483,7 @@ Accents←2 28⍴'ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝAAAAAA
 </a>
 </div>
 <p>We’ll raid <a href="https://www.gutenberg.org/" class="external_link">Project Gutenberg</a> for some texts to read.</p>
-<p>We’re tempted by the complete works of William Shakespeare but we don’t know that letter distribution stayed constant over four centuries. Interesting to find out, though, so we’ll save a copy as <code>Z:\texts\en\shakespeare.dat</code>. And we’ll download some 20th-century books as <abbr title="File with the extension 'txt' containing text">TXT</abbr>s into the same folder. Here are some texts we can use.</p>
+<p>We’re tempted by the complete works of William Shakespeare but we don’t know that letter distribution stayed constant over four centuries. Interesting to find out, though, so we’ll save a copy as <code>Z:\texts\en\shakespeare.dat</code>. And we’ll download some 20th-century books as TXTs into the same folder. Here are some texts we can use.</p>
 <pre><code>      ↑⊃(⎕NINFO⍠'Wildcard' 1) 'z:\texts\en\*.txt'
 z:/texts/en/ageofinnocence.txt
 z:/texts/en/dubliners.txt
@@ -509,14 +500,13 @@ z:/texts/en/wizardoz.txt</code></pre>
 </a>
 </div>
 <p>We’ll first make <code>MyApp</code> a simple 'engine' that does not interact with the user. Many applications have functions like this at their core. Let’s enable the user to call this engine from the command line with appropriate parameters. By the time we give it a user interface, it will already have important capabilities, such as logging errors and recovering from crashes.</p>
-<p>Our engine will be based on the <code>TxtToCsv</code> function. It will take one parameter, a fully qualified filepath for a folder or file. If it is a file it will write a sibling CSV. If it is a folder it will read all the <abbr title="File with the extension 'txt' containing text">TXT</abbr>s in the folder, count the letter frequencies and write them as a CSV sibling to the folder. Simple enough. Here we go.</p>
+<p>Our engine will be based on the <code>TxtToCsv</code> function. It will take one parameter, a fully qualified filepath for a folder or file. If it is a file it will write a sibling CSV. If it is a folder it will read all the TXTs in the folder, count the letter frequencies and write them as a CSV sibling to the folder. Simple enough. Here we go.</p>
 <div class="h_tag">
 <a href="#Building-from-a-DYAPP" id="Building-from-a-DYAPP" class="autoheader_anchor">
 <h2>Building from a DYAPP</h2>
 </a>
 </div>
 <p>In your text editor open a new document.</p>
-
 <div class="leanpub_A">
 <p>You need a text editor that handles Unicode. If you’re not already using a Unicode text editor, Windows’ own Notepad will do for occasional use. (Set the default font to APL385 Unicode)</p>
 <p>For a full-strength multifile text editor <a href="https://notepad-plus-plus.org/" class="external_link">Notepad++</a> works well but make sure that the editor converts Tab into space; by default it does not, and Dyalog does not like Tab characters.</p>
@@ -574,7 +564,6 @@ Load MyApp</code></pre>
     :EndNamespace
 :EndNamespace</code></pre>
 <p>Note that we use uppercase here for the names of the ‘constants’. (They are of course not really constants but ordinary variables.) It is a common programming convention to use uppercase letters for constants.</p>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -670,7 +659,7 @@ Load MyApp</code></pre>
 </div>
 </div>
 
-<p>We have converted the saved workspace to text files, and made a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> that builds the workspace from the <abbr title="File with the extension 'dyalog' holding APL code">DYALOG</abbr>s. But we have not saved a workspace: we will always build a workspace from scripts.</p>
+<p>We have converted the saved workspace to text files, and made a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> that builds the workspace from the DYALOGs. But we have not saved a workspace: we will always build a workspace from scripts.</p>
 <p>Launch the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> by double-clicking on its icon in Windows Explorer. Examine the active session. We see</p>
 <pre><code>- Constants
   - NINFO

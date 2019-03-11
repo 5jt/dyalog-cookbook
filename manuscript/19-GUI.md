@@ -87,6 +87,8 @@ In this chapter we will construct the GUI shown above as an example, and we will
 
 Our aim is simple: code that is easy to understand and easy to change.
 
+(While reading this you might think something along the lines of: I've never heard a programmer say she strives for unmaintainable code, yet most GUI code is ugly spaghetti. Stay with us!)
+
 For that we do the following:
 
 * We keep all controls and all data in a single namespace `N`; we've already discussed that, now we need to put this into practice.
@@ -97,7 +99,12 @@ For that we do the following:
 
 * We keep short the functions that create the GUI so that each function accomplishes just one task.
 
-While reading this you might think something along the lines of: I've never heard a programmer say she strives for unmaintainable code yet, most GUI code is ugly spaghetti. Stay with us!
+
+### The code
+
+As always it is recommended that you rewrite the code yourself. However, if for any reason you cannot do this then you can access the code in the two workspaces (`GUI.dws` and `GUI_2.dws`).
+
+The first workspace contains all the code. In "Changing the GUI" we demonstrate how easy it is the move controls around. The resulting code can be found in the second workspace.
 
 
 ## The implementation
@@ -138,7 +145,7 @@ We start with the function `Run`:
 [4]    N.∆TestFlag←testFlag
 [5]    N←CreateGUI N
 [6]    :If 0=testFlag
-[7]        N.SearchFor U.DQ N.∆Form
+[7]        N.SearchFor DQ N.∆Form
 [8]        Shutdown N
 [9]    :EndIf
 [10]  ⍝Done
@@ -167,7 +174,7 @@ Notes:
 
 * The function returns a shy result, the namespace `N`; this is only needed for test cases.
 
-* Neither `U.DQ` nor `Shutdown` is executed if the right argument is `1`. We will discuss this later.
+* Neither `DQ` nor `Shutdown` is executed if the right argument is `1`. We will discuss this later.
 
 
 ### The function `GUI.Init`
@@ -176,7 +183,7 @@ Next we introduce the `Init` function:
 
 ~~~
      ∇ N←Init dummy
-[1]    U←GuiUtils
+[1]    U←##.GuiUtils
 [2]    N←U.CreateNamespace
 [3]    N.∆Buttons←''
 [4]    N.∆Labels←N.⎕NS''
@@ -194,7 +201,7 @@ Next we introduce the `Init` function:
 
   **Watch out:** it is this namespace that represents the GUI in the workspace. It will keep references to all controls and variables related to the GUI.
 
-* It creates an empty global variable `∆Buttons` in `N` which we will use to collect references to all push buttons on the GUI when we create them.
+* It creates an empty global variable `∆Buttons` in `N` which we will use to collect references to all push buttons on the GUI when we create them. This will become useful soon.
 
 * It creates an anonymous namespace in `N` which is assigned to `∆Labels`. We will use this to collect references to all labels on the GUI when we create them. 
 
@@ -216,11 +223,20 @@ Next we introduce the `Init` function:
 `CreateNamespace` is used to create the namespace `N`:
 
 ~~~
-     ∇ r←CreateNamespace                                                                                         
-[1]    r←⎕NS''                                                                                                   
-[2]    r.⎕FX'r←∆List' 'r←{⍵,[1.5]⍎¨⍵}'' ''~¨⍨↓⎕NL 2 9'                                                           
-[3]   ⍝Done                                                                                                      
-     ∇                                                                                                           
+     ∇ r←CreateNamespace;body
+[1]    r←⎕NS''
+[2]    body←''
+[3]    body,←⊂'r←∆List;list;refs'
+[4]    body,←⊂':If 0<≢list←('' ''~¨⍨↓⎕NL 2 9)~'' ''~¨⍨↓''∆''⎕NL 2 9'
+[5]    body,←⊂'   refs←⍎¨list'
+[6]    body,←⊂'   r←list,[1.5]{⍵ ⎕WG''Type''}¨refs'
+[7]    body,←⊂'   r,←{11::'''' ⋄ ⍵ ⎕WG''Caption''}¨refs'
+[8]    body,←⊂':Else'
+[9]    body,←⊂'    r←0 3⍴'''''
+[10]   body,←⊂':EndIf'
+[11]   r.⎕FX body
+[12]  ⍝Done
+     ∇
 ~~~
 
 This function creates an unnamed namespace and populates it with a function `∆List` which returns a matrix with two columns:
@@ -231,7 +247,7 @@ This function creates an unnamed namespace and populates it with a function `∆
 | [;2] | The value of that name |
 
 
-After `Init` runs the `N` namespace does not yet contain any GUI controls but it does contains some variables that will define certain properties of the GUI:
+After `Init` runs the `N` namespace does not yet contain any GUI controls but it does contain some variables that will define certain properties of the GUI:
 
 ~~~
       N.∆List
@@ -289,7 +305,7 @@ Notes:
 
   The value is calculated only once, for the assignment. This is necessary: the number of Configure events can be overwhelming.
 
-That callback is very important: without it any Configure event would cause a VALUE ERROR, which in turn would make you lose your workspace because there are just too many of them. So we introduce it straight away; we cannot forget it.
+That callback is very important: without it any Configure event would cause a VALUE ERROR, which in turn would make you lose your workspace because there are just too many of them. So we introduce it straight away so that we cannot forget creating it.
 
 
 ### The function `GUI.OnConfigure'
@@ -299,15 +315,14 @@ That callback is very important: without it any Configure event would cause a VA
 ∇                                                        
 ~~~
 
-Since the Tracer cannot (currently) step into one line dfns, defining the `OnConfigure` callback as a one liner is exceedingly useful as it allows you to avoid stepping into the callback, which is itself likely to result in even more configure events being generated.
-As already mentioned it is absolutely essential that this function is a one-liner because that makes the Tracer ignore this function.
+Since the Tracer cannot (currently) step into one line dfns, defining the `OnConfigure` callback as a one liner is exceedingly useful as it allows you to avoid stepping into the callback, which is itself likely to result in even more configure events being generated. That allows us to trace into `⎕DQ` without getting ourselves in trouble.
 
 
 ### All the `GUI.Create*` functions
 
-Although we list all functions here you might not necessarily follow us on each of them in detail, but you should at least keep reading until you reach `GUI.AdjustGroupSize`.
+Although we list all `Create*`-functions here you might not necessarily follow us on each of them in detail. However, you **must** read and understand what is said about `CreateMainForm`, and we suggest you keep reading until you reach `GUI.AdjustGroupSize`.
 
-However, we suggest to scan through them rather than skipping them and carrying on with [the callback functions](#The callback functions).
+We also suggest to scan through them rather than just skipping them and carrying on with [the function `GetRef2n`](#The function `GuiUtils.GetRef2n`).
 
 
 #### The function `CreateMainForm`
@@ -445,20 +460,21 @@ It just makes position and size a matrix and sums up the rows. That is exactly w
 #### The function `GUI.CreateStartLookingHere`
 
 ~~~
- N←CreateStartLookingHere N;∆
- ∆←⊂'Label'
- ∆,←⊂'Posn'((N.∆V_Gap+⊃U.AddPosnAndSize N.SearchFor)N.∆H_Gap)
- ∆,←⊂'Caption' 'Start &looking here:'
- ∆,←⊂'Attach'('Top' 'Left' 'Top' 'Left')
- N.∆Labels.StartLookingHere←⍎'StartLookingHere'N.∆Form.⎕WC ∆
-
- ∆←⊂'Edit'
- ∆,←⊂'Posn'((⊃U.AddPosnAndSize N.∆Labels.StartLookingHere)N.∆H_Gap)
- ∆,←⊂'Size'(⍬(N.∆Form.Size[2]-2×N.∆H_Gap))
- ∆,←⊂'FontObj'N.InputFont
- ∆,←⊂'Attach'('Top' 'Left' 'Top' 'Right')
- N.StartLookingHere←⍎'StartLookingHere'N.∆Form.⎕WC ∆
-⍝Done
+     ∇ N←CreateStartLookingHere N;∆
+[1]    ∆←⊂'Label'
+[2]    ∆,←⊂'Posn'((N.∆V_Gap+⊃U.AddPosnAndSize N.SearchFor)N.∆H_Gap)
+[3]    ∆,←⊂'Caption' 'Start &looking here:'
+[4]    ∆,←⊂'Attach'('Top' 'Left' 'Top' 'Left')
+[5]    N.∆Labels.StartLookingHere←⍎'StartLookingHere'N.∆Form.⎕WC ∆
+[6]
+[7]    ∆←⊂'Edit'
+[8]    ∆,←⊂'Posn'((⊃U.AddPosnAndSize N.∆Labels.StartLookingHere)N.∆H_Gap)
+[9]    ∆,←⊂'Size'(⍬(N.∆Form.Size[2]-2×N.∆H_Gap))
+[10]   ∆,←⊂'FontObj'N.InputFont
+[11]   ∆,←⊂'Attach'('Top' 'Left' 'Top' 'Right')
+[12]   N.StartLookingHere←⍎'StartLookingHere'N.∆Form.⎕WC ∆
+[13]  ⍝Done
+     ∇
 ~~~
 
 Note that this time the vertical position of the label is defined by the total of the `Posn` and `Size` of the _Search for_ edit control plus `N.∆V_Gap`.
@@ -605,16 +621,18 @@ Note that the system function `⎕WN` gets a reference as right argument rather 
 [16]   ∆,←⊂'Style' 'Check'
 [17]   ∆,←⊂'Posn'((⊃U.AddPosnAndSize N.IsRegEx),4×N.∆H_Gap)
 [18]   ∆,←⊂'Caption' 'Dot&All'
-[19]   N.DotAll←⍎'DotAll'N.∆RegEx.⎕WC ∆
-[20]
-[21]   ∆←⊂'Button'
-[22]   ∆,←⊂'Style' 'Check'
-[23]   ∆,←⊂'Posn'((⊃U.AddPosnAndSize N.DotAll),4×N.∆H_Gap)
-[24]   ∆,←⊂'Caption' '&Greedy'
-[25]   N.Greedy←⍎'Greedy'N.∆RegEx.⎕WC ∆
-[26]
-[27]   AdjustGroupSize N.∆RegEx
-[28]  ⍝Done
+[19]   ∆,←⊂'Active' 0
+[20]   N.DotAll←⍎'DotAll'N.∆RegEx.⎕WC ∆
+[21]
+[22]   ∆←⊂'Button'
+[23]   ∆,←⊂'Style' 'Check'
+[24]   ∆,←⊂'Posn'((⊃U.AddPosnAndSize N.DotAll),4×N.∆H_Gap)
+[25]   ∆,←⊂'Caption' '&Greedy'
+[26]   ∆,←⊂'Active' 0
+[27]   N.Greedy←⍎'Greedy'N.∆RegEx.⎕WC ∆
+[28]
+[29]   AdjustGroupSize N.∆RegEx
+[30]  ⍝Done
      ∇
 ~~~
 
@@ -677,8 +695,6 @@ A>
 A> That allows us in test mode to...
 A> 1. call `Run`
 A> 1. populate the _Search for_ and _Start looking here_ fields
-A> 1. "click" the _Find_ button programmatically
-A> 1. populate the "Search for" and "Start looking here" fields
 A> 1. "click" the "Find" button programmatically
 A> 1. check the contents of `N.HitList`
 
@@ -727,7 +743,7 @@ That means that in order to find `N` we just need to check whether it exists at 
      ∇
 ~~~
 
-Of course this means that you should not use the name `N` --- or whatever name _you_ prefer instead for this namespace --- anywhere in the hierarchy.
+Of course this means that you should not use the name `N` --- or whatever name _you_ prefer instead of `N` for this namespace --- anywhere in the hierarchy.
 
 Note that line [2] is an insurance against `GetRef2n` being called inside a callback that is associated with a control that is _not_ owned by the main form. Of course that should not happen -- because it makes no sense -- but if you do it by accident then without that line the function would call itself recursively forever.
 
@@ -757,7 +773,7 @@ This function just handles the Esc key.
 ~~~
      ∇ OnToggleIsRegEx←{
 [1]        N←U.GetRef2n⊃⍵
-[2]        N.(DotAll Greedy).Active←~N.IsRegEx.State
+[2]        N.(DotAll Greedy).Active←N.IsRegEx.State
 [3]        ⍬
 [4]    }                       
      ∇
@@ -785,27 +801,28 @@ This function makes sure that the width of the GUI is reduced to the minimum req
 #### The function `GUI.OnFind`
 
 ~~~
-     ∇ r←OnFind msg;N
+     ∇ r←OnFind msg;N;D
 [1]    r←0
 [2]    N←U.GetRef2n⊃msg
-[3]    N.∆WriteToStatusbar''
-[4]    :If 0∊⍴N.SearchFor.Text
-[5]        Dialogs.ShowMsg N'"Search for" is empty - nothing to look for...'
-[6]    :ElseIf 0∊⍴N.StartLookingHere.Text
-[7]        Dialogs.ShowMsg N'"Start looking here" is empty?!'
-[8]    :ElseIf 9≠⎕NC N.StartLookingHere.Text
-[9]    :AndIf (,'#')≢,N.StartLookingHere.Text
-[10]       Dialogs.ShowMsg N'Contents of "Start looking here" is not a namespace'
-[11]   :Else
-[12]       Find N
-[13]   :EndIf
-[14]  ⍝Done
+[3]    D←##.Dialogs
+[4]    N.∆WriteToStatusbar''
+[5]    :If 0∊⍴N.SearchFor.Text
+[6]        D.ShowMsg N'"Search for" is empty - nothing to look for...'
+[7]    :ElseIf 0∊⍴N.StartLookingHere.Text
+[8]        D.ShowMsg N'"Start looking here" is empty?!'
+[9]    :ElseIf 9≠⎕NC N.StartLookingHere.Text
+[10]    :AndIf (,'#')≢,N.StartLookingHere.Text
+[11]       D.ShowMsg N'Contents of "Start looking here" is not a namespace'
+[12]   :Else
+[13]       Find N
+[14]   :EndIf
+[15]  ⍝Done
      ∇
 ~~~
 
 The callback performs some checks and either puts an error message on display by calling a function `Dialogs.ShowMsg` or executes the `Find` function, providing `N` as the right argument.
 
-Note that `Dialog.ShowMsg` follows exactly the same principles we have outlines in this chapter, so we do not discuss it in detail, but you can download the code and look at it if you want to.
+Note that `Dialog.ShowMsg` follows exactly the same principles we have outlined in this chapter, so we do not discuss it in detail, but you can download the code and look at it if you want to.
 
 One thing should be pointed out however: the form created by `Dialog.ShowMsg` is actually a child of our main form. 
 
@@ -836,7 +853,7 @@ This is the real work horse:
 
 An important thing to discuss is the function `CollectData`. We want our 'business logic' to be independent from the GUI. So we don't want anything in `##.BusinessLogic` to access the `N` namespace.
 
-But it needs access to the data entered and decisions made by the user on the GUI. So we collect all the data and assign them to variables inside a newly created anonymous namespace, which we assign to `G`.
+But it needs access to the data entered and decisions made by the user on the GUI. So we collect all the data and assign them to variables inside a newly created anonymous namespace, which we assign to `G` (for "Global").
 
 
 ### The function `GUI.CollectData`
@@ -866,7 +883,7 @@ But it needs access to the data entered and decisions made by the user on the GU
 
 This namespace (`G`) is passed as the only argument to the `Find` function.
 
-Suppose you replaces the Windows native GUI by an HTML5/JavaScript GUI. All you have to do here is ensure the `G` namespace is fed with all the data needed. `##.BusinessLogic` will not be affected in any way.
+Suppose you replaces the Windows native GUI by an HTML5/JavaScript GUI. All you have to do here is ensure the `G` namespace is fed with all the data needed. `##.BusinessLogic` will not be affected in any way by the change of the GUI technology.
 
 
 ### The function `##.BusinessLogic.Find`
@@ -940,14 +957,49 @@ We put this into a separate function so that we can at any time interrupt the fu
 
 This function ensures the main form is closed in case it still exists.
 
-Note that we need the trap. Even checking the main form with `⎕NS` might fail if the user clicks the Close box right after the check has been performed but before the next line is executed.
+Note that we need the trap. Even checking the main form with `⎕NC` might fail if the user clicks the Close box right after the check has been performed but before the next line is executed.
 
-This would produce one of these nasty crashes that occur only every odd year and are not reproducible. This is one of the rare cases where a trap is better than any check.
+This would produce one of these nasty crashes that occur only every odd year and are not reproducible. This is one of the rare cases where a trap is better than a check.
+
+
+## The advantages
+
+So what exactly are the advantages of what we've done compared with the ordinary approach? Well, most importantly, all the controls that matter are available via the `N` namespace without any kind of hierarchy except that we separated the menubar and the labels from the other controls.
+
+That gives us easy access to the controls in any of our callbacks, and it makes it easy to list all the controls that matter:
+
+~~~
+      N.∆List
+ APL               Button       APL                   
+ Comments          Button       Comments              
+ DotAll            Button       Dot&All               
+ Find              Button       Find                  
+ FnsOprScripts     Button       Fns, opr and scripts  
+ Greedy            Button       &Greedy               
+ HitList           ListView                           
+ InputFont         Font                               
+ IsRegEx           Button       Is RegE&x             
+ MatchAPLname      Button       Match &APL name       
+ MatchCase         Button       &Match case           
+ NameList          Button       Name list &only (⎕NL) 
+ Replace           Button       Replace               
+ Resize            Button       Resize (F12)          
+ SearchFor         Edit                               
+ StartLookingHere  Edit                               
+ StatusField1      StatusField                        
+ Statusbar         StatusBar                          
+ Text              Button       Text                  
+ Variables         Button       Variables             
+~~~
+
+The first column carries the name, the second column the type of the control and the third column the caption (if the control in question has a property "caption" that is) or an empty vector is not applicable.
+
+But the loss of hierarchy comes with another advantage: in case we move a control elsewhere on the GUI nothing in `N` changes at all!
 
 
 ## Changing the GUI
 
-To demonstrate the power of the above approach we have to show it is easy to change.
+To appreciate the power of the approach outlined in this chapter we have to demonstrate that is easy to change.
 
 Let's suppose the following:
 
@@ -1085,10 +1137,10 @@ For implementing tests execute the following steps:
 1. Create a namespace with 
 
    ~~~
-   'TestCases'#._Meddy.⎕ns''
+   'TestCases'#.MyApp.⎕ns''
    ~~~
 
-2. Load the script `APLTreeUtils` and the class `Testers` into `#` as discusses in the chapter regarding [tests](./08 Testing — the sound of breaking glass.html) chapter.
+2. Load the script `APLTreeUtils` and the class `Testers` into `#` as discusses in the chapter regarding [tests](./08 Testing — the sound of breaking glass.html).
 
 3. Execute these statements:
 
@@ -1185,7 +1237,7 @@ We have eariler stated that we won't discuss `Dialogs.ShowMsg` in details but we
 [3]   ⍝ Returns 1 when running under test conditions and 0 otherwise.
 [4]   ⍝ In test mode no GUI is created at all but a global `N.∆ErrorMsg` is set to `msg`.
 [5]    r←0
-[6]    caption←{0<⎕NC ⍵:⍎⍵ ⋄ 'Attention!'}'caption'
+[6]    caption←{0<⎕NC ⍵:⍎⍵ ⋄ 'MyApp: Attention!'}'caption'
 leanpub-start-insert
 [7]    :If N.∆TestFlag
 [8]        N.∆ErrorMsg←msg
@@ -1223,13 +1275,13 @@ On the other hand if the application's main purposes is to make complex tasks ma
 
 ## Conclusion
 
-We believe we have demonstrated the combination of techniques outlined in this chapter leads not only to better code but makes it also far easier actually to write GUI applications in the first place.
+We believe we have demonstrated that the combination of techniques outlined in this chapter leads not only to better code but makes it also far easier to actually write GUI applications in the first place.
 
 Having said this, the approach outlined here is insufficient if the GUI of an application changes heavily depending on the user's actions. 
 
 However, the principal ideas can still be used but the list of controls were better compiled from scratch at the start of each callback function rather than having them as a static list in a namespace.
 
-It was Paul Mansour came up with many of the ideas outlined here. We stole plenty from him and owe him a big thank you.
+It was Paul Mansour who came up with many of the ideas outlined here. We stole plenty from him and owe him a big thank you.
 
 
 

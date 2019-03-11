@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="scroll-behavior:smooth" >
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta charset="utf-8">
@@ -13,7 +13,7 @@
 
 </head>
 <body>
-<p><img src="./Images/title_page.jpg" style="page-break-before: always;margin:auto;display:block;margin-top:5em;" alt="The Dyalog Cookbook" title="The Dyalog Cookbook"></p>
+<p><img src="./Images/title_page.jpg" alt="The Dyalog Cookbook" title="The Dyalog Cookbook">{style="page-break-before: always;margin:auto;display:block;margin-top:5em;"}</p>
 <article>
 <div class="h_tag">
 <a href="#Chapter-1Introduction" id="Chapter-1Introduction" class="autoheader_anchor">
@@ -67,7 +67,6 @@
 <h2>3. Conventions</h2>
 </a>
 </div>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -123,11 +122,10 @@
 <p>To follow this, we’ll make a very simple program. It counts the frequency of letters used in one or multiple text files. (This is simple, but useful in cryptanalysis, at least at hobby level.) We’ll put the source code under version control, and package the program for use.</p>
 <p>Some of the things we are going to add to this application will seem like overkill, but keep in mind that we use this application just as a very simple example for all the techniques we are going to introduce.</p>
 <p>Let’s assume you've done the convenient thing. Your code is in a workspace. Everything it needs to run is defined in the workspace. Maybe you set a latent expression, so the program starts when you load the workspace.</p>
-<p>We shall convert a <abbr title="Dyalog workspace">D<abbr title="Short for Workspaces">WS</abbr></abbr> to some <abbr title="File with the extension 'dyalog' holding APL code">DYALOG</abbr> scripts and introduce a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> script to assemble an active workspace from them.</p>
+<p>We shall convert a <abbr title="Dyalog workspace">DWS</abbr> to some <abbr title="File with the extension 'dyalog' holding APL code">DYALOG</abbr> scripts and introduce a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> script to assemble an active workspace from them.</p>
 <p>Using scripts to store your source code has many advantages: you can use a traditional source code management system rather than having your code and data stored in a binary blob.</p>
 <p>Changes that you make to your source code are saved immediately, rather than relying on you to remember to save the workspace at some suitable point in your work process.</p>
 <p>Finally, you don’t need to worry about crashes in your code or externally called modules and also any corruption of the active workspace which might prevent you from saving it.</p>
-
 <div class="leanpub_A">
 <h3>Corrupted workspaces</h3>
 <p>The <em>workspace</em> (<abbr title="Short for Workspaces">WS</abbr>) is where the APL interpreter manages all code and all data in memory. The Dyalog tracer/debugger has extensive edit-and-continue capabilities; the downside is that these have been known to corrupt the workspace occasionally.</p>
@@ -145,7 +143,6 @@
 </a>
 </div>
 <p>Could not be simpler. If your user has a Dyalog interpreter, she can also save and send you the crash workspace if your program hits an execution error. But she will also be able to read your code – which might be more than you wish for.</p>
-
 <div class="leanpub_A">
 <h3>Crash workspaces</h3>
 <p>A crash workspace is a workspace that was saved by a function that was initiated by error trapping, typically by setting <code>⎕TRAP</code>. It’s a snapshot of the workspace at the moment an unforeseen problem triggered error trapping to take over. It’s usually very useful to analyse such problems.</p>
@@ -173,7 +170,6 @@
 <p>Sometimes a code change turns out to be for the worse, and you need to undo it. Perhaps the change you need to undo is not the most recent change.</p>
 <p>We’ll keep the program in manageable pieces – ‘modules’ – and keep those pieces in text files under version control.</p>
 <p>For this, there are many <em>source-control management</em> (SCM) systems and repositories available. Subversion, Git and Mercurial are presently popular. These SCMs support multiple programmers working on the same program, and have sophisticated features to help resolve conflicts between them.</p>
-
 <div class="leanpub_A">
 <h3>Source code management with acre Desktop</h3>
 <p>Some members of the APL community prefer to use a source-code management system that is tailored to solve the needs of an APL programmer, or a team of APL programmers: acre Desktop.</p>
@@ -181,7 +177,7 @@
 <p>acre Desktop can be used as a source-code management system in its own rights= together with acre Server, but it can use other code management systems like Git or SubVersion as well. Both acre Desktop and acre Server are available as open source software. We will discuss acre in its own appendix.</p>
 </div>
 
-<p>Whichever SCM you use (we used GitHub for writing this book and the code in it) your source code will comprise class and namespace scripts (<abbr title="File with the extension 'dyalog' holding APL code">DYALOG</abbr>s) for the application. The help system will be an ordinary – non-scripted – namespace. We use a <em>build script</em> (<abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>) to assemble the application and the development environment.</p>
+<p>Whichever SCM you use (we used GitHub for writing this book and the code in it) your source code will comprise class and namespace scripts (DYALOGs) for the application. The help system will be an ordinary – non-scripted – namespace. We use a <em>build script</em> (<abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>) to assemble the application and the development environment.</p>
 <p>You’ll keep your local working copy in whatever folder you please. We’ll refer to this <em>working folder</em> as <code>Z:\</code> but it will of course be wherever suits you.</p>
 <div class="h_tag">
 <a href="#The-LetterCount-workspace" id="The-LetterCount-workspace" class="autoheader_anchor">
@@ -190,7 +186,6 @@
 </div>
 <p>We suppose you already have a workspace in which your program runs. We don’t have your code to hand so we’ll use ours. We’ll use a very small and simple program, so we can focus on packaging the code as an application, not on writing the application itself.</p>
 <p>So we’ll begin with the LetterCount workspace. It’s trivially simple but for now it will stand in for your code. You can download it from the book’s web site: <a href="https://cookbook.dyalog.com" class="external_link">https://cookbook.dyalog.com</a>.</p>
-
 <div class="leanpub_A">
 <h3>On encryption</h3>
 <p>Frequency counting relies on the distribution of letters being more or less constant for any given language. It is the first step in breaking a substitution cypher.</p>
@@ -208,7 +203,7 @@
 <p>What does it mean to maintain a version? At the very minimum, you keep the source code for it, so you could recreate its <abbr title="Executable file with the extension 'exe'">EXE</abbr> from scratch, exactly as it was distributed. There will be things you want to improve, and perhaps bugs you must fix. Those will all go into the next version, of course. But some you may need to put into the released version and re-issue it to current users as a patch.</p>
 <p>So in <em>The Dyalog Cookbook</em> we shall develop in successive versions until we manage to create an installer that is capable of installing the application on any machine running Windows 10. What’s needed to achieve that is discussed in the chapters 1-16. Later chapters are independent.</p>
 <p>Our ‘versions’ are not ready to ship, so are probably better considered as milestones on the way to version 1.0. You could think of them as versions 0.1, 0.2 and so on. But we’ll just refer to them as Versions 1, 2, and so on.</p>
-<p>Our first version won’t even be ready to export as an <abbr title="Executable file with the extension 'exe'">EXE</abbr>. It will just create a workspace <code>MyApp.dws</code> from scripts: a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> and some <abbr title="File with the extension 'dyalog' holding APL code">DYALOG</abbr>s. We’ll call it Version 1.</p>
+<p>Our first version won’t even be ready to export as an <abbr title="Executable file with the extension 'exe'">EXE</abbr>. It will just create a workspace <code>MyApp.dws</code> from scripts: a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> and some DYALOGs. We’ll call it Version 1.</p>
 <p>Load the <code>LetterCount.dws</code> workspace from the <code>code\foo</code> folder on the book website. Again, this is just the stand-in for your own code. Here’s a quick tour.</p>
 <div class="h_tag">
 <a href="#Investigating-the-workspace-LetterCount" id="Investigating-the-workspace-LetterCount" class="autoheader_anchor">
@@ -238,7 +233,6 @@ D 2
 C 1
 P 1
 Y 1</code></pre>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -260,7 +254,6 @@ AAAAAACDEEEEIIIINOOOOOOUUUUY</code></pre>
 </a>
 </div>
 <p>To expand this program into distributable software we’re going to add features, many of them drawn from the APLTree library. To facilitate that we’ll first organise the existing code into script files, and write a <em>build script</em> to assemble a workspace from them.</p>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -294,7 +287,6 @@ AAAAAACDEEEEIIIINOOOOOOUUUUY</code></pre>
 | \-⍟Utils
 \-○Logger
 \-⍟UI</code></pre>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -360,7 +352,6 @@ AAAAAACDEEEEIIIINOOOOOOUUUUY</code></pre>
 <p>This requires the namespace <code>#.Utilities</code> to be a sibling of the assumed class <code>MyApp</code>. Now within the class you can do</p>
 <pre><code>status←(bar&gt;3) means 'ok' else 'error'</code></pre>
 <p>yet Shift+Enter in the Tracer or the Editor still works, and any changes made to the utilities would go into <code>#.Utilities</code>.</p>
-
 <div class="leanpub_A">
 <h3>More about :Include</h3>
 <p>When a namespace is included, the interpreter will execute functions from that namespace as if they had been defined in the current class. However, the actual <em>code</em> is shared with the original namespace. For example, this means that if the code of <code>means</code> or <code>else</code> is changed while tracing into it from the <code>MyApp</code> class those changes are reflected in <code>#.Utilities</code> immediately (and any other classes that might have included it).</p>
@@ -370,7 +361,7 @@ AAAAAACDEEEEIIIINOOOOOOUUUUY</code></pre>
 <pre><code>:Class Foo
 :Include Goo
 :EndClass
-
+&nbsp;
 :Namespace Goo
 ∇ r←Hello
     :Access Public Shared
@@ -403,7 +394,6 @@ copied...</code></pre>
 <p>There is one major problem with this: when executing the code in the Tracer the line will be executed in one go. If you think you might want to follow the control flow and trace into the individual expressions, you should spread the control structure over 5 lines.</p>
 <p>In general: if you have a choice between a short and a long expression then go for the short one – unless the long one offers an incentive such as improved readability, better debugging or faster execution speed.</p>
 <p>Diamonds can be useful in some situations. In general it’s better to avoid them.</p>
-
 <div class="leanpub_A">
 <h3>Diamonds</h3>
 <p>In some circumstances diamonds are quite useful:</p>
@@ -510,7 +500,7 @@ Accents←2 28⍴'ÁÂÃÀÄÅÇÐÈÊËÉÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝAAAAAA
 </a>
 </div>
 <p>We’ll raid <a href="https://www.gutenberg.org/" class="external_link">Project Gutenberg</a> for some texts to read.</p>
-<p>We’re tempted by the complete works of William Shakespeare but we don’t know that letter distribution stayed constant over four centuries. Interesting to find out, though, so we’ll save a copy as <code>Z:\texts\en\shakespeare.dat</code>. And we’ll download some 20th-century books as <abbr title="File with the extension 'txt' containing text">TXT</abbr>s into the same folder. Here are some texts we can use.</p>
+<p>We’re tempted by the complete works of William Shakespeare but we don’t know that letter distribution stayed constant over four centuries. Interesting to find out, though, so we’ll save a copy as <code>Z:\texts\en\shakespeare.dat</code>. And we’ll download some 20th-century books as TXTs into the same folder. Here are some texts we can use.</p>
 <pre><code>      ↑⊃(⎕NINFO⍠'Wildcard' 1) 'z:\texts\en\*.txt'
 z:/texts/en/ageofinnocence.txt
 z:/texts/en/dubliners.txt
@@ -527,14 +517,13 @@ z:/texts/en/wizardoz.txt</code></pre>
 </a>
 </div>
 <p>We’ll first make <code>MyApp</code> a simple 'engine' that does not interact with the user. Many applications have functions like this at their core. Let’s enable the user to call this engine from the command line with appropriate parameters. By the time we give it a user interface, it will already have important capabilities, such as logging errors and recovering from crashes.</p>
-<p>Our engine will be based on the <code>TxtToCsv</code> function. It will take one parameter, a fully qualified filepath for a folder or file. If it is a file it will write a sibling CSV. If it is a folder it will read all the <abbr title="File with the extension 'txt' containing text">TXT</abbr>s in the folder, count the letter frequencies and write them as a CSV sibling to the folder. Simple enough. Here we go.</p>
+<p>Our engine will be based on the <code>TxtToCsv</code> function. It will take one parameter, a fully qualified filepath for a folder or file. If it is a file it will write a sibling CSV. If it is a folder it will read all the TXTs in the folder, count the letter frequencies and write them as a CSV sibling to the folder. Simple enough. Here we go.</p>
 <div class="h_tag">
 <a href="#Building-from-a-DYAPP" id="Building-from-a-DYAPP" class="autoheader_anchor">
 <h2>7. Building from a DYAPP</h2>
 </a>
 </div>
 <p>In your text editor open a new document.</p>
-
 <div class="leanpub_A">
 <p>You need a text editor that handles Unicode. If you’re not already using a Unicode text editor, Windows’ own Notepad will do for occasional use. (Set the default font to APL385 Unicode)</p>
 <p>For a full-strength multifile text editor <a href="https://notepad-plus-plus.org/" class="external_link">Notepad++</a> works well but make sure that the editor converts Tab into space; by default it does not, and Dyalog does not like Tab characters.</p>
@@ -592,7 +581,6 @@ Load MyApp</code></pre>
     :EndNamespace
 :EndNamespace</code></pre>
 <p>Note that we use uppercase here for the names of the ‘constants’. (They are of course not really constants but ordinary variables.) It is a common programming convention to use uppercase letters for constants.</p>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -688,7 +676,7 @@ Load MyApp</code></pre>
 </div>
 </div>
 
-<p>We have converted the saved workspace to text files, and made a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> that builds the workspace from the <abbr title="File with the extension 'dyalog' holding APL code">DYALOG</abbr>s. But we have not saved a workspace: we will always build a workspace from scripts.</p>
+<p>We have converted the saved workspace to text files, and made a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> that builds the workspace from the DYALOGs. But we have not saved a workspace: we will always build a workspace from scripts.</p>
 <p>Launch the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> by double-clicking on its icon in Windows Explorer. Examine the active session. We see</p>
 <pre><code>- Constants
   - NINFO
@@ -739,7 +727,6 @@ Load MyApp</code></pre>
 </a>
 </div>
 <p>In a runtime interpreter or an <abbr title="Executable file with the extension 'exe'">EXE</abbr>, there is no APL session, and output to the session which would have been visible in a development system will simply disappear.</p>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -749,7 +736,6 @@ Load MyApp</code></pre>
 </div>
 
 <p>If we want to see this output, we need to write it to a log file. But how do we find out where we need to make changes? We recommend you think about this from the start, and ensure that all <em>intentional</em> output goes through a log function, or at least use an explicit <code>⎕←</code> so that output can easily be identified in the source.</p>
-
 <div class="leanpub_A">
 <h3>Unwanted output to the session</h3>
 <p>What can you do if you have output appearing in the session and you don’t know where in your application it is being generated? The easiest way is to associate a callback function with the <code>SessionPrint</code> event as in:</p>
@@ -845,7 +831,6 @@ Run #.MyApp.SetLX ⍬</code></pre>
 <p>The reason: we want to ensure when we create a namespace with <code>#.⎕NS ''</code> those system variables have the expected values.</p>
 <p>Alternatively you could ensure you execute <code>⎕NS ''</code> within a namespace that is known to have system variables with the right values.</p></li>
 </ul>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/warning.png" alt="Warning">
 <div>
@@ -874,7 +859,6 @@ Run #.MyApp.SetLX ⍬</code></pre>
 </ol>
 <p>You should see a message: <em>File Z:\code\v03\MyApp.exe successfully created.</em> This occasionally (rarely) fails for no obvious reason. If it does fail just try again and you should be fine.</p>
 <p>If it keeps failing then the by far most common reason is that the <abbr title="Executable file with the extension 'exe'">EXE</abbr> is running – you cannot replace an <abbr title="Executable file with the extension 'exe'">EXE</abbr> while it is running.</p>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -898,7 +882,6 @@ Run #.MyApp.SetLX ⍬</code></pre>
 <p>Note that you cannot really debug a console application with Ride; for details see the <em>Debugging a stand-alone <abbr title="Executable file with the extension 'exe'">EXE</abbr></em> chapter.</p>
 <p>If you do not check <em>Console application</em>, the program is started as a separate process and you cannot catch the return code.</p>
 <p>We therefore recommend you clear the <em>Console application</em> checkbox unless you have a good reason to do otherwise.</p>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/tip.png" alt="Tip">
 <div>
@@ -940,7 +923,6 @@ Run #.MyApp.SetLX ⍬</code></pre>
 <pre><code>Z:\code\v03\MyApp.exe Z:\texts\Does_not_exist</code></pre>
 <p>We see an alert message: <em>This Dyalog APL runtime application has attempted to use the APL session and will therefore be closed.</em></p>
 <p><code>MyApp</code> failed because there is no file or folder <code>Z:\texts\Does_not_exist</code>. That triggered an error in the APL code. The interpreter tried to display an error message and looked for input from a developer from the session. But a runtime task has no session, so at that point the interpreter popped the alert message and <code>MyApp</code> died.</p>
-
 <div class="leanpub_A">
 <h3>CONTINUE workspaces</h3>
 <p>Prior to version 17.0, as soon as you close the message box a CONTINUE workspace was created in the current directory. Such a CONTINUE <abbr title="Short for Workspaces">WS</abbr> can be loaded and investigated, making it easy to figure out what the problem is. (However, this is true only if it is a single-threaded application, since workspaces cannot be saved when more than one thread is running.)</p>
@@ -948,7 +930,7 @@ Run #.MyApp.SetLX ⍬</code></pre>
 <p>For analysis, load a CONTINUE workspace in an already running Dyalog session – don’t double-click a CONTINUE! The reason is that <code>⎕DM</code> and <code>⎕DMX</code> are overwritten in the process of booting SALT, meaning that you lose the error message.</p>
 <p>You <em>might</em> recreate them by re-executing the failing line – but that has other dangers, or might fail in a new way.</p>
 <p>Note also that the CONTINUE is always saved in the current directory; in version 17.0 there is no way to tell the interpreter to save the CONTINUE workspace elsewhere.</p>
-<p>That is limiting, as it will fail for your own stand-alone <abbr title="Executable file with the extension 'exe'">EXE</abbr>s if they are installed in the standard folders for executables under Windows, <code>C:\Program Files</code> (64-bit programs) and <code>C:\Program Files (x86)</code> (32-bit programs): even as an admin you cannot write to those folders or subfolders.</p>
+<p>That is limiting, as it will fail for your own stand-alone EXEs if they are installed in the standard folders for executables under Windows, <code>C:\Program Files</code> (64-bit programs) and <code>C:\Program Files (x86)</code> (32-bit programs): even as an admin you cannot write to those folders or subfolders.</p>
 <p>But Windows saves it anyway! If a program attempts to write to a banned location Windows tells them “Sure, no problem” but saves them in a e.g. <code>"C:\Users\kai\AppData\Local\VirtualStore\Program Files\Dyalog\Dyalog APL-64 17.0 Unicode\CONTINUE.dws"</code> where you are running Dyalog APL 64-bit Unicode version 17.0.</p>
 </div>
 
@@ -970,7 +952,6 @@ Load Utilities
 Load MyApp
 Run #.MyApp.SetLX ⍬</code></pre>
 <p>and run the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> to recreate the <code>MyApp</code> workspace.</p>
-
 <div class="leanpub_A">
 <h3>Help for the APLTree namespaces</h3>
 <p>You can get detailed documentation on an APLTree class or namespace by executing e.g.:</p>
@@ -1185,7 +1166,6 @@ Z:\code\v04</code></pre>
 2016-04-06 13:42:43 (0) Target: Z:\texts\en.csv
 2016-04-06 13:42:43 (0) 244 bytes written to Z:\texts\en.csv
 2016-04-06 13:42:43 (0) All done</code></pre>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -1223,7 +1203,6 @@ Z:\code\v04</code></pre>
 2017-02-26 10:54:35 (0) 9 files processed.
 2017-02-26 10:58:07 (0) Z:/texts/en/ageofinnocence.txt
 ...</code></pre>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -1269,7 +1248,6 @@ Z:\code\v04</code></pre>
 </div>
 <p>We now have <code>MyApp</code> logging its work in a subfolder of the application folder and reporting any problems it has anticipated.</p>
 <p>Next we need to consider how to handle and report errors we have <em>not</em> anticipated. We should also return some kind of error code to Windows. If <code>MyApp</code> encounters an error, any process calling it needs to know. But before we are doing this we will discuss how to configure <code>MyApp</code>.</p>
-
 <div class="leanpub_A">
 <h3>Destructors versus the Tracer</h3>
 <p>When you trace through <code>TxtToCsv</code>, the moment you leave the function the Tracer shows the function <code>Cleanup</code> of the <code>Logger</code> class. The function is declared as a destructor.</p>
@@ -1304,7 +1282,6 @@ Z:\code\v04</code></pre>
 <p>Settings needed by Windows itself <em>have</em> to be stored in the Registry. For example, associating a file extension with your application, so that double-clicking on its icon launches your application.</p>
 <p>The APLTree classes <a href="http://aplwiki.com/WinReg" class="external_link">WinRegSimple</a> and <a href="http://aplwiki.com/WinReg" class="external_link">WinReg</a> provide methods for handling the Windows Registry. We will discuss them in their own chapter.</p>
 <p>MyApp doesn’t need the Windows Registry at this point. We’ll store its configurations in configuration files.</p>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -1493,7 +1470,6 @@ Errors      = '{localhome}\Errors'</code></pre>
 </span>  r←TxtToCsv arg~''''
 ∇</code></pre>
 <p>Although both <code>MyLogger</code> and <code>Config</code> are global and not passed as arguments, it’s good practice to assign them this way rather than bury their creation somewhere down the stack. This way it’s easy to see where they are set.</p>
-
 <div class="leanpub_A">
 <h3>Specifying an <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file on the command line</h3>
 <p>We could pass the command line parameters as arguments to <code>Initial</code> and investigate whether it carries any <code>INI=</code> statement. If so the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file specified this way should take precedence over any other <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file. However, we keep it simple here.</p>
@@ -1624,7 +1600,6 @@ Wait        = 1</code></pre>
 <p>If that's something you need to avoid, you have to find other ways to make the <abbr title="Executable file with the extension 'exe'">EXE</abbr> communicate with Ride, perhaps by making temporary changes to the code.</p>
 <p>The approach would be the same in both cases. In MyApp we keep things simple and allow the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file to rule whether the user may ride into the application or not.</p>
 <p>Copy <code>Z:\code\v05</code> to <code>Z:\code\v06</code> and then run the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> to recreate the <code>MyApp</code> workspace.</p>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -1768,7 +1743,6 @@ Wait        = 1</code></pre>
 <p>Since 3.0 Conga can serve several applications in parallel. We suggest you copy the 32-bit and the 64-bit DLLs as siblings of your <abbr title="Executable file with the extension 'exe'">EXE</abbr>.</p>
 <p>If you forgot to copy the DLLs you will see an error <em>Can't find Conga DLL</em>. This is because the OS does not bother to tell you about dependencies.</p>
 <p>You need a tool like DependencyWalker for finding out exactly what’s missing. (We said <em>OS</em> because this is <em>not</em> a Windows-only problem.)</p>
-
 <div class="leanpub_A">
 <h3>Restartable functions</h3>
 <p>Not only do we try to exit functions at the bottom, we also like them to be restartable.</p>
@@ -1858,7 +1832,6 @@ Run MyApp.SetLX</code></pre>
 <pre><code>      EXIT.GetName EXIT.INVALID_SOURCE
 INVALID_SOURCE</code></pre>
 <p>This is useful when we want to log an error code: the name is telling while the number is meaningless.</p>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -1899,7 +1872,6 @@ INVALID_SOURCE</code></pre>
       ⎕OFF exitCode
   :EndIf
 ∇</code></pre>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -2006,7 +1978,6 @@ HOLD_ERROR  FILE_TIE_ERROR  FILE_INDEX_ERROR  FILE_FULL  FILE_NAME_ERROR...</cod
   r,←E.FILE_SYSTEM_NO_SPACE
   r,←E.FILE_ACCESS_ERROR_CONVERTING_FILE
 ∇</code></pre>
-
 <div class="leanpub_A">
 <h3>Why don’t we just <code>:Trap</code> all errors?</h3>
 <p><code>:Trap 0</code> would trap all errors - way easier to read and write, so why don’t we do this?</p>
@@ -2048,7 +2019,6 @@ HOLD_ERROR  FILE_TIE_ERROR  FILE_INDEX_ERROR  FILE_FULL  FILE_NAME_ERROR...</cod
 </span>      :EndIf
     ∇</code></pre>
 <p>Note that the exit code is tested against <code>EXIT.OK</code>. Testing <code>0=exit</code> would work and read as well, but relies on <code>EXIT.OK</code> being 0. The point of defining the codes in <code>EXIT</code> is to make the functions relate to the exit codes only by their names.</p>
-
 <div class="leanpub_A">
 <h3>Logging file-related errors</h3>
 <p>Logging errors related to files in a real-world application requires more attention to detail: <code>⎕DMX</code> provides more information that can be very useful:</p>
@@ -2080,7 +2050,6 @@ HOLD_ERROR  FILE_TIE_ERROR  FILE_INDEX_ERROR  FILE_FULL  FILE_NAME_ERROR...</cod
 <span class="leanpub_code">    APPLICATION_CRASHED←104
 </span>    INVALID_SOURCE←111
     ...</code></pre>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -2209,7 +2178,6 @@ HandleError.Process caught SYNTAX ERROR</code></pre>
 <li>An open edit or trace window</li>
 <li>More than one thread running at the moment of the crash</li>
 </ul>
-
 <div class="leanpub_A">
 <p>This is not strictly true. When <code>HandleError</code> detects multiple threads it tries to kill all of them. By definition that won’t work because (a) it cannot kill the main thread (0) and (b) it cannot kill its own thread.</p>
 <p>However, if it happens to run in the main thread at that very moment it will get rid of all other running threads and be able to save a crash workspace afterwards as a result.</p>
@@ -2221,8 +2189,8 @@ HandleError.Process caught SYNTAX ERROR</code></pre>
 <p>We also find evidence in the log file that something broke; see LogDog:</p>
 <p><img src="Images/LogDog2.png" alt="The log file" title="The log file"></p>
 <p>This is done for us automatically by the <code>HandleError</code> class because we provided the name of a logging function, and a ref pointing to the instance where that log function lives.</p>
-<p>We also have an HTM with a crash report, an eponymous <abbr title="Dyalog workspace">D<abbr title="Short for Workspaces">WS</abbr></abbr> containing the workspace saved at the time it broke, and an eponymous DCF whose single component is a namespace of all the variables visible at the moment of the crash. Some of this has got to help.</p>
-<p>Note that the crash file names are simply the <abbr title="Short for Workspaces">WS</abbr>ID and the timestamp prefixed by an underscore:</p>
+<p>We also have an HTM with a crash report, an eponymous <abbr title="Dyalog workspace">DWS</abbr> containing the workspace saved at the time it broke, and an eponymous DCF whose single component is a namespace of all the variables visible at the moment of the crash. Some of this has got to help.</p>
+<p>Note that the crash file names are simply the WSID and the timestamp prefixed by an underscore:</p>
 <pre><code>      ⍪{⊃,/1↓⎕NPARTS⍵}¨⊃#.FilesAndDirs.Dir #.ErrorParms.errorFolder,'\'
  MyApp_20170307111141.dcf
  MyApp_20170307111141.dws
@@ -2298,7 +2266,7 @@ i
 isDev
 tbl
 tgt</code></pre>
-<p>The <abbr title="Dyalog workspace">D<abbr title="Short for Workspaces">WS</abbr></abbr> is the crash workspace. Load it. The Latent Expression has been disabled to ensure <code>MyApp</code> does not attempt to start up again.</p>
+<p>The <abbr title="Dyalog workspace">DWS</abbr> is the crash workspace. Load it. The Latent Expression has been disabled to ensure <code>MyApp</code> does not attempt to start up again.</p>
 <pre><code>      ⎕LX
 ⎕TRAP←0 'S' ⍝#.MyApp.StartFromCmdLine</code></pre>
 <p>The state indicator shows the workspace captured at the moment the <code>HandleError</code> object saved the workspace. Your real problem – the full stop in <code>MyApp.TxtToCsv</code> – is some levels down in the stack.</p>
@@ -2368,7 +2336,6 @@ C:\Users\kai\AppData\Local\MyApp\Log\MyApp_20170309.log</code></pre>
 </span>  #.⎕SHADOW'ErrorParms'
   ....</code></pre>
 <p>Note that we use the <code>SetTrap</code> function in <code>HandleError</code>. It accepts a parameter space as right argument, but it also accepts an empty vector, when it falls back to the defaults.</p>
-
 <div class="leanpub_A">
 <h3>Resetting the diagnostic message and the event number</h3>
 <p>We take the opportunity to initialize both <code>⎕DM</code> and <code>⎕EN</code>: with <code>⎕SIGNAL 0</code> we ensure</p>
@@ -2383,7 +2350,7 @@ SYNTAX ERROR
 2
      ⎕SIGNAL 0
      ⎕DM
-
+&nbsp;
      ⎕EN
 0</code></pre>
 </div>
@@ -2544,7 +2511,6 @@ windowsEventSource</code></pre>
 <h2>5. Unit and functional tests</h2>
 </a>
 </div>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -2706,7 +2672,6 @@ Run #.MyApp.SetLX ⍬
 <p><code>Initial</code> relies on naming conventions; if there is a function in scope with that name, it will be executed. More later.</p></li>
 <li>The function <code>Cleanup</code> will be executed by the test framework after all test functions have been executed. This can be used to clean up stuff that’s no longer needed. Here we delete the references <code>A</code>, <code>F</code> and <code>U</code>. More later.</li>
 </ul>
-
 <div class="leanpub_A">
 <h3>Ordinary namespaces versus scripted ones</h3>
 <p>There’s a difference between an ordinary namespace and a scripted namespace: imagine you've called <code>#.Tester.EstablishHelpersIn</code> within an ordinary namespace.</p>
@@ -2734,7 +2699,6 @@ Looking for a function "Cleanup"...
   Function "Cleanup" found and executed.
 *** Tests done</code></pre>
 <p>That’s what we expect.</p>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -2818,7 +2782,6 @@ Looking for a function "Cleanup"...
 :EndNamespace</code></pre>
 <p>Now run <code>RunDebug 1</code>. Trace into <code>Test_001</code> and watch whether now any error 5 (LENGTH ERROR) is trapped, You should end up on line 8 of <code>Test_001</code>. Exchange the full stop by:</p>
 <pre><code>    →PassesIf'Left argument is not a two-element vector'≡⎕DMX.EM</code></pre>
-
 <div class="leanpub_A">
 <h3>⎕DM versus ⎕DMX</h3>
 <p>You have always used <code>⎕DM</code>, and it was fine, right? No need to switch to the (relatively) new <code>⎕DMX</code>, right? Well, the problem with <code>⎕DM</code> is that it is not thread-safe, while <code>⎕DMX</code> is. That’s why we suggest you stop using <code>⎕DM</code> and use just <code>⎕DMX</code>. It also provides more, and more precise, information.</p>
@@ -2881,7 +2844,6 @@ Looking for a function "Cleanup"...
   R←∆OK
 ∇
 ...</code></pre>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -3001,7 +2963,6 @@ Looking for a function "Cleanup"...
 <li>Copy those files to our temporary test folder.</li>
 <li>Check the return code of the copy operation; <code>R</code> gets 1 (indicating success) only if it was successful.</li>
 </ul>
-
 <div class="leanpub_A">
 <h3>Machine-dependent initialisation</h3>
 <p>What if you need to initialise something (say a database connection) but it depends on the machine the tests are executed on – its IP address, user-id, password…?</p>
@@ -3076,7 +3037,7 @@ Looking for a function "Cleanup"...
   F.DeleteFile⊃F.Dir ∆Path,'\*.csv'
 ∇
 ...</code></pre>
-<p>This one will process <em>all</em> <abbr title="File with the extension 'txt' containing text">TXT</abbr>s in <code>∆Path</code> and write a file <code>total.csv</code>. We check whether this is the case and we are done. Almost: in a real-world application we most likely would also check for a path that contains spaces in its name. We don’t do this, instead we execute the full test suite:</p>
+<p>This one will process <em>all</em> TXTs in <code>∆Path</code> and write a file <code>total.csv</code>. We check whether this is the case and we are done. Almost: in a real-world application we most likely would also check for a path that contains spaces in its name. We don’t do this, instead we execute the full test suite:</p>
 <pre><code>      GetHelpers
       ⎕←⊃Run
 --- Test framework "Tester" version 3.9.0 from YYYY-MM-DD ----------------------------
@@ -3291,7 +3252,6 @@ TxtToCsv
 <dd><p>Better to reserve trailing comments for other notes, such as <code>⍝FIXME⍝ slow for &gt;1E7 elements</code> [<a href="#fnref3" class="footnote_link"><sup>3</sup></a>]. (Using a tag such as <code>⍝FIXME⍝</code> makes it easy to bookmark lines for review.) Aligning trailing comments to begin at the same column makes them easier to scan, and is considered “OCD compliant” [<a href="#fnref2" class="footnote_link"><sup>2</sup></a>].</p></dd>
 </dl>
 <p>The above conventions are simple enough and have long been in wide use.</p>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -3481,7 +3441,7 @@ TxtToCsv
 </ul>
 <p>At first glance you might think all we need are two versions of the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>, one for development and one for producing the <abbr title="Executable file with the extension 'exe'">EXE</abbr>, but there will be tasks we cannot carry out with this approach. Examples are:</p>
 <ul>
-<li>On our development machine <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>s are associated (in the Windows Registry) with a single version of Dyalog. We need a way to control which version that is, even if at this point there is just one version installed on our machine.</li>
+<li>On our development machine DYAPPs are associated (in the Windows Registry) with a single version of Dyalog. We need a way to control which version that is, even if at this point there is just one version installed on our machine.</li>
 <li>We might want to convert any Markdown documents – like README.<abbr title="File with the extension 'md' that contains markdown">MD</abbr> – into <abbr title="Hyper Text Mark-up language">HTML</abbr> documents. While the <abbr title="File with the extension 'md' that contains markdown">MD</abbr> is the source, only the <abbr title="Hyper Text Mark-up language">HTML</abbr> will be shipped.</li>
 <li>We need to ensure the Help system – which we will introduce soon – is properly compiled and configured by the Make utility.</li>
 <li>Soon we shall need an installer that produces an <abbr title="Executable file with the extension 'exe'">EXE</abbr> we can send to the customer for installing the software.</li>
@@ -3562,7 +3522,6 @@ Run #.Tester.EstablishHelpersIn #.Tests
 <h2>3. Make the application</h2>
 </a>
 </div>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -3572,7 +3531,6 @@ Run #.Tester.EstablishHelpersIn #.Tests
 
 <p>At first sight it might seem all we need is a reduced version of <code>MyApp.dyapp</code>, but not so. Soon we will discuss how to add a Help system to our application.</p>
 <p>We must then make sure that the Help system is compiled properly when the application is assembled. Later, more tasks will come up. Conclusion: our Make file cannot be a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>; we need more flexibility.</p>
-
 <div class="leanpub_A">
 <h3>More complex scenarios</h3>
 <p>In a more complex application than ours you might prefer a different approach. Using an <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file for this is not a bad idea: it gives you scope to define more than just the modules to be loaded, and some code to execute.</p>
@@ -3586,7 +3544,7 @@ Run #.Tester.EstablishHelpersIn #.Tests
 </a>
 </div>
 <p>For now, we’ll create a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> file <code>Make.dyapp</code> that performs the Make.</p>
-<p>However, if you want to specify explicitly the version of Dyalog that should run this <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> rather than using whichever version happens to be associated with the file extension <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> at the time you double-click it, (also <abbr title="Dyalog workspace">D<abbr title="Short for Workspaces">WS</abbr></abbr> and <abbr title="File with the extension 'dyalog' holding APL code">DYALOG</abbr>) you need a batch file that starts the correct version of Dyalog.</p>
+<p>However, if you want to specify explicitly the version of Dyalog that should run this <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> rather than using whichever version happens to be associated with the file extension <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> at the time you double-click it, (also <abbr title="Dyalog workspace">DWS</abbr> and <abbr title="File with the extension 'dyalog' holding APL code">DYALOG</abbr>) you need a batch file that starts the correct version of Dyalog.</p>
 <p>Create such a batch file as <code>Make.bat</code>:</p>
 <pre><code>"C:\Program Files\Dyalog\Dyalog APL{yourPreferredVersion}\Dyalog.exe" DYAPP="%~dp0Make.dyapp"
 @echo off
@@ -3795,7 +3753,6 @@ Active      = 0
 :EndClass</code></pre>
 <p><code>Export</code> automates what we’ve done so far by calling the <em>Export</em> command from the <em>File</em> menu. If the <em>Bind</em> method fails, it retries up to 50 times before giving up.</p>
 <p>From experience we know that, with the OS, the machine, the network, the filesystem and who knows what else, the command can fail several times before finally succeeding.</p>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -3818,7 +3775,6 @@ Active      = 0
 <p>Open a Windows Explorer (Windows + E), navigate to the folder hosting the <abbr title="Executable file with the extension 'exe'">EXE</abbr>, right-click the <abbr title="Executable file with the extension 'exe'">EXE</abbr> and select <em>Properties</em> from the context menu, then click on the <em>Details</em> tab.</p>
 <p><img src="./Images/Stand-alone-properties.png" alt="EXEs properties" title="APL Team's dots"></p>
 <p>As you can see, the fields <em>File version</em>, <em>Product name</em>, <em>Product version</em> and <em>Copyright</em> hold the information we have specified.</p>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/warning.png" alt="Warning">
 <div>
@@ -3860,7 +3816,7 @@ Active      = 0
 <h2>5. Workflow</h2>
 </a>
 </div>
-<p>With the two <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>s and the <abbr title="Executable file that contains batch commands">BAT</abbr> file, your development cycle now looks like this:</p>
+<p>With the two DYAPPs and the <abbr title="Executable file that contains batch commands">BAT</abbr> file, your development cycle now looks like this:</p>
 <ol start="1">
 <li>Launch <code>MyApp.dyapp</code> and check the test results.</li>
 <li>Fix any errors and rerun <code>#.Tests.Run</code> until it’s fine. If you edit the test themselves, either rerun
@@ -3903,7 +3859,6 @@ Active      = 0
 <p>Double-click <code>ViewHelp.exe</code> in order to see <code>Markdown2Help2</code>’s own Help system:</p>
 <p><img src="Images/HelpViewer.png" alt="Markdown2Help's Help" title="Markdown2Help's Help"></p>
 <p>By default, <code>ViewHelp.exe</code> expects to find a folder <code>files</code> as a sibling of itself, and it assumes this folder contains a Help system.</p>
-
 <div class="leanpub_A">
 <h3>Specify help folder and help page</h3>
 <p>You can change the folder <code>ViewHelper.exe</code> expects to host the Help system by specifying a command-line parameter <code>helpFolder</code>:</p>
@@ -4126,7 +4081,6 @@ parms #.Markdown2Help.CreateStub '#.MyHelp'</code></pre>
 </span>∇
 
 :EndNamespace</code></pre>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -4323,7 +4277,6 @@ Run #.Make.Run 1</code></pre>
 </div>
 <p>Dealing with Scheduled Tasks you usually don’t want more than one instance of the application running at the same time. One of the most common sources of difficulty investigating Scheduled Tasks turns out to be running a second instance.</p>
 <p>For example, you try to ride into it but the port used by Ride is already occupied by an instance started earlier without you knowing of it. We are going to prevent this happening.</p>
-
 <div class="leanpub_A">
 <p>In the rare circumstances when you want application instances managed by the Task Scheduler to run in parallel, establish a mechanism that allows you to enforce having just one instance running, if only for debugging purposes. Make it an <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> entry (like <code>AllowMultipleInstances</code>) and document it appropriately.</p>
 </div>
@@ -4407,7 +4360,6 @@ Run #.Make.Run 1</code></pre>
    R←∆OK
   ∆TidyUp:
    ##.MyApp.Cleanup ⍬</code></pre>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -4421,7 +4373,6 @@ Run #.Make.Run 1</code></pre>
 <li>That a test suite runs through OK does not necessarily mean it will keep doing so when you execute it again. If <code>Test_TxtToCsv</code> had been the very last test case the test suite would have passed without a problem but an attempt to run it again would fail because now the control file would have been tied, and <code>Test_exe_01</code> would have failed.</li>
 </ol>
 <p>In our specific case it was actually a problem in the test cases, <em>not</em> in <code>MyApp</code>, but the conclusion stands anyway.</p>
-
 <div class="leanpub_A">
 <h3>Shuffle test cases</h3>
 <p>At the time of writing (2017-07) the sequence of the test cases relies on alphabetical order and is therefore predictable. On the to-do list for the <code>Tester</code> class is a topic: Add an option that makes the test framework shuffle the test cases so that the order of execution is not predictable anymore.</p>
@@ -4568,7 +4519,6 @@ Run #.Make.Run 1</code></pre>
 </a>
 </div>
 <p>If you see this you most probably forgot to copy over the DLLs needed by Ride [<a href="#fnref1" class="footnote_link"><sup>1</sup></a>] itself. That’s what triggers the return code 32 which means <em>File not found</em>.</p>
-
 <div class="leanpub_A">
 <h3>Windows return codes</h3>
 <p>To translate a Windows return code like 32 into a more meaningful piece of information, download and install the user command <code>GetMsg</code> from the APL wiki. Then you can do this:</p>
@@ -4606,7 +4556,6 @@ The process cannot access the file because it is being used by another process.<
 <p>Instead we use the user command [<a href="#fnref3" class="footnote_link"><sup>3</sup></a>] <code>Int2Hex</code>, based on code written and contributed by Phil Last [<a href="#fnref2" class="footnote_link"><sup>2</sup></a>]. With this user command we can convert the value 2147942402 into a hex value:</p>
 <pre><code>      ]Int2Hex 2147942402
 80070002</code></pre>
-
 <div class="leanpub_A">
 <h3>Third-party user commands</h3>
 <p>There are many useful third-party user commands available. For details how to install them see “<a href="./51 Appendix 2 — User commands.html" class="external_link">Appendix 2 — User commands</a>”.</p>
@@ -4716,7 +4665,6 @@ cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService DYALOG_NOPOPUPS=1'</code
 <p>To uninstall the Service, simply open a console window with <em>Run as administrator</em>, navigate to the directory the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> lives in and then enter:</p>
 <pre><code>sc delete MyAppService</code></pre>
 <p>and you are done.</p>
-
 <div class="leanpub_A">
 <h3>Why is changing the current directory required?</h3>
 <p>When you double-click a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> the script is executed with the directory the script lives in defining what will become the current directory from the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>'s point of view.</p>
@@ -4771,7 +4719,6 @@ cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService DYALOG_NOPOPUPS=1'</code
 <li>The Service might create an aplcore when it starts.</li>
 <li>Start the Event Viewer and check it for useful information. Although our application does not write to the application log (yet), the SCM might do!</li>
 </ul>
-
 <div class="leanpub_A">
 <h3>CONTINUE workspaces</h3>
 <p>The Service might have created a CONTINUE workspace, for various reasons.</p>
@@ -5034,7 +4981,7 @@ cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService DYALOG_NOPOPUPS=1'</code
 <h3>11.1. Installing and un-installing the Service</h3>
 </a>
 </div>
-<p>In order to install or uninstall the Service we need two <abbr title="Executable file that contains batch commands">BAT</abbr>s: <code>Install_Service.bat</code> and <code>Uninstall_Service.bat</code>. We will write these <abbr title="Executable file that contains batch commands">BAT</abbr>s from Dyalog. For that we create a class <code>ServiceHelpers</code>:</p>
+<p>In order to install or uninstall the Service we need two BATs: <code>Install_Service.bat</code> and <code>Uninstall_Service.bat</code>. We will write these BATs from Dyalog. For that we create a class <code>ServiceHelpers</code>:</p>
 <pre><code>:Class ServiceHelpers
 
     ∇ {r}←CreateBatFiles dummy;path;cmd;aplexe;wsid
@@ -5110,8 +5057,8 @@ Run #.MakeService.Run 0
 <p>Notes:</p>
 <ul>
 <li>We need some more APLTree modules: <code>Tester</code>, <code>Execute</code> and <code>WinSys</code>.</li>
-<li>Ensure the two <abbr title="Executable file that contains batch commands">BAT</abbr>s (for installing and uninstalling the service) are written to the disk.</li>
-<li>We delete the class <code>ServiceHelpers</code>: it is not needed for running the Service once we've created the <abbr title="Executable file that contains batch commands">BAT</abbr>s.</li>
+<li>Ensure the two BATs (for installing and uninstalling the service) are written to the disk.</li>
+<li>We delete the class <code>ServiceHelpers</code>: it is not needed for running the Service once we've created the BATs.</li>
 <li>We set <code>⎕LX</code> by calling <code>SetLXForService</code>.</li>
 <li>We load the class <code>MakeService</code> and run <code>MakeService.Run</code>.</li>
 </ul>
@@ -5151,10 +5098,9 @@ Run #.MakeService.Run 0
 <ul>
 <li>Assigns the name of the destination folder to the global <code>DESTINATION</code>.</li>
 <li>(Re-)creates a folder with the name in <code>DESTINATION</code>.</li>
-<li>Copies over the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> as well as the two <abbr title="Executable file that contains batch commands">BAT</abbr>s.</li>
+<li>Copies over the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> as well as the two BATs.</li>
 <li>Finally it sets <code>⎕WSID</code> and saves the workspace, without the status indicator, and without <code>MakeService</code> – by deleting itself.</li>
 </ul>
-
 <div class="leanpub_A">
 <h3>Self-deleting code</h3>
 <p>How it is possible for the function <code>MakeService.Run</code> to delete itself and keep running anyway?</p>
@@ -5315,7 +5261,6 @@ SERVICE_NAME: MyAppService TYPE : 10 WIN32_OWN_PROCESS STATE : 4 RUNNING (STOPPA
 <p>First we need to ensure everything is assembled freshly, and with admin rights.</p>
 <p>The best way to do that is to run the script <code>MakeService.dyapp</code> from a console that was started <em>with admin rights</em>. (Unfortunately you cannot right-click on a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> and select “Run as administrator” from the context menu.)</p>
 <p>You must change the current directory in the console window to where the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> lives before actually calling it.</p>
-
 <div class="leanpub_A">
 <h3>Console with admin rights.</h3>
 <p>The best way to start a console window with admin rights:</p>
@@ -5708,12 +5653,16 @@ HKCU\Software\MyApplication\MainForm\Size</code></pre>
 </a>
 </div>
 <p>Microsoft’s terminology for the Registry varies strikingly from common usage. That is a rich source of confusion, but there is no avoiding it. Has to be mastered.</p>
-<p>&lt;!–</p>
-<p>Do you find the terminology strange? So do we, but it was invented by Microsoft and defines the standard.</p>
-<p>So we use it too. That makes it easier to understand the Microsoft documentation and also to understand others discussing the Windows Registry. It also helps when you Google for Registry tweaks because the guys posting the solution to your problem are most likely using Microsoft speech as well.</p>
-<p>What is strange about the terminology? Microsoft gives common words unusual meanings when it comes to the Windows Registry.</p>
-<p>–&gt;</p>
-<p>Here’s an example. This is the definition of the MAX<abbr title="Short for Workspaces">WS</abbr> parameter for Dyalog 64 bit Unicode version 16:</p>
+<!--
+
+Do you find the terminology strange? So do we, but it was invented by Microsoft and defines the standard.
+
+So we use it too. That makes it easier to understand the Microsoft documentation and also to understand others discussing the Windows Registry. It also helps when you Google for Registry tweaks because the guys posting the solution to your problem are most likely using Microsoft speech as well.
+
+What is strange about the terminology? Microsoft gives common words unusual meanings when it comes to the Windows Registry.
+
+-->
+<p>Here’s an example. This is the definition of the MAXWS parameter for Dyalog 64 bit Unicode version 16:</p>
 <p><img src="Images/WinReg_maxws.png" alt="Definition of maxws in the Windows Registry" title="Definition of maxws in the Windows Registry"></p>
 <p>The full path is:</p>
 <pre><code>Computer\HKEY_CURRENT_USER\Software\Dyalog\Dyalog APL/W-64 17.0 Unicode\maxws</code></pre>
@@ -5813,7 +5762,7 @@ HKCU\Software\MyApplication\MainForm\Size</code></pre>
 <li><code>Delete</code></li>
 </ul>
 <p>It is also limited to the two datatypes <code>REG_SZ</code> and <code>REG_DWORD</code>.</p>
-<p>The class uses the Windows Scripting Host (<abbr title="Short for Workspaces">WS</abbr>H) [<a href="#fnref4" class="footnote_link"><sup>4</sup></a>]. It is available on all Windows systems although it can be switched off by group policies, though we have never seen this in the wild.</p>
+<p>The class uses the Windows Scripting Host (WSH) [<a href="#fnref4" class="footnote_link"><sup>4</sup></a>]. It is available on all Windows systems although it can be switched off by group policies, though we have never seen this in the wild.</p>
 <p>If you want to read just a certain value then this – very small – class might suffice. For example, to read the aforementioned <code>maxws</code> value:</p>
 <pre><code>      #.WinRegSimple.Read 'HKCU\Software\Dyalog\Dyalog APL/W-64 17.0 Unicode\maxws'
 64000</code></pre>
@@ -5986,7 +5935,7 @@ C:\...\Dyalog APL 17.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCo
 <td>SysTray</td>
 </tr>
 <tr>
-<td><abbr title="Short for Workspaces">WS</abbr>Search</td>
+<td>WSSearch</td>
 </tr>
 </tbody>
 </table>
@@ -6099,7 +6048,6 @@ C:\...\Dyalog APL 17.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCo
 </a>
 </div>
 <p>An installer needs admin rights. Installing a program is a potentially dangerous thing.</p>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -6127,7 +6075,6 @@ C:\...\Dyalog APL 17.0 Unicode\SALT\Spice;C:\T\UserCommands\APLTeam\;C:\MyUserCo
 <li><code>C:\Users\{username}\AppData\Roaming</code></li>
 </ul>
 <p>The <code>Roaming</code> folder is the right choice if a user wants the application to be available regardless of which computer she logs on to.</p>
-
 <div class="leanpub_A">
 <h3>About C:\ProgramData</h3>
 <p>There is only one difference between the <em>AppData</em> and the <em>ProgramData</em> folders: every user has her own <em>AppData</em> folder but there is only a single <em>ProgramData</em> folder, shared by all users.</p>
@@ -6317,7 +6264,6 @@ Name: "{commonappdata}\{#MyAppName}"; Permissions: users-modify</code></pre>
 <p>With the above line we tell Inno to create a folder <code>{#MyAppName}</code> which in our case will be “My Company Ltd”. Note that <code>commonappdata</code> defaults to <code>ProgramData\</code>, usually on the <code>C:\</code> drive.</p>
 <p>Instead we could have used <code>localappdata</code>, which defaults to <code>C:\Users\{username}\AppData\Local</code>. There are many more constants available; refer to <em>Constants</em> in the Inno Help for details.</p>
 <p>We also tell Inno to give any user in the <code>Users</code> group the right to modify files in this directory.</p>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/warning.png" alt="Warning">
 <div>
@@ -6540,7 +6486,6 @@ Type: files; Name: {app}\baz\quux.txt</code></pre>
 0
       'cat' ⎕s 0⊣ 'the cat sat on the medallion'
  4</code></pre>
-
 <div class="leanpub_A">
 <h3>Operators, operands, derived functions and arguments</h3>
 <p><code>⎕S</code> is, like <code>⎕R</code>, an <em>operator</em>. An operator takes either just a left operand (monadic) or a left and right operand (dyadic) and forms a so-called derived function. For example, the operator <code>/</code> when given a left operand <code>+</code> forms the derived function <em>sum</em>.</p>
@@ -6568,7 +6513,6 @@ cat sat on the medallion</code></pre>
  8 12</code></pre>
 <p>That gives us the offset of the two double quotes, but what if we want to have the offset and the length of any string found <em>between</em> — and including — the double quotes?</p>
 <p>For that we need to introduce the <em>metacharacter</em> dot (<code>.</code>), which has a special meaning in a regular expression: it represents <em>any</em> character. (Not quite: we will soon discuss the one and only exception, the NewLine character).</p>
-
 <div class="leanpub_A">
 <h3>Metacharacters</h3>
 <p>Metacharacters, sometimes called special characters, are characters with a special meaning in a regular expression.</p>
@@ -6605,7 +6549,6 @@ cat sat on the medallion</code></pre>
 ⍈one⍈two⍈three⍈⍈four
       '_{2,3}' ⎕R '⍈' ⊢'_one__two___three____four'
 _one⍈two⍈three⍈_four</code></pre>
-
 <div class="leanpub_A">
 <h3>The right operand of ⎕R</h3>
 <p><code>⎕R</code> takes one or more replace strings as the right operand – <em>or</em> a user defined function, discussed later. You cannot mix replace strings with user defined functions.</p>
@@ -6652,7 +6595,6 @@ He said ⍈!</code></pre>
 <p>We can achieve that by specifying the “Greedy” option with a zero (default is one):</p>
 <pre><code>      '".*"' ⎕R '⍈' ⍠('Greedy' 0) ⊣ 'He said "Yes" and "No"!'
 He said ⍈ and ⍈!</code></pre>
-
 <div class="leanpub_A">
 <h3>Specifying options</h3>
 <p>Various options are available to control aspects of Search and Replace; these are selected using the <em>variant</em> operator <code>⍠</code>.</p>
@@ -6726,7 +6668,6 @@ He said ⍈"</code></pre>
 <p>This example highlights a potential problem with input strings: many regular expressions work perfectly well as long as the input string is syntactically correct (or matches your expectations).</p>
 <p>That's the reason (among others) why regular expressions are not recommended for processing <abbr title="Hyper Text Mark-up language">HTML</abbr> because <abbr title="Hyper Text Mark-up language">HTML</abbr> is very often full of syntactical errors.</p>
 <p>However, if you can be certain that the <abbr title="Hyper Text Mark-up language">HTML</abbr> you have to deal with <em>is</em> syntactically correct <em>and</em> the piece of <abbr title="Hyper Text Mark-up language">HTML</abbr> is short and not nested then you can use regular expressions to process <abbr title="Hyper Text Mark-up language">HTML</abbr>.</p>
-
 <div class="leanpub_A">
 <h3>Regular expressions and <abbr title="Hyper Text Mark-up language">HTML</abbr></h3>
 <p>There are claims that you <em>cannot</em> parse <abbr title="Hyper Text Mark-up language">HTML</abbr> with regular expressions because a regular expression engine is a Finite Automata while <abbr title="Hyper Text Mark-up language">HTML</abbr> can be nested indefinitely. This is partly wrong and partly misleading.</p>
@@ -6871,7 +6812,6 @@ It's ⍈⍈.⍈⍈ plus ⍈⍈.⍈⍈.</code></pre>
 <p>We take the opportunity to add the dot (<code>.</code>) and the minus (<code>-</code>) to the character class.</p>
 <p>Note that the minus is not escaped; from the context the regular expression engine can work out that here the minus cannot mean from-to, so it is taken literally.</p>
 <p>Note also that the <code>.</code> is not escaped either: inside the pair of <code>[]</code> the <code>.</code> is <em>not</em> a metacharacter.</p>
-
 <div class="leanpub_A">
 <h3>Escaping several characters</h3>
 <p>Say you need to escape all the metacharacters because you want to search them. Escaping every single one of them with a backslash is laborious and decreases readability, but there is a better way:</p>
@@ -6972,7 +6912,6 @@ Americans spell it "⍈" and Brits "⍈".</code></pre>
 <p>We've learned that the <code>.</code> matched any character but not end of line.</p>
 <pre><code>      '".*"'⎕R'⍈'⊣ '"Foo' 'Goo"'
  "Foo  Goo"</code></pre>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -7051,7 +6990,6 @@ a←1 ⋄ ⍈←1 2 ⋄ txt←'The ⍝ marks a comment; foo' ⍝ set up vars a, 
  6 3 2  20 28 0  49 25 1</code></pre>
 <p>We have already discussed the transformation codes 0 (offset) and 1 (length) but not 3: this returns the pattern number which matched the input document, origin zero.</p>
 <p>In our case it is the third pattern (<code>foo</code>) we are interested in, so we can ignore those that are 0 and 1.</p>
-
 <div class="leanpub_A">
 <h3>Greedy and lazy</h3>
 <p>Using the option <code>⍠('Greedy' 0)</code> has a disadvantage: it makes <em>all</em> search patterns lazy.</p>
@@ -7128,7 +7066,6 @@ It's ⍈⍈⍈⍈⍈ plus ⍈⍈⍈⍈⍈⍈</code></pre>
 <pre><code>      '\d' '(?&lt;=\d).(?=\d)'⎕R'⍈'⊣'It''s 23.45 plus 99.12.'
 It's ⍈⍈⍈⍈⍈ plus ⍈⍈⍈⍈⍈.</code></pre>
 <p>That works! We use two expressions here: first we look for all digits and then we look for dots that have a digit to their right and their left.</p>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -7177,7 +7114,6 @@ abxyc⍈d</code></pre>
 <pre><code>body {
     font-size: 18px;
 }</code></pre>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -7465,7 +7401,7 @@ This ⍈; more: ⍈</code></pre>
 <hr>
 <p><strong>Footnotes</strong></p>
 <ol>
-<li id="fnref1"><p>Note that the “name” attribute is not part of the definition of <abbr title="Hyper Text Mark-up language">HTML</abbr>5; use the “ID” attribute instead.</p><a href="#fnref1" class="footnote_anchor"></a>
+<li id="fnref1"><p>Note that the “name” attribute is not part of the definition of HTML5; use the “ID” attribute instead.</p><a href="#fnref1" class="footnote_anchor"></a>
 </ol>
 </div>
 </article>
@@ -7549,6 +7485,7 @@ This ⍈; more: ⍈</code></pre>
 </a>
 </div>
 <p>Our aim is simple: code that is easy to understand and easy to change.</p>
+<p>(While reading this you might think something along the lines of: I've never heard a programmer say she strives for unmaintainable code, yet most GUI code is ugly spaghetti. Stay with us!)</p>
 <p>For that we do the following:</p>
 <ul>
 <li>We keep all controls and all data in a single namespace <code>N</code>; we've already discussed that, now we need to put this into practice.</li>
@@ -7556,7 +7493,13 @@ This ⍈; more: ⍈</code></pre>
 <p>This is not only easier to understand and maintain, it also allows us to skip over certain properties in the Tracer; an obvious example is a line <code>props,←⊂'Visible' 0</code>; it's easy to imagine why you don't want that to be executed when debugging a GUI application.</p></li>
 <li>We keep short the functions that create the GUI so that each function accomplishes just one task.</li>
 </ul>
-<p>While reading this you might think something along the lines of: I've never heard a programmer say she strives for unmaintainable code yet, most GUI code is ugly spaghetti. Stay with us!</p>
+<div class="h_tag">
+<a href="#The-code" id="The-code" class="autoheader_anchor">
+<h3>1.5. The code</h3>
+</a>
+</div>
+<p>As always it is recommended that you rewrite the code yourself. However, if for any reason you cannot do this then you can access the code in the two workspaces (<code>GUI.dws</code> and <code>GUI_2.dws</code>).</p>
+<p>The first workspace contains all the code. In “Changing the GUI” we demonstrate how easy it is the move controls around. The resulting code can be found in the second workspace.</p>
 <div class="h_tag">
 <a href="#The-implementation" id="The-implementation" class="autoheader_anchor">
 <h2>2. The implementation</h2>
@@ -7591,7 +7534,7 @@ This ⍈; more: ⍈</code></pre>
 [4]    N.∆TestFlag←testFlag
 [5]    N←CreateGUI N
 [6]    :If 0=testFlag
-[7]        N.SearchFor U.DQ N.∆Form
+[7]        N.SearchFor DQ N.∆Form
 [8]        Shutdown N
 [9]    :EndIf
 [10]  ⍝Done
@@ -7612,7 +7555,7 @@ This ⍈; more: ⍈</code></pre>
 <p>Notes:</p>
 <ul>
 <li>The function returns a shy result, the namespace <code>N</code>; this is only needed for test cases.</li>
-<li>Neither <code>U.DQ</code> nor <code>Shutdown</code> is executed if the right argument is <code>1</code>. We will discuss this later.</li>
+<li>Neither <code>DQ</code> nor <code>Shutdown</code> is executed if the right argument is <code>1</code>. We will discuss this later.</li>
 </ul>
 <div class="h_tag">
 <a href="#The-function-GUIInit" id="The-function-GUIInit" class="autoheader_anchor">
@@ -7621,7 +7564,7 @@ This ⍈; more: ⍈</code></pre>
 </div>
 <p>Next we introduce the <code>Init</code> function:</p>
 <pre><code>     ∇ N←Init dummy
-[1]    U←GuiUtils
+[1]    U←##.GuiUtils
 [2]    N←U.CreateNamespace
 [3]    N.∆Buttons←''
 [4]    N.∆Labels←N.⎕NS''
@@ -7635,7 +7578,7 @@ This ⍈; more: ⍈</code></pre>
 <li>It creates a reference <code>U</code> which points to the namespace <code>GuiUtils</code>. Note  <code>U</code> is <em>not</em> local to <code>Run</code>; otherwise the test cases — which we will eventually introduce — would have a problem.</li>
 <li>It calls a method <code>CreateNamespace</code> in <code>GuiUtils</code> which returns a namespace which is assigned to <code>N</code>.
 <p><strong>Watch out:</strong> it is this namespace that represents the GUI in the workspace. It will keep references to all controls and variables related to the GUI.</p></li>
-<li>It creates an empty global variable <code>∆Buttons</code> in <code>N</code> which we will use to collect references to all push buttons on the GUI when we create them.</li>
+<li>It creates an empty global variable <code>∆Buttons</code> in <code>N</code> which we will use to collect references to all push buttons on the GUI when we create them. This will become useful soon.</li>
 <li>It creates an anonymous namespace in <code>N</code> which is assigned to <code>∆Labels</code>. We will use this to collect references to all labels on the GUI when we create them.
 <p>The reason: normally we don't handle the labels after creating them, but occasionally we have to. So we separate them from the more important ones. That way they are not in our way but are still available if needed.</p></li>
 <li>It creates two global variables <code>∆V_Gap</code> and <code>∆H_Gap</code> in <code>N</code>. These are used for the vertical (<code>∆V_Gap</code>) and horizontal (<code>∆H_Gap</code>) distances between controls on our form.</li>
@@ -7650,10 +7593,19 @@ This ⍈; more: ⍈</code></pre>
 </a>
 </div>
 <p><code>CreateNamespace</code> is used to create the namespace <code>N</code>:</p>
-<pre><code>     ∇ r←CreateNamespace
+<pre><code>     ∇ r←CreateNamespace;body
 [1]    r←⎕NS''
-[2]    r.⎕FX'r←∆List' 'r←{⍵,[1.5]⍎¨⍵}'' ''~¨⍨↓⎕NL 2 9'
-[3]   ⍝Done
+[2]    body←''
+[3]    body,←⊂'r←∆List;list;refs'
+[4]    body,←⊂':If 0&lt;≢list←('' ''~¨⍨↓⎕NL 2 9)~'' ''~¨⍨↓''∆''⎕NL 2 9'
+[5]    body,←⊂'   refs←⍎¨list'
+[6]    body,←⊂'   r←list,[1.5]{⍵ ⎕WG''Type''}¨refs'
+[7]    body,←⊂'   r,←{11::'''' ⋄ ⍵ ⎕WG''Caption''}¨refs'
+[8]    body,←⊂':Else'
+[9]    body,←⊂'    r←0 3⍴'''''
+[10]   body,←⊂':EndIf'
+[11]   r.⎕FX body
+[12]  ⍝Done
      ∇</code></pre>
 <p>This function creates an unnamed namespace and populates it with a function <code>∆List</code> which returns a matrix with two columns:</p>
 <table>
@@ -7674,7 +7626,7 @@ This ⍈; more: ⍈</code></pre>
 </tr>
 </tbody>
 </table>
-<p>After <code>Init</code> runs the <code>N</code> namespace does not yet contain any GUI controls but it does contains some variables that will define certain properties of the GUI:</p>
+<p>After <code>Init</code> runs the <code>N</code> namespace does not yet contain any GUI controls but it does contain some variables that will define certain properties of the GUI:</p>
 <pre><code>      N.∆List
  InputFont                         #._MyApp.MyApp.GUI.InputFont
  ∆Buttons
@@ -7719,7 +7671,7 @@ This ⍈; more: ⍈</code></pre>
 <li>Line [16] assigns a callback <code>OnConfigure</code> to the Configure event. The callback gets a left argument which is a two-item vector with the constant 335 and a dynamically calculated value for the width.
 <p>The value is calculated only once, for the assignment. This is necessary: the number of Configure events can be overwhelming.</p></li>
 </ul>
-<p>That callback is very important: without it any Configure event would cause a VALUE ERROR, which in turn would make you lose your workspace because there are just too many of them. So we introduce it straight away; we cannot forget it.</p>
+<p>That callback is very important: without it any Configure event would cause a VALUE ERROR, which in turn would make you lose your workspace because there are just too many of them. So we introduce it straight away so that we cannot forget creating it.</p>
 <div class="h_tag">
 <a href="#The-function-GUIOnConfigure" id="The-function-GUIOnConfigure" class="autoheader_anchor">
 <h3>2.6. The function <code>GUI.OnConfigure'</code></h3>
@@ -7727,14 +7679,14 @@ This ⍈; more: ⍈</code></pre>
 </div>
 <pre><code>∇ OnConfigure←{⍵[1 2 3 4],(⍺[1]⌈⍵[5]),(⍺[2]⌈⍵[6])}
 ∇</code></pre>
-<p>Since the Tracer cannot (currently) step into one line dfns, defining the <code>OnConfigure</code> callback as a one liner is exceedingly useful as it allows you to avoid stepping into the callback, which is itself likely to result in even more configure events being generated. As already mentioned it is absolutely essential that this function is a one-liner because that makes the Tracer ignore this function.</p>
+<p>Since the Tracer cannot (currently) step into one line dfns, defining the <code>OnConfigure</code> callback as a one liner is exceedingly useful as it allows you to avoid stepping into the callback, which is itself likely to result in even more configure events being generated. That allows us to trace into <code>⎕DQ</code> without getting ourselves in trouble.</p>
 <div class="h_tag">
 <a href="#All-the-GUICreate-functions" id="All-the-GUICreate-functions" class="autoheader_anchor">
 <h3>2.7. All the <code>GUI.Create*</code> functions</h3>
 </a>
 </div>
-<p>Although we list all functions here you might not necessarily follow us on each of them in detail, but you should at least keep reading until you reach <code>GUI.AdjustGroupSize</code>.</p>
-<p>However, we suggest to scan through them rather than skipping them and carrying on with <a href="#The-callback-functions" class="bookmark_link">the callback functions</a>.</p>
+<p>Although we list all <code>Create*</code>-functions here you might not necessarily follow us on each of them in detail. However, you <strong>must</strong> read and understand what is said about <code>CreateMainForm</code>, and we suggest you keep reading until you reach <code>GUI.AdjustGroupSize</code>.</p>
+<p>We also suggest to scan through them rather than just skipping them and carrying on with <a href="#The-function-GuiUtilsGetRef2n" class="bookmark_link">the function <code>GetRef2n</code></a>.</p>
 <div class="h_tag">
 <a href="#The-function-CreateMainForm" id="The-function-CreateMainForm" class="autoheader_anchor">
 <h4>2.7.1. The function <code>CreateMainForm</code></h4>
@@ -7849,20 +7801,21 @@ This ⍈; more: ⍈</code></pre>
 <h4>2.7.6. The function <code>GUI.CreateStartLookingHere</code></h4>
 </a>
 </div>
-<pre><code> N←CreateStartLookingHere N;∆
- ∆←⊂'Label'
- ∆,←⊂'Posn'((N.∆V_Gap+⊃U.AddPosnAndSize N.SearchFor)N.∆H_Gap)
- ∆,←⊂'Caption' 'Start &amp;looking here:'
- ∆,←⊂'Attach'('Top' 'Left' 'Top' 'Left')
- N.∆Labels.StartLookingHere←⍎'StartLookingHere'N.∆Form.⎕WC ∆
-
- ∆←⊂'Edit'
- ∆,←⊂'Posn'((⊃U.AddPosnAndSize N.∆Labels.StartLookingHere)N.∆H_Gap)
- ∆,←⊂'Size'(⍬(N.∆Form.Size[2]-2×N.∆H_Gap))
- ∆,←⊂'FontObj'N.InputFont
- ∆,←⊂'Attach'('Top' 'Left' 'Top' 'Right')
- N.StartLookingHere←⍎'StartLookingHere'N.∆Form.⎕WC ∆
-⍝Done</code></pre>
+<pre><code>     ∇ N←CreateStartLookingHere N;∆
+[1]    ∆←⊂'Label'
+[2]    ∆,←⊂'Posn'((N.∆V_Gap+⊃U.AddPosnAndSize N.SearchFor)N.∆H_Gap)
+[3]    ∆,←⊂'Caption' 'Start &amp;looking here:'
+[4]    ∆,←⊂'Attach'('Top' 'Left' 'Top' 'Left')
+[5]    N.∆Labels.StartLookingHere←⍎'StartLookingHere'N.∆Form.⎕WC ∆
+[6]
+[7]    ∆←⊂'Edit'
+[8]    ∆,←⊂'Posn'((⊃U.AddPosnAndSize N.∆Labels.StartLookingHere)N.∆H_Gap)
+[9]    ∆,←⊂'Size'(⍬(N.∆Form.Size[2]-2×N.∆H_Gap))
+[10]   ∆,←⊂'FontObj'N.InputFont
+[11]   ∆,←⊂'Attach'('Top' 'Left' 'Top' 'Right')
+[12]   N.StartLookingHere←⍎'StartLookingHere'N.∆Form.⎕WC ∆
+[13]  ⍝Done
+     ∇</code></pre>
 <p>Note that this time the vertical position of the label is defined by the total of the <code>Posn</code> and <code>Size</code> of the <em>Search for</em> edit control plus <code>N.∆V_Gap</code>.</p>
 <div class="h_tag">
 <a href="#The-function-GUICreateOptionsGroup" id="The-function-GUICreateOptionsGroup" class="autoheader_anchor">
@@ -7999,16 +7952,18 @@ This ⍈; more: ⍈</code></pre>
 [16]   ∆,←⊂'Style' 'Check'
 [17]   ∆,←⊂'Posn'((⊃U.AddPosnAndSize N.IsRegEx),4×N.∆H_Gap)
 [18]   ∆,←⊂'Caption' 'Dot&amp;All'
-[19]   N.DotAll←⍎'DotAll'N.∆RegEx.⎕WC ∆
-[20]
-[21]   ∆←⊂'Button'
-[22]   ∆,←⊂'Style' 'Check'
-[23]   ∆,←⊂'Posn'((⊃U.AddPosnAndSize N.DotAll),4×N.∆H_Gap)
-[24]   ∆,←⊂'Caption' '&amp;Greedy'
-[25]   N.Greedy←⍎'Greedy'N.∆RegEx.⎕WC ∆
-[26]
-[27]   AdjustGroupSize N.∆RegEx
-[28]  ⍝Done
+[19]   ∆,←⊂'Active' 0
+[20]   N.DotAll←⍎'DotAll'N.∆RegEx.⎕WC ∆
+[21]
+[22]   ∆←⊂'Button'
+[23]   ∆,←⊂'Style' 'Check'
+[24]   ∆,←⊂'Posn'((⊃U.AddPosnAndSize N.DotAll),4×N.∆H_Gap)
+[25]   ∆,←⊂'Caption' '&amp;Greedy'
+[26]   ∆,←⊂'Active' 0
+[27]   N.Greedy←⍎'Greedy'N.∆RegEx.⎕WC ∆
+[28]
+[29]   AdjustGroupSize N.∆RegEx
+[30]  ⍝Done
      ∇</code></pre>
 <p>This function ensures both <em>DotAll</em> and <em>Greedy</em> are indented, to emphasise they are available only when the <em>Is RegEx</em> check box is ticked.</p>
 <p>The callback <code>OnToggleRegEx</code> will toggle the <code>Active</code> property of these two check boxes accordingly.</p>
@@ -8053,7 +8008,6 @@ This ⍈; more: ⍈</code></pre>
 [18]  ⍝Done
      ∇</code></pre>
 <p>Note that the <em>Find</em> button gets a callback <code>OnFind</code> assigned to the Select event. That's the real work horse.</p>
-
 <div class="leanpub_A">
 <h3>On callbacks</h3>
 <p>Rather than doing all the hard work in the callback we could have assigned a 1 to <code>N.Find.onSelect</code> (so that clicking the button quits <code>⎕DQ</code> or <code>Wait</code>) and doing the hard work after that. At first glance there seems to be little difference between the two approaches.</p>
@@ -8063,8 +8017,6 @@ This ⍈; more: ⍈</code></pre>
 <ol start="1">
 <li>call <code>Run</code></li>
 <li>populate the <em>Search for</em> and <em>Start looking here</em> fields</li>
-<li>“click” the <em>Find</em> button programmatically</li>
-<li>populate the “Search for” and “Start looking here” fields</li>
 <li>“click” the “Find” button programmatically</li>
 <li>check the contents of <code>N.HitList</code></li>
 </ol>
@@ -8105,7 +8057,7 @@ This ⍈; more: ⍈</code></pre>
 [3]        ∇ ⍵.##
 [4]    }
      ∇</code></pre>
-<p>Of course this means that you should not use the name <code>N</code> — or whatever name <em>you</em> prefer instead for this namespace — anywhere in the hierarchy.</p>
+<p>Of course this means that you should not use the name <code>N</code> — or whatever name <em>you</em> prefer instead of <code>N</code> for this namespace — anywhere in the hierarchy.</p>
 <p>Note that line [2] is an insurance against <code>GetRef2n</code> being called inside a callback that is associated with a control that is <em>not</em> owned by the main form. Of course that should not happen – because it makes no sense – but if you do it by accident then without that line the function would call itself recursively forever.</p>
 <div class="h_tag">
 <a href="#The-callback-functions" id="The-callback-functions" class="autoheader_anchor">
@@ -8134,7 +8086,7 @@ This ⍈; more: ⍈</code></pre>
 </div>
 <pre><code>     ∇ OnToggleIsRegEx←{
 [1]        N←U.GetRef2n⊃⍵
-[2]        N.(DotAll Greedy).Active←~N.IsRegEx.State
+[2]        N.(DotAll Greedy).Active←N.IsRegEx.State
 [3]        ⍬
 [4]    }
      ∇</code></pre>
@@ -8158,24 +8110,25 @@ This ⍈; more: ⍈</code></pre>
 <h4>2.9.4. The function <code>GUI.OnFind</code></h4>
 </a>
 </div>
-<pre><code>     ∇ r←OnFind msg;N
+<pre><code>     ∇ r←OnFind msg;N;D
 [1]    r←0
 [2]    N←U.GetRef2n⊃msg
-[3]    N.∆WriteToStatusbar''
-[4]    :If 0∊⍴N.SearchFor.Text
-[5]        Dialogs.ShowMsg N'"Search for" is empty - nothing to look for...'
-[6]    :ElseIf 0∊⍴N.StartLookingHere.Text
-[7]        Dialogs.ShowMsg N'"Start looking here" is empty?!'
-[8]    :ElseIf 9≠⎕NC N.StartLookingHere.Text
-[9]    :AndIf (,'#')≢,N.StartLookingHere.Text
-[10]       Dialogs.ShowMsg N'Contents of "Start looking here" is not a namespace'
-[11]   :Else
-[12]       Find N
-[13]   :EndIf
-[14]  ⍝Done
+[3]    D←##.Dialogs
+[4]    N.∆WriteToStatusbar''
+[5]    :If 0∊⍴N.SearchFor.Text
+[6]        D.ShowMsg N'"Search for" is empty - nothing to look for...'
+[7]    :ElseIf 0∊⍴N.StartLookingHere.Text
+[8]        D.ShowMsg N'"Start looking here" is empty?!'
+[9]    :ElseIf 9≠⎕NC N.StartLookingHere.Text
+[10]    :AndIf (,'#')≢,N.StartLookingHere.Text
+[11]       D.ShowMsg N'Contents of "Start looking here" is not a namespace'
+[12]   :Else
+[13]       Find N
+[14]   :EndIf
+[15]  ⍝Done
      ∇</code></pre>
 <p>The callback performs some checks and either puts an error message on display by calling a function <code>Dialogs.ShowMsg</code> or executes the <code>Find</code> function, providing <code>N</code> as the right argument.</p>
-<p>Note that <code>Dialog.ShowMsg</code> follows exactly the same principles we have outlines in this chapter, so we do not discuss it in detail, but you can download the code and look at it if you want to.</p>
+<p>Note that <code>Dialog.ShowMsg</code> follows exactly the same principles we have outlined in this chapter, so we do not discuss it in detail, but you can download the code and look at it if you want to.</p>
 <p>One thing should be pointed out however: the form created by <code>Dialog.ShowMsg</code> is actually a child of our main form.</p>
 <p>That gets us around a nasty problem: when it's not a child of the main form and you give the focus to another application which then hides completely the form created by <code>Dialog.ShowMsg</code> but not all of the main form, then a click on the main form should bring the application to the front, with the focus on <code>Dialogs.ShowMsg</code>, but that doesn’t happen by default.</p>
 <p>By making it a child of the main form we enforce this behaviour. We don't want the user to believe the application has stopped working just because the form is hidden by another application window.</p>
@@ -8199,7 +8152,7 @@ This ⍈; more: ⍈</code></pre>
 [11]   }
      ∇</code></pre>
 <p>An important thing to discuss is the function <code>CollectData</code>. We want our 'business logic' to be independent from the GUI. So we don't want anything in <code>##.BusinessLogic</code> to access the <code>N</code> namespace.</p>
-<p>But it needs access to the data entered and decisions made by the user on the GUI. So we collect all the data and assign them to variables inside a newly created anonymous namespace, which we assign to <code>G</code>.</p>
+<p>But it needs access to the data entered and decisions made by the user on the GUI. So we collect all the data and assign them to variables inside a newly created anonymous namespace, which we assign to <code>G</code> (for “Global”).</p>
 <div class="h_tag">
 <a href="#The-function-GUICollectData" id="The-function-GUICollectData" class="autoheader_anchor">
 <h3>2.11. The function <code>GUI.CollectData</code></h3>
@@ -8226,7 +8179,7 @@ This ⍈; more: ⍈</code></pre>
 [18]   }
      ∇</code></pre>
 <p>This namespace (<code>G</code>) is passed as the only argument to the <code>Find</code> function.</p>
-<p>Suppose you replaces the Windows native GUI by an <abbr title="Hyper Text Mark-up language">HTML</abbr>5/JavaScript GUI. All you have to do here is ensure the <code>G</code> namespace is fed with all the data needed. <code>##.BusinessLogic</code> will not be affected in any way.</p>
+<p>Suppose you replaces the Windows native GUI by an HTML5/JavaScript GUI. All you have to do here is ensure the <code>G</code> namespace is fed with all the data needed. <code>##.BusinessLogic</code> will not be affected in any way by the change of the GUI technology.</p>
 <div class="h_tag">
 <a href="#The-function-BusinessLogicFind" id="The-function-BusinessLogicFind" class="autoheader_anchor">
 <h3>2.12. The function <code>##.BusinessLogic.Find</code></h3>
@@ -8288,14 +8241,44 @@ This ⍈; more: ⍈</code></pre>
 [2]    :Trap 6 ⋄ 2 ⎕NQ N.∆Form'Close' ⋄ :EndTrap
      ∇</code></pre>
 <p>This function ensures the main form is closed in case it still exists.</p>
-<p>Note that we need the trap. Even checking the main form with <code>⎕NS</code> might fail if the user clicks the Close box right after the check has been performed but before the next line is executed.</p>
-<p>This would produce one of these nasty crashes that occur only every odd year and are not reproducible. This is one of the rare cases where a trap is better than any check.</p>
+<p>Note that we need the trap. Even checking the main form with <code>⎕NC</code> might fail if the user clicks the Close box right after the check has been performed but before the next line is executed.</p>
+<p>This would produce one of these nasty crashes that occur only every odd year and are not reproducible. This is one of the rare cases where a trap is better than a check.</p>
 <div class="h_tag">
-<a href="#Changing-the-GUI" id="Changing-the-GUI" class="autoheader_anchor">
-<h2>3. Changing the GUI</h2>
+<a href="#The-advantages" id="The-advantages" class="autoheader_anchor">
+<h2>3. The advantages</h2>
 </a>
 </div>
-<p>To demonstrate the power of the above approach we have to show it is easy to change.</p>
+<p>So what exactly are the advantages of what we've done compared with the ordinary approach? Well, most importantly, all the controls that matter are available via the <code>N</code> namespace without any kind of hierarchy except that we separated the menubar and the labels from the other controls.</p>
+<p>That gives us easy access to the controls in any of our callbacks, and it makes it easy to list all the controls that matter:</p>
+<pre><code>      N.∆List
+ APL               Button       APL
+ Comments          Button       Comments
+ DotAll            Button       Dot&amp;All
+ Find              Button       Find
+ FnsOprScripts     Button       Fns, opr and scripts
+ Greedy            Button       &amp;Greedy
+ HitList           ListView
+ InputFont         Font
+ IsRegEx           Button       Is RegE&amp;x
+ MatchAPLname      Button       Match &amp;APL name
+ MatchCase         Button       &amp;Match case
+ NameList          Button       Name list &amp;only (⎕NL)
+ Replace           Button       Replace
+ Resize            Button       Resize (F12)
+ SearchFor         Edit
+ StartLookingHere  Edit
+ StatusField1      StatusField
+ Statusbar         StatusBar
+ Text              Button       Text
+ Variables         Button       Variables</code></pre>
+<p>The first column carries the name, the second column the type of the control and the third column the caption (if the control in question has a property “caption” that is) or an empty vector is not applicable.</p>
+<p>But the loss of hierarchy comes with another advantage: in case we move a control elsewhere on the GUI nothing in <code>N</code> changes at all!</p>
+<div class="h_tag">
+<a href="#Changing-the-GUI" id="Changing-the-GUI" class="autoheader_anchor">
+<h2>4. Changing the GUI</h2>
+</a>
+</div>
+<p>To appreciate the power of the approach outlined in this chapter we have to demonstrate that is easy to change.</p>
 <p>Let's suppose the following:</p>
 <ol start="1">
 <li>We have a user who is unhappy with the arrangement of the controls on the GUI. On her huge 5k monitor it looks a bit clumsy.</li>
@@ -8355,7 +8338,6 @@ This ⍈; more: ⍈</code></pre>
 ...
      ∇</code></pre>
 <p>We keep the old version to make a comparison easy.</p>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/warning.png" alt="Warning">
 <div>
@@ -8386,26 +8368,26 @@ This ⍈; more: ⍈</code></pre>
 <p>And that was it.</p>
 <div class="h_tag">
 <a href="#Testing" id="Testing" class="autoheader_anchor">
-<h2>4. Testing</h2>
+<h2>5. Testing</h2>
 </a>
 </div>
 <div class="h_tag">
 <a href="#2" id="2" class="autoheader_anchor">
-<h3>4.1. Prerequisites</h3>
+<h3>5.1. Prerequisites</h3>
 </a>
 </div>
 <p>For implementing tests execute the following steps:</p>
 <ol start="1">
 <li>Create a namespace with
-<pre><code>'TestCases'#._Meddy.⎕ns''</code></pre></li>
-<li>Load the script <code>APLTreeUtils</code> and the class <code>Testers</code> into <code>#</code> as discusses in the chapter regarding <a href="./08 Testing — the sound of breaking glass.html" class="external_link">tests</a> chapter.</li>
+<pre><code>'TestCases'#.MyApp.⎕ns''</code></pre></li>
+<li>Load the script <code>APLTreeUtils</code> and the class <code>Testers</code> into <code>#</code> as discusses in the chapter regarding <a href="./08 Testing — the sound of breaking glass.html" class="external_link">tests</a>.</li>
 <li>Execute these statements:
 <pre><code>)cs #._MyApp.TestCases
 #.Tester.EstablishHelpersIn ⍬</code></pre></li>
 </ol>
 <div class="h_tag">
 <a href="#Testing-Find" id="Testing-Find" class="autoheader_anchor">
-<h3>4.2. Testing “Find”</h3>
+<h3>5.2. Testing “Find”</h3>
 </a>
 </div>
 <p>Edit <code>#._MyApp.TestCases.Test_000</code> and make it look like this:</p>
@@ -8430,7 +8412,7 @@ This ⍈; more: ⍈</code></pre>
 <p>That's not a problem because we don't save the workspace, we recompile it from scratch whenever we start a development session.</p>
 <div class="h_tag">
 <a href="#Testing-the-business-logic" id="Testing-the-business-logic" class="autoheader_anchor">
-<h3>4.3. Testing the business logic</h3>
+<h3>5.3. Testing the business logic</h3>
 </a>
 </div>
 <p>Take a copy of the first test and make it look like this:</p>
@@ -8451,7 +8433,7 @@ This ⍈; more: ⍈</code></pre>
      ∇</code></pre>
 <div class="h_tag">
 <a href="#Test-missing-Search-For" id="Test-missing-Search-For" class="autoheader_anchor">
-<h3>4.4. Test missing “Search For”</h3>
+<h3>5.4. Test missing “Search For”</h3>
 </a>
 </div>
 <p>Take a copy of the first test and make it look like this:</p>
@@ -8478,7 +8460,7 @@ This ⍈; more: ⍈</code></pre>
 [3]   ⍝ Returns 1 when running under test conditions and 0 otherwise.
 [4]   ⍝ In test mode no GUI is created at all but a global `N.∆ErrorMsg` is set to `msg`.
 [5]    r←0
-[6]    caption←{0&lt;⎕NC ⍵:⍎⍵ ⋄ 'Attention!'}'caption'
+[6]    caption←{0&lt;⎕NC ⍵:⍎⍵ ⋄ 'MyApp: Attention!'}'caption'
 <span class="leanpub_code">[7]    :If N.∆TestFlag
 [8]        N.∆ErrorMsg←msg
 [9]        r←1
@@ -8494,7 +8476,7 @@ This ⍈; more: ⍈</code></pre>
 <p>Now it becomes apparent why we assigned the right argument of <code>GUI.Run</code> — <code>testFlag</code> — to <code>N.∆TestFlag</code>: we need this potentially in order to avoid handing over control to the user; in test cases we don't want to do this.</p>
 <div class="h_tag">
 <a href="#Final-steps" id="Final-steps" class="autoheader_anchor">
-<h3>4.5. Final steps</h3>
+<h3>5.5. Final steps</h3>
 </a>
 </div>
 <ol start="1">
@@ -8503,7 +8485,7 @@ This ⍈; more: ⍈</code></pre>
 </ol>
 <div class="h_tag">
 <a href="#Pros-and-cons-of-GUI-testing" id="Pros-and-cons-of-GUI-testing" class="autoheader_anchor">
-<h3>4.6. Pros and cons of GUI testing</h3>
+<h3>5.6. Pros and cons of GUI testing</h3>
 </a>
 </div>
 <p>GUIs tend to change quite a lot over time, and rewriting — or adding — plenty of test cases can take a significant amount of time, sometimes far more than needed to implement the GUI in the first place.</p>
@@ -8511,13 +8493,13 @@ This ⍈; more: ⍈</code></pre>
 <p>On the other hand if the application's main purposes is to make complex tasks manageable, there will be a lot of dependencies and checking going on in the background. In that case exhaustive test cases might well be a good investment if only because you will find bugs for sure. Your call.</p>
 <div class="h_tag">
 <a href="#Conclusion" id="Conclusion" class="autoheader_anchor">
-<h2>5. Conclusion</h2>
+<h2>6. Conclusion</h2>
 </a>
 </div>
-<p>We believe we have demonstrated the combination of techniques outlined in this chapter leads not only to better code but makes it also far easier actually to write GUI applications in the first place.</p>
+<p>We believe we have demonstrated that the combination of techniques outlined in this chapter leads not only to better code but makes it also far easier to actually write GUI applications in the first place.</p>
 <p>Having said this, the approach outlined here is insufficient if the GUI of an application changes heavily depending on the user's actions.</p>
 <p>However, the principal ideas can still be used but the list of controls were better compiled from scratch at the start of each callback function rather than having them as a static list in a namespace.</p>
-<p>It was Paul Mansour came up with many of the ideas outlined here. We stole plenty from him and owe him a big thank you.</p>
+<p>It was Paul Mansour who came up with many of the ideas outlined here. We stole plenty from him and owe him a big thank you.</p>
 <div id="footnotes_div">
 <hr>
 <p><strong>Footnotes</strong></p>
@@ -8552,7 +8534,6 @@ This ⍈; more: ⍈</code></pre>
 <p>Windows comes with quite a number of environment variables. Those variables are helpful in addressing, say, a particular path without actually using a physical path.</p>
 <p>For example, on most PCs, Windows is installed in C:\Windows, but this is by no means guaranteed. It is therefore much better to address this particular folder as <code>⊣2 ⎕NQ # 'GetEnvironment' 'WINDIR'</code>.</p>
 <p>Below some of the environment variables found on a Windows 10 system are listed and explained.</p>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -8961,7 +8942,6 @@ This ⍈; more: ⍈</code></pre>
 <p>By default, an aplcore is saved with the name <code>aplcore</code> in what is at that moment the current directory. This is not nice because it means that any aplcore might overwrite an earlier one. That can become particularly annoying when you try to copy from an aplcore with :</p>
 <pre><code>     )copy C:\MyAplcore.</code></pre>
 <p>but this might actually create another aplcore, overwriting the first one. Now it might well be too late to restrict the attempt to copy to what is most important to you: the object or objects you have worked on most recently.</p>
-
 <div class="leanpub_A">
 <p>If the aplcore is saved at all that is, because if the current directory is something like <code>C:\Program files\</code> then you won't have the right to save into this directory anyway.</p>
 <p>When a program asks Windows to save a file in a location where that program has no write permission (e.g. <code>C:\Program Files</code>, <code>C:\Program Files (x86)</code>, <code>C:\Windows</code>) then Windows will tell the application that it has fulfilled the request, but the file will actually be saved in something like <code>C:\Users\{username}\AppData\Local\VirtualStore\Program Files\Dyalog\Dyalog APL-64 17.0 Unicode\</code></p>
@@ -9022,7 +9002,6 @@ This ⍈; more: ⍈</code></pre>
 <p>This means that you can execute the function at will at any time in order to re-initialise your environment.</p></li>
 </ul>
 <p>The function may be saved in that file either on its own or as part of a namespace.</p>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -9159,7 +9138,6 @@ This ⍈; more: ⍈</code></pre>
 <p>If on the other hand you run occasionally (let alone often) more than one instance of Dyalog in parallel then you are familiar with how it feels when all of a sudden an unexpected dialog box pops up, be it an aplcore or a message box asking “Are you sure?” when you have no idea what you are expected to be sure about, or which instance has just crashed.</p>
 <p>There is a way to get around this. With version 14.0 Windows captions became configurable. This is a screenshot from the online help:</p>
 <p><img src="Images/HelpOnWindowCaptions.png" alt="Dyalog's help on Windows captions" title="Dyalog's help on Windows captions"></p>
-
 <div class="leanpub_A">
 <h3>Help — online versus offline</h3>
 <p>There are pros and cons:</p>
@@ -9296,13 +9274,13 @@ This ⍈; more: ⍈</code></pre>
 </a>
 </div>
 <dl>
-<dt>Double-clicking a Dyalog <abbr title="Executable file with the extension 'exe'">EXE</abbr></dt>
+<dt>Double-clicking a Dyalog EXE</dt>
 <dd><p>The <abbr title="Executable file with the extension 'exe'">EXE</abbr>'s installation path is the current directory.</p></dd>
 </dl>
 <dl>
-<dt>Calling a Dyalog <abbr title="Executable file with the extension 'exe'">EXE</abbr> or a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> from a console window</dt>
+<dt>Calling a Dyalog EXE or a DYAPP from a console window</dt>
 <dd><p>The current directory of the console window is also going to be the <abbr title="Executable file with the extension 'exe'">EXE</abbr>'s current directory.</p></dd>
-<dt>Double-clicking <abbr title="Dyalog workspace">D<abbr title="Short for Workspaces">WS</abbr></abbr> or <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr></dt>
+<dt>Double-clicking DWS or DYAPP</dt>
 <dd><p>The current directory is going to be where the workspace or the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> file lives.</p></dd>
 </dl>
 <dl>
@@ -9337,11 +9315,11 @@ This ⍈; more: ⍈</code></pre>
 </tr>
 </tbody>
 </table>
-<p>It's similar for <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>s, though they don't load a workspace but assemble it dynamically. In case of a double-click on a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> luckily there is no need to do anything because the current directory will be the folder the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> lives in, which is exactly how it should be.</p>
+<p>It's similar for DYAPPs, though they don't load a workspace but assemble it dynamically. In case of a double-click on a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> luckily there is no need to do anything because the current directory will be the folder the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> lives in, which is exactly how it should be.</p>
 <table style="font-size:xx-large;color:red;">
 <tbody>
 <tr>
-<td>⍝TODO⍝: we need a mechanism for <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>s in case they got called programmitically!</td>
+<td>⍝TODO⍝: we need a mechanism for DYAPPs in case they got called programmitically!</td>
 </tr>
 </tbody>
 </table>

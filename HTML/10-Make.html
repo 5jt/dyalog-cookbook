@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="scroll-behavior:smooth" >
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta charset="utf-8">
@@ -108,7 +108,7 @@
 </ul>
 <p>At first glance you might think all we need are two versions of the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>, one for development and one for producing the <abbr title="Executable file with the extension 'exe'">EXE</abbr>, but there will be tasks we cannot carry out with this approach. Examples are:</p>
 <ul>
-<li>On our development machine <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>s are associated (in the Windows Registry) with a single version of Dyalog. We need a way to control which version that is, even if at this point there is just one version installed on our machine.</li>
+<li>On our development machine DYAPPs are associated (in the Windows Registry) with a single version of Dyalog. We need a way to control which version that is, even if at this point there is just one version installed on our machine.</li>
 <li>We might want to convert any Markdown documents – like README.<abbr title="File with the extension 'md' that contains markdown">MD</abbr> – into <abbr title="Hyper Text Mark-up language">HTML</abbr> documents. While the <abbr title="File with the extension 'md' that contains markdown">MD</abbr> is the source, only the <abbr title="Hyper Text Mark-up language">HTML</abbr> will be shipped.</li>
 <li>We need to ensure the Help system – which we will introduce soon – is properly compiled and configured by the Make utility.</li>
 <li>Soon we shall need an installer that produces an <abbr title="Executable file with the extension 'exe'">EXE</abbr> we can send to the customer for installing the software.</li>
@@ -189,7 +189,6 @@ Run #.Tester.EstablishHelpersIn #.Tests
 <h2>Make the application</h2>
 </a>
 </div>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -199,7 +198,6 @@ Run #.Tester.EstablishHelpersIn #.Tests
 
 <p>At first sight it might seem all we need is a reduced version of <code>MyApp.dyapp</code>, but not so. Soon we will discuss how to add a Help system to our application.</p>
 <p>We must then make sure that the Help system is compiled properly when the application is assembled. Later, more tasks will come up. Conclusion: our Make file cannot be a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>; we need more flexibility.</p>
-
 <div class="leanpub_A">
 <h3>More complex scenarios</h3>
 <p>In a more complex application than ours you might prefer a different approach. Using an <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> file for this is not a bad idea: it gives you scope to define more than just the modules to be loaded, and some code to execute.</p>
@@ -213,7 +211,7 @@ Run #.Tester.EstablishHelpersIn #.Tests
 </a>
 </div>
 <p>For now, we’ll create a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> file <code>Make.dyapp</code> that performs the Make.</p>
-<p>However, if you want to specify explicitly the version of Dyalog that should run this <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> rather than using whichever version happens to be associated with the file extension <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> at the time you double-click it, (also <abbr title="Dyalog workspace">D<abbr title="Short for Workspaces">WS</abbr></abbr> and <abbr title="File with the extension 'dyalog' holding APL code">DYALOG</abbr>) you need a batch file that starts the correct version of Dyalog.</p>
+<p>However, if you want to specify explicitly the version of Dyalog that should run this <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> rather than using whichever version happens to be associated with the file extension <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> at the time you double-click it, (also <abbr title="Dyalog workspace">DWS</abbr> and <abbr title="File with the extension 'dyalog' holding APL code">DYALOG</abbr>) you need a batch file that starts the correct version of Dyalog.</p>
 <p>Create such a batch file as <code>Make.bat</code>:</p>
 <pre><code>"C:\Program Files\Dyalog\Dyalog APL{yourPreferredVersion}\Dyalog.exe" DYAPP="%~dp0Make.dyapp"
 @echo off
@@ -422,7 +420,6 @@ Active      = 0
 :EndClass</code></pre>
 <p><code>Export</code> automates what we’ve done so far by calling the <em>Export</em> command from the <em>File</em> menu. If the <em>Bind</em> method fails, it retries up to 50 times before giving up.</p>
 <p>From experience we know that, with the OS, the machine, the network, the filesystem and who knows what else, the command can fail several times before finally succeeding.</p>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -445,7 +442,6 @@ Active      = 0
 <p>Open a Windows Explorer (Windows + E), navigate to the folder hosting the <abbr title="Executable file with the extension 'exe'">EXE</abbr>, right-click the <abbr title="Executable file with the extension 'exe'">EXE</abbr> and select <em>Properties</em> from the context menu, then click on the <em>Details</em> tab.</p>
 <p><img src="./Images/Stand-alone-properties.png" alt="EXEs properties" title="APL Team's dots"></p>
 <p>As you can see, the fields <em>File version</em>, <em>Product name</em>, <em>Product version</em> and <em>Copyright</em> hold the information we have specified.</p>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/warning.png" alt="Warning">
 <div>
@@ -487,7 +483,7 @@ Active      = 0
 <h2>Workflow</h2>
 </a>
 </div>
-<p>With the two <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>s and the <abbr title="Executable file that contains batch commands">BAT</abbr> file, your development cycle now looks like this:</p>
+<p>With the two DYAPPs and the <abbr title="Executable file that contains batch commands">BAT</abbr> file, your development cycle now looks like this:</p>
 <ol start="1">
 <li>Launch <code>MyApp.dyapp</code> and check the test results.</li>
 <li>Fix any errors and rerun <code>#.Tests.Run</code> until it’s fine. If you edit the test themselves, either rerun

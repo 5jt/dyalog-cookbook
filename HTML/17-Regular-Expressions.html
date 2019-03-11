@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="scroll-behavior:smooth" >
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta charset="utf-8">
@@ -172,7 +172,6 @@
 0
       'cat' ⎕s 0⊣ 'the cat sat on the medallion'
  4</code></pre>
-
 <div class="leanpub_A">
 <h3>Operators, operands, derived functions and arguments</h3>
 <p><code>⎕S</code> is, like <code>⎕R</code>, an <em>operator</em>. An operator takes either just a left operand (monadic) or a left and right operand (dyadic) and forms a so-called derived function. For example, the operator <code>/</code> when given a left operand <code>+</code> forms the derived function <em>sum</em>.</p>
@@ -200,7 +199,6 @@ cat sat on the medallion</code></pre>
  8 12</code></pre>
 <p>That gives us the offset of the two double quotes, but what if we want to have the offset and the length of any string found <em>between</em> — and including — the double quotes?</p>
 <p>For that we need to introduce the <em>metacharacter</em> dot (<code>.</code>), which has a special meaning in a regular expression: it represents <em>any</em> character. (Not quite: we will soon discuss the one and only exception, the NewLine character).</p>
-
 <div class="leanpub_A">
 <h3>Metacharacters</h3>
 <p>Metacharacters, sometimes called special characters, are characters with a special meaning in a regular expression.</p>
@@ -237,7 +235,6 @@ cat sat on the medallion</code></pre>
 ⍈one⍈two⍈three⍈⍈four
       '_{2,3}' ⎕R '⍈' ⊢'_one__two___three____four'
 _one⍈two⍈three⍈_four</code></pre>
-
 <div class="leanpub_A">
 <h3>The right operand of ⎕R</h3>
 <p><code>⎕R</code> takes one or more replace strings as the right operand – <em>or</em> a user defined function, discussed later. You cannot mix replace strings with user defined functions.</p>
@@ -284,7 +281,6 @@ He said ⍈!</code></pre>
 <p>We can achieve that by specifying the “Greedy” option with a zero (default is one):</p>
 <pre><code>      '".*"' ⎕R '⍈' ⍠('Greedy' 0) ⊣ 'He said "Yes" and "No"!'
 He said ⍈ and ⍈!</code></pre>
-
 <div class="leanpub_A">
 <h3>Specifying options</h3>
 <p>Various options are available to control aspects of Search and Replace; these are selected using the <em>variant</em> operator <code>⍠</code>.</p>
@@ -358,7 +354,6 @@ He said ⍈"</code></pre>
 <p>This example highlights a potential problem with input strings: many regular expressions work perfectly well as long as the input string is syntactically correct (or matches your expectations).</p>
 <p>That's the reason (among others) why regular expressions are not recommended for processing <abbr title="Hyper Text Mark-up language">HTML</abbr> because <abbr title="Hyper Text Mark-up language">HTML</abbr> is very often full of syntactical errors.</p>
 <p>However, if you can be certain that the <abbr title="Hyper Text Mark-up language">HTML</abbr> you have to deal with <em>is</em> syntactically correct <em>and</em> the piece of <abbr title="Hyper Text Mark-up language">HTML</abbr> is short and not nested then you can use regular expressions to process <abbr title="Hyper Text Mark-up language">HTML</abbr>.</p>
-
 <div class="leanpub_A">
 <h3>Regular expressions and <abbr title="Hyper Text Mark-up language">HTML</abbr></h3>
 <p>There are claims that you <em>cannot</em> parse <abbr title="Hyper Text Mark-up language">HTML</abbr> with regular expressions because a regular expression engine is a Finite Automata while <abbr title="Hyper Text Mark-up language">HTML</abbr> can be nested indefinitely. This is partly wrong and partly misleading.</p>
@@ -503,7 +498,6 @@ It's ⍈⍈.⍈⍈ plus ⍈⍈.⍈⍈.</code></pre>
 <p>We take the opportunity to add the dot (<code>.</code>) and the minus (<code>-</code>) to the character class.</p>
 <p>Note that the minus is not escaped; from the context the regular expression engine can work out that here the minus cannot mean from-to, so it is taken literally.</p>
 <p>Note also that the <code>.</code> is not escaped either: inside the pair of <code>[]</code> the <code>.</code> is <em>not</em> a metacharacter.</p>
-
 <div class="leanpub_A">
 <h3>Escaping several characters</h3>
 <p>Say you need to escape all the metacharacters because you want to search them. Escaping every single one of them with a backslash is laborious and decreases readability, but there is a better way:</p>
@@ -604,7 +598,6 @@ Americans spell it "⍈" and Brits "⍈".</code></pre>
 <p>We've learned that the <code>.</code> matched any character but not end of line.</p>
 <pre><code>      '".*"'⎕R'⍈'⊣ '"Foo' 'Goo"'
  "Foo  Goo"</code></pre>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -683,7 +676,6 @@ a←1 ⋄ ⍈←1 2 ⋄ txt←'The ⍝ marks a comment; foo' ⍝ set up vars a, 
  6 3 2  20 28 0  49 25 1</code></pre>
 <p>We have already discussed the transformation codes 0 (offset) and 1 (length) but not 3: this returns the pattern number which matched the input document, origin zero.</p>
 <p>In our case it is the third pattern (<code>foo</code>) we are interested in, so we can ignore those that are 0 and 1.</p>
-
 <div class="leanpub_A">
 <h3>Greedy and lazy</h3>
 <p>Using the option <code>⍠('Greedy' 0)</code> has a disadvantage: it makes <em>all</em> search patterns lazy.</p>
@@ -760,7 +752,6 @@ It's ⍈⍈⍈⍈⍈ plus ⍈⍈⍈⍈⍈⍈</code></pre>
 <pre><code>      '\d' '(?&lt;=\d).(?=\d)'⎕R'⍈'⊣'It''s 23.45 plus 99.12.'
 It's ⍈⍈⍈⍈⍈ plus ⍈⍈⍈⍈⍈.</code></pre>
 <p>That works! We use two expressions here: first we look for all digits and then we look for dots that have a digit to their right and their left.</p>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -809,7 +800,6 @@ abxyc⍈d</code></pre>
 <pre><code>body {
     font-size: 18px;
 }</code></pre>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -1097,7 +1087,7 @@ This ⍈; more: ⍈</code></pre>
 <hr>
 <p><strong>Footnotes</strong></p>
 <ol>
-<li id="fnref1"><p>Note that the “name” attribute is not part of the definition of <abbr title="Hyper Text Mark-up language">HTML</abbr>5; use the “ID” attribute instead.</p><a href="#fnref1" class="footnote_anchor"></a>
+<li id="fnref1"><p>Note that the “name” attribute is not part of the definition of HTML5; use the “ID” attribute instead.</p><a href="#fnref1" class="footnote_anchor"></a>
 </ol>
 </div>
 </div>

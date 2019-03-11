@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="scroll-behavior:smooth" >
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta charset="utf-8">
@@ -92,7 +92,6 @@
 <pre><code>Z:\code\v03\MyApp.exe Z:\texts\Does_not_exist</code></pre>
 <p>We see an alert message: <em>This Dyalog APL runtime application has attempted to use the APL session and will therefore be closed.</em></p>
 <p><code>MyApp</code> failed because there is no file or folder <code>Z:\texts\Does_not_exist</code>. That triggered an error in the APL code. The interpreter tried to display an error message and looked for input from a developer from the session. But a runtime task has no session, so at that point the interpreter popped the alert message and <code>MyApp</code> died.</p>
-
 <div class="leanpub_A">
 <h3>CONTINUE workspaces</h3>
 <p>Prior to version 17.0, as soon as you close the message box a CONTINUE workspace was created in the current directory. Such a CONTINUE <abbr title="Short for Workspaces">WS</abbr> can be loaded and investigated, making it easy to figure out what the problem is. (However, this is true only if it is a single-threaded application, since workspaces cannot be saved when more than one thread is running.)</p>
@@ -100,7 +99,7 @@
 <p>For analysis, load a CONTINUE workspace in an already running Dyalog session – don’t double-click a CONTINUE! The reason is that <code>⎕DM</code> and <code>⎕DMX</code> are overwritten in the process of booting SALT, meaning that you lose the error message.</p>
 <p>You <em>might</em> recreate them by re-executing the failing line – but that has other dangers, or might fail in a new way.</p>
 <p>Note also that the CONTINUE is always saved in the current directory; in version 17.0 there is no way to tell the interpreter to save the CONTINUE workspace elsewhere.</p>
-<p>That is limiting, as it will fail for your own stand-alone <abbr title="Executable file with the extension 'exe'">EXE</abbr>s if they are installed in the standard folders for executables under Windows, <code>C:\Program Files</code> (64-bit programs) and <code>C:\Program Files (x86)</code> (32-bit programs): even as an admin you cannot write to those folders or subfolders.</p>
+<p>That is limiting, as it will fail for your own stand-alone EXEs if they are installed in the standard folders for executables under Windows, <code>C:\Program Files</code> (64-bit programs) and <code>C:\Program Files (x86)</code> (32-bit programs): even as an admin you cannot write to those folders or subfolders.</p>
 <p>But Windows saves it anyway! If a program attempts to write to a banned location Windows tells them “Sure, no problem” but saves them in a e.g. <code>"C:\Users\kai\AppData\Local\VirtualStore\Program Files\Dyalog\Dyalog APL-64 17.0 Unicode\CONTINUE.dws"</code> where you are running Dyalog APL 64-bit Unicode version 17.0.</p>
 </div>
 
@@ -122,7 +121,6 @@ Load Utilities
 Load MyApp
 Run #.MyApp.SetLX ⍬</code></pre>
 <p>and run the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> to recreate the <code>MyApp</code> workspace.</p>
-
 <div class="leanpub_A">
 <h3>Help for the APLTree namespaces</h3>
 <p>You can get detailed documentation on an APLTree class or namespace by executing e.g.:</p>
@@ -337,7 +335,6 @@ Z:\code\v04</code></pre>
 2016-04-06 13:42:43 (0) Target: Z:\texts\en.csv
 2016-04-06 13:42:43 (0) 244 bytes written to Z:\texts\en.csv
 2016-04-06 13:42:43 (0) All done</code></pre>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -375,7 +372,6 @@ Z:\code\v04</code></pre>
 2017-02-26 10:54:35 (0) 9 files processed.
 2017-02-26 10:58:07 (0) Z:/texts/en/ageofinnocence.txt
 ...</code></pre>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -421,7 +417,6 @@ Z:\code\v04</code></pre>
 </div>
 <p>We now have <code>MyApp</code> logging its work in a subfolder of the application folder and reporting any problems it has anticipated.</p>
 <p>Next we need to consider how to handle and report errors we have <em>not</em> anticipated. We should also return some kind of error code to Windows. If <code>MyApp</code> encounters an error, any process calling it needs to know. But before we are doing this we will discuss how to configure <code>MyApp</code>.</p>
-
 <div class="leanpub_A">
 <h3>Destructors versus the Tracer</h3>
 <p>When you trace through <code>TxtToCsv</code>, the moment you leave the function the Tracer shows the function <code>Cleanup</code> of the <code>Logger</code> class. The function is declared as a destructor.</p>

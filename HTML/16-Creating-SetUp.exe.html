@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="scroll-behavior:smooth" >
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta charset="utf-8">
@@ -155,7 +155,6 @@
 </a>
 </div>
 <p>An installer needs admin rights. Installing a program is a potentially dangerous thing.</p>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -183,7 +182,6 @@
 <li><code>C:\Users\{username}\AppData\Roaming</code></li>
 </ul>
 <p>The <code>Roaming</code> folder is the right choice if a user wants the application to be available regardless of which computer she logs on to.</p>
-
 <div class="leanpub_A">
 <h3>About C:\ProgramData</h3>
 <p>There is only one difference between the <em>AppData</em> and the <em>ProgramData</em> folders: every user has her own <em>AppData</em> folder but there is only a single <em>ProgramData</em> folder, shared by all users.</p>
@@ -373,7 +371,6 @@ Name: "{commonappdata}\{#MyAppName}"; Permissions: users-modify</code></pre>
 <p>With the above line we tell Inno to create a folder <code>{#MyAppName}</code> which in our case will be “My Company Ltd”. Note that <code>commonappdata</code> defaults to <code>ProgramData\</code>, usually on the <code>C:\</code> drive.</p>
 <p>Instead we could have used <code>localappdata</code>, which defaults to <code>C:\Users\{username}\AppData\Local</code>. There are many more constants available; refer to <em>Constants</em> in the Inno Help for details.</p>
 <p>We also tell Inno to give any user in the <code>Users</code> group the right to modify files in this directory.</p>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/warning.png" alt="Warning">
 <div>
