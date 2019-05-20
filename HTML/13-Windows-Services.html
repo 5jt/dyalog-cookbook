@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" style="scroll-behavior:smooth" >
+<html lang="en">
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta charset="utf-8">
@@ -190,6 +190,7 @@ cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService DYALOG_NOPOPUPS=1'</code
 <p>To uninstall the Service, simply open a console window with <em>Run as administrator</em>, navigate to the directory the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> lives in and then enter:</p>
 <pre><code>sc delete MyAppService</code></pre>
 <p>and you are done.</p>
+
 <div class="leanpub_A">
 <h3>Why is changing the current directory required?</h3>
 <p>When you double-click a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> the script is executed with the directory the script lives in defining what will become the current directory from the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr>'s point of view.</p>
@@ -244,6 +245,7 @@ cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService DYALOG_NOPOPUPS=1'</code
 <li>The Service might create an aplcore when it starts.</li>
 <li>Start the Event Viewer and check it for useful information. Although our application does not write to the application log (yet), the SCM might do!</li>
 </ul>
+
 <div class="leanpub_A">
 <h3>CONTINUE workspaces</h3>
 <p>The Service might have created a CONTINUE workspace, for various reasons.</p>
@@ -506,7 +508,7 @@ cmd←aplexe,' ',wsid,' APL_ServiceInstall=MyAppService DYALOG_NOPOPUPS=1'</code
 <h3>Installing and un-installing the Service</h3>
 </a>
 </div>
-<p>In order to install or uninstall the Service we need two BATs: <code>Install_Service.bat</code> and <code>Uninstall_Service.bat</code>. We will write these BATs from Dyalog. For that we create a class <code>ServiceHelpers</code>:</p>
+<p>In order to install or uninstall the Service we need two <abbr title="Executable file that contains batch commands">BAT</abbr>s: <code>Install_Service.bat</code> and <code>Uninstall_Service.bat</code>. We will write these <abbr title="Executable file that contains batch commands">BAT</abbr>s from Dyalog. For that we create a class <code>ServiceHelpers</code>:</p>
 <pre><code>:Class ServiceHelpers
 
     ∇ {r}←CreateBatFiles dummy;path;cmd;aplexe;wsid
@@ -582,8 +584,8 @@ Run #.MakeService.Run 0
 <p>Notes:</p>
 <ul>
 <li>We need some more APLTree modules: <code>Tester</code>, <code>Execute</code> and <code>WinSys</code>.</li>
-<li>Ensure the two BATs (for installing and uninstalling the service) are written to the disk.</li>
-<li>We delete the class <code>ServiceHelpers</code>: it is not needed for running the Service once we've created the BATs.</li>
+<li>Ensure the two <abbr title="Executable file that contains batch commands">BAT</abbr>s (for installing and uninstalling the service) are written to the disk.</li>
+<li>We delete the class <code>ServiceHelpers</code>: it is not needed for running the Service once we've created the <abbr title="Executable file that contains batch commands">BAT</abbr>s.</li>
 <li>We set <code>⎕LX</code> by calling <code>SetLXForService</code>.</li>
 <li>We load the class <code>MakeService</code> and run <code>MakeService.Run</code>.</li>
 </ul>
@@ -623,9 +625,10 @@ Run #.MakeService.Run 0
 <ul>
 <li>Assigns the name of the destination folder to the global <code>DESTINATION</code>.</li>
 <li>(Re-)creates a folder with the name in <code>DESTINATION</code>.</li>
-<li>Copies over the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> as well as the two BATs.</li>
+<li>Copies over the <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> as well as the two <abbr title="Executable file that contains batch commands">BAT</abbr>s.</li>
 <li>Finally it sets <code>⎕WSID</code> and saves the workspace, without the status indicator, and without <code>MakeService</code> – by deleting itself.</li>
 </ul>
+
 <div class="leanpub_A">
 <h3>Self-deleting code</h3>
 <p>How it is possible for the function <code>MakeService.Run</code> to delete itself and keep running anyway?</p>
@@ -786,6 +789,7 @@ SERVICE_NAME: MyAppService TYPE : 10 WIN32_OWN_PROCESS STATE : 4 RUNNING (STOPPA
 <p>First we need to ensure everything is assembled freshly, and with admin rights.</p>
 <p>The best way to do that is to run the script <code>MakeService.dyapp</code> from a console that was started <em>with admin rights</em>. (Unfortunately you cannot right-click on a <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> and select “Run as administrator” from the context menu.)</p>
 <p>You must change the current directory in the console window to where the <abbr title="File with the extension 'dyapp' that contains 'Load' and 'Run' commands in order to put together an APL application">DYAPP</abbr> lives before actually calling it.</p>
+
 <div class="leanpub_A">
 <h3>Console with admin rights.</h3>
 <p>The best way to start a console window with admin rights:</p>

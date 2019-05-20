@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" style="scroll-behavior:smooth" >
+<html lang="en">
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta charset="utf-8">
@@ -110,6 +110,7 @@
 <p>By default, an aplcore is saved with the name <code>aplcore</code> in what is at that moment the current directory. This is not nice because it means that any aplcore might overwrite an earlier one. That can become particularly annoying when you try to copy from an aplcore with :</p>
 <pre><code>     )copy C:\MyAplcore.</code></pre>
 <p>but this might actually create another aplcore, overwriting the first one. Now it might well be too late to restrict the attempt to copy to what is most important to you: the object or objects you have worked on most recently.</p>
+
 <div class="leanpub_A">
 <p>If the aplcore is saved at all that is, because if the current directory is something like <code>C:\Program files\</code> then you won't have the right to save into this directory anyway.</p>
 <p>When a program asks Windows to save a file in a location where that program has no write permission (e.g. <code>C:\Program Files</code>, <code>C:\Program Files (x86)</code>, <code>C:\Windows</code>) then Windows will tell the application that it has fulfilled the request, but the file will actually be saved in something like <code>C:\Users\{username}\AppData\Local\VirtualStore\Program Files\Dyalog\Dyalog APL-64 17.0 Unicode\</code></p>

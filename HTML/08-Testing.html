@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" style="scroll-behavior:smooth" >
+<html lang="en">
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta charset="utf-8">
@@ -211,6 +211,7 @@
 <h2>Unit and functional tests</h2>
 </a>
 </div>
+
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -372,6 +373,7 @@ Run #.MyApp.SetLX ⍬
 <p><code>Initial</code> relies on naming conventions; if there is a function in scope with that name, it will be executed. More later.</p></li>
 <li>The function <code>Cleanup</code> will be executed by the test framework after all test functions have been executed. This can be used to clean up stuff that’s no longer needed. Here we delete the references <code>A</code>, <code>F</code> and <code>U</code>. More later.</li>
 </ul>
+
 <div class="leanpub_A">
 <h3>Ordinary namespaces versus scripted ones</h3>
 <p>There’s a difference between an ordinary namespace and a scripted namespace: imagine you've called <code>#.Tester.EstablishHelpersIn</code> within an ordinary namespace.</p>
@@ -399,6 +401,7 @@ Looking for a function "Cleanup"...
   Function "Cleanup" found and executed.
 *** Tests done</code></pre>
 <p>That’s what we expect.</p>
+
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -482,6 +485,7 @@ Looking for a function "Cleanup"...
 :EndNamespace</code></pre>
 <p>Now run <code>RunDebug 1</code>. Trace into <code>Test_001</code> and watch whether now any error 5 (LENGTH ERROR) is trapped, You should end up on line 8 of <code>Test_001</code>. Exchange the full stop by:</p>
 <pre><code>    →PassesIf'Left argument is not a two-element vector'≡⎕DMX.EM</code></pre>
+
 <div class="leanpub_A">
 <h3>⎕DM versus ⎕DMX</h3>
 <p>You have always used <code>⎕DM</code>, and it was fine, right? No need to switch to the (relatively) new <code>⎕DMX</code>, right? Well, the problem with <code>⎕DM</code> is that it is not thread-safe, while <code>⎕DMX</code> is. That’s why we suggest you stop using <code>⎕DM</code> and use just <code>⎕DMX</code>. It also provides more, and more precise, information.</p>
@@ -544,6 +548,7 @@ Looking for a function "Cleanup"...
   R←∆OK
 ∇
 ...</code></pre>
+
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -663,6 +668,7 @@ Looking for a function "Cleanup"...
 <li>Copy those files to our temporary test folder.</li>
 <li>Check the return code of the copy operation; <code>R</code> gets 1 (indicating success) only if it was successful.</li>
 </ul>
+
 <div class="leanpub_A">
 <h3>Machine-dependent initialisation</h3>
 <p>What if you need to initialise something (say a database connection) but it depends on the machine the tests are executed on – its IP address, user-id, password…?</p>
@@ -737,7 +743,7 @@ Looking for a function "Cleanup"...
   F.DeleteFile⊃F.Dir ∆Path,'\*.csv'
 ∇
 ...</code></pre>
-<p>This one will process <em>all</em> TXTs in <code>∆Path</code> and write a file <code>total.csv</code>. We check whether this is the case and we are done. Almost: in a real-world application we most likely would also check for a path that contains spaces in its name. We don’t do this, instead we execute the full test suite:</p>
+<p>This one will process <em>all</em> <abbr title="File with the extension 'txt' containing text">TXT</abbr>s in <code>∆Path</code> and write a file <code>total.csv</code>. We check whether this is the case and we are done. Almost: in a real-world application we most likely would also check for a path that contains spaces in its name. We don’t do this, instead we execute the full test suite:</p>
 <pre><code>      GetHelpers
       ⎕←⊃Run
 --- Test framework "Tester" version 3.9.0 from YYYY-MM-DD ----------------------------

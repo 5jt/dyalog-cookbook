@@ -1072,7 +1072,7 @@ Notes:
 
 ### The `.` character
 
-Be very careful whith the `.` in RegEx: because it matches _every_ character except newline (and with `('DotAll' 1)` even newline) it can produce unwanted results, in particular with `('Greedy' 1)` but not restricted to that.
+Be very careful whith the `.` in RegEx because it matches _every_ character except newline or, with `('DotAll' 0)`, all characters but newline: it can easily produce unwanted results, in particular with `('Greedy' 1)` but not restricted to that.
 
 Because it's so powerful it allows you to be lazy: you write a RegEx and it matches everything that you want it to match, but it might always match everything, including stuff it shouldn't!
 
@@ -1114,6 +1114,44 @@ Even this has it's problems:
 ~~~
 
 Whether that's acceptable or not depends on the application.
+
+### Special characters `%`, `$`, `%\n` and others
+
+Remember that...
+* `%` stands as a placeholder for the entire line (line mode) or document (document or mixed mode) which contained the match
+* `&` is a placeholder for the entire portion of the text which matched 
+* `\n` represents a line feed characters
+
+And there are many others!
+
+These special characters can make life significantly easier, but there are scenarios when you don't want them to be processes but taken verbatim.
+
+Imagine you want to process HTML coming from the web. Let's pretend that you can assume that it is valid HTML5. We are interested in the text, not the HTML tags.
+
+```
+      txt←⎕←'<[^>]+>'⎕R''⊣'<div>APL &amp; Pascal</div>'
+APL &amp; Pascal
+```
+
+We also want to replace the string `&amp;` by just `&`:
+
+```
+      '&amp;'⎕R'&'⊣txt
+APL &amp; Pascal
+```
+
+Uuups. Because `&` is a placeholder for the text which matched we have managed to replace `&amp;` by `&amp;`!
+
+Imagine that not only the input but also the replacement text comes from the outside world and you realize the problem.
+
+However, there is an easy way to get around this: a replacement function:
+
+```
+      '&amp;'⎕R{'&'}⊣txt
+APL & Pascal
+```
+
+Thanks to Richard Smith from Dyalog for this idea.
 
 
 ### Assumptions

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" style="scroll-behavior:smooth" >
+<html lang="en">
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta charset="utf-8">
@@ -158,6 +158,7 @@
 </div>
 <p>Dealing with Scheduled Tasks you usually don’t want more than one instance of the application running at the same time. One of the most common sources of difficulty investigating Scheduled Tasks turns out to be running a second instance.</p>
 <p>For example, you try to ride into it but the port used by Ride is already occupied by an instance started earlier without you knowing of it. We are going to prevent this happening.</p>
+
 <div class="leanpub_A">
 <p>In the rare circumstances when you want application instances managed by the Task Scheduler to run in parallel, establish a mechanism that allows you to enforce having just one instance running, if only for debugging purposes. Make it an <abbr title="File with the extension 'ini' containing configuration data">INI</abbr> entry (like <code>AllowMultipleInstances</code>) and document it appropriately.</p>
 </div>
@@ -241,6 +242,7 @@
    R←∆OK
   ∆TidyUp:
    ##.MyApp.Cleanup ⍬</code></pre>
+
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -254,6 +256,7 @@
 <li>That a test suite runs through OK does not necessarily mean it will keep doing so when you execute it again. If <code>Test_TxtToCsv</code> had been the very last test case the test suite would have passed without a problem but an attempt to run it again would fail because now the control file would have been tied, and <code>Test_exe_01</code> would have failed.</li>
 </ol>
 <p>In our specific case it was actually a problem in the test cases, <em>not</em> in <code>MyApp</code>, but the conclusion stands anyway.</p>
+
 <div class="leanpub_A">
 <h3>Shuffle test cases</h3>
 <p>At the time of writing (2017-07) the sequence of the test cases relies on alphabetical order and is therefore predictable. On the to-do list for the <code>Tester</code> class is a topic: Add an option that makes the test framework shuffle the test cases so that the order of execution is not predictable anymore.</p>
@@ -400,6 +403,7 @@
 </a>
 </div>
 <p>If you see this you most probably forgot to copy over the DLLs needed by Ride [<a href="#fnref1" class="footnote_link"><sup>1</sup></a>] itself. That’s what triggers the return code 32 which means <em>File not found</em>.</p>
+
 <div class="leanpub_A">
 <h3>Windows return codes</h3>
 <p>To translate a Windows return code like 32 into a more meaningful piece of information, download and install the user command <code>GetMsg</code> from the APL wiki. Then you can do this:</p>
@@ -437,6 +441,7 @@ The process cannot access the file because it is being used by another process.<
 <p>Instead we use the user command [<a href="#fnref3" class="footnote_link"><sup>3</sup></a>] <code>Int2Hex</code>, based on code written and contributed by Phil Last [<a href="#fnref2" class="footnote_link"><sup>2</sup></a>]. With this user command we can convert the value 2147942402 into a hex value:</p>
 <pre><code>      ]Int2Hex 2147942402
 80070002</code></pre>
+
 <div class="leanpub_A">
 <h3>Third-party user commands</h3>
 <p>There are many useful third-party user commands available. For details how to install them see “<a href="./51 Appendix 2 — User commands.html" class="external_link">Appendix 2 — User commands</a>”.</p>
