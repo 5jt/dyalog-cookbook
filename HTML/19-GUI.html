@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="scroll-behavior:smooth" >
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta charset="utf-8">
@@ -656,7 +656,6 @@
 [18]  ⍝Done
      ∇</code></pre>
 <p>Note that the <em>Find</em> button gets a callback <code>OnFind</code> assigned to the Select event. That's the real work horse.</p>
-
 <div class="leanpub_A">
 <h3>On callbacks</h3>
 <p>Rather than doing all the hard work in the callback we could have assigned a 1 to <code>N.Find.onSelect</code> (so that clicking the button quits <code>⎕DQ</code> or <code>Wait</code>) and doing the hard work after that. At first glance there seems to be little difference between the two approaches.</p>
@@ -828,7 +827,7 @@
 [18]   }
      ∇</code></pre>
 <p>This namespace (<code>G</code>) is passed as the only argument to the <code>Find</code> function.</p>
-<p>Suppose you replaces the Windows native GUI by an <abbr title="Hyper Text Mark-up language">HTML</abbr>5/JavaScript GUI. All you have to do here is ensure the <code>G</code> namespace is fed with all the data needed. <code>##.BusinessLogic</code> will not be affected in any way by the change of the GUI technology.</p>
+<p>Suppose you replaces the Windows native GUI by an HTML5/JavaScript GUI. All you have to do here is ensure the <code>G</code> namespace is fed with all the data needed. <code>##.BusinessLogic</code> will not be affected in any way by the change of the GUI technology.</p>
 <div class="h_tag">
 <a href="#The-function-BusinessLogicFind" id="The-function-BusinessLogicFind" class="autoheader_anchor">
 <h3>The function <code>##.BusinessLogic.Find</code></h3>
@@ -987,7 +986,6 @@
 ...
      ∇</code></pre>
 <p>We keep the old version to make a comparison easy.</p>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/warning.png" alt="Warning">
 <div>

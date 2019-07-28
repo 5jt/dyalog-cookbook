@@ -1,6 +1,8 @@
 {:: encoding="utf-8" /}
-[parm]:toc    =  0
-[parm]:title  = 'Quad-SE'
+[parm]:toc               = 0
+[parm]:title             = 'Quad-SE'
+[parm]:leanpubExtensions = 1
+
 
 
 # Appendix 4 --- The development environment
@@ -31,7 +33,7 @@ There are several ways to achieve this:
 
 W> ### Leave the Dyalog installation directory alone
 W>
-W> Do _not_ alter any files in the Dyalog installation directory, and don't add your own files there either: Dyalog may update files in there in any patch. 
+W> Do _not_ alter any files in the Dyalog installation directory, and don't add your own files to this folder either: Dyalog may update files in there in any patch. 
 W>
 W> Although this is not strictly true in 17.0 and earlier, Dyalog _may_ start to issue .msp files which might change any file in the installation directory without warning!
 
@@ -57,7 +59,7 @@ A> You can add a folder `C:\Foo` with `]settings workdir ,C:\Foo`.
 
 When called as part of the SALT boot process a right argument `'init'` will be passed. When called via `]usetup` then whatever is specified as argument to the user command will become the right argument of the `Setup` function.
 
-The Dyalog manuals mention this feature only when discussing the user command `]usetup` but not anywhere near how you can configure your environment; that's why we mention it here.
+The Dyalog manuals mention this feature only when discussing the user command `]usetup` but not how you can use it to configure your environment dynamically; that's why we mention it here.
 
 If you want to debug any `Setup` function then the best way to do this is to make `⎕TRAP` a local variable of `Setup` and then add these lines at the top of the function:
 
@@ -132,7 +134,7 @@ OnDrop msg;⎕IO;⎕ML;files;file;extension;i;target
  :EndFor
 ~~~
 
-What this handler does depends on what extension the file has:
+What this handler will do depends on what extension the file has:
 
 * For `.dyalog` it writes a SALT load statement to the session. 
 
@@ -141,7 +143,7 @@ What this handler does depends on what extension the file has:
 * If the filename contains the string `aplcore` then it writes a )COPY statement for that aplcore with a trailing dot to the session.
 * For any other files the fully qualified filename is written to the session.
 
-I> When you start Dyalog with admin rights then it's not possible to drop files onto the status bar. That's because Microsoft considers drag'n drop too dangerous for admins. (One might think it better strategy to leave the dangerous stuff to the admins.)
+I> When you start Dyalog with admin rights then it's not possible to drop files onto the status bar. That's because Microsoft considers drag'n drop too dangerous for admins. (One might think it's better strategy to leave the dangerous stuff to the admins.)
 
 How you configure your development environment is of course very much a matter of personal preferences. 
 

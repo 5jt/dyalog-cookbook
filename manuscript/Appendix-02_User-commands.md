@@ -28,7 +28,7 @@ The above is the default folder for the 64-bit Unicode version of Dyalog 17.0 fo
 
 If you want to keep life simple the obvious choice is to copy your user command into the folder Dyalog has reserved for this very purpose starting with version 17.0.
 
-It's in `%HOMEDRIVE%%HOMEPATH%\Documents\MyUCMDs`[^envvars]. This folder is scanned automatically by Dyalog at start-up time and when `]URESET` is executed. Any script with the extension `.dyalog` is expected to be a user command class or user command script. This is also true for any sub folders.
+It's in `%USERPROFILE%\Documents\MyUCMDs`[^envvars]. This folder is scanned automatically by Dyalog at start-up time and when `]URESET` is executed. Any script with the extension `.dyalog` is expected to be a user command class or user command script; _this is also true for any sub folders_.
 
 Notes:
 
@@ -46,14 +46,18 @@ Via the _Options > Configure_ command you can select the User Commands dialog an
 
 If you use several versions of Dyalog in parallel then you are advised _not_ to add that folder via the configuration dialog box in each of those versions.
 
-Instead we recommend writing an APL function that adds the folder to all versions of Dyalog currently installed. See the chapter [The Windows Registry](./15 The Windows Registry) where this scenario is used as an example. The reason is that you can solve the problem for all installed versions with a single function call, and you can repeat that in case you have to re-install any of the versions.
+Instead we recommend writing an APL function that adds the folder to all versions of Dyalog currently installed. See the chapter [The Windows Registry](./15 The Windows Registry) where this scenario is used as an example. The reason for this recommendation is that you can solve the problem for all installed versions with a single function call, and you can repeat that in case you have to re-install any of the versions.
 
 
 ## Name clashes
 
-Where two user commands share the same name, the last definition wins. You can achieve this just by having a user command Foo in two different scripts in different folders _with the same group name, or no group name at all!_
+When two user commands with the same name _and the same group name_ are defined in separate user command _folders_ then the one in the folder mentioned _first_ on the "User Commands" tab in the "Configuration" dialog wins.
 
-In other words, the full name of a user command is compiled by the group name (say `foo`) and the user-command name (say `goo`): `]foo.goo`. However, as long as there is only one user command `goo` this will do nicely:
+When two user commands with the same name and the same group name are defined in separate scripts in the _same_ user command folder then no one wins; instead the user command framework will report a problem.
+
+You can avoid name clashes by assigning different group names to user command with the same name. Note that specifying no group name to a user command effectively assigns the group "NONE" to it.
+
+In other words, the full name of a user command is compiled by the group name (say `foo`) and the user-command name (say `goo`): `]foo.goo`. However, as long as there is only one user command `goo` this will do:
 
 ~~~
       ]goo
@@ -86,7 +90,7 @@ In case you change an existing user command, for example by modifying the parsin
 
 ## Writing your own user commands
 
-It's not difficult to write your own user commands, and there is an example script available that makes that easy and straightforward. However, if your user command is not too simple consider developing it as an independent application, living in a particular namespace (let's assume `Foo`) in a particular workspace (let's assume `Goo`).
+It's not difficult to write your own user commands, and there is an example script available that makes that as easy and straightforward as possible. However, if your user command is not too simple consider developing it as an independent application, living in a particular namespace (let's assume `Foo`) in a particular workspace (let's assume `Goo`).
 
 Then write a user command that creates a namespace local to the function in the user command script, copy the namespace `Foo` from the workspace `Goo` into that local namespace and finally run the required function. Make sure the workspace is a sibling of the user command script.
 

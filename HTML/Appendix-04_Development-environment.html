@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="scroll-behavior:smooth" >
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta charset="utf-8">
@@ -97,7 +97,7 @@
 <img src="https://download.aplwiki.com/LeanPub/Images/warning.png" alt="Warning">
 <div>
 <h3>Leave the Dyalog installation directory alone</h3>
-<p>Do <em>not</em> alter any files in the Dyalog installation directory, and don't add your own files there either: Dyalog may update files in there in any patch.</p>
+<p>Do <em>not</em> alter any files in the Dyalog installation directory, and don't add your own files to this folder either: Dyalog may update files in there in any patch.</p>
 <p>Although this is not strictly true in 17.0 and earlier, Dyalog <em>may</em> start to issue .msp files which might change any file in the installation directory without warning!</p>
 </div>
 </div>
@@ -110,7 +110,6 @@
 <p>This means that you can execute the function at will at any time in order to re-initialise your environment.</p></li>
 </ul>
 <p>The function may be saved in that file either on its own or as part of a namespace.</p>
-
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
@@ -125,7 +124,7 @@
 </div>
 
 <p>When called as part of the SALT boot process a right argument <code>'init'</code> will be passed. When called via <code>]usetup</code> then whatever is specified as argument to the user command will become the right argument of the <code>Setup</code> function.</p>
-<p>The Dyalog manuals mention this feature only when discussing the user command <code>]usetup</code> but not anywhere near how you can configure your environment; that's why we mention it here.</p>
+<p>The Dyalog manuals mention this feature only when discussing the user command <code>]usetup</code> but not how you can use it to configure your environment dynamically; that's why we mention it here.</p>
 <p>If you want to debug any <code>Setup</code> function then the best way to do this is to make <code>⎕TRAP</code> a local variable of <code>Setup</code> and then add these lines at the top of the function:</p>
 <pre><code>[1] ⎕TRAP←0 'S'
 [2] .</code></pre>
@@ -186,7 +185,7 @@
          :EndIf
      :EndSelect
  :EndFor</code></pre>
-<p>What this handler does depends on what extension the file has:</p>
+<p>What this handler will do depends on what extension the file has:</p>
 <ul>
 <li>For <code>.dyalog</code> it writes a SALT load statement to the session.
 <p>If the current namespace is not <code>#</code> but, say, <code>Foo</code> then <code>-target=Foo</code> is added.</p></li>
@@ -197,7 +196,7 @@
 <div class="leanpub">
 <img src="https://download.aplwiki.com/LeanPub/Images/information.png" alt="Information">
 <div>
-<p>When you start Dyalog with admin rights then it's not possible to drop files onto the status bar. That's because Microsoft considers drag'n drop too dangerous for admins. (One might think it better strategy to leave the dangerous stuff to the admins.)</p>
+<p>When you start Dyalog with admin rights then it's not possible to drop files onto the status bar. That's because Microsoft considers drag'n drop too dangerous for admins. (One might think it's better strategy to leave the dangerous stuff to the admins.)</p>
 </div>
 </div>
 
@@ -247,7 +246,6 @@
 <p>If on the other hand you run occasionally (let alone often) more than one instance of Dyalog in parallel then you are familiar with how it feels when all of a sudden an unexpected dialog box pops up, be it an aplcore or a message box asking “Are you sure?” when you have no idea what you are expected to be sure about, or which instance has just crashed.</p>
 <p>There is a way to get around this. With version 14.0 Windows captions became configurable. This is a screenshot from the online help:</p>
 <p><img src="Images/HelpOnWindowCaptions.png" alt="Dyalog's help on Windows captions" title="Dyalog's help on Windows captions"></p>
-
 <div class="leanpub_A">
 <h3>Help — online versus offline</h3>
 <p>There are pros and cons:</p>

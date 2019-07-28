@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="scroll-behavior:smooth" >
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta charset="utf-8">
@@ -93,7 +93,7 @@
 </a>
 </div>
 <p>If you want to keep life simple the obvious choice is to copy your user command into the folder Dyalog has reserved for this very purpose starting with version 17.0.</p>
-<p>It's in <code>%HOMEDRIVE%%HOMEPATH%\Documents\MyUCMDs</code>[<a href="#fnref2" class="footnote_link"><sup>2</sup></a>]. This folder is scanned automatically by Dyalog at start-up time and when <code>]URESET</code> is executed. Any script with the extension <code>.dyalog</code> is expected to be a user command class or user command script. This is also true for any sub folders.</p>
+<p>It's in <code>%USERPROFILE%\Documents\MyUCMDs</code>[<a href="#fnref2" class="footnote_link"><sup>2</sup></a>]. This folder is scanned automatically by Dyalog at start-up time and when <code>]URESET</code> is executed. Any script with the extension <code>.dyalog</code> is expected to be a user command class or user command script; <em>this is also true for any sub folders</em>.</p>
 <p>Notes:</p>
 <ul>
 <li>User commands in that folder are only available for that specific user, not all users. Naturally it depends on the circumstances whether that's a good thing or a bad thing for you.</li>
@@ -108,14 +108,16 @@
 <p>Let's assume that you have a folder <code>C:\MyUserCommands</code> that's supposed to hold all non-Dyalog user commands.</p>
 <p>Via the <em>Options &gt; Configure</em> command you can select the User Commands dialog and add that folder to the search path; remember to press the <em>Add</em> button once you have browsed to the right directory.</p>
 <p>If you use several versions of Dyalog in parallel then you are advised <em>not</em> to add that folder via the configuration dialog box in each of those versions.</p>
-<p>Instead we recommend writing an APL function that adds the folder to all versions of Dyalog currently installed. See the chapter <a href="./15 The Windows Registry" class="external_link">The Windows Registry</a> where this scenario is used as an example. The reason is that you can solve the problem for all installed versions with a single function call, and you can repeat that in case you have to re-install any of the versions.</p>
+<p>Instead we recommend writing an APL function that adds the folder to all versions of Dyalog currently installed. See the chapter <a href="./15 The Windows Registry" class="external_link">The Windows Registry</a> where this scenario is used as an example. The reason for this recommendation is that you can solve the problem for all installed versions with a single function call, and you can repeat that in case you have to re-install any of the versions.</p>
 <div class="h_tag">
 <a href="#Name-clashes" id="Name-clashes" class="autoheader_anchor">
 <h2>Name clashes</h2>
 </a>
 </div>
-<p>Where two user commands share the same name, the last definition wins. You can achieve this just by having a user command Foo in two different scripts in different folders <em>with the same group name, or no group name at all!</em></p>
-<p>In other words, the full name of a user command is compiled by the group name (say <code>foo</code>) and the user-command name (say <code>goo</code>): <code>]foo.goo</code>. However, as long as there is only one user command <code>goo</code> this will do nicely:</p>
+<p>When two user commands with the same name <em>and the same group name</em> are defined in separate user command <em>folders</em> then the one in the folder mentioned <em>first</em> on the “User Commands” tab in the “Configuration” dialog wins.</p>
+<p>When two user commands with the same name and the same group name are defined in separate scripts in the <em>same</em> user command folder then no one wins; instead the user command framework will report a problem.</p>
+<p>You can avoid name clashes by assigning different group names to user command with the same name. Note that specifying no group name to a user command effectively assigns the group “NONE” to it.</p>
+<p>In other words, the full name of a user command is compiled by the group name (say <code>foo</code>) and the user-command name (say <code>goo</code>): <code>]foo.goo</code>. However, as long as there is only one user command <code>goo</code> this will do:</p>
 <pre><code>      ]goo</code></pre>
 <div class="h_tag">
 <a href="#Group-names" id="Group-names" class="autoheader_anchor">
@@ -154,7 +156,7 @@
 <h2>Writing your own user commands</h2>
 </a>
 </div>
-<p>It's not difficult to write your own user commands, and there is an example script available that makes that easy and straightforward. However, if your user command is not too simple consider developing it as an independent application, living in a particular namespace (let's assume <code>Foo</code>) in a particular workspace (let's assume <code>Goo</code>).</p>
+<p>It's not difficult to write your own user commands, and there is an example script available that makes that as easy and straightforward as possible. However, if your user command is not too simple consider developing it as an independent application, living in a particular namespace (let's assume <code>Foo</code>) in a particular workspace (let's assume <code>Goo</code>).</p>
 <p>Then write a user command that creates a namespace local to the function in the user command script, copy the namespace <code>Foo</code> from the workspace <code>Goo</code> into that local namespace and finally run the required function. Make sure the workspace is a sibling of the user command script.</p>
 <p>This approach has the advantage that you can develop and test your user commands independently from the user command framework.</p>
 <p>This is particularly important because changing a user command script from the Tracer is a bit dangerous; you will see more aplcores than under normal circumstances. On the other hand it is difficult to execute the user command without the user command framework calling it: you need those arguments and sometimes even variables that live in the parent (<code>##</code>).</p>
